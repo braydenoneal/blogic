@@ -14,7 +14,5 @@ public class BlogicMod implements ModInitializer {
 	public void onInitialize() {
 		ModItems.registerModItems();
 		ModBlocks.registerModBlocks();
-
-		LOGGER.info("Hello Fabric world!");
 	}
 }

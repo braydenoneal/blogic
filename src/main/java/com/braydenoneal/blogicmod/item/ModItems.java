@@ -10,7 +10,5 @@ public class ModItems {
 		return Registry.register(Registry.ITEM, new Identifier(BlogicMod.MOD_ID, name), item);
 	}
 
-	public static void registerModItems() {
-		BlogicMod.LOGGER.debug("Registering Mod Items for " + BlogicMod.MOD_ID);
-	}
+	public static void registerModItems() {}
 }

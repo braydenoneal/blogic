@@ -68,7 +68,5 @@ public class ModBlocks {
 				new BlockItem(block, new FabricItemSettings().group(itemGroup)));
 	}
 
-	public static void registerModBlocks() {
-		BlogicMod.LOGGER.debug("Registering Mod Blocks for " + BlogicMod.MOD_ID);
-	}
+	public static void registerModBlocks() {}
 }
