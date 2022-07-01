@@ -1,0 +1,40 @@
+{
+  "schemaVersion": 1,
+  "id": "blogicmod",
+  "version": "${version}",
+
+  "name": "Blogic",
+  "description": "Logic gates, cables, and other blocks to create instant and compact contraptions.",
+  "authors": [
+    "epicfacepace"
+  ],
+  "contact": {
+    "homepage": "https://fabricmc.net/",
+    "sources": "https://github.com/FabricMC/fabric-example-mod"
+  },
+
+  "license": "LGPLv3",
+  "icon": "assets/blogicmod/icon.png",
+
+  "environment": "*",
+  "entrypoints": {
+    "main": [
+      "com.braydenoneal.blogicmod.BlogicMod"
+    ],
+    "client": [
+      "com.braydenoneal.blogicmod.BlogicModClient"
+    ]
+  },
+  "mixins": [
+  ],
+
+  "depends": {
+    "fabricloader": ">=0.14.6",
+    "fabric": "*",
+    "minecraft": "~1.19",
+    "java": ">=17"
+  },
+  "suggests": {
+    "another-mod": "*"
+  }
+}

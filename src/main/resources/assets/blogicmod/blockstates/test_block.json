@@ -1,0 +1,5 @@
+{
+  "variants": {
+    "": { "model":  "blogicmod/block/test_block" }
+  }
+}

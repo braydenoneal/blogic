@@ -1,0 +1,8 @@
+{
+  "parent": "blogicmod:block/template_rotatable",
+  "textures": {
+    "top": "blogicmod:block/inverter_top",
+    "side": "blogicmod:block/inverter_side",
+    "bottom": "blogicmod:block/inverter_bottom"
+  }
+}

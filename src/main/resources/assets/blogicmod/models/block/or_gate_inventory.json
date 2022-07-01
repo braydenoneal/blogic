@@ -1,0 +1,8 @@
+{
+  "parent": "block/cube_bottom_top",
+  "textures": {
+    "bottom": "blogicmod:block/or_gate_top",
+    "side": "blogicmod:block/or_gate_side",
+    "top": "blogicmod:block/or_gate_bottom"
+  }
+}

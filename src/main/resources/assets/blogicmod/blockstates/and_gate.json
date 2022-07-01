@@ -1,0 +1,16 @@
+{
+  "variants": {
+    "facing=down,powered=false": { "model": "blogicmod:block/and_gate", "x": 90 },
+    "facing=up,powered=false": { "model": "blogicmod:block/and_gate", "x": 270 },
+    "facing=north,powered=false": { "model": "blogicmod:block/and_gate" },
+    "facing=south,powered=false": { "model": "blogicmod:block/and_gate", "y": 180 },
+    "facing=west,powered=false": { "model": "blogicmod:block/and_gate", "y": 270 },
+    "facing=east,powered=false": { "model": "blogicmod:block/and_gate", "y": 90 },
+    "facing=down,powered=true": { "model": "blogicmod:block/and_gate_on", "x": 90 },
+    "facing=up,powered=true": { "model": "blogicmod:block/and_gate_on", "x": 270 },
+    "facing=north,powered=true": { "model": "blogicmod:block/and_gate_on" },
+    "facing=south,powered=true": { "model": "blogicmod:block/and_gate_on", "y": 180 },
+    "facing=west,powered=true": { "model": "blogicmod:block/and_gate_on", "y": 270 },
+    "facing=east,powered=true": { "model": "blogicmod:block/and_gate_on", "y": 90 }
+  }
+}
