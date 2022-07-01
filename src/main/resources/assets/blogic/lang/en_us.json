@@ -1,0 +1,12 @@
+{
+  "block.blogic.diode": "Diode",
+  "block.blogic.light_emitter": "Light Emitter",
+  "block.blogic.toggle": "Toggle",
+  "block.blogic.and_gate": "And Gate",
+  "block.blogic.or_gate": "Or Gate",
+  "block.blogic.xor_gate": "Xor Gate",
+  "block.blogic.inverter": "Inverter",
+  "block.blogic.cable": "Cable",
+
+  "itemGroup.blogic.blogic": "Blogic"
+}

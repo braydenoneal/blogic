@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "id": "blogicmod",
+  "id": "blogic",
   "version": "${version}",
 
   "name": "Blogic",
@@ -14,15 +14,15 @@
   },
 
   "license": "LGPLv3",
-  "icon": "assets/blogicmod/icon.png",
+  "icon": "assets/blogic/icon.png",
 
   "environment": "*",
   "entrypoints": {
     "main": [
-      "com.braydenoneal.blogicmod.BlogicMod"
+      "com.braydenoneal.blogic.BlogicMod"
     ],
     "client": [
-      "com.braydenoneal.blogicmod.BlogicModClient"
+      "com.braydenoneal.blogic.BlogicModClient"
     ]
   },
   "mixins": [

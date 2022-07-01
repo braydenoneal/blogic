@@ -1,0 +1,8 @@
+{
+  "parent": "blogic:block/template_rotatable",
+  "textures": {
+    "top": "blogic:block/or_gate_top",
+    "side": "blogic:block/or_gate_side",
+    "bottom": "blogic:block/or_gate_bottom"
+  }
+}

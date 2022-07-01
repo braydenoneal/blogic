@@ -1,0 +1,22 @@
+{
+	"credit": "Made with Blockbench",
+	"ambientocclusion": false,
+	"textures": {
+		"1": "blogic:block/cable_on",
+		"particle": "blogic:block/cable_frame"
+	},
+	"elements": [
+		{
+			"from": [6, 6, 0],
+			"to": [10, 10, 6],
+			"faces": {
+				"north": {"uv": [12, 8, 16, 12], "texture": "#1"},
+				"east": {"uv": [4, 0, 10, 4], "texture": "#1"},
+				"south": {"uv": [12, 12, 16, 16], "texture": "#1"},
+				"west": {"uv": [4, 8, 10, 12], "texture": "#1"},
+				"up": {"uv": [4, 12, 10, 16], "texture": "#1"},
+				"down": {"uv": [4, 4, 10, 8], "texture": "#1"}
+			}
+		}
+	]
+}

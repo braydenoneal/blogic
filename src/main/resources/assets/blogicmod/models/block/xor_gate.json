@@ -1,8 +1,0 @@
-{
-  "parent": "blogicmod:block/template_rotatable",
-  "textures": {
-    "top": "blogicmod:block/xor_gate_top",
-    "side": "blogicmod:block/xor_gate_side",
-    "bottom": "blogicmod:block/xor_gate_bottom"
-  }
-}

@@ -1,0 +1,16 @@
+{
+  "variants": {
+    "facing=down,powered=false": { "model": "blogic:block/inverter", "x": 90 },
+    "facing=up,powered=false": { "model": "blogic:block/inverter", "x": 270 },
+    "facing=north,powered=false": { "model": "blogic:block/inverter" },
+    "facing=south,powered=false": { "model": "blogic:block/inverter", "y": 180 },
+    "facing=west,powered=false": { "model": "blogic:block/inverter", "y": 270 },
+    "facing=east,powered=false": { "model": "blogic:block/inverter", "y": 90 },
+    "facing=down,powered=true": { "model": "blogic:block/inverter_on", "x": 90 },
+    "facing=up,powered=true": { "model": "blogic:block/inverter_on", "x": 270 },
+    "facing=north,powered=true": { "model": "blogic:block/inverter_on" },
+    "facing=south,powered=true": { "model": "blogic:block/inverter_on", "y": 180 },
+    "facing=west,powered=true": { "model": "blogic:block/inverter_on", "y": 270 },
+    "facing=east,powered=true": { "model": "blogic:block/inverter_on", "y": 90 }
+  }
+}

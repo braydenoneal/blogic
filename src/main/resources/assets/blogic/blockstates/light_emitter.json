@@ -1,0 +1,6 @@
+{
+  "variants": {
+    "lit=false": { "model": "blogic:block/light_emitter" },
+    "lit=true": { "model": "blogic:block/light_emitter_on" }
+  }
+}

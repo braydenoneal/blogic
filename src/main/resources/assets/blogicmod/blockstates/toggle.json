@@ -1,6 +1,0 @@
-{
-  "variants": {
-    "powered=false": { "model": "blogicmod:block/toggle" },
-    "powered=true": { "model": "blogicmod:block/toggle_on" }
-  }
-}

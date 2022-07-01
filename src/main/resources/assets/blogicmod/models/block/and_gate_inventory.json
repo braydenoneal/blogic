@@ -1,8 +1,0 @@
-{
-  "parent": "block/cube_bottom_top",
-  "textures": {
-    "bottom": "blogicmod:block/and_gate_top",
-    "side": "blogicmod:block/and_gate_side",
-    "top": "blogicmod:block/and_gate_bottom"
-  }
-}
