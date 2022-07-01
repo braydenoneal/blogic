@@ -3,7 +3,7 @@
 	"ambientocclusion": false,
 	"textures": {
 		"1": "blogicmod:block/cable_on",
-		"particle": "blogicmod:block/cable_on"
+		"particle": "blogicmod:block/cable_frame"
 	},
 	"elements": [
 		{
