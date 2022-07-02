@@ -3,7 +3,9 @@ package com.braydenoneal.blogic.block;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.FacingBlock;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.ItemPlacementContext;
+import net.minecraft.item.ItemStack;
 import net.minecraft.state.StateManager;
 import net.minecraft.state.property.BooleanProperty;
 import net.minecraft.state.property.IntProperty;
@@ -11,6 +13,7 @@ import net.minecraft.state.property.Properties;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.world.BlockView;
+import net.minecraft.world.World;
 import net.minecraft.world.WorldAccess;
 import org.jetbrains.annotations.Nullable;
 
@@ -24,7 +27,8 @@ public abstract class AbstractLogicGateBlock extends FacingBlock {
 				.with(Properties.FACING, Direction.NORTH)
 				.with(Properties.POWERED, false)
 				.with(POWERED_INPUTS, 0)
-				.with(INVERTED, false));
+				.with(INVERTED, false)
+		);
 	}
 
 	@Override
@@ -40,6 +44,15 @@ public abstract class AbstractLogicGateBlock extends FacingBlock {
 				.with(Properties.POWERED, shouldBePowered(ctx.getWorld(), ctx.getBlockPos(), facing))
 				.with(POWERED_INPUTS, getPoweredInputs(ctx.getWorld(), ctx.getBlockPos(), facing))
 				.with(INVERTED, getInverted(ctx.getWorld(), ctx.getBlockPos(), facing));
+	}
+
+	@Override
+	public void onPlaced(World world, BlockPos pos, BlockState state, @Nullable LivingEntity placer, ItemStack itemStack) {
+		world.setBlockState(pos, state
+				.with(Properties.POWERED, shouldBePowered(world, pos, getFacing(state)))
+				.with(POWERED_INPUTS, getPoweredInputs(world, pos, getFacing(state)))
+				.with(INVERTED, getInverted(world, pos, getFacing(state))));
+		super.onPlaced(world, pos, state, placer, itemStack);
 	}
 
 	@Override
