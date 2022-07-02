@@ -3,19 +3,20 @@
 	"ambientocclusion": false,
 	"textures": {
 		"1": "blogic:block/cable_on",
-		"particle": "blogic:block/cable_frame"
+		"particle": "blogic:block/cable_on"
 	},
 	"elements": [
 		{
-			"from": [6, 6, 0],
-			"to": [10, 10, 6],
+			"from": [7, 7, 0],
+			"to": [9, 9, 7],
+			"rotation": {"angle": 0, "axis": "y", "origin": [8, 8, 8]},
 			"faces": {
-				"north": {"uv": [12, 8, 16, 12], "texture": "#1"},
-				"east": {"uv": [4, 0, 10, 4], "texture": "#1"},
-				"south": {"uv": [12, 12, 16, 16], "texture": "#1"},
-				"west": {"uv": [4, 8, 10, 12], "texture": "#1"},
-				"up": {"uv": [4, 12, 10, 16], "texture": "#1"},
-				"down": {"uv": [4, 4, 10, 8], "texture": "#1"}
+				"north": {"uv": [2, 4, 4, 6], "texture": "#1"},
+				"east": {"uv": [2, 0, 9, 2], "texture": "#1"},
+				"south": {"uv": [0, 14, 2, 16], "texture": "#1"},
+				"west": {"uv": [2, 2, 9, 4], "texture": "#1"},
+				"up": {"uv": [0, 7, 2, 14], "texture": "#1"},
+				"down": {"uv": [0, 0, 2, 7], "texture": "#1"}
 			}
 		}
 	]
