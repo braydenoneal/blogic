@@ -1,22 +1,20 @@
 package com.braydenoneal.blogic.block;
 
-import net.minecraft.block.AbstractGlassBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
-import net.minecraft.block.ShapeContext;
 import net.minecraft.item.ItemPlacementContext;
 import net.minecraft.state.StateManager;
 import net.minecraft.state.property.BooleanProperty;
 import net.minecraft.state.property.Properties;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
-import net.minecraft.util.shape.VoxelShape;
-import net.minecraft.util.shape.VoxelShapes;
 import net.minecraft.world.BlockView;
 import net.minecraft.world.WorldAccess;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 public class CableBlock extends Block {
 	public static final BooleanProperty UP = Properties.UP;
@@ -57,7 +55,10 @@ public class CableBlock extends Block {
 	@Nullable
 	@Override
 	public BlockState getPlacementState(ItemPlacementContext ctx) {
-		return this.getStateWithUpdatedShape(this.getDefaultState(), ctx.getWorld(), ctx.getBlockPos());
+		BlockState state = this.getStateWithUpdatedShape(this.getDefaultState(), ctx.getWorld(), ctx.getBlockPos());
+		CableGroup cableGroup = new CableGroup(ctx.getWorld(), ctx.getBlockPos());
+		cableGroup.setPowerOfCableGroup(ctx.getWorld(), cableGroup.shouldBePowered);
+		return state;
 	}
 
 	@Override
@@ -66,27 +67,15 @@ public class CableBlock extends Block {
 	}
 
 	@Override
-	public boolean isSideInvisible(BlockState state, BlockState stateFrom, Direction direction) {
-		return stateFrom.isOf(this) || super.isSideInvisible(state, stateFrom, direction);
-	}
-
-	@Override
-	public VoxelShape getCameraCollisionShape(BlockState state, BlockView world, BlockPos pos, ShapeContext context) {
-		return VoxelShapes.empty();
-	}
-
-	@Override
-	public float getAmbientOcclusionLightLevel(BlockState state, BlockView world, BlockPos pos) {
-		return 1.0F;
-	}
-
-	@Override
-	public boolean isTranslucent(BlockState state, BlockView world, BlockPos pos) {
-		return true;
+	public int getWeakRedstonePower(BlockState state, BlockView world, BlockPos pos, Direction direction) {
+		return state.get(POWERED) && state.get(DIRECTION_BOOLEAN_PROPERTY_MAP.get(direction.getOpposite())) ? 15 : 0;
 	}
 
 	@Override
 	public BlockState getStateForNeighborUpdate(BlockState state, Direction facing, BlockState neighborState, WorldAccess world, BlockPos pos, BlockPos neighborPos) {
+		world.setBlockState(pos, this.getStateWithUpdatedShape(state, world, pos), 3);
+		CableGroup cableGroup = new CableGroup(world, pos);
+		cableGroup.setPowerOfCableGroup(world, cableGroup.shouldBePowered);
 		return this.getStateWithUpdatedShape(state, world, pos);
 	}
 
@@ -113,5 +102,43 @@ public class CableBlock extends Block {
 		}
 
 		return newState;
+	}
+
+	public static class CableGroup {
+		public final Set<BlockPos> cableGroup = new HashSet<>();
+		public boolean shouldBePowered = false;
+
+		public CableGroup(WorldAccess world, BlockPos startingPos) {
+			this.addToCableGroupAt(world, startingPos);
+		}
+
+		public void addToCableGroupAt(WorldAccess world, BlockPos pos) {
+			cableGroup.add(pos);
+
+			for (Direction direction : Direction.values()) {
+				BlockPos neighborPos = pos.offset(direction);
+				BlockState neighborState = world.getBlockState(neighborPos);
+
+				if (!cableGroup.contains(neighborPos)) {
+					if (neighborState.isOf(ModBlocks.CABLE)) {
+						this.addToCableGroupAt(world, neighborPos);
+					} else if (neighborState.getWeakRedstonePower(world, pos, direction) > 0) {
+						BlockState state = world.getBlockState(pos);
+						if (state.isOf(ModBlocks.CABLE)) {
+							shouldBePowered = state.get(DIRECTION_BOOLEAN_PROPERTY_MAP.get(direction));
+						}
+					}
+				}
+			}
+		}
+
+		public void setPowerOfCableGroup(WorldAccess world, boolean powered) {
+			for (BlockPos pos : cableGroup) {
+				BlockState state = world.getBlockState(pos);
+				if (state.isOf(ModBlocks.CABLE)) {
+					world.setBlockState(pos, state.with(POWERED, powered), 3);
+				}
+			}
+		}
 	}
 }
