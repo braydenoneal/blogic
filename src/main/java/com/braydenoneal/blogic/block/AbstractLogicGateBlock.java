@@ -39,7 +39,7 @@ public abstract class AbstractLogicGateBlock extends FacingBlock {
 	@Nullable
 	@Override
 	public BlockState getPlacementState(ItemPlacementContext ctx) {
-		Direction facing = ctx.getPlayerLookDirection().getOpposite();
+		Direction facing = ctx.getPlayerLookDirection();
 		return this.getDefaultState().with(Properties.FACING, facing)
 				.with(Properties.POWERED, shouldBePowered(ctx.getWorld(), ctx.getBlockPos(), facing))
 				.with(POWERED_INPUTS, getPoweredInputs(ctx.getWorld(), ctx.getBlockPos(), facing))

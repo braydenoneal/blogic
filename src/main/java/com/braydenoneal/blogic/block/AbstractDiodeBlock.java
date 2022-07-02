@@ -32,7 +32,7 @@ public abstract class AbstractDiodeBlock extends FacingBlock {
 	@Nullable
 	@Override
 	public BlockState getPlacementState(ItemPlacementContext ctx) {
-		Direction facing = ctx.getPlayerLookDirection().getOpposite();
+		Direction facing = ctx.getPlayerLookDirection();
 		return this.getDefaultState().with(Properties.FACING, facing);
 	}
 
