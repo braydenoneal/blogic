@@ -7,6 +7,21 @@
   "block.blogic.xor_gate": "Xor Gate",
   "block.blogic.inverter": "Inverter",
   "block.blogic.cable": "Cable",
-
+  "block.blogic.orange_cable": "Orange Cable",
+  "block.blogic.white_cable": "White Cable",
+  "block.blogic.magenta_cable": "Magenta Cable",
+  "block.blogic.light_blue_cable": "Light Blue Cable",
+  "block.blogic.yellow_cable": "Yellow Cable",
+  "block.blogic.lime_cable": "Lime Cable",
+  "block.blogic.pink_cable": "Pink Cable",
+  "block.blogic.gray_cable": "Gray Cable",
+  "block.blogic.light_gray_cable": "Light Gray Cable",
+  "block.blogic.cyan_cable": "Cyan Cable",
+  "block.blogic.purple_cable": "Purple Cable",
+  "block.blogic.blue_cable": "Blue Cable",
+  "block.blogic.brown_cable": "Brown Cable",
+  "block.blogic.green_cable": "Green Cable",
+  "block.blogic.red_cable": "Red Cable",
+  "block.blogic.black_cable": "Black Cable",
   "itemGroup.blogic.blogic": "Blogic"
 }

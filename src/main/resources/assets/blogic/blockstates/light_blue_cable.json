@@ -1,0 +1,48 @@
+{
+    "multipart": [
+        {   "when": { "powered": "false" },
+            "apply": { "model": "blogic:block/light_blue_cable_base" }
+        },
+        {   "when": { "powered": "true" },
+            "apply": { "model": "blogic:block/light_blue_cable_base_on" }
+        },
+        {   "when": { "powered": "false", "up": "true" },
+            "apply": { "model": "blogic:block/light_blue_cable", "x": 270 }
+        },
+        {   "when": { "powered": "true", "up": "true" },
+            "apply": { "model": "blogic:block/light_blue_cable_on", "x": 270 }
+        },
+        {   "when": { "powered": "false", "down": "true" },
+            "apply": { "model": "blogic:block/light_blue_cable", "x": 90 }
+        },
+        {   "when": { "powered": "true", "down": "true" },
+            "apply": { "model": "blogic:block/light_blue_cable_on", "x": 90 }
+        },
+        {   "when": { "powered": "false", "north": "true" },
+            "apply": { "model": "blogic:block/light_blue_cable" }
+        },
+        {   "when": { "powered": "true", "north": "true" },
+            "apply": { "model": "blogic:block/light_blue_cable_on" }
+        },
+        {   "when": { "powered": "false", "east": "true" },
+            "apply": { "model": "blogic:block/light_blue_cable", "y": 90 }
+        },
+        {   "when": { "powered": "true", "east": "true" },
+            "apply": { "model": "blogic:block/light_blue_cable_on", "y": 90 }
+        },
+        {   "when": { "powered": "false", "south": "true" },
+            "apply": { "model": "blogic:block/light_blue_cable", "y": 180 }
+        },
+        {   "when": { "powered": "true", "south": "true" },
+            "apply": { "model": "blogic:block/light_blue_cable_on", "y": 180 }
+        },
+        {   "when": { "powered": "false", "west": "true" },
+            "apply": { "model": "blogic:block/light_blue_cable", "y": 270 }
+        },
+        {   "when": { "powered": "true", "west": "true" },
+            "apply": { "model": "blogic:block/light_blue_cable_on", "y": 270 }
+        },
+        {   "apply": { "model": "blogic:block/cable_frame" }
+        }
+    ]
+}

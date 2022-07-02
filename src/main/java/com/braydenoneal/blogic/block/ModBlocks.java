@@ -54,7 +54,151 @@ public class ModBlocks {
 			ModItemGroup.BLOGIC);
 
 	public static final Block CABLE = registerBlock("cable",
-			new CableBlock(FabricBlockSettings.of(new Material(MapColor.BLACK, false, false, true, false, false, false, PistonBehavior.NORMAL)).strength(1f)
+			new CableBlock(FabricBlockSettings.of(new Material(MapColor.DARK_RED, false, false, true, false, false, false, PistonBehavior.NORMAL)).strength(1f)
+					.solidBlock(ModBlocks::never)
+					.suffocates(ModBlocks::never)
+					.blockVision(ModBlocks::never)
+					.nonOpaque()
+			),
+			ModItemGroup.BLOGIC);
+
+	public static final Block ORANGE_CABLE = registerBlock("orange_cable",
+			new OrangeCableBlock(FabricBlockSettings.of(new Material(MapColor.ORANGE, false, false, true, false, false, false, PistonBehavior.NORMAL)).strength(1f)
+					.solidBlock(ModBlocks::never)
+					.suffocates(ModBlocks::never)
+					.blockVision(ModBlocks::never)
+					.nonOpaque()
+			),
+			ModItemGroup.BLOGIC);
+
+	public static final Block WHITE_CABLE = registerBlock("white_cable",
+			new WhiteCableBlock(FabricBlockSettings.of(new Material(MapColor.WHITE, false, false, true, false, false, false, PistonBehavior.NORMAL)).strength(1f)
+					.solidBlock(ModBlocks::never)
+					.suffocates(ModBlocks::never)
+					.blockVision(ModBlocks::never)
+					.nonOpaque()
+			),
+			ModItemGroup.BLOGIC);
+
+	public static final Block MAGENTA_CABLE = registerBlock("magenta_cable",
+			new MagentaCableBlock(FabricBlockSettings.of(new Material(MapColor.DARK_RED, false, false, true, false, false, false, PistonBehavior.NORMAL)).strength(1f)
+					.solidBlock(ModBlocks::never)
+					.suffocates(ModBlocks::never)
+					.blockVision(ModBlocks::never)
+					.nonOpaque()
+			),
+			ModItemGroup.BLOGIC);
+
+	public static final Block LIGHT_BLUE_CABLE = registerBlock("light_blue_cable",
+			new LightBlueCableBlock(FabricBlockSettings.of(new Material(MapColor.DARK_RED, false, false, true, false, false, false, PistonBehavior.NORMAL)).strength(1f)
+					.solidBlock(ModBlocks::never)
+					.suffocates(ModBlocks::never)
+					.blockVision(ModBlocks::never)
+					.nonOpaque()
+			),
+			ModItemGroup.BLOGIC);
+
+	public static final Block YELLOW_CABLE = registerBlock("yellow_cable",
+			new YellowCableBlock(FabricBlockSettings.of(new Material(MapColor.DARK_RED, false, false, true, false, false, false, PistonBehavior.NORMAL)).strength(1f)
+					.solidBlock(ModBlocks::never)
+					.suffocates(ModBlocks::never)
+					.blockVision(ModBlocks::never)
+					.nonOpaque()
+			),
+			ModItemGroup.BLOGIC);
+
+	public static final Block LIME_CABLE = registerBlock("lime_cable",
+			new LimeCableBlock(FabricBlockSettings.of(new Material(MapColor.DARK_RED, false, false, true, false, false, false, PistonBehavior.NORMAL)).strength(1f)
+					.solidBlock(ModBlocks::never)
+					.suffocates(ModBlocks::never)
+					.blockVision(ModBlocks::never)
+					.nonOpaque()
+			),
+			ModItemGroup.BLOGIC);
+
+	public static final Block PINK_CABLE = registerBlock("pink_cable",
+			new PinkCableBlock(FabricBlockSettings.of(new Material(MapColor.DARK_RED, false, false, true, false, false, false, PistonBehavior.NORMAL)).strength(1f)
+					.solidBlock(ModBlocks::never)
+					.suffocates(ModBlocks::never)
+					.blockVision(ModBlocks::never)
+					.nonOpaque()
+			),
+			ModItemGroup.BLOGIC);
+
+	public static final Block GRAY_CABLE = registerBlock("gray_cable",
+			new GrayCableBlock(FabricBlockSettings.of(new Material(MapColor.DARK_RED, false, false, true, false, false, false, PistonBehavior.NORMAL)).strength(1f)
+					.solidBlock(ModBlocks::never)
+					.suffocates(ModBlocks::never)
+					.blockVision(ModBlocks::never)
+					.nonOpaque()
+			),
+			ModItemGroup.BLOGIC);
+
+	public static final Block LIGHT_GRAY_CABLE = registerBlock("light_gray_cable",
+			new LightGrayCableBlock(FabricBlockSettings.of(new Material(MapColor.DARK_RED, false, false, true, false, false, false, PistonBehavior.NORMAL)).strength(1f)
+					.solidBlock(ModBlocks::never)
+					.suffocates(ModBlocks::never)
+					.blockVision(ModBlocks::never)
+					.nonOpaque()
+			),
+			ModItemGroup.BLOGIC);
+
+	public static final Block CYAN_CABLE = registerBlock("cyan_cable",
+			new CyanCableBlock(FabricBlockSettings.of(new Material(MapColor.DARK_RED, false, false, true, false, false, false, PistonBehavior.NORMAL)).strength(1f)
+					.solidBlock(ModBlocks::never)
+					.suffocates(ModBlocks::never)
+					.blockVision(ModBlocks::never)
+					.nonOpaque()
+			),
+			ModItemGroup.BLOGIC);
+
+	public static final Block PURPLE_CABLE = registerBlock("purple_cable",
+			new PurpleCableBlock(FabricBlockSettings.of(new Material(MapColor.DARK_RED, false, false, true, false, false, false, PistonBehavior.NORMAL)).strength(1f)
+					.solidBlock(ModBlocks::never)
+					.suffocates(ModBlocks::never)
+					.blockVision(ModBlocks::never)
+					.nonOpaque()
+			),
+			ModItemGroup.BLOGIC);
+
+	public static final Block BLUE_CABLE = registerBlock("blue_cable",
+			new BlueCableBlock(FabricBlockSettings.of(new Material(MapColor.DARK_RED, false, false, true, false, false, false, PistonBehavior.NORMAL)).strength(1f)
+					.solidBlock(ModBlocks::never)
+					.suffocates(ModBlocks::never)
+					.blockVision(ModBlocks::never)
+					.nonOpaque()
+			),
+			ModItemGroup.BLOGIC);
+
+	public static final Block BROWN_CABLE = registerBlock("brown_cable",
+			new BrownCableBlock(FabricBlockSettings.of(new Material(MapColor.DARK_RED, false, false, true, false, false, false, PistonBehavior.NORMAL)).strength(1f)
+					.solidBlock(ModBlocks::never)
+					.suffocates(ModBlocks::never)
+					.blockVision(ModBlocks::never)
+					.nonOpaque()
+			),
+			ModItemGroup.BLOGIC);
+
+	public static final Block GREEN_CABLE = registerBlock("green_cable",
+			new GreenCableBlock(FabricBlockSettings.of(new Material(MapColor.DARK_RED, false, false, true, false, false, false, PistonBehavior.NORMAL)).strength(1f)
+					.solidBlock(ModBlocks::never)
+					.suffocates(ModBlocks::never)
+					.blockVision(ModBlocks::never)
+					.nonOpaque()
+			),
+			ModItemGroup.BLOGIC);
+
+	public static final Block RED_CABLE = registerBlock("red_cable",
+			new RedCableBlock(FabricBlockSettings.of(new Material(MapColor.DARK_RED, false, false, true, false, false, false, PistonBehavior.NORMAL)).strength(1f)
+					.solidBlock(ModBlocks::never)
+					.suffocates(ModBlocks::never)
+					.blockVision(ModBlocks::never)
+					.nonOpaque()
+			),
+			ModItemGroup.BLOGIC);
+
+	public static final Block BLACK_CABLE = registerBlock("black_cable",
+			new BlackCableBlock(FabricBlockSettings.of(new Material(MapColor.DARK_RED, false, false, true, false, false, false, PistonBehavior.NORMAL)).strength(1f)
 					.solidBlock(ModBlocks::never)
 					.suffocates(ModBlocks::never)
 					.blockVision(ModBlocks::never)

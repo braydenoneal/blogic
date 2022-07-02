@@ -2,13 +2,13 @@ package com.braydenoneal.blogic.block;
 
 import net.minecraft.block.BlockState;
 
-public class CableBlock extends AbstractCableBlock {
-	public CableBlock(Settings settings) {
+public class BlueCableBlock extends AbstractCableBlock {
+	public BlueCableBlock(Settings settings) {
 		super(settings);
 	}
 
 	@Override
 	public boolean canConnectToCableOfState(BlockState state) {
-		return true;
+		return state.isOf(ModBlocks.CABLE) || state.isOf(ModBlocks.BLUE_CABLE);
 	}
 }
