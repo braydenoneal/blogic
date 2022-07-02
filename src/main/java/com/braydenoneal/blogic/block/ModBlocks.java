@@ -6,7 +6,9 @@ import net.fabricmc.fabric.api.item.v1.FabricItemSettings;
 import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
+import net.minecraft.block.MapColor;
 import net.minecraft.block.Material;
+import net.minecraft.block.piston.PistonBehavior;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
@@ -52,7 +54,7 @@ public class ModBlocks {
 			ModItemGroup.BLOGIC);
 
 	public static final Block CABLE = registerBlock("cable",
-			new CableBlock(FabricBlockSettings.of(Material.GLASS).strength(1f)
+			new CableBlock(FabricBlockSettings.of(new Material(MapColor.BLACK, false, false, true, false, false, false, PistonBehavior.NORMAL)).strength(1f)
 					.solidBlock(ModBlocks::never)
 					.suffocates(ModBlocks::never)
 					.blockVision(ModBlocks::never)
