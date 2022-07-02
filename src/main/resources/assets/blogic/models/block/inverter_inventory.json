@@ -2,7 +2,7 @@
   "parent": "block/cube_bottom_top",
   "textures": {
     "bottom": "blogic:block/inverter_top",
-    "side": "blogic:block/inverter_side",
-    "top": "blogic:block/inverter_bottom"
+    "side": "blogic:block/inverter_side_on",
+    "top": "blogic:block/inverter_bottom_on"
   }
 }
