@@ -14,11 +14,11 @@ import net.minecraft.world.BlockView;
 import net.minecraft.world.WorldAccess;
 import org.jetbrains.annotations.Nullable;
 
-public abstract class AbstractGateBlock extends FacingBlock {
+public abstract class AbstractLogicGateBlock extends FacingBlock {
 	private static final IntProperty POWERED_INPUTS = IntProperty.of("powered_inputs", 0, 4);
 	private static final BooleanProperty INVERTED = BooleanProperty.of("inverted");
 
-	protected AbstractGateBlock(Settings settings) {
+	protected AbstractLogicGateBlock(Settings settings) {
 		super(settings);
 		this.setDefaultState(this.getStateManager().getDefaultState()
 				.with(Properties.FACING, Direction.NORTH)

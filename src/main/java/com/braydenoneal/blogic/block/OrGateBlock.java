@@ -4,7 +4,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.world.WorldAccess;
 
-public class OrGateBlock extends AbstractGateBlock {
+public class OrGateBlock extends AbstractLogicGateBlock {
 	protected OrGateBlock(Settings settings) {
 		super(settings);
 	}
