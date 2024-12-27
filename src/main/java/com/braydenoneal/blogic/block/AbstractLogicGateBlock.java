@@ -74,7 +74,7 @@ public abstract class AbstractLogicGateBlock extends FacingBlock {
 		for (Direction direction : Direction.values()) {
 			BlockPos neighborPos = pos.offset(direction);
 			BlockState neighborState = world.getBlockState(neighborPos);
-			if (direction != facing && neighborState.getWeakRedstonePower(world, neighborPos, direction) > 0) {
+			if (direction != facing.getOpposite() && neighborState.getWeakRedstonePower(world, neighborPos, direction) > 0) {
 				poweredInputs++;
 			}
 		}
