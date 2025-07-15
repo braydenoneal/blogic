@@ -22,8 +22,8 @@ public class RedstoneWriterBlockEntity extends BlockEntity {
         return redstoneValue;
     }
 
-    public static void tick(World world, BlockPos pos, BlockState state, RedstoneWriterBlockEntity blockEntity) {
-        int previousRedstoneValue = blockEntity.redstoneValue;
+    public void update(World world, BlockPos pos, BlockState state) {
+        int previousRedstoneValue = redstoneValue;
 
         BlockEntity facingBlock = world.getBlockEntity(pos.offset(state.get(Properties.FACING).getOpposite()));
 
@@ -34,8 +34,8 @@ public class RedstoneWriterBlockEntity extends BlockEntity {
         }
 
         if (previousRedstoneValue != nextRedstoneValue) {
-            blockEntity.redstoneValue = nextRedstoneValue;
-            blockEntity.markDirty();
+            redstoneValue = nextRedstoneValue;
+            markDirty();
             world.updateNeighbors(pos, state.getBlock());
         }
     }

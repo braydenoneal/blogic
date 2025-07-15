@@ -1,20 +1,18 @@
 package com.braydenoneal.block;
 
-import com.braydenoneal.block.entity.ModBlockEntities;
 import com.braydenoneal.block.entity.RedstoneReaderBlockEntity;
 import com.mojang.serialization.MapCodec;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.BlockWithEntity;
 import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.block.entity.BlockEntityTicker;
-import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.item.ItemPlacementContext;
 import net.minecraft.state.StateManager;
 import net.minecraft.state.property.Properties;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.world.World;
+import net.minecraft.world.block.WireOrientation;
 import org.jetbrains.annotations.Nullable;
 
 public class RedstoneReader extends BlockWithEntity {
@@ -45,7 +43,11 @@ public class RedstoneReader extends BlockWithEntity {
     }
 
     @Override
-    public @Nullable <T extends BlockEntity> BlockEntityTicker<T> getTicker(World world, BlockState state, BlockEntityType<T> type) {
-        return validateTicker(type, ModBlockEntities.REDSTONE_READER_BLOCK_ENTITY, RedstoneReaderBlockEntity::tick);
+    protected void neighborUpdate(BlockState state, World world, BlockPos pos, Block sourceBlock, @Nullable WireOrientation wireOrientation, boolean notify) {
+        if (world.getBlockEntity(pos) instanceof RedstoneReaderBlockEntity redstoneReaderBlockEntity) {
+            redstoneReaderBlockEntity.update(world, pos, state);
+        }
+
+        super.neighborUpdate(state, world, pos, sourceBlock, wireOrientation, notify);
     }
 }

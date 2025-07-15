@@ -22,13 +22,13 @@ public class RedstoneReaderBlockEntity extends BlockEntity {
         return redstoneValue;
     }
 
-    public static void tick(World world, BlockPos pos, BlockState state, RedstoneReaderBlockEntity blockEntity) {
-        int previousRedstoneValue = blockEntity.redstoneValue;
+    public void update(World world, BlockPos pos, BlockState state) {
+        int previousRedstoneValue = redstoneValue;
         int nextRedstoneValue = world.getReceivedRedstonePower(pos.offset(state.get(Properties.FACING)));
 
         if (previousRedstoneValue != nextRedstoneValue) {
-            blockEntity.redstoneValue = nextRedstoneValue;
-            blockEntity.markDirty();
+            redstoneValue = nextRedstoneValue;
+            markDirty();
         }
     }
 
