@@ -5,6 +5,7 @@ import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.registry.RegistryWrapper;
+import net.minecraft.state.property.Properties;
 import net.minecraft.storage.ReadView;
 import net.minecraft.storage.WriteView;
 import net.minecraft.util.math.BlockPos;
@@ -18,12 +19,17 @@ public class RedstoneReaderBlockEntity extends BlockEntity {
 
     private int redstoneValue = 0;
 
+    public int getRedstoneValue() {
+        return redstoneValue;
+    }
+
     public static void tick(World world, BlockPos pos, BlockState state, RedstoneReaderBlockEntity blockEntity) {
         int previousRedstoneValue = blockEntity.redstoneValue;
-        blockEntity.redstoneValue = world.getReceivedRedstonePower(pos.east());
-        blockEntity.markDirty();
+        int nextRedstoneValue = world.getReceivedRedstonePower(pos.offset(state.get(Properties.FACING)));
 
-        if (previousRedstoneValue != blockEntity.redstoneValue) {
+        if (previousRedstoneValue != nextRedstoneValue) {
+            blockEntity.redstoneValue = nextRedstoneValue;
+            blockEntity.markDirty();
             Blogic.LOGGER.info("New Power Value {}", blockEntity.redstoneValue);
         }
     }

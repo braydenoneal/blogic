@@ -14,7 +14,7 @@ public class ModBlockEntities {
     public static final BlockEntityType<RedstoneReaderBlockEntity> REDSTONE_READER_BLOCK_ENTITY =
             register("redstone_reader", RedstoneReaderBlockEntity::new, ModBlocks.REDSTONE_READER);
     public static final BlockEntityType<RedstoneWriterBlockEntity> REDSTONE_WRITER_BLOCK_ENTITY =
-            register("redstone_reader", RedstoneWriterBlockEntity::new, ModBlocks.REDSTONE_WRITER);
+            register("redstone_writer", RedstoneWriterBlockEntity::new, ModBlocks.REDSTONE_WRITER);
 
     private static <T extends BlockEntity> BlockEntityType<T> register(
             String name,
