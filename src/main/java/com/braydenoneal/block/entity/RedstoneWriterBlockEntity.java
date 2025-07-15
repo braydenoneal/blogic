@@ -1,6 +1,5 @@
 package com.braydenoneal.block.entity;
 
-import com.braydenoneal.Blogic;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.nbt.NbtCompound;
@@ -19,6 +18,10 @@ public class RedstoneWriterBlockEntity extends BlockEntity {
 
     private int redstoneValue = 0;
 
+    public int getRedstoneValue() {
+        return redstoneValue;
+    }
+
     public static void tick(World world, BlockPos pos, BlockState state, RedstoneWriterBlockEntity blockEntity) {
         int previousRedstoneValue = blockEntity.redstoneValue;
 
@@ -33,8 +36,7 @@ public class RedstoneWriterBlockEntity extends BlockEntity {
         if (previousRedstoneValue != nextRedstoneValue) {
             blockEntity.redstoneValue = nextRedstoneValue;
             blockEntity.markDirty();
-            world.setBlockState(pos, state.with(Properties.POWERED, blockEntity.redstoneValue > 0));
-            Blogic.LOGGER.info("New Power Value {}", blockEntity.redstoneValue);
+            world.updateNeighbors(pos, state.getBlock());
         }
     }
 

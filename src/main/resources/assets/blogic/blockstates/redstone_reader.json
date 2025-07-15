@@ -1,0 +1,10 @@
+{
+  "variants": {
+    "facing=down": {"model": "blogic:block/redstone_reader", "x": 90},
+    "facing=up": {"model": "blogic:block/redstone_reader", "x": 270},
+    "facing=north": {"model": "blogic:block/redstone_reader"},
+    "facing=south": {"model": "blogic:block/redstone_reader", "y": 180},
+    "facing=west": {"model": "blogic:block/redstone_reader", "y": 270},
+    "facing=east": {"model": "blogic:block/redstone_reader", "y": 90}
+  }
+}

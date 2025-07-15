@@ -1,6 +1,5 @@
 package com.braydenoneal.block.entity;
 
-import com.braydenoneal.Blogic;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.nbt.NbtCompound;
@@ -30,7 +29,6 @@ public class RedstoneReaderBlockEntity extends BlockEntity {
         if (previousRedstoneValue != nextRedstoneValue) {
             blockEntity.redstoneValue = nextRedstoneValue;
             blockEntity.markDirty();
-            Blogic.LOGGER.info("New Power Value {}", blockEntity.redstoneValue);
         }
     }
 

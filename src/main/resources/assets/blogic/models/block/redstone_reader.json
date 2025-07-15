@@ -1,0 +1,8 @@
+{
+  "parent": "blogic:block/template_rotatable",
+  "textures": {
+    "top": "blogic:block/redstone_face",
+    "side": "blogic:block/redstone_arrow",
+    "bottom": "minecraft:block/smooth_stone"
+  }
+}

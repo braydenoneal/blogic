@@ -21,15 +21,12 @@ import org.jetbrains.annotations.Nullable;
 public class RedstoneWriter extends BlockWithEntity {
     public RedstoneWriter(Settings settings) {
         super(settings);
-        setDefaultState(getStateManager().getDefaultState()
-                .with(Properties.POWERED, false)
-                .with(Properties.FACING, Direction.UP)
-        );
+        setDefaultState(getStateManager().getDefaultState().with(Properties.FACING, Direction.UP));
     }
 
     @Override
     protected void appendProperties(StateManager.Builder<Block, BlockState> builder) {
-        builder.add(Properties.POWERED, Properties.FACING);
+        builder.add(Properties.FACING);
     }
 
     @Override
@@ -60,11 +57,17 @@ public class RedstoneWriter extends BlockWithEntity {
 
     @Override
     protected int getStrongRedstonePower(BlockState state, BlockView world, BlockPos pos, Direction direction) {
-        return (direction.getOpposite() == state.get(Properties.FACING) && state.get(Properties.POWERED)) ? 15 : 0;
+        int redstoneValue = 0;
+
+        if (world.getBlockEntity(pos) instanceof RedstoneWriterBlockEntity redstoneWriterBlockEntity) {
+            redstoneValue = redstoneWriterBlockEntity.getRedstoneValue();
+        }
+
+        return direction.getOpposite() == state.get(Properties.FACING) ? redstoneValue : 0;
     }
 
     @Override
     protected int getWeakRedstonePower(BlockState state, BlockView world, BlockPos pos, Direction direction) {
-        return (direction.getOpposite() == state.get(Properties.FACING) && state.get(Properties.POWERED)) ? 15 : 0;
+        return getStrongRedstonePower(state, world, pos, direction);
     }
 }
