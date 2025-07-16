@@ -12,14 +12,20 @@ import net.minecraft.world.World;
 
 
 public class RedstoneReaderBlockEntity extends BlockEntity {
+    private int redstoneValue = 0;
+    private String name;
+
     public RedstoneReaderBlockEntity(BlockPos pos, BlockState state) {
         super(ModBlockEntities.REDSTONE_READER_BLOCK_ENTITY, pos, state);
+        name = pos.toShortString();
     }
-
-    private int redstoneValue = 0;
 
     public int getRedstoneValue() {
         return redstoneValue;
+    }
+
+    public String getName() {
+        return name;
     }
 
     public void update(World world, BlockPos pos, BlockState state) {
@@ -35,12 +41,14 @@ public class RedstoneReaderBlockEntity extends BlockEntity {
     @Override
     protected void writeData(WriteView view) {
         super.writeData(view);
+        view.putString("name", name);
         view.putInt("redstoneValue", redstoneValue);
     }
 
     @Override
     protected void readData(ReadView view) {
         super.readData(view);
+        name = view.getString("name", "");
         redstoneValue = view.getInt("redstoneValue", 0);
     }
 

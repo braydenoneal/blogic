@@ -1,5 +1,8 @@
 {
   "block.blogic.cable": "Cable",
   "block.blogic.redstone_reader": "Redstone Reader",
-  "block.blogic.redstone_writer": "Redstone Writer"
+  "block.blogic.redstone_writer": "Redstone Writer",
+  "item.blogic.cable": "Cable",
+  "item.blogic.redstone_reader": "Redstone Reader",
+  "item.blogic.redstone_writer": "Redstone Writer"
 }
