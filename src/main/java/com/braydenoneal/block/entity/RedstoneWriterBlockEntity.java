@@ -12,8 +12,7 @@ import net.minecraft.world.World;
 
 import java.util.ArrayList;
 
-
-public class RedstoneWriterBlockEntity extends BlockEntity {
+public class RedstoneWriterBlockEntity extends AbstractNetworkBlockEntity {
     private int redstoneValue = 0;
     private String readName = "";
 
@@ -25,6 +24,7 @@ public class RedstoneWriterBlockEntity extends BlockEntity {
         return redstoneValue;
     }
 
+    @Override
     public void update(World world, BlockPos pos, BlockState state) {
         int previousRedstoneValue = redstoneValue;
         int nextRedstoneValue = 0;

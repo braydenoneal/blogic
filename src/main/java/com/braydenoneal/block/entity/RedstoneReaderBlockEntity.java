@@ -1,7 +1,6 @@
 package com.braydenoneal.block.entity;
 
 import net.minecraft.block.BlockState;
-import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.registry.RegistryWrapper;
 import net.minecraft.state.property.Properties;
@@ -10,8 +9,7 @@ import net.minecraft.storage.WriteView;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
-
-public class RedstoneReaderBlockEntity extends BlockEntity {
+public class RedstoneReaderBlockEntity extends AbstractNetworkBlockEntity {
     private int redstoneValue = 0;
     private String name;
 
@@ -28,6 +26,7 @@ public class RedstoneReaderBlockEntity extends BlockEntity {
         return name;
     }
 
+    @Override
     public void update(World world, BlockPos pos, BlockState state) {
         int previousRedstoneValue = redstoneValue;
         int nextRedstoneValue = world.getReceivedRedstonePower(pos.offset(state.get(Properties.FACING)));
