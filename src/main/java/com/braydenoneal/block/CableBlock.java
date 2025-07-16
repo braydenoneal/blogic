@@ -1,11 +1,15 @@
 package com.braydenoneal.block;
 
+import com.braydenoneal.block.entity.AbstractNetworkBlockEntity;
 import com.braydenoneal.block.entity.RedstoneReaderBlockEntity;
 import net.minecraft.block.Block;
+import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.world.World;
+import net.minecraft.world.block.WireOrientation;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -17,42 +21,9 @@ public class CableBlock extends Block {
         super(settings);
     }
 
-    public static ArrayList<BlockPos> getConnectedSensors(World world, BlockPos pos) {
-        Set<BlockPos> cables = new HashSet<>();
-        ArrayList<BlockPos> sensors = new ArrayList<>();
-
-        Stack<BlockPos> stack = new Stack<>();
-        stack.push(pos);
-
-        while (!stack.isEmpty()) {
-            BlockPos currentPos = stack.pop();
-
-            for (Direction direction : DIRECTIONS) {
-                BlockPos adjacentPos = currentPos.offset(direction);
-
-                if (cables.contains(adjacentPos)) {
-                    continue;
-                }
-
-                Block adjacentBlock = world.getBlockState(adjacentPos).getBlock();
-
-                if (adjacentBlock instanceof CableBlock) {
-                    stack.push(adjacentPos);
-                    cables.add(adjacentPos);
-                }
-
-                if (sensors.contains(adjacentPos)) {
-                    continue;
-                }
-
-                BlockEntity adjacentBlockEntity = world.getBlockEntity(adjacentPos);
-
-                if (adjacentBlockEntity instanceof RedstoneReaderBlockEntity) {
-                    sensors.add(adjacentPos);
-                }
-            }
-        }
-
-        return sensors;
+    @Override
+    protected void neighborUpdate(BlockState state, World world, BlockPos pos, Block sourceBlock, @Nullable WireOrientation wireOrientation, boolean notify) {
+        AbstractNetworkBlockEntity.updateNetwork(world, pos);
+        super.neighborUpdate(state, world, pos, sourceBlock, wireOrientation, notify);
     }
 }

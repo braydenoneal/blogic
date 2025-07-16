@@ -1,6 +1,5 @@
 package com.braydenoneal.block.entity;
 
-import com.braydenoneal.block.CableBlock;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.nbt.NbtCompound;
@@ -29,13 +28,12 @@ public class RedstoneWriterBlockEntity extends AbstractNetworkBlockEntity {
         int previousRedstoneValue = redstoneValue;
         int nextRedstoneValue = 0;
 
-        ArrayList<BlockPos> connectedSensors = CableBlock.getConnectedSensors(world, pos);
+        ArrayList<BlockPos> networkBlocks = AbstractNetworkBlockEntity.getConnectedNetworkBlocks(world, pos);
 
-        for (BlockPos sensorPos : connectedSensors) {
-            BlockEntity sensorBlock = world.getBlockEntity(sensorPos);
+        for (BlockPos networkBlockPos : networkBlocks) {
+            BlockEntity networkBlock = world.getBlockEntity(networkBlockPos);
 
-            if (sensorBlock instanceof RedstoneReaderBlockEntity readerBlockEntity
-                    && readerBlockEntity.getName().equals(readName)) {
+            if (networkBlock instanceof RedstoneReaderBlockEntity readerBlockEntity && readerBlockEntity.getName().equals(readName)) {
                 nextRedstoneValue = readerBlockEntity.getRedstoneValue();
             }
         }

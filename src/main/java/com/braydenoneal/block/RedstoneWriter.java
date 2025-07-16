@@ -1,5 +1,6 @@
 package com.braydenoneal.block;
 
+import com.braydenoneal.block.entity.AbstractNetworkBlockEntity;
 import com.braydenoneal.block.entity.RedstoneWriterBlockEntity;
 import com.mojang.serialization.MapCodec;
 import net.minecraft.block.Block;
@@ -45,10 +46,7 @@ public class RedstoneWriter extends BlockWithEntity {
 
     @Override
     protected void neighborUpdate(BlockState state, World world, BlockPos pos, Block sourceBlock, @Nullable WireOrientation wireOrientation, boolean notify) {
-        if (world.getBlockEntity(pos) instanceof RedstoneWriterBlockEntity redstoneWriterBlockEntity) {
-            redstoneWriterBlockEntity.update(world, pos, state);
-        }
-
+        AbstractNetworkBlockEntity.updateNetwork(world, pos);
         super.neighborUpdate(state, world, pos, sourceBlock, wireOrientation, notify);
     }
 
