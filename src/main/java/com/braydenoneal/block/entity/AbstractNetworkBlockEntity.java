@@ -1,5 +1,6 @@
 package com.braydenoneal.block.entity;
 
+import com.braydenoneal.Blogic;
 import com.braydenoneal.block.CableBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -61,6 +62,7 @@ public abstract class AbstractNetworkBlockEntity extends BlockEntity {
     }
 
     public static void updateNetwork(World world, BlockPos fromPos) {
+        Blogic.LOGGER.info("Updated network from {}", fromPos);
         ArrayList<BlockPos> networkBlocks = getConnectedNetworkBlocks(world, fromPos);
 
         for (BlockPos pos : networkBlocks) {

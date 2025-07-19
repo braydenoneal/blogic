@@ -1,6 +1,6 @@
 {
   "model": {
     "type": "minecraft:model",
-    "model": "blogic:block/cable"
+    "model": "blogic:block/cable_inventory"
   }
 }

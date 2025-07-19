@@ -1,7 +1,31 @@
 {
-  "variants": {
-    "": {
-      "model": "blogic:block/cable"
+  "multipart": [
+    {
+      "apply": {"model": "blogic:block/cable_base"}
+    },
+    {
+      "when": {"up": "true"},
+      "apply": {"model": "blogic:block/cable_up"}
+    },
+    {
+      "when": {"down": "true"},
+      "apply": {"model": "blogic:block/cable_down"}
+    },
+    {
+      "when": {"north": "true"},
+      "apply": {"model": "blogic:block/cable_north"}
+    },
+    {
+      "when": {"east": "true"},
+      "apply": {"model": "blogic:block/cable_east"}
+    },
+    {
+      "when": {"south": "true"},
+      "apply": {"model": "blogic:block/cable_south"}
+    },
+    {
+      "when": {"west": "true"},
+      "apply": {"model": "blogic:block/cable_west"}
     }
-  }
+  ]
 }
