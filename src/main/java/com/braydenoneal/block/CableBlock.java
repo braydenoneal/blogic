@@ -6,6 +6,8 @@ import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.ShapeContext;
 import net.minecraft.block.entity.BlockEntity;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.item.ItemStack;
 import net.minecraft.state.StateManager;
 import net.minecraft.state.property.BooleanProperty;
 import net.minecraft.state.property.Properties;
@@ -94,6 +96,10 @@ public class CableBlock extends Block {
 
     @Override
     protected BlockState getStateForNeighborUpdate(BlockState state, WorldView world, ScheduledTickView tickView, BlockPos pos, Direction fromDirection, BlockPos neighborPos, BlockState neighborState, Random random) {
+        return getUpdatedState(state, world, pos);
+    }
+
+    private BlockState getUpdatedState(BlockState state, WorldView world, BlockPos pos) {
         BlockState newState = state;
 
         for (Direction direction : DIRECTIONS) {
@@ -111,8 +117,14 @@ public class CableBlock extends Block {
     }
 
     @Override
+    public void onPlaced(World world, BlockPos pos, BlockState state, @Nullable LivingEntity placer, ItemStack itemStack) {
+        super.onPlaced(world, pos, state, placer, itemStack);
+        world.setBlockState(pos, getUpdatedState(state, world, pos));
+    }
+
+    @Override
     protected void neighborUpdate(BlockState state, World world, BlockPos pos, Block sourceBlock, @Nullable WireOrientation wireOrientation, boolean notify) {
-        AbstractNetworkBlockEntity.updateNetwork(world, pos);
         super.neighborUpdate(state, world, pos, sourceBlock, wireOrientation, notify);
+        AbstractNetworkBlockEntity.updateNetwork(world, pos);
     }
 }
