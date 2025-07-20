@@ -1,6 +1,6 @@
 {
   "model": {
     "type": "minecraft:model",
-    "model": "blogic:block/redstone_reader"
+    "model": "blogic:block/controller"
   }
 }

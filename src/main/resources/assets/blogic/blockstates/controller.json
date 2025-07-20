@@ -1,0 +1,10 @@
+{
+  "variants": {
+    "facing=down": {"model": "blogic:block/controller", "x": 90},
+    "facing=up": {"model": "blogic:block/controller", "x": 270},
+    "facing=north": {"model": "blogic:block/controller"},
+    "facing=south": {"model": "blogic:block/controller", "y": 180},
+    "facing=west": {"model": "blogic:block/controller", "y": 270},
+    "facing=east": {"model": "blogic:block/controller", "y": 90}
+  }
+}
