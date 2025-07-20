@@ -26,6 +26,54 @@
     {
       "when": {"west": "true"},
       "apply": {"model": "blogic:block/cable_west"}
+    },
+    {
+      "when": {"up": "true"},
+      "apply": {"model": "blogic:block/cable_base_up_connected"}
+    },
+    {
+      "when": {"down": "true"},
+      "apply": {"model": "blogic:block/cable_base_down_connected"}
+    },
+    {
+      "when": {"north": "true"},
+      "apply": {"model": "blogic:block/cable_base_north_connected"}
+    },
+    {
+      "when": {"east": "true"},
+      "apply": {"model": "blogic:block/cable_base_east_connected"}
+    },
+    {
+      "when": {"south": "true"},
+      "apply": {"model": "blogic:block/cable_base_south_connected"}
+    },
+    {
+      "when": {"west": "true"},
+      "apply": {"model": "blogic:block/cable_base_west_connected"}
+    },
+    {
+      "when": {"up": "false"},
+      "apply": {"model": "blogic:block/cable_base_up_not_connected"}
+    },
+    {
+      "when": {"down": "false"},
+      "apply": {"model": "blogic:block/cable_base_down_not_connected"}
+    },
+    {
+      "when": {"north": "false"},
+      "apply": {"model": "blogic:block/cable_base_north_not_connected"}
+    },
+    {
+      "when": {"east": "false"},
+      "apply": {"model": "blogic:block/cable_base_east_not_connected"}
+    },
+    {
+      "when": {"south": "false"},
+      "apply": {"model": "blogic:block/cable_base_south_not_connected"}
+    },
+    {
+      "when": {"west": "false"},
+      "apply": {"model": "blogic:block/cable_base_west_not_connected"}
     }
   ]
 }

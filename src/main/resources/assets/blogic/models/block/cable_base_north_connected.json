@@ -1,0 +1,6 @@
+{
+  "parent": "blogic:block/template_cable_base_north",
+  "textures": {
+    "texture": "blogic:block/cable_connected"
+  }
+}
