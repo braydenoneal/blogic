@@ -18,7 +18,7 @@ import java.util.function.Function;
 
 public class ModBlocks {
     public static final Block CABLE = register("cable", CableBlock::new, CableBlock.settings());
-    public static final Block CONTROLLER = register("controller", Controller::new, AbstractBlock.Settings.create());
+    public static final Block CONTROLLER = register("controller", ControllerBlock::new, AbstractBlock.Settings.create());
     public static final Block REDSTONE_READER = register("redstone_reader", RedstoneReader::new, AbstractBlock.Settings.create());
     public static final Block REDSTONE_WRITER = register("redstone_writer", RedstoneWriter::new, AbstractBlock.Settings.create());
 

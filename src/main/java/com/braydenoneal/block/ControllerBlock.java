@@ -16,8 +16,8 @@ import net.minecraft.world.World;
 import net.minecraft.world.block.WireOrientation;
 import org.jetbrains.annotations.Nullable;
 
-public class Controller extends BlockWithEntity {
-    public Controller(Settings settings) {
+public class ControllerBlock extends BlockWithEntity {
+    public ControllerBlock(Settings settings) {
         super(settings);
         setDefaultState(getStateManager().getDefaultState().with(Properties.FACING, Direction.UP));
     }
@@ -34,7 +34,7 @@ public class Controller extends BlockWithEntity {
 
     @Override
     protected MapCodec<? extends BlockWithEntity> getCodec() {
-        return createCodec(Controller::new);
+        return createCodec(ControllerBlock::new);
     }
 
     @Nullable
