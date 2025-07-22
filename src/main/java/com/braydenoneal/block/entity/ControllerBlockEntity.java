@@ -13,6 +13,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
 public class ControllerBlockEntity extends AbstractNetworkBlockEntity implements SingleStackInventory.SingleStackBlockEntityInventory {
+    // TODO: Replace this name with the anvil name
     private String name;
     private ItemStack fileStack;
 

@@ -3,6 +3,7 @@ package com.braydenoneal;
 import com.braydenoneal.block.ModBlocks;
 import com.braydenoneal.block.entity.ModBlockEntities;
 import com.braydenoneal.component.ModComponents;
+import com.braydenoneal.data.controller.function2.TEST;
 import com.braydenoneal.item.ModItems;
 import net.fabricmc.api.ModInitializer;
 import org.slf4j.Logger;
@@ -18,5 +19,6 @@ public class Blogic implements ModInitializer {
         ModBlockEntities.initialize();
         ModItems.initialize();
         ModComponents.initialize();
+        TEST.test();
     }
 }
