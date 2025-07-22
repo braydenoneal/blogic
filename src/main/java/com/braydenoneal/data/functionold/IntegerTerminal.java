@@ -1,4 +1,4 @@
-package com.braydenoneal.data.controller.function;
+package com.braydenoneal.data.functionold;
 
 public class IntegerTerminal extends AbstractTerminal {
     private final int value;
