@@ -1,4 +1,4 @@
-package com.braydenoneal.data.controller.function2;
+package com.braydenoneal.data.controller.function;
 
 public class BooleanTerminal extends AbstractTerminal {
     private final boolean value;
