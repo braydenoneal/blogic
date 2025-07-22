@@ -5,6 +5,8 @@ import com.braydenoneal.Blogic;
 import java.util.Map;
 
 public class ReadRedstoneIsHighFunction extends AbstractFunction {
+    protected final String name = "readRedstoneIsHighFunction";
+
     public ReadRedstoneIsHighFunction(Map<String, AbstractParameter> parameters) {
         super(parameters);
     }

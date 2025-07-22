@@ -1,0 +1,23 @@
+{
+  "function": "writeRedstoneIsHigh",
+  "parameters": [
+    {"x": {"type": "integer", "value": -2}},
+    {"y": {"type": "integer", "value": 0}},
+    {"z": {"type": "integer", "value": 0}},
+    {
+      "high": {
+        "function": "not",
+        "parameters": [
+          {
+            "function": "readRedstoneIsHigh",
+            "parameters": [
+              {"x": {"type": "integer", "value": 0}},
+              {"y": {"type": "integer", "value": 0}},
+              {"z": {"type": "integer", "value": 0}}
+            ]
+          }
+        ]
+      }
+    }
+  ]
+}
