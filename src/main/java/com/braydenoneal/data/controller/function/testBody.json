@@ -1,9 +1,9 @@
 {
   "function": "writeRedstoneIsHigh",
   "parameters": [
-    {"x": {"type": "integer", "value": -2}},
-    {"y": {"type": "integer", "value": 0}},
-    {"z": {"type": "integer", "value": 0}},
+    {"x": {"type": "blogic:integer", "value": -2}},
+    {"y": {"type": "blogic:integer", "value": 0}},
+    {"z": {"type": "blogic:integer", "value": 0}},
     {
       "high": {
         "function": "not",
@@ -11,9 +11,9 @@
           {
             "function": "readRedstoneIsHigh",
             "parameters": [
-              {"x": {"type": "integer", "value": 0}},
-              {"y": {"type": "integer", "value": 0}},
-              {"z": {"type": "integer", "value": 0}}
+              {"x": {"type": "blogic:integer", "value": 0}},
+              {"y": {"type": "blogic:integer", "value": 0}},
+              {"z": {"type": "blogic:integer", "value": 0}}
             ]
           }
         ]
