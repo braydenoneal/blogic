@@ -5,16 +5,16 @@ import com.braydenoneal.Blogic;
 import java.util.Map;
 
 public class WriteRedstoneIsHighFunction extends AbstractFunction {
-    public WriteRedstoneIsHighFunction(Map<String, AbstractTerminal> parameters) {
+    public WriteRedstoneIsHighFunction(Map<String, AbstractParameter> parameters) {
         super(parameters);
     }
 
     @Override
     public AbstractTerminal call() {
-        AbstractTerminal xTerminal = parameters.get("x");
-        AbstractTerminal yTerminal = parameters.get("y");
-        AbstractTerminal zTerminal = parameters.get("z");
-        AbstractTerminal highTerminal = parameters.get("high");
+        AbstractParameter xTerminal = parameters.get("x");
+        AbstractParameter yTerminal = parameters.get("y");
+        AbstractParameter zTerminal = parameters.get("z");
+        AbstractParameter highTerminal = parameters.get("high");
 
         if (xTerminal instanceof IntegerTerminal x &&
                 yTerminal instanceof IntegerTerminal y &&
