@@ -8,14 +8,18 @@ import com.mojang.datafixers.util.Either;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.World;
+
+import java.util.Map;
 
 public record BooleanTerminal(boolean value) implements Terminal {
     public static final MapCodec<BooleanTerminal> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
-            Codec.BOOL.fieldOf("value").forGetter(BooleanTerminal::value)
+            Codec.BOOL.fieldOf("name").forGetter(BooleanTerminal::value)
     ).apply(instance, BooleanTerminal::new));
 
-    public static boolean getValue(Either<Terminal, Function> input) throws Exception {
-        if (Terminal.getTerminal(input) instanceof BooleanTerminal(boolean value1)) {
+    public static boolean getValue(World world, BlockPos pos, Map<String, Terminal> variables, Either<Terminal, Function> input) throws Exception {
+        if (Terminal.getTerminal(world, pos, variables, input) instanceof BooleanTerminal(boolean value1)) {
             return value1;
         }
 

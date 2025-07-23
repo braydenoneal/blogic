@@ -7,6 +7,7 @@ import com.braydenoneal.data.controller.function.Parameter;
 import com.braydenoneal.data.controller.terminal.Terminal;
 import com.braydenoneal.data.controller.terminal.types.BooleanTerminal;
 import com.mojang.datafixers.util.Either;
+import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.util.math.BlockPos;
@@ -14,14 +15,17 @@ import net.minecraft.world.World;
 
 import java.util.Map;
 
-public record NotFunction(Either<Terminal, Function> input) implements Function {
-    public static final MapCodec<NotFunction> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
-            Parameter.CODEC.fieldOf("input").forGetter(NotFunction::input)
-    ).apply(instance, NotFunction::new));
+// TODO: Implement
+public record CallFunction(String name, String returnType, Either<Terminal, Function> body) implements Function {
+    public static final MapCodec<CallFunction> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
+            Codec.STRING.fieldOf("name").forGetter(CallFunction::name),
+            Codec.STRING.fieldOf("returnType").forGetter(CallFunction::returnType),
+            Parameter.CODEC.fieldOf("body").forGetter(CallFunction::body)
+    ).apply(instance, CallFunction::new));
 
     @Override
     public Terminal method(World world, BlockPos pos, Map<String, Terminal> variables) throws Exception {
-        return new BooleanTerminal(!BooleanTerminal.getValue(world, pos, variables, input));
+        return new BooleanTerminal(false);
     }
 
     @Override
