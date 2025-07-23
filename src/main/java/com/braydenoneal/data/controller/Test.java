@@ -4,8 +4,11 @@ import com.braydenoneal.data.controller.function.CustomFunction;
 import com.braydenoneal.data.controller.function.Function;
 import com.braydenoneal.data.controller.function.types.GetVariableFunction;
 import com.braydenoneal.data.controller.function.types.NotFunction;
+import com.braydenoneal.data.controller.function.types.ReadRedstoneFunction;
+import com.braydenoneal.data.controller.function.types.WriteRedstoneFunction;
 import com.braydenoneal.data.controller.terminal.Terminal;
 import com.braydenoneal.data.controller.terminal.types.BooleanTerminal;
+import com.braydenoneal.data.controller.terminal.types.IntegerTerminal;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
 import com.mojang.datafixers.util.Either;
@@ -16,11 +19,7 @@ import java.util.Map;
 
 public class Test {
     public static void test() {
-        NotFunction test = new NotFunction(
-                Either.right(new NotFunction(
-                        Either.left(new BooleanTerminal(false)))
-                )
-        );
+        Function test = new WriteRedstoneFunction(Either.right(new ReadRedstoneFunction(Either.left(new IntegerTerminal(1)), Either.left(new IntegerTerminal(0)), Either.left(new IntegerTerminal(0)))));
         JsonElement result = Function.CODEC.encodeStart(JsonOps.INSTANCE, test).resultOrPartial().orElseThrow();
         System.out.println(result);
         Function result2 = Function.CODEC.parse(JsonOps.INSTANCE, result).resultOrPartial().orElseThrow();

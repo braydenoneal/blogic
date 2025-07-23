@@ -13,10 +13,6 @@ import net.minecraft.util.Identifier;
 public class ModBlockEntities {
     public static final BlockEntityType<ControllerBlockEntity> CONTROLLER_BLOCK_ENTITY =
             register("controller", ControllerBlockEntity::new, ModBlocks.CONTROLLER);
-    public static final BlockEntityType<RedstoneReaderBlockEntity> REDSTONE_READER_BLOCK_ENTITY =
-            register("redstone_reader", RedstoneReaderBlockEntity::new, ModBlocks.REDSTONE_READER);
-    public static final BlockEntityType<RedstoneWriterBlockEntity> REDSTONE_WRITER_BLOCK_ENTITY =
-            register("redstone_writer", RedstoneWriterBlockEntity::new, ModBlocks.REDSTONE_WRITER);
 
     private static <T extends BlockEntity> BlockEntityType<T> register(
             String name,

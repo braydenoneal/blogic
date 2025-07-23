@@ -1,9 +1,7 @@
 {
   "block.blogic.cable": "Cable",
   "block.blogic.controller": "Controller",
-  "block.blogic.redstone_writer": "Redstone Writer",
   "item.blogic.cable": "Cable",
   "item.blogic.controller": "Controller",
-  "item.blogic.redstone_writer": "Redstone Writer",
   "item.blogic.file": "File"
 }

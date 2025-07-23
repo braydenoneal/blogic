@@ -14,6 +14,7 @@ import net.minecraft.state.StateManager;
 import net.minecraft.state.property.Properties;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
+import net.minecraft.world.BlockView;
 import net.minecraft.world.World;
 import net.minecraft.world.block.WireOrientation;
 import org.jetbrains.annotations.Nullable;
@@ -54,6 +55,17 @@ public class ControllerBlock extends BlockWithEntity {
     @Override
     protected boolean emitsRedstonePower(BlockState state) {
         return true;
+    }
+
+    @Override
+    protected int getWeakRedstonePower(BlockState state, BlockView world, BlockPos pos, Direction direction) {
+        BlockEntity blockEntity = world.getBlockEntity(pos);
+
+        if (blockEntity instanceof ControllerBlockEntity controllerBlockEntity) {
+            return controllerBlockEntity.getEmitRedstoneValue();
+        }
+
+        return 0;
     }
 
     @Override
