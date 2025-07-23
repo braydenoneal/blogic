@@ -8,6 +8,8 @@ import net.fabricmc.api.ModInitializer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import static com.braydenoneal.data.controller.Test.test;
+
 public class Blogic implements ModInitializer {
     public static final String MOD_ID = "blogic";
     public static final Logger LOGGER = LoggerFactory.getLogger(MOD_ID);
@@ -18,5 +20,6 @@ public class Blogic implements ModInitializer {
         ModBlockEntities.initialize();
         ModItems.initialize();
         ModComponents.initialize();
+        test();
     }
 }

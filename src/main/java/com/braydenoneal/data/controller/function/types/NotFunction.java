@@ -16,14 +16,8 @@ public record NotFunction(Either<Terminal, Function> input) implements Function 
     ).apply(instance, NotFunction::new));
 
     @Override
-    public Terminal call() {
-        if (input.left().isPresent() && input.left().get() instanceof BooleanTerminal(boolean value)) {
-            return new BooleanTerminal(!value);
-        } else if (input.right().isPresent()) {
-            return input.right().get().call();
-        }
-
-        return null;
+    public Terminal method() throws Exception {
+        return new BooleanTerminal(!BooleanTerminal.getValue(input));
     }
 
     @Override
