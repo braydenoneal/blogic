@@ -9,7 +9,7 @@ import net.minecraft.world.World;
 import java.util.Map;
 
 public interface Terminal {
-    Codec<Terminal> CODEC = TerminalType.REGISTRY.getCodec().dispatch("terminalType", Terminal::getType, TerminalType::codec);
+    Codec<Terminal> CODEC = TerminalType.REGISTRY.getCodec().dispatch("terminal_type", Terminal::getType, TerminalType::codec);
 
     static Terminal getTerminal(World world, BlockPos pos, Map<String, Terminal> variables, Either<Terminal, Function> input) throws Exception {
         if (input.left().isPresent()) {

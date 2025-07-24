@@ -9,7 +9,7 @@ import net.minecraft.world.World;
 import java.util.Map;
 
 public interface Function {
-    Codec<Function> CODEC = FunctionType.REGISTRY.getCodec().dispatch("functionType", Function::getType, FunctionType::codec);
+    Codec<Function> CODEC = FunctionType.REGISTRY.getCodec().dispatch("function_type", Function::getType, FunctionType::codec);
 
     default Terminal call(World world, BlockPos pos, Map<String, Terminal> variables) {
         try {

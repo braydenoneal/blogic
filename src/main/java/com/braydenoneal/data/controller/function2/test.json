@@ -1,0 +1,24 @@
+[
+  {
+    "function_type": "blogic:boolean",
+    "function": {
+      "boolean_function_type": "blogic:not",
+      "input": {
+        "value": {
+          "boolean_function_type": "blogic:not",
+          "input": false
+        }
+      }
+    }
+  },
+  {
+    "function": {
+      "input": {
+        "input": false,
+        "boolean_function_type": "blogic:not"
+      },
+      "boolean_function_type": "blogic:not"
+    },
+    "function_type": "blogic:boolean"
+  }
+]
