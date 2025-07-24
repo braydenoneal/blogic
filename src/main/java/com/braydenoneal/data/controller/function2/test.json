@@ -1,14 +1,11 @@
 [
   {
-    "function_type": "blogic:boolean",
-    "function": {
-      "boolean_function_type": "blogic:not",
-      "input": {
-        "value": {
-          "boolean_function_type": "blogic:not",
-          "input": false
-        }
-      }
+    "name": "not",
+    "parameters": [],
+    "body": [],
+    "return": {
+      "function": {},
+      "function_type": "blogic:boolean"
     }
   },
   {
