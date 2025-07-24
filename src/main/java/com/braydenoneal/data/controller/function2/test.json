@@ -17,5 +17,13 @@
       "boolean_function_type": "blogic:not"
     },
     "function_type": "blogic:boolean"
+  },
+  {
+    "function": {},
+    "type": {
+      "type": {
+        "type": "blogic:boolean"
+      }
+    }
   }
 ]
