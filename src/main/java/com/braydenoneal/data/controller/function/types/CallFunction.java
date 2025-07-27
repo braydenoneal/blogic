@@ -1,5 +1,6 @@
 package com.braydenoneal.data.controller.function.types;
 
+import com.braydenoneal.data.controller.function.Context;
 import com.braydenoneal.data.controller.function.Function;
 import com.braydenoneal.data.controller.function.FunctionType;
 import com.braydenoneal.data.controller.function.FunctionTypes;
@@ -9,8 +10,6 @@ import com.mojang.datafixers.util.Either;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
 
 import java.util.Map;
 
@@ -26,7 +25,7 @@ public record CallFunction(String name, Map<String, Either<Terminal, Function>> 
     );
 
     @Override
-    public Terminal method(World world, BlockPos pos, Map<String, Terminal> variables) throws Exception {
+    public Terminal method(Context context) throws Exception {
         // TODO: Implement this
         return new BooleanTerminal(false);
     }

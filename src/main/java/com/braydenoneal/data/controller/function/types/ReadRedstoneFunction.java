@@ -1,5 +1,6 @@
 package com.braydenoneal.data.controller.function.types;
 
+import com.braydenoneal.data.controller.function.Context;
 import com.braydenoneal.data.controller.function.Function;
 import com.braydenoneal.data.controller.function.FunctionType;
 import com.braydenoneal.data.controller.function.FunctionTypes;
@@ -10,9 +11,6 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
-
-import java.util.Map;
 
 public record ReadRedstoneFunction(
         Either<Terminal, Function> x,
@@ -26,13 +24,13 @@ public record ReadRedstoneFunction(
     ).apply(instance, ReadRedstoneFunction::new));
 
     @Override
-    public Terminal method(World world, BlockPos pos, Map<String, Terminal> variables) throws Exception {
-        int xValue = IntegerTerminal.getValue(world, pos, variables, x);
-        int yValue = IntegerTerminal.getValue(world, pos, variables, y);
-        int zValue = IntegerTerminal.getValue(world, pos, variables, z);
+    public Terminal method(Context context) throws Exception {
+        int xValue = IntegerTerminal.getValue(context, x);
+        int yValue = IntegerTerminal.getValue(context, y);
+        int zValue = IntegerTerminal.getValue(context, z);
 
-        BlockPos readPos = pos.add(xValue, yValue, zValue);
-        int redstoneValue = world.getReceivedRedstonePower(readPos);
+        BlockPos readPos = context.pos().add(xValue, yValue, zValue);
+        int redstoneValue = context.world().getReceivedRedstonePower(readPos);
 
         return new IntegerTerminal(redstoneValue);
     }

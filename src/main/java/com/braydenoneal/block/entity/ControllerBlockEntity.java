@@ -1,5 +1,6 @@
 package com.braydenoneal.block.entity;
 
+import com.braydenoneal.data.controller.function.Context;
 import com.braydenoneal.data.controller.function.Function;
 import com.braydenoneal.data.controller.function.types.NotFunction;
 import com.braydenoneal.data.controller.terminal.types.BooleanTerminal;
@@ -66,7 +67,7 @@ public class ControllerBlockEntity extends AbstractNetworkBlockEntity {
 
     @Override
     public void update(World world, BlockPos pos, BlockState state) {
-        function.call(world, pos.offset(state.get(Properties.FACING)), Map.of());
+        function.call(new Context(world, pos.offset(state.get(Properties.FACING)), Map.of()));
     }
 
     public int getEmitRedstoneValue() {

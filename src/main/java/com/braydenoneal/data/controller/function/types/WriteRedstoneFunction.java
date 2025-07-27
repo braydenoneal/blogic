@@ -1,6 +1,7 @@
 package com.braydenoneal.data.controller.function.types;
 
 import com.braydenoneal.block.entity.ControllerBlockEntity;
+import com.braydenoneal.data.controller.function.Context;
 import com.braydenoneal.data.controller.function.Function;
 import com.braydenoneal.data.controller.function.FunctionType;
 import com.braydenoneal.data.controller.function.FunctionTypes;
@@ -13,10 +14,6 @@ import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
-
-import java.util.Map;
 
 public record WriteRedstoneFunction(Either<Terminal, Function> value) implements Function {
     public static final MapCodec<WriteRedstoneFunction> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
@@ -24,13 +21,13 @@ public record WriteRedstoneFunction(Either<Terminal, Function> value) implements
     ).apply(instance, WriteRedstoneFunction::new));
 
     @Override
-    public Terminal method(World world, BlockPos pos, Map<String, Terminal> variables) throws Exception {
-        int valueValue = IntegerTerminal.getValue(world, pos, variables, value);
-        BlockEntity blockEntity = world.getBlockEntity(pos);
+    public Terminal method(Context context) throws Exception {
+        int valueValue = IntegerTerminal.getValue(context, value);
+        BlockEntity blockEntity = context.world().getBlockEntity(context.pos());
 
         if (blockEntity instanceof ControllerBlockEntity controllerBlockEntity) {
             controllerBlockEntity.setEmitRedstoneValue(valueValue);
-            world.setBlockState(pos.add(-2, 0, 0), Blocks.STONE.getDefaultState());
+            context.world().setBlockState(context.pos().add(-2, 0, 0), Blocks.STONE.getDefaultState());
         }
 
         return new VoidTerminal();
