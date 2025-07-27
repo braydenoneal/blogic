@@ -15,7 +15,7 @@ import java.util.Map;
 
 public record BooleanTerminal(boolean value) implements Terminal {
     public static final MapCodec<BooleanTerminal> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
-            Codec.BOOL.fieldOf("name").forGetter(BooleanTerminal::value)
+            Codec.BOOL.fieldOf("value").forGetter(BooleanTerminal::value)
     ).apply(instance, BooleanTerminal::new));
 
     public static boolean getValue(World world, BlockPos pos, Map<String, Terminal> variables, Either<Terminal, Function> input) throws Exception {

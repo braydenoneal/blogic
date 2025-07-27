@@ -6,6 +6,7 @@ import com.braydenoneal.data.controller.function.types.GetVariableFunction;
 import com.braydenoneal.data.controller.function.types.NotFunction;
 import com.braydenoneal.data.controller.function.types.ReadRedstoneFunction;
 import com.braydenoneal.data.controller.function.types.WriteRedstoneFunction;
+import com.braydenoneal.data.controller.parameter.types.BooleanParameter;
 import com.braydenoneal.data.controller.terminal.Terminal;
 import com.braydenoneal.data.controller.terminal.types.BooleanTerminal;
 import com.braydenoneal.data.controller.terminal.types.IntegerTerminal;
@@ -34,7 +35,7 @@ public class Test {
                         Either.right(new GetVariableFunction("input")))
                 )
         );
-        CustomFunction c = new CustomFunction("main", BooleanTerminal.class, null, List.of(body));
+        CustomFunction c = new CustomFunction("main", new BooleanParameter(), null, List.of(body));
         try {
             Terminal terminal = c.call(null, null, Map.of("input", Either.left(new BooleanTerminal(false))), Map.of());
             System.out.println(terminal);

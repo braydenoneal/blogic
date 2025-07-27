@@ -3,10 +3,10 @@ package com.braydenoneal.data.controller.function.types;
 import com.braydenoneal.data.controller.function.Function;
 import com.braydenoneal.data.controller.function.FunctionType;
 import com.braydenoneal.data.controller.function.FunctionTypes;
-import com.braydenoneal.data.controller.function.Parameter;
 import com.braydenoneal.data.controller.terminal.Terminal;
 import com.braydenoneal.data.controller.terminal.types.IntegerTerminal;
 import com.mojang.datafixers.util.Either;
+import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.util.math.BlockPos;
@@ -20,9 +20,9 @@ public record ReadRedstoneFunction(
         Either<Terminal, Function> z
 ) implements Function {
     public static final MapCodec<ReadRedstoneFunction> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
-            Parameter.CODEC.fieldOf("x").forGetter(ReadRedstoneFunction::x),
-            Parameter.CODEC.fieldOf("y").forGetter(ReadRedstoneFunction::y),
-            Parameter.CODEC.fieldOf("z").forGetter(ReadRedstoneFunction::z)
+            Codec.either(Terminal.CODEC, Function.CODEC).fieldOf("x").forGetter(ReadRedstoneFunction::x),
+            Codec.either(Terminal.CODEC, Function.CODEC).fieldOf("y").forGetter(ReadRedstoneFunction::y),
+            Codec.either(Terminal.CODEC, Function.CODEC).fieldOf("z").forGetter(ReadRedstoneFunction::z)
     ).apply(instance, ReadRedstoneFunction::new));
 
     @Override
