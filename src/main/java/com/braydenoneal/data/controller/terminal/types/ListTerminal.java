@@ -19,6 +19,7 @@ public record ListTerminal(List<Terminal> value) implements Terminal {
             ).apply(instance, ListTerminal::new)
     );
 
+    // TODO: Get the full List<...> with primitives? Or maybe not necessary?
     public static List<Terminal> getValue(Context context, Either<Terminal, Function> input) throws Exception {
         if (Terminal.getTerminal(context, input) instanceof ListTerminal(List<Terminal> value)) {
             return value;

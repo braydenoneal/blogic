@@ -10,7 +10,7 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 
 public record ListParameter(Parameter type) implements Parameter {
     public static final MapCodec<ListParameter> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
-            Parameter.CODEC.fieldOf("type").forGetter(ListParameter::type)
+            Parameter.CODEC.fieldOf("list_type").forGetter(ListParameter::type)
     ).apply(instance, ListParameter::new));
 
     @Override

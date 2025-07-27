@@ -7,7 +7,6 @@ import com.braydenoneal.data.controller.terminal.types.ErrorTerminal;
 import com.braydenoneal.data.controller.terminal.types.VoidTerminal;
 import com.mojang.datafixers.util.Either;
 import com.mojang.serialization.Codec;
-import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
 import java.util.List;
@@ -19,7 +18,7 @@ public record CustomFunction(
         Map<String, Parameter> parameterTypes,
         List<Function> body
 ) {
-    public static final MapCodec<CustomFunction> CODEC = RecordCodecBuilder.mapCodec(
+    public static final Codec<CustomFunction> CODEC = RecordCodecBuilder.create(
             instance -> instance.group(
                     Codec.STRING.fieldOf("name").forGetter(CustomFunction::name),
                     Parameter.CODEC.fieldOf("return_type").forGetter(CustomFunction::returnType),
@@ -29,9 +28,10 @@ public record CustomFunction(
             ).apply(instance, CustomFunction::new)
     );
 
-    public Terminal call(Context context, Map<String, Either<Terminal, Function>> parameters) throws Exception {
+    public Terminal call(Context context, Map<String, Either<Terminal, Function>> parameters) {
         Map<String, Terminal> variablesWithParameters = new java.util.HashMap<>(context.variables());
 
+        // TODO: Check if parameters has all variables in parameterTypes
         for (Map.Entry<String, Either<Terminal, Function>> entry : parameters.entrySet()) {
             Parameter parameter = parameterTypes.get(entry.getKey());
 
@@ -39,7 +39,13 @@ public record CustomFunction(
                 return new ErrorTerminal("Parameter " + entry.getKey() + " does not exist");
             }
 
-            Terminal terminal = Terminal.getTerminal(context, entry.getValue());
+            Terminal terminal;
+
+            try {
+                terminal = Terminal.getTerminal(context, entry.getValue());
+            } catch (Exception e) {
+                return new ErrorTerminal("Error in " + entry.getKey() + " parameter");
+            }
 
             if (!parameter.matchesTerminal(terminal)) {
                 return new ErrorTerminal("Parameter " + entry.getKey() + " is incorrect type");
@@ -55,9 +61,13 @@ public record CustomFunction(
             returnValue = function.call(newContext);
 
             if (function instanceof SetVariableFunction(String variableName, Either<Terminal, Function> value)) {
-                newContext.variables().put(variableName, Terminal.getTerminal(context, value));
+                try {
+                    newContext.variables().put(variableName, Terminal.getTerminal(context, value));
+                } catch (Exception e) {
+                    return new ErrorTerminal("Error setting variable");
+                }
             } else if (returnValue instanceof ErrorTerminal) {
-                return new ErrorTerminal("Error in body");
+                return returnValue;
             }
         }
 

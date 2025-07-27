@@ -5,11 +5,11 @@ import com.braydenoneal.data.controller.parameter.ParameterType;
 import com.braydenoneal.data.controller.parameter.ParameterTypes;
 import com.braydenoneal.data.controller.terminal.Terminal;
 import com.braydenoneal.data.controller.terminal.types.VoidTerminal;
+import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
-import com.mojang.serialization.codecs.RecordCodecBuilder;
 
 public record VoidParameter() implements Parameter {
-    public static final MapCodec<VoidParameter> CODEC = RecordCodecBuilder.mapCodec(instance -> null);
+    public static final MapCodec<VoidParameter> CODEC = MapCodec.assumeMapUnsafe(Codec.unit(new VoidParameter()));
 
     @Override
     public boolean matchesTerminal(Terminal terminal) {

@@ -1,28 +1,48 @@
 package com.braydenoneal.data.controller;
 
+import com.braydenoneal.data.controller.function.Context;
+import com.braydenoneal.data.controller.function.CustomFunction;
+import com.braydenoneal.data.controller.function.types.GetVariableFunction;
+import com.braydenoneal.data.controller.function.types.NotFunction;
+import com.braydenoneal.data.controller.function.types.SetVariableFunction;
+import com.braydenoneal.data.controller.parameter.types.BooleanParameter;
+import com.braydenoneal.data.controller.terminal.Terminal;
+import com.braydenoneal.data.controller.terminal.types.BooleanTerminal;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonParser;
+import com.mojang.datafixers.util.Either;
+import com.mojang.serialization.JsonOps;
+
+import java.util.List;
+import java.util.Map;
+
 public class Test {
     public static void test() {
-//        Function test = new WriteRedstoneFunction(Either.right(new ReadRedstoneFunction(Either.left(new IntegerTerminal(1)), Either.left(new IntegerTerminal(0)), Either.left(new IntegerTerminal(0)))));
-//        JsonElement result = Function.CODEC.encodeStart(JsonOps.INSTANCE, test).resultOrPartial().orElseThrow();
-//        System.out.println(result);
-//        Function result2 = Function.CODEC.parse(JsonOps.INSTANCE, result).resultOrPartial().orElseThrow();
-//        System.out.println(result2);
-//
-//        JsonElement fromString = JsonParser.parseString("{\"input\":{\"input\":{\"name\":false,\"terminalType\":\"blogic:bool\"},\"functionType\":\"blogic:not\"},\"functionType\":\"blogic:not\"}");
-//        Function test2 = Function.CODEC.parse(JsonOps.INSTANCE, fromString).resultOrPartial().orElseThrow();
-//        System.out.println(test2.call(null, null, Map.of()));
-//
-//        NotFunction body = new NotFunction(
-//                Either.right(new NotFunction(
-//                        Either.right(new GetVariableFunction("input")))
-//                )
-//        );
-//        CustomFunction c = new CustomFunction("main", new BooleanParameter(), null, List.of(body));
-//        try {
-//            Terminal terminal = c.call(null, null, Map.of("input", Either.left(new BooleanTerminal(false))), Map.of());
-//            System.out.println(terminal);
-//        } catch (Exception e) {
-//            throw new RuntimeException(e);
-//        }
+        CustomFunction customFunction = new CustomFunction(
+                "customFunction",
+                new BooleanParameter(),
+                Map.of(),
+                List.of(
+                        new SetVariableFunction("var", Either.left(new BooleanTerminal(false))),
+                        new NotFunction(Either.right(new NotFunction(Either.right(new GetVariableFunction("var")))))
+                )
+        );
+        System.out.println(customFunction);
+
+        Terminal terminal = customFunction.call(new Context(null, null, Map.of()), Map.of());
+        System.out.println(terminal);
+
+        JsonElement encoded = CustomFunction.CODEC.encodeStart(JsonOps.INSTANCE, customFunction).resultOrPartial().orElseThrow();
+        System.out.println(encoded);
+
+        CustomFunction decoded = CustomFunction.CODEC.parse(JsonOps.INSTANCE, encoded).resultOrPartial().orElseThrow();
+        System.out.println(decoded);
+
+        JsonElement fromString = JsonParser.parseString("{\"name\":\"customFunction\",\"return_type\":{\"parameter_type\":\"blogic:boolean\"},\"parameter_types\":{\"var\":{\"parameter_type\":\"blogic:boolean\"}},\"body\":[{\"input\":{\"input\":{\"name\":\"var\",\"function_type\":\"blogic:get_variable\"},\"function_type\":\"blogic:not\"},\"function_type\":\"blogic:not\"}]}");
+        CustomFunction encodedFromString = CustomFunction.CODEC.parse(JsonOps.INSTANCE, fromString).resultOrPartial().orElseThrow();
+        System.out.println(encodedFromString);
+        System.out.println(encodedFromString.call(new Context(null, null, Map.of()), Map.of("var", Either.left(new BooleanTerminal(false)))));
+
+        System.exit(0);
     }
 }

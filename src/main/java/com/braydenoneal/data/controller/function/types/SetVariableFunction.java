@@ -27,6 +27,6 @@ public record SetVariableFunction(String name, Either<Terminal, Function> value)
 
     @Override
     public FunctionType<?> getType() {
-        return FunctionTypes.GET_VARIABLE_FUNCTION;
+        return FunctionTypes.SET_VARIABLE_FUNCTION;
     }
 }

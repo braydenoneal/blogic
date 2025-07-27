@@ -26,7 +26,7 @@ public record CallFunction(String name, Map<String, Either<Terminal, Function>> 
 
     @Override
     public Terminal method(Context context) throws Exception {
-        // TODO: Implement this
+        // TODO: Implement this (get custom function instance from the controller block entity)
         return new BooleanTerminal(false);
     }
 
