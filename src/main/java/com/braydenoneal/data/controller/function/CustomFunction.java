@@ -1,7 +1,9 @@
 package com.braydenoneal.data.controller.function;
 
+import com.braydenoneal.data.controller.function.types.SetVariableFunction;
 import com.braydenoneal.data.controller.parameter.Parameter;
 import com.braydenoneal.data.controller.terminal.Terminal;
+import com.braydenoneal.data.controller.terminal.types.ErrorTerminal;
 import com.braydenoneal.data.controller.terminal.types.VoidTerminal;
 import com.mojang.datafixers.util.Either;
 import com.mojang.serialization.Codec;
@@ -29,21 +31,38 @@ public record CustomFunction(
 
     public Terminal call(Context context, Map<String, Either<Terminal, Function>> parameters) throws Exception {
         Map<String, Terminal> variablesWithParameters = new java.util.HashMap<>(context.variables());
-        // TODO: Check parameters against parameterTypes
 
         for (Map.Entry<String, Either<Terminal, Function>> entry : parameters.entrySet()) {
+            Parameter parameter = parameterTypes.get(entry.getKey());
+
+            if (parameter == null) {
+                return new ErrorTerminal("Parameter " + entry.getKey() + " does not exist");
+            }
+
             Terminal terminal = Terminal.getTerminal(context, entry.getValue());
+
+            if (!parameter.matchesTerminal(terminal)) {
+                return new ErrorTerminal("Parameter " + entry.getKey() + " is incorrect type");
+            }
+
             variablesWithParameters.put(entry.getKey(), terminal);
         }
 
         Context newContext = new Context(context.world(), context.pos(), variablesWithParameters);
         Terminal returnValue = new VoidTerminal();
 
-        // TODO: Check last function against returnType
         for (Function function : body) {
-            // TODO: If function is set variable, then update variables
-            // TODO: If function returns error terminal, then idk do something
             returnValue = function.call(newContext);
+
+            if (function instanceof SetVariableFunction(String variableName, Either<Terminal, Function> value)) {
+                newContext.variables().put(variableName, Terminal.getTerminal(context, value));
+            } else if (returnValue instanceof ErrorTerminal) {
+                return new ErrorTerminal("Error in body");
+            }
+        }
+
+        if (!returnType.matchesTerminal(returnValue)) {
+            return new ErrorTerminal("Incorrect return type");
         }
 
         return returnValue;

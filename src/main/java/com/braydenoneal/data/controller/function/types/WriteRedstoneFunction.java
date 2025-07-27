@@ -16,9 +16,12 @@ import net.minecraft.block.Blocks;
 import net.minecraft.block.entity.BlockEntity;
 
 public record WriteRedstoneFunction(Either<Terminal, Function> value) implements Function {
-    public static final MapCodec<WriteRedstoneFunction> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
-            Codec.either(Terminal.CODEC, Function.CODEC).fieldOf("value").forGetter(WriteRedstoneFunction::value)
-    ).apply(instance, WriteRedstoneFunction::new));
+    public static final MapCodec<WriteRedstoneFunction> CODEC = RecordCodecBuilder.mapCodec(
+            instance -> instance.group(
+                    Codec.either(Terminal.CODEC, Function.CODEC)
+                            .fieldOf("value").forGetter(WriteRedstoneFunction::value)
+            ).apply(instance, WriteRedstoneFunction::new)
+    );
 
     @Override
     public Terminal method(Context context) throws Exception {

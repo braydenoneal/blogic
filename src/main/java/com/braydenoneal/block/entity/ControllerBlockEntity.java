@@ -21,21 +21,6 @@ public class ControllerBlockEntity extends AbstractNetworkBlockEntity {
     private String name;
     private int emitRedstoneValue;
     private Function function;
-    /*
-    ControllerBlockEntity:
-        PersistentVariables[]:
-            String name
-            Type type
-            Terminal<type> value
-        CustomFunctions[]:
-            String name
-            Type type
-            Parameters[]:
-                String name
-                Type type
-            Functions[]:
-                Either<Terminal, Function>
-     */
 
     public ControllerBlockEntity(BlockPos pos, BlockState state) {
         super(ModBlockEntities.CONTROLLER_BLOCK_ENTITY, pos, state);

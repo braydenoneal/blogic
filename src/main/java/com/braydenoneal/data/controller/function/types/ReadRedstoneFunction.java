@@ -17,11 +17,13 @@ public record ReadRedstoneFunction(
         Either<Terminal, Function> y,
         Either<Terminal, Function> z
 ) implements Function {
-    public static final MapCodec<ReadRedstoneFunction> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
-            Codec.either(Terminal.CODEC, Function.CODEC).fieldOf("x").forGetter(ReadRedstoneFunction::x),
-            Codec.either(Terminal.CODEC, Function.CODEC).fieldOf("y").forGetter(ReadRedstoneFunction::y),
-            Codec.either(Terminal.CODEC, Function.CODEC).fieldOf("z").forGetter(ReadRedstoneFunction::z)
-    ).apply(instance, ReadRedstoneFunction::new));
+    public static final MapCodec<ReadRedstoneFunction> CODEC = RecordCodecBuilder.mapCodec(
+            instance -> instance.group(
+                    Codec.either(Terminal.CODEC, Function.CODEC).fieldOf("x").forGetter(ReadRedstoneFunction::x),
+                    Codec.either(Terminal.CODEC, Function.CODEC).fieldOf("y").forGetter(ReadRedstoneFunction::y),
+                    Codec.either(Terminal.CODEC, Function.CODEC).fieldOf("z").forGetter(ReadRedstoneFunction::z)
+            ).apply(instance, ReadRedstoneFunction::new)
+    );
 
     @Override
     public Terminal method(Context context) throws Exception {
@@ -30,6 +32,8 @@ public record ReadRedstoneFunction(
         int zValue = IntegerTerminal.getValue(context, z);
 
         BlockPos readPos = context.pos().add(xValue, yValue, zValue);
+        // TODO: Handle auto-closable somehow? Is it possible for this variable to become out of date? Or is it fine
+        //   since it is a reference?
         int redstoneValue = context.world().getReceivedRedstonePower(readPos);
 
         return new IntegerTerminal(redstoneValue);
