@@ -8,9 +8,11 @@ import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
 public record ErrorTerminal(String value) implements Terminal {
-    public static final MapCodec<ErrorTerminal> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
-            Codec.STRING.fieldOf("value").forGetter(ErrorTerminal::value)
-    ).apply(instance, ErrorTerminal::new));
+    public static final MapCodec<ErrorTerminal> CODEC = RecordCodecBuilder.mapCodec(
+            instance -> instance.group(
+                    Codec.STRING.fieldOf("value").forGetter(ErrorTerminal::value)
+            ).apply(instance, ErrorTerminal::new)
+    );
 
     @Override
     public TerminalType<?> getType() {

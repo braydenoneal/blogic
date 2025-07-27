@@ -11,16 +11,18 @@ import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
 public record IntegerTerminal(int value) implements Terminal {
-    public static final MapCodec<IntegerTerminal> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
-            Codec.INT.fieldOf("value").forGetter(IntegerTerminal::value)
-    ).apply(instance, IntegerTerminal::new));
+    public static final MapCodec<IntegerTerminal> CODEC = RecordCodecBuilder.mapCodec(
+            instance -> instance.group(
+                    Codec.INT.fieldOf("value").forGetter(IntegerTerminal::value)
+            ).apply(instance, IntegerTerminal::new)
+    );
 
     public static int getValue(Context context, Either<Terminal, Function> input) throws Exception {
-        if (Terminal.getTerminal(context, input) instanceof IntegerTerminal(int value1)) {
-            return value1;
+        if (Terminal.getTerminal(context, input) instanceof IntegerTerminal(int value)) {
+            return value;
         }
 
-        throw new Exception("");
+        throw new Exception("Value is not an integer");
     }
 
     @Override

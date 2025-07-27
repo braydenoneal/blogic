@@ -41,6 +41,8 @@ public record CustomFunction(
 
         // TODO: Check last function against returnType
         for (Function function : body) {
+            // TODO: If function is set variable, then update variables
+            // TODO: If function returns error terminal, then idk do something
             returnValue = function.call(newContext);
         }
 

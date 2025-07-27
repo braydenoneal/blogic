@@ -16,8 +16,8 @@ public record BooleanTerminal(boolean value) implements Terminal {
     ).apply(instance, BooleanTerminal::new));
 
     public static boolean getValue(Context context, Either<Terminal, Function> input) throws Exception {
-        if (Terminal.getTerminal(context, input) instanceof BooleanTerminal(boolean value1)) {
-            return value1;
+        if (Terminal.getTerminal(context, input) instanceof BooleanTerminal(boolean value)) {
+            return value;
         }
 
         throw new Exception("Value is not a boolean");
