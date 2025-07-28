@@ -16,4 +16,7 @@ public class ParameterTypes {
     public static <T extends Parameter> ParameterType<T> register(String id, ParameterType<T> parameterType) {
         return Registry.register(ParameterType.REGISTRY, Identifier.of("blogic", id), parameterType);
     }
+
+    public static void initialize() {
+    }
 }

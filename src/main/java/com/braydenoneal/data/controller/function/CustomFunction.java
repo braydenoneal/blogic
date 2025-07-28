@@ -9,6 +9,7 @@ import com.mojang.datafixers.util.Either;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -29,7 +30,7 @@ public record CustomFunction(
     );
 
     public Terminal call(Context context, Map<String, Either<Terminal, Function>> parameters) {
-        Map<String, Terminal> variablesWithParameters = new java.util.HashMap<>(context.variables());
+        Map<String, Terminal> variablesWithParameters = new HashMap<>(context.variables());
 
         // TODO: Check if parameters has all variables in parameterTypes
         for (Map.Entry<String, Either<Terminal, Function>> entry : parameters.entrySet()) {

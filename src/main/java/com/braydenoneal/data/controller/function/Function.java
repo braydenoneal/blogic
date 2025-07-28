@@ -4,6 +4,7 @@ import com.braydenoneal.data.controller.terminal.Terminal;
 import com.braydenoneal.data.controller.terminal.types.ErrorTerminal;
 import com.mojang.serialization.Codec;
 
+// TODO: Have functions specify their return types and parameter types so that errors can be detected before running
 public interface Function {
     Codec<Function> CODEC = FunctionType.REGISTRY.getCodec().dispatch("function_type", Function::getType, FunctionType::codec);
 

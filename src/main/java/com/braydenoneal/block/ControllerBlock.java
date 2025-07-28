@@ -2,11 +2,14 @@ package com.braydenoneal.block;
 
 import com.braydenoneal.block.entity.AbstractNetworkBlockEntity;
 import com.braydenoneal.block.entity.ControllerBlockEntity;
+import com.braydenoneal.block.entity.ModBlockEntities;
 import com.mojang.serialization.MapCodec;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.BlockWithEntity;
 import net.minecraft.block.entity.BlockEntity;
+import net.minecraft.block.entity.BlockEntityTicker;
+import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.ItemPlacementContext;
 import net.minecraft.item.ItemStack;
@@ -14,7 +17,6 @@ import net.minecraft.state.StateManager;
 import net.minecraft.state.property.Properties;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
-import net.minecraft.world.BlockView;
 import net.minecraft.world.World;
 import net.minecraft.world.block.WireOrientation;
 import org.jetbrains.annotations.Nullable;
@@ -53,23 +55,13 @@ public class ControllerBlock extends BlockWithEntity {
     }
 
     @Override
-    protected boolean emitsRedstonePower(BlockState state) {
-        return true;
-    }
-
-    @Override
-    protected int getWeakRedstonePower(BlockState state, BlockView world, BlockPos pos, Direction direction) {
-        BlockEntity blockEntity = world.getBlockEntity(pos);
-
-        if (blockEntity instanceof ControllerBlockEntity controllerBlockEntity) {
-            return controllerBlockEntity.getEmitRedstoneValue();
-        }
-
-        return 0;
-    }
-
-    @Override
     public void onPlaced(World world, BlockPos pos, BlockState state, @Nullable LivingEntity placer, ItemStack itemStack) {
         super.onPlaced(world, pos, state, placer, itemStack);
+    }
+
+    @Nullable
+    @Override
+    public <T extends BlockEntity> BlockEntityTicker<T> getTicker(World world, BlockState state, BlockEntityType<T> type) {
+        return validateTicker(type, ModBlockEntities.CONTROLLER_BLOCK_ENTITY, ControllerBlockEntity::tick);
     }
 }
