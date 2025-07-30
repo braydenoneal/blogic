@@ -28,6 +28,7 @@ public record ConditionalFunction(
 
     @Override
     public Terminal method(Context context) throws Exception {
+        // TODO: Generalize the type here somehow
         return new IntegerTerminal(BooleanTerminal.getValue(context, predicate) ? IntegerTerminal.getValue(context, a) : IntegerTerminal.getValue(context, b));
     }
 

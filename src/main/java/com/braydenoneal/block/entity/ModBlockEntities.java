@@ -8,11 +8,15 @@ import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
+import net.minecraft.resource.featuretoggle.FeatureSet;
+import net.minecraft.screen.ScreenHandlerType;
 import net.minecraft.util.Identifier;
 
 public class ModBlockEntities {
     public static final BlockEntityType<ControllerBlockEntity> CONTROLLER_BLOCK_ENTITY =
             register("controller", ControllerBlockEntity::new, ModBlocks.CONTROLLER);
+    public static final ScreenHandlerType<ControllerScreenHandler> CONTROLLER_SCREEN_HANDLER = Registry.register(Registries.SCREEN_HANDLER, Identifier.of("blogic", "controller_block"), new ScreenHandlerType<>(ControllerScreenHandler::new, FeatureSet.empty()));
+
 
     private static <T extends BlockEntity> BlockEntityType<T> register(
             String name,
