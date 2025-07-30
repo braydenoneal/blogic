@@ -13,7 +13,7 @@ public class TerminalWidget extends ClickableWidget {
 
     public TerminalWidget(int x, int y, int width, int height, Text message, TextRenderer textRenderer) {
         super(x, y, width, height, message);
-        this.textFieldWidget = new TextFieldWidget(textRenderer, x + 100, y, 200, 20, Text.of("1"));
+        this.textFieldWidget = new TextFieldWidget(textRenderer, x + 100, y, 250, 20, Text.of("1"));
         this.textRenderer = textRenderer;
     }
 
@@ -21,7 +21,7 @@ public class TerminalWidget extends ClickableWidget {
     protected void renderWidget(DrawContext context, int mouseX, int mouseY, float deltaTicks) {
         context.fill(this.getX(), this.getY(), this.getX() + this.getWidth(), this.getY() + this.getHeight(), 0xFF6B6B6B);
         drawScrollableText(context, textRenderer, 4, 0xFFFFFFFF);
-        textFieldWidget.render(context, mouseX, mouseY, deltaTicks);
+        textFieldWidget.renderWidget(context, mouseX, mouseY, deltaTicks);
     }
 
     @Override
@@ -38,24 +38,26 @@ public class TerminalWidget extends ClickableWidget {
     protected void appendClickableNarrations(NarrationMessageBuilder builder) {
     }
 
-    @Override
-    public boolean mouseClicked(double mouseX, double mouseY, int button) {
-        if (this.textFieldWidget.mouseClicked(mouseX, mouseY, button)) {
-            return true; // Event handled by the TextField
-        }
-        return super.mouseClicked(mouseX, mouseY, button); // Delegate to super for other events
-    }
+//    @Override
+//    public boolean mouseClicked(double mouseX, double mouseY, int button) {
+//        if (this.textFieldWidget.mouseClicked(mouseX, mouseY, button)) {
+//            return true;
+//        }
+//        return super.mouseClicked(mouseX, mouseY, button);
+//    }
 
     @Override
     public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
-        if (this.textFieldWidget.keyPressed(keyCode, scanCode, modifiers)) {
-            return true; // Event handled by the TextField
-        }
-        return super.keyPressed(keyCode, scanCode, modifiers); // Delegate to super
+        return textFieldWidget.keyPressed(keyCode, scanCode, modifiers);
     }
 
     @Override
     public boolean isFocused() {
         return textFieldWidget.isFocused();
+    }
+
+    @Override
+    public boolean isSelected() {
+        return textFieldWidget.isSelected();
     }
 }
