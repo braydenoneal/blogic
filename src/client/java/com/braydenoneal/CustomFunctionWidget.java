@@ -2,14 +2,18 @@ package com.braydenoneal;
 
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
+import net.minecraft.client.gl.RenderPipelines;
 import net.minecraft.client.gui.*;
 import net.minecraft.client.gui.screen.narration.NarrationMessageBuilder;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.gui.widget.DirectionalLayoutWidget;
 import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.text.Text;
+import net.minecraft.util.Identifier;
 
 public class CustomFunctionWidget extends DirectionalLayoutWidget implements Drawable, Element, Selectable {
+    private static final Identifier TEXTURE = Identifier.ofVanilla("widget/button");
+
     public CustomFunctionWidget(int x, int y) {
         super(x, y, DisplayAxis.HORIZONTAL);
         TextRenderer textRenderer = MinecraftClient.getInstance().textRenderer;
@@ -22,15 +26,8 @@ public class CustomFunctionWidget extends DirectionalLayoutWidget implements Dra
     }
 
     @Override
-    public void refreshPositions() {
-        super.refreshPositions();
-//        SimplePositioningWidget.setPos(this, getNavigationFocus());
-    }
-
-    @Override
     public void render(DrawContext context, int mouseX, int mouseY, float deltaTicks) {
-        context.fill(getX(), getY(), getWidth(), getHeight(), 0xFF777777);
-//        forEachChild(child -> child.render(context, mouseX, mouseY, deltaTicks));
+        context.drawGuiTexture(RenderPipelines.GUI_TEXTURED, TEXTURE, getX(), getY(), getWidth(), getHeight());
     }
 
     @Override

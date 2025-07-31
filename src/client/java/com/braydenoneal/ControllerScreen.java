@@ -19,10 +19,10 @@ public class ControllerScreen extends HandledScreen<ControllerScreenHandler> {
         addDrawableChild(ButtonWidget.builder(ScreenTexts.DONE, button -> close()).dimensions(width / 2 - 4 - 150, 210, 150, 20).build());
         addDrawableChild(ButtonWidget.builder(ScreenTexts.CANCEL, button -> close()).dimensions(width / 2 + 4, 210, 150, 20).build());
 
-        CustomFunctionWidget customFunction = new CustomFunctionWidget(20, 50);
+        CustomFunctionWidget customFunction = new CustomFunctionWidget(20, 20);
+        addDrawableChild(customFunction);
         customFunction.forEachChild(this::addDrawableChild);
         customFunction.refreshPositions();
-        addDrawableChild(customFunction);
     }
 
     @Override
