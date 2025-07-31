@@ -4,7 +4,6 @@ import com.braydenoneal.block.entity.ControllerScreenHandler;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.ingame.HandledScreen;
 import net.minecraft.client.gui.widget.ButtonWidget;
-import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.screen.ScreenTexts;
 import net.minecraft.text.Text;
@@ -17,11 +16,13 @@ public class ControllerScreen extends HandledScreen<ControllerScreenHandler> {
     @Override
     protected void init() {
         super.init();
-        this.addDrawableChild(ButtonWidget.builder(ScreenTexts.DONE, button -> close()).dimensions(width / 2 - 4 - 150, 210, 150, 20).build());
-        this.addDrawableChild(ButtonWidget.builder(ScreenTexts.CANCEL, button -> close()).dimensions(width / 2 + 4, 210, 150, 20).build());
-        Blogic.LOGGER.info("INIT: {}", handler.getControllerBlockEntity());
-        this.addDrawableChild(new TextFieldWidget(textRenderer, this.width / 2 - 152, 40, 300, 20, Text.of("Text")));
-        this.addDrawableChild(new TerminalWidget(20, 20, 150, 20, Text.of("Clickable"), textRenderer));
+        addDrawableChild(ButtonWidget.builder(ScreenTexts.DONE, button -> close()).dimensions(width / 2 - 4 - 150, 210, 150, 20).build());
+        addDrawableChild(ButtonWidget.builder(ScreenTexts.CANCEL, button -> close()).dimensions(width / 2 + 4, 210, 150, 20).build());
+
+        CustomFunctionWidget customFunction = new CustomFunctionWidget(20, 50);
+        customFunction.forEachChild(this::addDrawableChild);
+        customFunction.refreshPositions();
+        addDrawableChild(customFunction);
     }
 
     @Override
