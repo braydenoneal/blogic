@@ -15,6 +15,16 @@ public record ErrorTerminal(String value) implements Terminal {
     );
 
     @Override
+    public String getName() {
+        return "Error";
+    }
+
+    @Override
+    public String getValueAsString() {
+        return value;
+    }
+
+    @Override
     public TerminalType<?> getType() {
         return TerminalTypes.ERROR_TERMINAL;
     }

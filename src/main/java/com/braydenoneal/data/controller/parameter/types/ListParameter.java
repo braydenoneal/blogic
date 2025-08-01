@@ -23,4 +23,9 @@ public record ListParameter(Parameter type) implements Parameter {
     public ParameterType<?> getType() {
         return ParameterTypes.LIST_PARAMETER;
     }
+
+    @Override
+    public String getName() {
+        return "List";
+    }
 }

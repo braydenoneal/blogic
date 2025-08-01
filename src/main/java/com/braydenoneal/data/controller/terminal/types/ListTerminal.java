@@ -29,6 +29,16 @@ public record ListTerminal(List<Terminal> value) implements Terminal {
     }
 
     @Override
+    public String getName() {
+        return "List<...>";
+    }
+
+    @Override
+    public String getValueAsString() {
+        return value.toString();
+    }
+
+    @Override
     public TerminalType<?> getType() {
         return TerminalTypes.LIST_TERMINAL;
     }

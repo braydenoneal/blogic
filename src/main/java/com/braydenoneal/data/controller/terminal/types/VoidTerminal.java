@@ -10,6 +10,16 @@ public record VoidTerminal() implements Terminal {
     public static final MapCodec<VoidTerminal> CODEC = RecordCodecBuilder.mapCodec(instance -> null);
 
     @Override
+    public String getName() {
+        return "Void";
+    }
+
+    @Override
+    public String getValueAsString() {
+        return "";
+    }
+
+    @Override
     public TerminalType<?> getType() {
         return TerminalTypes.VOID_TERMINAL;
     }

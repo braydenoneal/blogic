@@ -24,6 +24,16 @@ public record BooleanTerminal(boolean value) implements Terminal {
     }
 
     @Override
+    public String getName() {
+        return "Boolean";
+    }
+
+    @Override
+    public String getValueAsString() {
+        return String.valueOf(value);
+    }
+
+    @Override
     public TerminalType<?> getType() {
         return TerminalTypes.BOOLEAN_TERMINAL;
     }

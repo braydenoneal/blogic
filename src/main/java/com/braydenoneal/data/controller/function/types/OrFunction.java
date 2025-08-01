@@ -11,6 +11,8 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
+import java.util.Map;
+
 public record OrFunction(Either<Terminal, Function> a, Either<Terminal, Function> b) implements Function {
     public static final MapCodec<OrFunction> CODEC = RecordCodecBuilder.mapCodec(
             instance -> instance.group(
@@ -22,6 +24,16 @@ public record OrFunction(Either<Terminal, Function> a, Either<Terminal, Function
     @Override
     public Terminal method(Context context) throws Exception {
         return new BooleanTerminal(BooleanTerminal.getValue(context, a) || BooleanTerminal.getValue(context, b));
+    }
+
+    @Override
+    public String getName() {
+        return "Or";
+    }
+
+    @Override
+    public Map<String, Either<Terminal, Function>> getParameters() {
+        return Map.of("a", a, "b", b);
     }
 
     @Override

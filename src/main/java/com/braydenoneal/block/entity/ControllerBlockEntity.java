@@ -1,6 +1,5 @@
 package com.braydenoneal.block.entity;
 
-import com.braydenoneal.Blogic;
 import com.braydenoneal.data.controller.function.Context;
 import com.braydenoneal.data.controller.function.CustomFunction;
 import com.braydenoneal.data.controller.parameter.types.VoidParameter;
@@ -82,7 +81,6 @@ public class ControllerBlockEntity extends AbstractNetworkBlockEntity implements
 
     @Override
     public @Nullable ScreenHandler createMenu(int syncId, PlayerInventory playerInventory, PlayerEntity player) {
-        Blogic.LOGGER.info("CREATE MENU {}", this);
-        return new ControllerScreenHandler(syncId, playerInventory, this);
+        return new ControllerScreenHandler(syncId, playerInventory);
     }
 }

@@ -26,6 +26,16 @@ public record IntegerTerminal(int value) implements Terminal {
     }
 
     @Override
+    public String getName() {
+        return "Integer";
+    }
+
+    @Override
+    public String getValueAsString() {
+        return String.valueOf(value);
+    }
+
+    @Override
     public TerminalType<?> getType() {
         return TerminalTypes.INTEGER_TERMINAL;
     }

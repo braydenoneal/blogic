@@ -18,7 +18,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 public record SetGlobalVariableFunction(
-        String name, Either<Terminal, Function> value,
+        String name,
+        Either<Terminal, Function> value,
         Either<Terminal, Function> predicate
 ) implements Function {
     public static final MapCodec<SetGlobalVariableFunction> CODEC = RecordCodecBuilder.mapCodec(
@@ -43,6 +44,16 @@ public record SetGlobalVariableFunction(
         }
 
         return new VoidTerminal();
+    }
+
+    @Override
+    public String getName() {
+        return name;
+    }
+
+    @Override
+    public Map<String, Either<Terminal, Function>> getParameters() {
+        return Map.of("value", value, "predicate", predicate);
     }
 
     @Override

@@ -15,6 +15,8 @@ import net.minecraft.block.AirBlock;
 import net.minecraft.block.Block;
 import net.minecraft.util.math.BlockPos;
 
+import java.util.Map;
+
 public record IsBlockAirFunction(
         Either<Terminal, Function> x,
         Either<Terminal, Function> y,
@@ -38,6 +40,16 @@ public record IsBlockAirFunction(
         Block block = context.world().getBlockState(readPos).getBlock();
 
         return new BooleanTerminal(block instanceof AirBlock);
+    }
+
+    @Override
+    public String getName() {
+        return "Is Air Block";
+    }
+
+    @Override
+    public Map<String, Either<Terminal, Function>> getParameters() {
+        return Map.of("x", x, "y", y, "z", z);
     }
 
     @Override

@@ -20,4 +20,9 @@ public record BooleanParameter() implements Parameter {
     public ParameterType<?> getType() {
         return ParameterTypes.BOOLEAN_PARAMETER;
     }
+
+    @Override
+    public String getName() {
+        return "Boolean";
+    }
 }

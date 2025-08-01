@@ -20,4 +20,9 @@ public record IntegerParameter() implements Parameter {
     public ParameterType<?> getType() {
         return ParameterTypes.INTEGER_PARAMETER;
     }
+
+    @Override
+    public String getName() {
+        return "Integer";
+    }
 }

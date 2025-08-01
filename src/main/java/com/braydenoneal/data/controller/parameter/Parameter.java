@@ -9,4 +9,6 @@ public interface Parameter {
     boolean matchesTerminal(Terminal terminal);
 
     ParameterType<?> getType();
+
+    String getName();
 }

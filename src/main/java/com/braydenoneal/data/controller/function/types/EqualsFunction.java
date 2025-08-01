@@ -12,6 +12,8 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
+import java.util.Map;
+
 public record EqualsFunction(Either<Terminal, Function> a, Either<Terminal, Function> b) implements Function {
     public static final MapCodec<EqualsFunction> CODEC = RecordCodecBuilder.mapCodec(
             instance -> instance.group(
@@ -23,6 +25,16 @@ public record EqualsFunction(Either<Terminal, Function> a, Either<Terminal, Func
     @Override
     public Terminal method(Context context) throws Exception {
         return new BooleanTerminal(IntegerTerminal.getValue(context, a) == IntegerTerminal.getValue(context, b));
+    }
+
+    @Override
+    public String getName() {
+        return "Equals";
+    }
+
+    @Override
+    public Map<String, Either<Terminal, Function>> getParameters() {
+        return Map.of("a", a, "b", b);
     }
 
     @Override

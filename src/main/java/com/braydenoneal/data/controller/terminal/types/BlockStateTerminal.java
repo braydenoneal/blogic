@@ -24,6 +24,16 @@ public record BlockStateTerminal(BlockState value) implements Terminal {
     }
 
     @Override
+    public String getName() {
+        return "Block State";
+    }
+
+    @Override
+    public String getValueAsString() {
+        return value.toString();
+    }
+
+    @Override
     public TerminalType<?> getType() {
         return TerminalTypes.BLOCK_STATE_TERMINAL;
     }

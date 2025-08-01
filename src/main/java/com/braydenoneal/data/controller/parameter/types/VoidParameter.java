@@ -20,4 +20,9 @@ public record VoidParameter() implements Parameter {
     public ParameterType<?> getType() {
         return ParameterTypes.VOID_PARAMETER;
     }
+
+    @Override
+    public String getName() {
+        return "Void";
+    }
 }

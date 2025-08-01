@@ -15,6 +15,8 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.block.Blocks;
 import net.minecraft.util.math.BlockPos;
 
+import java.util.Map;
+
 public record PlaceBlockFunction(
         Either<Terminal, Function> x,
         Either<Terminal, Function> y,
@@ -46,6 +48,16 @@ public record PlaceBlockFunction(
         }
 
         return new VoidTerminal();
+    }
+
+    @Override
+    public String getName() {
+        return "Place Block";
+    }
+
+    @Override
+    public Map<String, Either<Terminal, Function>> getParameters() {
+        return Map.of("x", x, "y", y, "z", z, "block", block, "predicate", predicate);
     }
 
     @Override

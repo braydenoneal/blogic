@@ -18,5 +18,9 @@ public interface Terminal {
         throw new Exception("Terminal nor function is present");
     }
 
+    String getName();
+
+    String getValueAsString();
+
     TerminalType<?> getType();
 }
