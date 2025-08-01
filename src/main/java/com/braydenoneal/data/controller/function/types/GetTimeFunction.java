@@ -10,6 +10,7 @@ import com.mojang.datafixers.util.Either;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 
+import java.util.List;
 import java.util.Map;
 
 public record GetTimeFunction() implements Function {
@@ -28,6 +29,13 @@ public record GetTimeFunction() implements Function {
     @Override
     public Map<String, Either<Terminal, Function>> getParameters() {
         return Map.of();
+    }
+
+    @Override
+    public List<GuiComponent> getGuiComponents() {
+        return List.of(
+                new LabelGuiComponent("get time")
+        );
     }
 
     @Override

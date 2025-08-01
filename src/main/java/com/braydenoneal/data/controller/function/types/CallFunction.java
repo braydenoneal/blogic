@@ -11,6 +11,8 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 public record CallFunction(String name, Map<String, Either<Terminal, Function>> parameters) implements Function {
@@ -38,6 +40,21 @@ public record CallFunction(String name, Map<String, Either<Terminal, Function>> 
     @Override
     public Map<String, Either<Terminal, Function>> getParameters() {
         return parameters;
+    }
+
+    @Override
+    public List<GuiComponent> getGuiComponents() {
+        List<GuiComponent> components = new ArrayList<>();
+
+        components.add(new LabelGuiComponent("call"));
+        components.add(new TextFieldGuiComponent(name));
+
+        for (Map.Entry<String, Either<Terminal, Function>> parameter : parameters.entrySet()) {
+            components.add(new LabelGuiComponent(parameter.getKey()));
+            components.add(new ParameterGuiComponent(parameter.getValue()));
+        }
+
+        return components;
     }
 
     @Override

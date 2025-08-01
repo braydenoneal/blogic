@@ -12,6 +12,7 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
+import java.util.List;
 import java.util.Map;
 
 public record ConditionalFunction(
@@ -45,6 +46,18 @@ public record ConditionalFunction(
                 "predicate", predicate,
                 "a", a,
                 "b", b
+        );
+    }
+
+    @Override
+    public List<GuiComponent> getGuiComponents() {
+        return List.of(
+                new LabelGuiComponent("if"),
+                new ParameterGuiComponent(predicate),
+                new LabelGuiComponent("return"),
+                new ParameterGuiComponent(a),
+                new LabelGuiComponent("else"),
+                new ParameterGuiComponent(b)
         );
     }
 

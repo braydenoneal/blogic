@@ -15,6 +15,7 @@ import net.minecraft.block.AirBlock;
 import net.minecraft.block.Block;
 import net.minecraft.util.math.BlockPos;
 
+import java.util.List;
 import java.util.Map;
 
 public record IsBlockAirFunction(
@@ -50,6 +51,19 @@ public record IsBlockAirFunction(
     @Override
     public Map<String, Either<Terminal, Function>> getParameters() {
         return Map.of("x", x, "y", y, "z", z);
+    }
+
+    @Override
+    public List<GuiComponent> getGuiComponents() {
+        return List.of(
+                new LabelGuiComponent("is block air"),
+                new LabelGuiComponent("x"),
+                new ParameterGuiComponent(x),
+                new LabelGuiComponent("y"),
+                new ParameterGuiComponent(y),
+                new LabelGuiComponent("z"),
+                new ParameterGuiComponent(z)
+        );
     }
 
     @Override

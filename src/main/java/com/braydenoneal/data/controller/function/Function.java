@@ -5,9 +5,11 @@ import com.braydenoneal.data.controller.terminal.types.ErrorTerminal;
 import com.mojang.datafixers.util.Either;
 import com.mojang.serialization.Codec;
 
+import java.util.List;
 import java.util.Map;
 
 // TODO: Have functions specify their return types and parameter types so that errors can be detected before running
+// TODO: Wrap Either<Terminal, Function>
 public interface Function {
     Codec<Function> CODEC = FunctionType.REGISTRY.getCodec().dispatch("function_type", Function::getType, FunctionType::codec);
 
@@ -25,5 +27,19 @@ public interface Function {
 
     Map<String, Either<Terminal, Function>> getParameters();
 
+    List<GuiComponent> getGuiComponents();
+
     FunctionType<?> getType();
+
+    interface GuiComponent {
+    }
+
+    record ParameterGuiComponent(Either<Terminal, Function> parameter) implements GuiComponent {
+    }
+
+    record LabelGuiComponent(String text) implements GuiComponent {
+    }
+
+    record TextFieldGuiComponent(String value) implements GuiComponent {
+    }
 }

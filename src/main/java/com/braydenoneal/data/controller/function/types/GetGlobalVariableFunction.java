@@ -13,6 +13,7 @@ import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.block.entity.BlockEntity;
 
+import java.util.List;
 import java.util.Map;
 
 public record GetGlobalVariableFunction(String name) implements Function {
@@ -45,6 +46,14 @@ public record GetGlobalVariableFunction(String name) implements Function {
     @Override
     public Map<String, Either<Terminal, Function>> getParameters() {
         return Map.of();
+    }
+
+    @Override
+    public List<GuiComponent> getGuiComponents() {
+        return List.of(
+                new LabelGuiComponent("get global"),
+                new TextFieldGuiComponent(name)
+        );
     }
 
     @Override

@@ -15,6 +15,7 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.block.Blocks;
 import net.minecraft.util.math.BlockPos;
 
+import java.util.List;
 import java.util.Map;
 
 public record PlaceBlockFunction(
@@ -58,6 +59,23 @@ public record PlaceBlockFunction(
     @Override
     public Map<String, Either<Terminal, Function>> getParameters() {
         return Map.of("x", x, "y", y, "z", z, "block", block, "predicate", predicate);
+    }
+
+    @Override
+    public List<GuiComponent> getGuiComponents() {
+        return List.of(
+                new LabelGuiComponent("place block"),
+                new LabelGuiComponent("x"),
+                new ParameterGuiComponent(x),
+                new LabelGuiComponent("y"),
+                new ParameterGuiComponent(y),
+                new LabelGuiComponent("z"),
+                new ParameterGuiComponent(z),
+                new LabelGuiComponent("block"),
+                new ParameterGuiComponent(block),
+                new LabelGuiComponent("if"),
+                new ParameterGuiComponent(predicate)
+        );
     }
 
     @Override

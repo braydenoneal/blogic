@@ -15,6 +15,7 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.block.entity.BlockEntity;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public record SetGlobalVariableFunction(
@@ -48,12 +49,23 @@ public record SetGlobalVariableFunction(
 
     @Override
     public String getName() {
-        return name;
+        return "set global " + name;
     }
 
     @Override
     public Map<String, Either<Terminal, Function>> getParameters() {
         return Map.of("value", value, "predicate", predicate);
+    }
+
+    @Override
+    public List<GuiComponent> getGuiComponents() {
+        return List.of(
+                new LabelGuiComponent("set global"),
+                new TextFieldGuiComponent(name),
+                new ParameterGuiComponent(value),
+                new LabelGuiComponent("if"),
+                new ParameterGuiComponent(predicate)
+        );
     }
 
     @Override

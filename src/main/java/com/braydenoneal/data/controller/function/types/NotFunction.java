@@ -11,6 +11,7 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
+import java.util.List;
 import java.util.Map;
 
 public record NotFunction(Either<Terminal, Function> input) implements Function {
@@ -33,6 +34,14 @@ public record NotFunction(Either<Terminal, Function> input) implements Function 
     @Override
     public Map<String, Either<Terminal, Function>> getParameters() {
         return Map.of("input", input);
+    }
+
+    @Override
+    public List<GuiComponent> getGuiComponents() {
+        return List.of(
+                new LabelGuiComponent("not"),
+                new ParameterGuiComponent(input)
+        );
     }
 
     @Override

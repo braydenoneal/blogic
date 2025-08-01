@@ -12,6 +12,7 @@ import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.util.math.BlockPos;
 
+import java.util.List;
 import java.util.Map;
 
 public record ReadRedstoneFunction(
@@ -49,6 +50,19 @@ public record ReadRedstoneFunction(
     @Override
     public Map<String, Either<Terminal, Function>> getParameters() {
         return Map.of("x", x, "y", y, "z", z);
+    }
+
+    @Override
+    public List<GuiComponent> getGuiComponents() {
+        return List.of(
+                new LabelGuiComponent("read redstone"),
+                new LabelGuiComponent("x"),
+                new ParameterGuiComponent(x),
+                new LabelGuiComponent("y"),
+                new ParameterGuiComponent(y),
+                new LabelGuiComponent("z"),
+                new ParameterGuiComponent(z)
+        );
     }
 
     @Override
