@@ -17,15 +17,15 @@ public class TerminalWidget extends DirectionalLayoutWidget implements Drawable,
 
     public TerminalWidget(int x, int y, ControllerScreen screen, Terminal terminal) {
         super(x, y, DisplayAxis.HORIZONTAL);
+        screen.addDrawableChild(this);
         TextRenderer textRenderer = MinecraftClient.getInstance().textRenderer;
 
-        add(new TextWidget(Text.of(terminal.getName()), textRenderer), positioner -> positioner.margin(5).alignVerticalCenter());
+        add(new TextWidget(Text.of(terminal.getName()), textRenderer), positioner -> positioner.margin(4).alignVerticalCenter());
 
         TextFieldWidget valueText = new TextFieldWidget(textRenderer, 50, 20, Text.of(""));
         valueText.setText(terminal.getValueAsString());
-        add(valueText, positioner -> positioner.marginX(5));
+        add(valueText, positioner -> positioner.margin(4).alignVerticalCenter());
 
-        screen.addDrawableChild(this);
         forEachChild(screen::addDrawableChild);
         refreshPositions();
     }

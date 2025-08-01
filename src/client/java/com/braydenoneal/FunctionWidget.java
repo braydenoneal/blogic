@@ -20,21 +20,21 @@ public class FunctionWidget extends DirectionalLayoutWidget implements Drawable,
 
     public FunctionWidget(int x, int y, ControllerScreen screen, Function function) {
         super(x, y, DisplayAxis.HORIZONTAL);
+        screen.addDrawableChild(this);
         TextRenderer textRenderer = MinecraftClient.getInstance().textRenderer;
 
-        add(new TextWidget(Text.of(function.getName()), textRenderer), positioner -> positioner.margin(5).alignVerticalCenter());
+        add(new TextWidget(Text.of(function.getName()), textRenderer), positioner -> positioner.margin(4).alignVerticalCenter());
 
         for (Map.Entry<String, Either<Terminal, Function>> parameter : function.getParameters().entrySet()) {
-            add(new TextWidget(Text.of(parameter.getKey()), textRenderer), positioner -> positioner.margin(5).alignVerticalCenter());
+            add(new TextWidget(Text.of(parameter.getKey()), textRenderer), positioner -> positioner.margin(4).alignVerticalCenter());
 
             if (parameter.getValue().left().isPresent()) {
-                add(new TerminalWidget(0, 0, screen, parameter.getValue().left().get()), positioner -> positioner.margin(5).alignVerticalCenter());
+                add(new TerminalWidget(0, 0, screen, parameter.getValue().left().get()), positioner -> positioner.margin(4).alignVerticalCenter());
             } else if (parameter.getValue().right().isPresent()) {
-                add(new FunctionWidget(0, 0, screen, parameter.getValue().right().get()), positioner -> positioner.margin(5).alignVerticalCenter());
+                add(new FunctionWidget(0, 0, screen, parameter.getValue().right().get()), positioner -> positioner.margin(4).alignVerticalCenter());
             }
         }
 
-        screen.addDrawableChild(this);
         forEachChild(screen::addDrawableChild);
         refreshPositions();
     }

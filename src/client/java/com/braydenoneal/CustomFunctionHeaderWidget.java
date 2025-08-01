@@ -20,28 +20,28 @@ public class CustomFunctionHeaderWidget extends DirectionalLayoutWidget implemen
 
     public CustomFunctionHeaderWidget(int x, int y, ControllerScreen screen, CustomFunction customFunction) {
         super(x, y, DisplayAxis.HORIZONTAL);
+        screen.addDrawableChild(this);
         TextRenderer textRenderer = MinecraftClient.getInstance().textRenderer;
 
         add(ButtonWidget.builder(Text.of(customFunction.returnType().getName()), button -> {
-        }).size(40, 20).build(), positioner -> positioner.margin(5));
+        }).size(40, 20).build(), positioner -> positioner.margin(4));
 
         TextFieldWidget functionNameWidget = new TextFieldWidget(textRenderer, 100, 20, Text.of(""));
         functionNameWidget.setText(customFunction.name());
-        add(functionNameWidget, positioner -> positioner.margin(5));
+        add(functionNameWidget, positioner -> positioner.margin(4));
 
         for (Map.Entry<String, Parameter> entry : customFunction.parameterTypes().entrySet()) {
             add(ButtonWidget.builder(Text.of(entry.getKey()), button -> {
-            }).size(40, 20).build(), positioner -> positioner.margin(5));
+            }).size(40, 20).build(), positioner -> positioner.margin(4));
 
             TextFieldWidget parameterText = new TextFieldWidget(textRenderer, 100, 20, Text.of(""));
             parameterText.setText(entry.getValue().getName());
-            add(parameterText, positioner -> positioner.margin(5));
+            add(parameterText, positioner -> positioner.margin(4));
         }
 
         add(ButtonWidget.builder(Text.of("+"), button -> {
-        }).size(20, 20).build(), positioner -> positioner.margin(5));
+        }).size(20, 20).build(), positioner -> positioner.margin(4));
 
-        screen.addDrawableChild(this);
         forEachChild(screen::addDrawableChild);
         refreshPositions();
     }

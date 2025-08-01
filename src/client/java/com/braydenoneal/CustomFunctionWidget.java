@@ -9,6 +9,7 @@ import net.minecraft.client.gui.widget.DirectionalLayoutWidget;
 public class CustomFunctionWidget extends DirectionalLayoutWidget implements Drawable, Element, Selectable {
     public CustomFunctionWidget(int x, int y, ControllerScreen screen, CustomFunction customFunction) {
         super(x, y, DisplayAxis.VERTICAL);
+        screen.addDrawableChild(this);
 
         add(new CustomFunctionHeaderWidget(0, 0, screen, customFunction));
 
@@ -16,7 +17,6 @@ public class CustomFunctionWidget extends DirectionalLayoutWidget implements Dra
             add(new FunctionWidget(0, 0, screen, function));
         }
 
-        screen.addDrawableChild(this);
         forEachChild(screen::addDrawableChild);
         refreshPositions();
     }
