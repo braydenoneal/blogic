@@ -6,7 +6,6 @@ import com.mojang.datafixers.util.Either;
 import com.mojang.serialization.Codec;
 
 import java.util.List;
-import java.util.Map;
 
 // TODO: Have functions specify their return types and parameter types so that errors can be detected before running
 // TODO: Wrap Either<Terminal, Function>
@@ -22,10 +21,6 @@ public interface Function {
     }
 
     Terminal method(Context context) throws Exception;
-
-    String getName();
-
-    Map<String, Either<Terminal, Function>> getParameters();
 
     List<GuiComponent> getGuiComponents();
 

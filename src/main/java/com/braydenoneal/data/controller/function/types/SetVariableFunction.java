@@ -12,7 +12,6 @@ import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
 import java.util.List;
-import java.util.Map;
 
 public record SetVariableFunction(String name, Either<Terminal, Function> value) implements Function {
     public static final MapCodec<SetVariableFunction> CODEC = RecordCodecBuilder.mapCodec(
@@ -26,16 +25,6 @@ public record SetVariableFunction(String name, Either<Terminal, Function> value)
     @Override
     public Terminal method(Context context) {
         return new VoidTerminal();
-    }
-
-    @Override
-    public String getName() {
-        return "set " + name;
-    }
-
-    @Override
-    public Map<String, Either<Terminal, Function>> getParameters() {
-        return Map.of("value", value);
     }
 
     @Override

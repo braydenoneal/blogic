@@ -16,7 +16,6 @@ import net.minecraft.block.Blocks;
 import net.minecraft.util.math.BlockPos;
 
 import java.util.List;
-import java.util.Map;
 
 public record PlaceBlockFunction(
         Either<Terminal, Function> x,
@@ -49,16 +48,6 @@ public record PlaceBlockFunction(
         }
 
         return new VoidTerminal();
-    }
-
-    @Override
-    public String getName() {
-        return "Place Block";
-    }
-
-    @Override
-    public Map<String, Either<Terminal, Function>> getParameters() {
-        return Map.of("x", x, "y", y, "z", z, "block", block, "predicate", predicate);
     }
 
     @Override

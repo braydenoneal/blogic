@@ -13,7 +13,6 @@ import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
 import java.util.List;
-import java.util.Map;
 
 public record GreaterThanFunction(Either<Terminal, Function> a, Either<Terminal, Function> b) implements Function {
     public static final MapCodec<GreaterThanFunction> CODEC = RecordCodecBuilder.mapCodec(
@@ -26,16 +25,6 @@ public record GreaterThanFunction(Either<Terminal, Function> a, Either<Terminal,
     @Override
     public Terminal method(Context context) throws Exception {
         return new BooleanTerminal(IntegerTerminal.getValue(context, a) > IntegerTerminal.getValue(context, b));
-    }
-
-    @Override
-    public String getName() {
-        return "Greater Than";
-    }
-
-    @Override
-    public Map<String, Either<Terminal, Function>> getParameters() {
-        return Map.of("a", a, "b", b);
     }
 
     @Override

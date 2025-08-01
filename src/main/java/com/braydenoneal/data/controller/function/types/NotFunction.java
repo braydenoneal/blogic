@@ -12,7 +12,6 @@ import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
 import java.util.List;
-import java.util.Map;
 
 public record NotFunction(Either<Terminal, Function> input) implements Function {
     public static final MapCodec<NotFunction> CODEC = RecordCodecBuilder.mapCodec(
@@ -24,16 +23,6 @@ public record NotFunction(Either<Terminal, Function> input) implements Function 
     @Override
     public Terminal method(Context context) throws Exception {
         return new BooleanTerminal(!BooleanTerminal.getValue(context, input));
-    }
-
-    @Override
-    public String getName() {
-        return "Not";
-    }
-
-    @Override
-    public Map<String, Either<Terminal, Function>> getParameters() {
-        return Map.of("input", input);
     }
 
     @Override

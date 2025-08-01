@@ -13,7 +13,6 @@ import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
 import java.util.List;
-import java.util.Map;
 
 public record ConditionalFunction(
         Either<Terminal, Function> predicate,
@@ -33,20 +32,6 @@ public record ConditionalFunction(
     public Terminal method(Context context) throws Exception {
         // TODO: Generalize the type here somehow
         return new IntegerTerminal(BooleanTerminal.getValue(context, predicate) ? IntegerTerminal.getValue(context, a) : IntegerTerminal.getValue(context, b));
-    }
-
-    @Override
-    public String getName() {
-        return "Conditional";
-    }
-
-    @Override
-    public Map<String, Either<Terminal, Function>> getParameters() {
-        return Map.of(
-                "predicate", predicate,
-                "a", a,
-                "b", b
-        );
     }
 
     @Override

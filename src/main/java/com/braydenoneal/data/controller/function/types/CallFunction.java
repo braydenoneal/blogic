@@ -33,16 +33,6 @@ public record CallFunction(String name, Map<String, Either<Terminal, Function>> 
     }
 
     @Override
-    public String getName() {
-        return name;
-    }
-
-    @Override
-    public Map<String, Either<Terminal, Function>> getParameters() {
-        return parameters;
-    }
-
-    @Override
     public List<GuiComponent> getGuiComponents() {
         List<GuiComponent> components = new ArrayList<>();
 

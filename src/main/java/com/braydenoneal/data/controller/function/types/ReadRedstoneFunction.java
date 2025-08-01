@@ -13,7 +13,6 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.util.math.BlockPos;
 
 import java.util.List;
-import java.util.Map;
 
 public record ReadRedstoneFunction(
         Either<Terminal, Function> x,
@@ -40,16 +39,6 @@ public record ReadRedstoneFunction(
         int redstoneValue = context.world().getReceivedRedstonePower(readPos);
 
         return new IntegerTerminal(redstoneValue);
-    }
-
-    @Override
-    public String getName() {
-        return "Read Redstone";
-    }
-
-    @Override
-    public Map<String, Either<Terminal, Function>> getParameters() {
-        return Map.of("x", x, "y", y, "z", z);
     }
 
     @Override

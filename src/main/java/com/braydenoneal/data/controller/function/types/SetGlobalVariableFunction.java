@@ -48,16 +48,6 @@ public record SetGlobalVariableFunction(
     }
 
     @Override
-    public String getName() {
-        return "set global " + name;
-    }
-
-    @Override
-    public Map<String, Either<Terminal, Function>> getParameters() {
-        return Map.of("value", value, "predicate", predicate);
-    }
-
-    @Override
     public List<GuiComponent> getGuiComponents() {
         return List.of(
                 new LabelGuiComponent("set global"),
