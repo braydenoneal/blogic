@@ -14,7 +14,7 @@ public class CustomFunctionWidget extends DirectionalLayoutWidget implements Dra
         add(new CustomFunctionHeaderWidget(0, 0, screen, customFunction));
 
         for (Function function : customFunction.body()) {
-            add(new FunctionWidget(0, 0, screen, function));
+            add(new FunctionWidget(0, 0, screen, function, 0));
         }
 
         forEachChild(screen::addDrawableChild);

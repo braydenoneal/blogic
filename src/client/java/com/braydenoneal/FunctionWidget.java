@@ -9,22 +9,35 @@ import net.minecraft.client.gl.RenderPipelines;
 import net.minecraft.client.gui.*;
 import net.minecraft.client.gui.screen.narration.NarrationMessageBuilder;
 import net.minecraft.client.gui.widget.DirectionalLayoutWidget;
+import net.minecraft.client.gui.widget.EmptyWidget;
 import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.client.gui.widget.TextWidget;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 
-import java.util.Random;
+import java.util.List;
 
 public class FunctionWidget extends DirectionalLayoutWidget implements Drawable, Element, Selectable {
     private static final Identifier TEXTURE = Identifier.ofVanilla("widget/button");
-    private final int color;
     private final ControllerScreen screen;
+    private final int level;
+    private final List<Integer> colors;
 
-    public FunctionWidget(int x, int y, ControllerScreen screen, Function function) {
+    public FunctionWidget(int x, int y, ControllerScreen screen, Function function, int level) {
         super(x, y, DisplayAxis.HORIZONTAL);
         this.screen = screen;
+        this.level = level;
+        this.colors = List.of(
+                0x2FFF0000,
+                0x2FFFFF00,
+                0x2F00FF00,
+                0x2F00FFFF,
+                0x2F0000FF,
+                0x2FFF00FF
+        );
         screen.addDrawableChild(this);
+
+        add(new EmptyWidget(4, 20));
 
         for (Function.GuiComponent component : function.getGuiComponents()) {
             if (component instanceof Function.LabelGuiComponent(String text)) {
@@ -36,9 +49,7 @@ public class FunctionWidget extends DirectionalLayoutWidget implements Drawable,
             }
         }
 
-        Random random = new Random();
-        color = 0x5F000000 + random.nextInt(0xFF) * 0x10000 +
-                random.nextInt(0xFF) * 0x100 + random.nextInt(0xFF);
+        add(new EmptyWidget(4, 20));
 
         forEachChild(screen::addDrawableChild);
         refreshPositions();
@@ -49,7 +60,7 @@ public class FunctionWidget extends DirectionalLayoutWidget implements Drawable,
             add(new TerminalWidget(0, 0, screen, parameter.left().get()),
                     positioner -> positioner.margin(4).alignVerticalCenter());
         } else if (parameter.right().isPresent()) {
-            add(new FunctionWidget(0, 0, screen, parameter.right().get()),
+            add(new FunctionWidget(0, 0, screen, parameter.right().get(), (level + 1) % colors.toArray().length),
                     positioner -> positioner.margin(4).alignVerticalCenter());
         }
     }
@@ -69,7 +80,7 @@ public class FunctionWidget extends DirectionalLayoutWidget implements Drawable,
     @Override
     public void render(DrawContext context, int mouseX, int mouseY, float deltaTicks) {
         context.drawGuiTexture(RenderPipelines.GUI_TEXTURED, TEXTURE, getX(), getY(), getWidth(), getHeight());
-        context.fill(getX(), getY(), getX() + getWidth(), getY() + getHeight(), color);
+        context.fill(getX(), getY(), getX() + getWidth(), getY() + getHeight(), colors.get(level));
     }
 
     @Override
