@@ -23,94 +23,8 @@ public class Test {
             new VoidParameter(),
             Map.of("a", new BooleanParameter(), "b", new IntegerParameter()),
             List.of(
-                    new SetGlobalVariableFunction(
-                            "neighborsCount",
-                            Either.right(new AddFunction(
-                                    Either.right(new AddFunction(
-                                            Either.right(new AddFunction(
-                                                    Either.right(new ConditionalFunction(
-                                                            Either.right(new IsBlockAirFunction(
-                                                                    Either.left(new IntegerTerminal(-1)),
-                                                                    Either.left(new IntegerTerminal(2)),
-                                                                    Either.left(new IntegerTerminal(-1))
-                                                            )),
-                                                            Either.left(new IntegerTerminal(0)),
-                                                            Either.left(new IntegerTerminal(1))
-                                                    )),
-                                                    Either.right(new ConditionalFunction(
-                                                            Either.right(new IsBlockAirFunction(
-                                                                    Either.left(new IntegerTerminal(-1)),
-                                                                    Either.left(new IntegerTerminal(2)),
-                                                                    Either.left(new IntegerTerminal(0))
-                                                            )),
-                                                            Either.left(new IntegerTerminal(0)),
-                                                            Either.left(new IntegerTerminal(1))
-                                                    ))
-                                            )),
-                                            Either.right(new AddFunction(
-                                                    Either.right(new ConditionalFunction(
-                                                            Either.right(new IsBlockAirFunction(
-                                                                    Either.left(new IntegerTerminal(-1)),
-                                                                    Either.left(new IntegerTerminal(2)),
-                                                                    Either.left(new IntegerTerminal(1))
-                                                            )),
-                                                            Either.left(new IntegerTerminal(0)),
-                                                            Either.left(new IntegerTerminal(1))
-                                                    )),
-                                                    Either.right(new ConditionalFunction(
-                                                            Either.right(new IsBlockAirFunction(
-                                                                    Either.left(new IntegerTerminal(0)),
-                                                                    Either.left(new IntegerTerminal(2)),
-                                                                    Either.left(new IntegerTerminal(-1))
-                                                            )),
-                                                            Either.left(new IntegerTerminal(0)),
-                                                            Either.left(new IntegerTerminal(1))
-                                                    ))
-                                            ))
-                                    )),
-                                    Either.right(new AddFunction(
-                                            Either.right(new AddFunction(
-                                                    Either.right(new ConditionalFunction(
-                                                            Either.right(new IsBlockAirFunction(
-                                                                    Either.left(new IntegerTerminal(0)),
-                                                                    Either.left(new IntegerTerminal(2)),
-                                                                    Either.left(new IntegerTerminal(1))
-                                                            )),
-                                                            Either.left(new IntegerTerminal(0)),
-                                                            Either.left(new IntegerTerminal(1))
-                                                    )),
-                                                    Either.right(new ConditionalFunction(
-                                                            Either.right(new IsBlockAirFunction(
-                                                                    Either.left(new IntegerTerminal(1)),
-                                                                    Either.left(new IntegerTerminal(2)),
-                                                                    Either.left(new IntegerTerminal(-1))
-                                                            )),
-                                                            Either.left(new IntegerTerminal(0)),
-                                                            Either.left(new IntegerTerminal(1))
-                                                    ))
-                                            )),
-                                            Either.right(new AddFunction(
-                                                    Either.right(new ConditionalFunction(
-                                                            Either.right(new IsBlockAirFunction(
-                                                                    Either.left(new IntegerTerminal(1)),
-                                                                    Either.left(new IntegerTerminal(2)),
-                                                                    Either.left(new IntegerTerminal(0))
-                                                            )),
-                                                            Either.left(new IntegerTerminal(0)),
-                                                            Either.left(new IntegerTerminal(1))
-                                                    )),
-                                                    Either.right(new ConditionalFunction(
-                                                            Either.right(new IsBlockAirFunction(
-                                                                    Either.left(new IntegerTerminal(1)),
-                                                                    Either.left(new IntegerTerminal(2)),
-                                                                    Either.left(new IntegerTerminal(1))
-                                                            )),
-                                                            Either.left(new IntegerTerminal(0)),
-                                                            Either.left(new IntegerTerminal(1))
-                                                    ))
-                                            ))
-                                    ))
-                            )),
+                    new SetVariableFunction(
+                            "evenGameTime",
                             Either.right(new EqualsFunction(
                                     Either.right(new ModulusFunction(
                                             Either.right(new GetTimeFunction()),
@@ -119,10 +33,101 @@ public class Test {
                                     Either.left(new IntegerTerminal(0))
                             ))
                     ),
-                    new PlaceBlockFunction(
-                            Either.left(new IntegerTerminal(0)),
-                            Either.left(new IntegerTerminal(2)),
-                            Either.left(new IntegerTerminal(0)),
+                    new SetGlobalVariableFunction(
+                            "neighborsCount",
+                            Either.right(new ConditionalFunction(
+                                    Either.right(new IsBlockAirFunction(
+                                            Either.left(new IntegerTerminal(-1)),
+                                            Either.left(new IntegerTerminal(2)),
+                                            Either.left(new IntegerTerminal(-1))
+                                    )),
+                                    Either.left(new IntegerTerminal(0)),
+                                    Either.left(new IntegerTerminal(1))
+                            )),
+                            Either.right(new GetVariableFunction("evenGameTime"))
+                    ),
+                    new SetGlobalVariableFunction(
+                            "neighborsCount",
+                            Either.right(new AddFunction(
+                                    Either.right(new GetGlobalVariableFunction("neighborsCount")),
+                                    Either.right(new ConditionalFunction(
+                                            Either.right(new IsBlockAirFunction(
+                                                    Either.left(new IntegerTerminal(-1)),
+                                                    Either.left(new IntegerTerminal(2)),
+                                                    Either.left(new IntegerTerminal(0))
+                                            )),
+                                            Either.left(new IntegerTerminal(0)),
+                                            Either.left(new IntegerTerminal(1))
+                                    ))
+                            )),
+                            Either.right(new GetVariableFunction("evenGameTime"))
+                    ),
+                    new SetGlobalVariableFunction(
+                            "neighborsCount",
+                            Either.right(new AddFunction(
+                                    Either.right(new GetGlobalVariableFunction("neighborsCount")),
+                                    Either.right(new ConditionalFunction(
+                                            Either.right(new IsBlockAirFunction(
+                                                    Either.left(new IntegerTerminal(-1)),
+                                                    Either.left(new IntegerTerminal(2)),
+                                                    Either.left(new IntegerTerminal(1))
+                                            )),
+                                            Either.left(new IntegerTerminal(0)),
+                                            Either.left(new IntegerTerminal(1))
+                                    ))
+                            )),
+                            Either.right(new GetVariableFunction("evenGameTime"))
+                    ),
+                    new SetGlobalVariableFunction(
+                            "neighborsCount",
+                            Either.right(new AddFunction(
+                                    Either.right(new GetGlobalVariableFunction("neighborsCount")),
+                                    Either.right(new ConditionalFunction(
+                                            Either.right(new IsBlockAirFunction(
+                                                    Either.left(new IntegerTerminal(0)),
+                                                    Either.left(new IntegerTerminal(2)),
+                                                    Either.left(new IntegerTerminal(-1))
+                                            )),
+                                            Either.left(new IntegerTerminal(0)),
+                                            Either.left(new IntegerTerminal(1))
+                                    ))
+                            )),
+                            Either.right(new GetVariableFunction("evenGameTime"))
+                    ),
+                    new SetGlobalVariableFunction(
+                            "neighborsCount",
+                            Either.right(new AddFunction(
+                                    Either.right(new GetGlobalVariableFunction("neighborsCount")),
+                                    Either.right(new ConditionalFunction(
+                                            Either.right(new IsBlockAirFunction(
+                                                    Either.left(new IntegerTerminal(0)),
+                                                    Either.left(new IntegerTerminal(2)),
+                                                    Either.left(new IntegerTerminal(1))
+                                            )),
+                                            Either.left(new IntegerTerminal(0)),
+                                            Either.left(new IntegerTerminal(1))
+                                    ))
+                            )),
+                            Either.right(new GetVariableFunction("evenGameTime"))
+                    ),
+                    new SetGlobalVariableFunction(
+                            "neighborsCount",
+                            Either.right(new AddFunction(
+                                    Either.right(new GetGlobalVariableFunction("neighborsCount")),
+                                    Either.right(new ConditionalFunction(
+                                            Either.right(new IsBlockAirFunction(
+                                                    Either.left(new IntegerTerminal(1)),
+                                                    Either.left(new IntegerTerminal(2)),
+                                                    Either.left(new IntegerTerminal(1))
+                                            )),
+                                            Either.left(new IntegerTerminal(0)),
+                                            Either.left(new IntegerTerminal(1))
+                                    ))
+                            )),
+                            Either.right(new GetVariableFunction("evenGameTime"))
+                    ),
+                    new SetVariableFunction(
+                            "block",
                             Either.right(new ConditionalFunction(
                                     Either.right(new OrFunction(
                                             Either.right(new LessThanFunction(
@@ -136,7 +141,10 @@ public class Test {
                                     )),
                                     Either.left(new IntegerTerminal(0)),
                                     Either.left(new IntegerTerminal(1))
-                            )),
+                            ))
+                    ),
+                    new SetVariableFunction(
+                            "shouldPlaceBlock",
                             Either.right(new AndFunction(
                                     Either.right(new NotFunction(
                                             Either.right(new EqualsFunction(
@@ -152,6 +160,13 @@ public class Test {
                                             Either.left(new IntegerTerminal(1))
                                     ))
                             ))
+                    ),
+                    new PlaceBlockFunction(
+                            Either.left(new IntegerTerminal(0)),
+                            Either.left(new IntegerTerminal(2)),
+                            Either.left(new IntegerTerminal(0)),
+                            Either.right(new GetVariableFunction("block")),
+                            Either.right(new GetVariableFunction("shouldPlaceBlock"))
                     )
             )
     );
