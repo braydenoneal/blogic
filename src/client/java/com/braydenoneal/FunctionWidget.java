@@ -6,36 +6,39 @@ import com.mojang.datafixers.util.Either;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gl.RenderPipelines;
-import net.minecraft.client.gui.*;
+import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.narration.NarrationMessageBuilder;
-import net.minecraft.client.gui.widget.DirectionalLayoutWidget;
-import net.minecraft.client.gui.widget.EmptyWidget;
-import net.minecraft.client.gui.widget.TextFieldWidget;
-import net.minecraft.client.gui.widget.TextWidget;
+import net.minecraft.client.gui.widget.*;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Consumer;
 
-public class FunctionWidget extends DirectionalLayoutWidget implements Drawable, Element, Selectable {
+public class FunctionWidget extends ClickableWidget implements LayoutWidget {
     private static final Identifier TEXTURE = Identifier.ofVanilla("widget/button");
+    private static final List<Integer> COLORS = List.of(
+            0x00000000,
+            0x3FFF0000,
+            0x3FFFFF00,
+            0x3F00FF00,
+            0x3F00FFFF,
+            0x3F0000FF,
+            0x3FFF00FF
+    );
+
+    private final GridWidget grid;
+    private int currentIndex = 0;
+    private final List<ClickableWidget> widgets = new ArrayList<>();
     private final ControllerScreen screen;
     private final int level;
-    private final List<Integer> colors;
 
     public FunctionWidget(int x, int y, ControllerScreen screen, Function function, int level) {
-        super(x, y, DisplayAxis.HORIZONTAL);
+        super(x, y, 0, 0, Text.of(""));
+        this.grid = new GridWidget(x, y);
         this.screen = screen;
         this.level = level;
-        this.colors = List.of(
-                0x2FFF0000,
-                0x2FFFFF00,
-                0x2F00FF00,
-                0x2F00FFFF,
-                0x2F0000FF,
-                0x2FFF00FF
-        );
-        screen.addDrawableChild(this);
 
         add(new EmptyWidget(4, 20));
 
@@ -51,58 +54,161 @@ public class FunctionWidget extends DirectionalLayoutWidget implements Drawable,
 
         add(new EmptyWidget(4, 20));
 
-        forEachChild(screen::addDrawableChild);
         refreshPositions();
+    }
+
+    public void add(Widget widget) {
+        if (widget instanceof ClickableWidget clickableWidget) {
+            widgets.add(clickableWidget);
+        }
+
+        grid.add(widget, 0, currentIndex++, positioner -> positioner.margin(4).alignVerticalCenter());
     }
 
     public void addParameter(Either<Terminal, Function> parameter) {
         if (parameter.left().isPresent()) {
-            add(new TerminalWidget(0, 0, screen, parameter.left().get()),
-                    positioner -> positioner.margin(4).alignVerticalCenter());
+            add(new TerminalWidget(0, 0, screen, parameter.left().get()));
         } else if (parameter.right().isPresent()) {
-            add(new FunctionWidget(0, 0, screen, parameter.right().get(), (level + 1) % colors.toArray().length),
-                    positioner -> positioner.margin(4).alignVerticalCenter());
+            add(new FunctionWidget(0, 0, screen, parameter.right().get(), (level + 1) % COLORS.toArray().length));
         }
     }
 
     public void addLabel(String text) {
         TextRenderer textRenderer = MinecraftClient.getInstance().textRenderer;
-        add(new TextWidget(textRenderer.getWidth(text), 20, Text.of(text), textRenderer), positioner -> positioner.margin(4).alignVerticalCenter());
+        add(new TextWidget(textRenderer.getWidth(text), 20, Text.of(text), textRenderer));
     }
 
     public void addTextField(String value) {
         TextRenderer textRenderer = MinecraftClient.getInstance().textRenderer;
-        TextFieldWidget valueText = new TextFieldWidget(textRenderer, textRenderer.getWidth(value) + 10, 20, Text.of(""));
-        valueText.setText(value);
-        add(valueText, positioner -> positioner.margin(4).alignVerticalCenter());
+        TextFieldWidget textFieldWidget = new TextFieldWidget(textRenderer, textRenderer.getWidth(value) + 10, 20, Text.of(""));
+        textFieldWidget.setText(value);
+        add(textFieldWidget);
     }
 
     @Override
-    public void render(DrawContext context, int mouseX, int mouseY, float deltaTicks) {
+    public int getWidth() {
+        return this.grid.getWidth();
+    }
+
+    @Override
+    public int getHeight() {
+        return this.grid.getHeight();
+    }
+
+    @Override
+    public void setX(int x) {
+        this.grid.setX(x);
+    }
+
+    @Override
+    public void setY(int y) {
+        this.grid.setY(y);
+    }
+
+    @Override
+    public int getX() {
+        return this.grid.getX();
+    }
+
+    @Override
+    public int getY() {
+        return this.grid.getY();
+    }
+
+    @Override
+    public void refreshPositions() {
+        this.grid.refreshPositions();
+    }
+
+    @Override
+    protected void renderWidget(DrawContext context, int mouseX, int mouseY, float deltaTicks) {
         context.drawGuiTexture(RenderPipelines.GUI_TEXTURED, TEXTURE, getX(), getY(), getWidth(), getHeight());
-        context.fill(getX(), getY(), getX() + getWidth(), getY() + getHeight(), colors.get(level));
+        context.fill(getX(), getY(), getX() + getWidth(), getY() + getHeight(), COLORS.get(level));
     }
 
     @Override
-    public void setFocused(boolean focused) {
+    protected void appendClickableNarrations(NarrationMessageBuilder builder) {
     }
 
-    @Override
-    public boolean isFocused() {
+    public boolean childClicked(double mouseX, double mouseY, int button) {
+        for (ClickableWidget widget : widgets) {
+            if (widget instanceof FunctionWidget functionWidget && functionWidget.childClicked(mouseX, mouseY, button)) {
+                return true;
+            } else if (widget.mouseClicked(mouseX, mouseY, button)) {
+                return true;
+            }
+        }
+
         return false;
     }
 
     @Override
-    public Selectable.SelectionType getType() {
-        return Selectable.SelectionType.NONE;
+    public boolean mouseClicked(double mouseX, double mouseY, int button) {
+        if (childClicked(mouseX, mouseY, button)) {
+            return false;
+        }
+
+        if (active && visible && isValidClickButton(button) && isMouseOver(mouseX, mouseY)) {
+            playDownSound(MinecraftClient.getInstance().getSoundManager());
+            onClick(mouseX, mouseY);
+
+            return true;
+        }
+
+        return false;
     }
 
     @Override
-    public void appendNarrations(NarrationMessageBuilder builder) {
+    public boolean mouseReleased(double mouseX, double mouseY, int button) {
+        for (ClickableWidget widget : widgets) {
+            if (widget.mouseReleased(mouseX, mouseY, button)) {
+                return true;
+            }
+        }
+
+        return super.mouseReleased(mouseX, mouseY, button);
     }
 
     @Override
-    public ScreenRect getNavigationFocus() {
-        return super.getNavigationFocus();
+    public boolean mouseDragged(double mouseX, double mouseY, int button, double deltaX, double deltaY) {
+        for (ClickableWidget widget : widgets) {
+            if (widget.mouseDragged(mouseX, mouseY, button, deltaX, deltaY)) {
+                return true;
+            }
+        }
+
+        return super.mouseDragged(mouseX, mouseY, button, deltaX, deltaY);
+    }
+
+    public boolean isMouseOverChild(double mouseX, double mouseY) {
+        for (ClickableWidget widget : widgets) {
+            if (widget instanceof FunctionWidget functionWidget && functionWidget.isMouseOverChild(mouseX, mouseY)) {
+                return true;
+            } else if (widget.isMouseOver(mouseX, mouseY)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    @Override
+    public boolean isMouseOver(double mouseX, double mouseY) {
+        if (isMouseOverChild(mouseX, mouseY)) {
+            return false;
+        }
+
+        return super.isMouseOver(mouseX, mouseY);
+    }
+
+    @Override
+    public void forEachChild(Consumer<ClickableWidget> consumer) {
+        consumer.accept(this);
+        forEachElement(element -> element.forEachChild(consumer));
+    }
+
+    @Override
+    public void forEachElement(Consumer<Widget> consumer) {
+        grid.forEachElement(consumer);
     }
 }

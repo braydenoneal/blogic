@@ -17,8 +17,8 @@ public class CustomFunctionWidget extends DirectionalLayoutWidget implements Dra
             add(new FunctionWidget(0, 0, screen, function, 0));
         }
 
-        forEachChild(screen::addDrawableChild);
         refreshPositions();
+        forEachChild(screen::addDrawableChild);
     }
 
     @Override

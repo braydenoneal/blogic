@@ -18,8 +18,6 @@ public class ControllerScreen extends HandledScreen<ControllerScreenHandler> {
     @Override
     protected void init() {
         super.init();
-//        addDrawableChild(ButtonWidget.builder(ScreenTexts.DONE, button -> close()).dimensions(width / 2 - 4 - 150, 210, 150, 20).build());
-//        addDrawableChild(ButtonWidget.builder(ScreenTexts.CANCEL, button -> close()).dimensions(width / 2 + 4, 210, 150, 20).build());
         new CustomFunctionWidget(20, 20, this, Test.CUSTOM_FUNCTION);
     }
 

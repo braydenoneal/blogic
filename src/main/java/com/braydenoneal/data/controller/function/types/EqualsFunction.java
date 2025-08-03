@@ -31,7 +31,7 @@ public record EqualsFunction(Either<Terminal, Function> a, Either<Terminal, Func
     public List<GuiComponent> getGuiComponents() {
         return List.of(
                 new ParameterGuiComponent(a),
-                new LabelGuiComponent("equals"),
+                new LabelGuiComponent("=="),
                 new ParameterGuiComponent(b)
         );
     }
