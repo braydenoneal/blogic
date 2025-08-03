@@ -86,53 +86,14 @@ public class FunctionWidget extends ClickableWidget implements LayoutWidget {
     }
 
     @Override
-    public int getWidth() {
-        return this.grid.getWidth();
-    }
-
-    @Override
-    public int getHeight() {
-        return this.grid.getHeight();
-    }
-
-    @Override
-    public void setX(int x) {
-        this.grid.setX(x);
-    }
-
-    @Override
-    public void setY(int y) {
-        this.grid.setY(y);
-    }
-
-    @Override
-    public int getX() {
-        return this.grid.getX();
-    }
-
-    @Override
-    public int getY() {
-        return this.grid.getY();
-    }
-
-    @Override
-    public void refreshPositions() {
-        this.grid.refreshPositions();
-    }
-
-    @Override
     protected void renderWidget(DrawContext context, int mouseX, int mouseY, float deltaTicks) {
         context.drawGuiTexture(RenderPipelines.GUI_TEXTURED, TEXTURE, getX(), getY(), getWidth(), getHeight());
         context.fill(getX(), getY(), getX() + getWidth(), getY() + getHeight(), COLORS.get(level));
     }
 
-    @Override
-    protected void appendClickableNarrations(NarrationMessageBuilder builder) {
-    }
-
-    public boolean childClicked(double mouseX, double mouseY, int button) {
+    public boolean childMouseClicked(double mouseX, double mouseY, int button) {
         for (ClickableWidget widget : widgets) {
-            if (widget instanceof FunctionWidget functionWidget && functionWidget.childClicked(mouseX, mouseY, button)) {
+            if (widget instanceof FunctionWidget functionWidget && functionWidget.childMouseClicked(mouseX, mouseY, button)) {
                 return true;
             } else if (widget.mouseClicked(mouseX, mouseY, button)) {
                 return true;
@@ -144,7 +105,7 @@ public class FunctionWidget extends ClickableWidget implements LayoutWidget {
 
     @Override
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
-        if (childClicked(mouseX, mouseY, button)) {
+        if (childMouseClicked(mouseX, mouseY, button)) {
             return false;
         }
 
@@ -210,5 +171,44 @@ public class FunctionWidget extends ClickableWidget implements LayoutWidget {
     @Override
     public void forEachElement(Consumer<Widget> consumer) {
         grid.forEachElement(consumer);
+    }
+
+    @Override
+    public void refreshPositions() {
+        this.grid.refreshPositions();
+    }
+
+    @Override
+    public int getWidth() {
+        return this.grid.getWidth();
+    }
+
+    @Override
+    public int getHeight() {
+        return this.grid.getHeight();
+    }
+
+    @Override
+    public void setX(int x) {
+        this.grid.setX(x);
+    }
+
+    @Override
+    public void setY(int y) {
+        this.grid.setY(y);
+    }
+
+    @Override
+    public int getX() {
+        return this.grid.getX();
+    }
+
+    @Override
+    public int getY() {
+        return this.grid.getY();
+    }
+
+    @Override
+    protected void appendClickableNarrations(NarrationMessageBuilder builder) {
     }
 }
