@@ -91,56 +91,6 @@ public class FunctionWidget extends ClickableWidget implements LayoutWidget {
         context.fill(getX(), getY(), getX() + getWidth(), getY() + getHeight(), COLORS.get(level));
     }
 
-    public boolean childMouseClicked(double mouseX, double mouseY, int button) {
-        for (ClickableWidget widget : widgets) {
-            if (widget instanceof FunctionWidget functionWidget && functionWidget.childMouseClicked(mouseX, mouseY, button)) {
-                return true;
-            } else if (widget.mouseClicked(mouseX, mouseY, button)) {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
-    @Override
-    public boolean mouseClicked(double mouseX, double mouseY, int button) {
-        if (childMouseClicked(mouseX, mouseY, button)) {
-            return false;
-        }
-
-        if (active && visible && isValidClickButton(button) && isMouseOver(mouseX, mouseY)) {
-            playDownSound(MinecraftClient.getInstance().getSoundManager());
-            onClick(mouseX, mouseY);
-
-            return true;
-        }
-
-        return false;
-    }
-
-    @Override
-    public boolean mouseReleased(double mouseX, double mouseY, int button) {
-        for (ClickableWidget widget : widgets) {
-            if (widget.mouseReleased(mouseX, mouseY, button)) {
-                return true;
-            }
-        }
-
-        return super.mouseReleased(mouseX, mouseY, button);
-    }
-
-    @Override
-    public boolean mouseDragged(double mouseX, double mouseY, int button, double deltaX, double deltaY) {
-        for (ClickableWidget widget : widgets) {
-            if (widget.mouseDragged(mouseX, mouseY, button, deltaX, deltaY)) {
-                return true;
-            }
-        }
-
-        return super.mouseDragged(mouseX, mouseY, button, deltaX, deltaY);
-    }
-
     public boolean isMouseOverChild(double mouseX, double mouseY) {
         for (ClickableWidget widget : widgets) {
             if (widget instanceof FunctionWidget functionWidget && functionWidget.isMouseOverChild(mouseX, mouseY)) {
