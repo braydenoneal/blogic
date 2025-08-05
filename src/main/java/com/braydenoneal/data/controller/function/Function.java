@@ -24,12 +24,16 @@ public interface Function {
 
     List<GuiComponent> getGuiComponents();
 
+    Function withParam(String name, Either<Terminal, Function> value);
+
+    void setParameter(String name, Either<Terminal, Function> value);
+
     FunctionType<?> getType();
 
     interface GuiComponent {
     }
 
-    record ParameterGuiComponent(Either<Terminal, Function> parameter) implements GuiComponent {
+    record ParameterGuiComponent(String name, Either<Terminal, Function> parameter) implements GuiComponent {
     }
 
     record LabelGuiComponent(String text) implements GuiComponent {

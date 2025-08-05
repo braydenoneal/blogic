@@ -13,13 +13,29 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 
 import java.util.List;
 
-public record AndFunction(Either<Terminal, Function> a, Either<Terminal, Function> b) implements Function {
+public class AndFunction implements Function {
     public static final MapCodec<AndFunction> CODEC = RecordCodecBuilder.mapCodec(
             instance -> instance.group(
                     Codec.either(Terminal.CODEC, Function.CODEC).fieldOf("a").forGetter(AndFunction::a),
                     Codec.either(Terminal.CODEC, Function.CODEC).fieldOf("b").forGetter(AndFunction::b)
             ).apply(instance, AndFunction::new)
     );
+
+    private Either<Terminal, Function> a;
+    private Either<Terminal, Function> b;
+
+    public AndFunction(Either<Terminal, Function> a, Either<Terminal, Function> b) {
+        this.a = a;
+        this.b = b;
+    }
+
+    public Either<Terminal, Function> a() {
+        return a;
+    }
+
+    public Either<Terminal, Function> b() {
+        return b;
+    }
 
     @Override
     public Terminal method(Context context) throws Exception {
@@ -29,10 +45,27 @@ public record AndFunction(Either<Terminal, Function> a, Either<Terminal, Functio
     @Override
     public List<GuiComponent> getGuiComponents() {
         return List.of(
-                new ParameterGuiComponent(a),
+                new ParameterGuiComponent("a", a),
                 new LabelGuiComponent("and"),
-                new ParameterGuiComponent(b)
+                new ParameterGuiComponent("b", b)
         );
+    }
+
+    @Override
+    public Function withParam(String name, Either<Terminal, Function> value) {
+        return switch (name) {
+            case "a" -> new AndFunction(value, b);
+            case "b" -> new AndFunction(a, value);
+            default -> this;
+        };
+    }
+
+    @Override
+    public void setParameter(String name, Either<Terminal, Function> value) {
+        switch (name) {
+            case "a" -> a = value;
+            case "b" -> b = value;
+        }
     }
 
     @Override

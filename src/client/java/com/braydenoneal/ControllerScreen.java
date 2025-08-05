@@ -21,6 +21,10 @@ public class ControllerScreen extends HandledScreen<ControllerScreenHandler> {
         new CustomFunctionWidget(20, 20, this, Test.CUSTOM_FUNCTION);
     }
 
+    public void reset() {
+        this.clearAndInit();
+    }
+
     @Override
     protected void drawForeground(DrawContext context, int mouseX, int mouseY) {
     }
@@ -31,5 +35,9 @@ public class ControllerScreen extends HandledScreen<ControllerScreenHandler> {
 
     public <T extends Element & Drawable & Selectable> T addDrawableChild(T drawableElement) {
         return super.addDrawableChild(drawableElement);
+    }
+
+    public void removeChild(Element child) {
+        remove(child);
     }
 }

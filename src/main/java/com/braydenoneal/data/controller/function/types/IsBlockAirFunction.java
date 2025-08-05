@@ -17,11 +17,7 @@ import net.minecraft.util.math.BlockPos;
 
 import java.util.List;
 
-public record IsBlockAirFunction(
-        Either<Terminal, Function> x,
-        Either<Terminal, Function> y,
-        Either<Terminal, Function> z
-) implements Function {
+public class IsBlockAirFunction implements Function {
     public static final MapCodec<IsBlockAirFunction> CODEC = RecordCodecBuilder.mapCodec(
             instance -> instance.group(
                     Codec.either(Terminal.CODEC, Function.CODEC).fieldOf("x").forGetter(IsBlockAirFunction::x),
@@ -29,6 +25,28 @@ public record IsBlockAirFunction(
                     Codec.either(Terminal.CODEC, Function.CODEC).fieldOf("z").forGetter(IsBlockAirFunction::z)
             ).apply(instance, IsBlockAirFunction::new)
     );
+
+    private Either<Terminal, Function> x;
+    private Either<Terminal, Function> y;
+    private Either<Terminal, Function> z;
+
+    public IsBlockAirFunction(Either<Terminal, Function> x, Either<Terminal, Function> y, Either<Terminal, Function> z) {
+        this.x = x;
+        this.y = y;
+        this.z = z;
+    }
+
+    public Either<Terminal, Function> x() {
+        return x;
+    }
+
+    public Either<Terminal, Function> y() {
+        return y;
+    }
+
+    public Either<Terminal, Function> z() {
+        return z;
+    }
 
     @Override
     public Terminal method(Context context) throws Exception {
@@ -47,12 +65,31 @@ public record IsBlockAirFunction(
         return List.of(
                 new LabelGuiComponent("is block air"),
                 new LabelGuiComponent("x"),
-                new ParameterGuiComponent(x),
+                new ParameterGuiComponent("x", x),
                 new LabelGuiComponent("y"),
-                new ParameterGuiComponent(y),
+                new ParameterGuiComponent("y", y),
                 new LabelGuiComponent("z"),
-                new ParameterGuiComponent(z)
+                new ParameterGuiComponent("z", z)
         );
+    }
+
+    @Override
+    public Function withParam(String name, Either<Terminal, Function> value) {
+        return switch (name) {
+            case "x" -> new IsBlockAirFunction(value, y, z);
+            case "y" -> new IsBlockAirFunction(x, value, z);
+            case "z" -> new IsBlockAirFunction(x, y, value);
+            default -> this;
+        };
+    }
+
+    @Override
+    public void setParameter(String name, Either<Terminal, Function> value) {
+        switch (name) {
+            case "x" -> x = value;
+            case "y" -> y = value;
+            case "z" -> z = value;
+        }
     }
 
     @Override

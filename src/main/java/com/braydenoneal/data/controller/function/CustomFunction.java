@@ -61,9 +61,9 @@ public record CustomFunction(
         for (Function function : body) {
             returnValue = function.call(newContext);
 
-            if (function instanceof SetVariableFunction(String variableName, Either<Terminal, Function> value)) {
+            if (function instanceof SetVariableFunction setVariableFunction) {
                 try {
-                    newContext.variables().put(variableName, Terminal.getTerminal(context, value));
+                    newContext.variables().put(setVariableFunction.name(), Terminal.getTerminal(context, setVariableFunction.value()));
                 } catch (Exception e) {
                     return new ErrorTerminal("Error setting variable");
                 }

@@ -9,6 +9,7 @@ import com.braydenoneal.data.controller.parameter.types.VoidParameter;
 import com.braydenoneal.data.controller.terminal.Terminal;
 import com.braydenoneal.data.controller.terminal.types.BooleanTerminal;
 import com.braydenoneal.data.controller.terminal.types.IntegerTerminal;
+import com.braydenoneal.data.controller.terminal.types.VoidTerminal;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
 import com.mojang.datafixers.util.Either;
@@ -18,7 +19,7 @@ import java.util.List;
 import java.util.Map;
 
 public class Test {
-    public static final CustomFunction CUSTOM_FUNCTION = new CustomFunction(
+    public static CustomFunction CUSTOM_FUNCTION = new CustomFunction(
             "gameOfLife",
             new VoidParameter(),
             Map.of("a", new BooleanParameter(), "b", new IntegerParameter()),
@@ -164,6 +165,13 @@ public class Test {
                     new PlaceBlockFunction(
                             Either.left(new IntegerTerminal(0)),
                             Either.left(new IntegerTerminal(2)),
+                            Either.left(new IntegerTerminal(0)),
+                            Either.right(new GetVariableFunction("block")),
+                            Either.right(new GetVariableFunction("shouldPlaceBlock"))
+                    ),
+                    new PlaceBlockFunction(
+                            Either.left(new VoidTerminal()),
+                            Either.left(new VoidTerminal()),
                             Either.left(new IntegerTerminal(0)),
                             Either.right(new GetVariableFunction("block")),
                             Either.right(new GetVariableFunction("shouldPlaceBlock"))

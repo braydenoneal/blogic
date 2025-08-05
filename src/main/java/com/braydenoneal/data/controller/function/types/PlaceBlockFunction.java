@@ -17,13 +17,7 @@ import net.minecraft.util.math.BlockPos;
 
 import java.util.List;
 
-public record PlaceBlockFunction(
-        Either<Terminal, Function> x,
-        Either<Terminal, Function> y,
-        Either<Terminal, Function> z,
-        Either<Terminal, Function> block,
-        Either<Terminal, Function> predicate
-) implements Function {
+public class PlaceBlockFunction implements Function {
     public static final MapCodec<PlaceBlockFunction> CODEC = RecordCodecBuilder.mapCodec(
             instance -> instance.group(
                     Codec.either(Terminal.CODEC, Function.CODEC).fieldOf("x").forGetter(PlaceBlockFunction::x),
@@ -33,6 +27,40 @@ public record PlaceBlockFunction(
                     Codec.either(Terminal.CODEC, Function.CODEC).fieldOf("predicate").forGetter(PlaceBlockFunction::predicate)
             ).apply(instance, PlaceBlockFunction::new)
     );
+
+    private Either<Terminal, Function> x;
+    private Either<Terminal, Function> y;
+    private Either<Terminal, Function> z;
+    private Either<Terminal, Function> block;
+    private Either<Terminal, Function> predicate;
+
+    public PlaceBlockFunction(Either<Terminal, Function> x, Either<Terminal, Function> y, Either<Terminal, Function> z, Either<Terminal, Function> block, Either<Terminal, Function> predicate) {
+        this.x = x;
+        this.y = y;
+        this.z = z;
+        this.block = block;
+        this.predicate = predicate;
+    }
+
+    public Either<Terminal, Function> x() {
+        return x;
+    }
+
+    public Either<Terminal, Function> y() {
+        return y;
+    }
+
+    public Either<Terminal, Function> z() {
+        return z;
+    }
+
+    public Either<Terminal, Function> block() {
+        return block;
+    }
+
+    public Either<Terminal, Function> predicate() {
+        return predicate;
+    }
 
     @Override
     public Terminal method(Context context) throws Exception {
@@ -55,16 +83,39 @@ public record PlaceBlockFunction(
         return List.of(
                 new LabelGuiComponent("place block"),
                 new LabelGuiComponent("x"),
-                new ParameterGuiComponent(x),
+                new ParameterGuiComponent("x", x),
                 new LabelGuiComponent("y"),
-                new ParameterGuiComponent(y),
+                new ParameterGuiComponent("y", y),
                 new LabelGuiComponent("z"),
-                new ParameterGuiComponent(z),
+                new ParameterGuiComponent("z", z),
                 new LabelGuiComponent("block"),
-                new ParameterGuiComponent(block),
+                new ParameterGuiComponent("block", block),
                 new LabelGuiComponent("if"),
-                new ParameterGuiComponent(predicate)
+                new ParameterGuiComponent("predicate", predicate)
         );
+    }
+
+    @Override
+    public Function withParam(String name, Either<Terminal, Function> value) {
+        return switch (name) {
+            case "x" -> new PlaceBlockFunction(value, y, z, block, predicate);
+            case "y" -> new PlaceBlockFunction(x, value, z, block, predicate);
+            case "z" -> new PlaceBlockFunction(x, y, value, block, predicate);
+            case "block" -> new PlaceBlockFunction(x, y, z, value, predicate);
+            case "predicate" -> new PlaceBlockFunction(x, y, z, block, value);
+            default -> this;
+        };
+    }
+
+    @Override
+    public void setParameter(String name, Either<Terminal, Function> value) {
+        switch (name) {
+            case "x" -> x = value;
+            case "y" -> y = value;
+            case "z" -> z = value;
+            case "block" -> block = value;
+            case "predicate" -> predicate = value;
+        }
     }
 
     @Override

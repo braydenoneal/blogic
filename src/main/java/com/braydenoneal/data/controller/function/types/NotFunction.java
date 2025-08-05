@@ -13,12 +13,22 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 
 import java.util.List;
 
-public record NotFunction(Either<Terminal, Function> input) implements Function {
+public class NotFunction implements Function {
     public static final MapCodec<NotFunction> CODEC = RecordCodecBuilder.mapCodec(
             instance -> instance.group(
                     Codec.either(Terminal.CODEC, Function.CODEC).fieldOf("input").forGetter(NotFunction::input)
             ).apply(instance, NotFunction::new)
     );
+
+    private Either<Terminal, Function> input;
+
+    public NotFunction(Either<Terminal, Function> input) {
+        this.input = input;
+    }
+
+    public Either<Terminal, Function> input() {
+        return input;
+    }
 
     @Override
     public Terminal method(Context context) throws Exception {
@@ -29,8 +39,18 @@ public record NotFunction(Either<Terminal, Function> input) implements Function 
     public List<GuiComponent> getGuiComponents() {
         return List.of(
                 new LabelGuiComponent("not"),
-                new ParameterGuiComponent(input)
+                new ParameterGuiComponent("input", input)
         );
+    }
+
+    @Override
+    public Function withParam(String name, Either<Terminal, Function> value) {
+        return new NotFunction(value);
+    }
+
+    @Override
+    public void setParameter(String name, Either<Terminal, Function> value) {
+        input = value;
     }
 
     @Override

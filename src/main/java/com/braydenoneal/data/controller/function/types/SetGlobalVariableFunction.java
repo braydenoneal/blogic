@@ -18,11 +18,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public record SetGlobalVariableFunction(
-        String name,
-        Either<Terminal, Function> value,
-        Either<Terminal, Function> predicate
-) implements Function {
+public class SetGlobalVariableFunction implements Function {
     public static final MapCodec<SetGlobalVariableFunction> CODEC = RecordCodecBuilder.mapCodec(
             instance -> instance.group(
                     Codec.STRING.fieldOf("name").forGetter(SetGlobalVariableFunction::name),
@@ -32,6 +28,28 @@ public record SetGlobalVariableFunction(
                             .fieldOf("predicate").forGetter(SetGlobalVariableFunction::predicate)
             ).apply(instance, SetGlobalVariableFunction::new)
     );
+
+    private String name;
+    private Either<Terminal, Function> value;
+    private Either<Terminal, Function> predicate;
+
+    public SetGlobalVariableFunction(String name, Either<Terminal, Function> value, Either<Terminal, Function> predicate) {
+        this.name = name;
+        this.value = value;
+        this.predicate = predicate;
+    }
+
+    public String name() {
+        return name;
+    }
+
+    public Either<Terminal, Function> value() {
+        return value;
+    }
+
+    public Either<Terminal, Function> predicate() {
+        return predicate;
+    }
 
     @Override
     public Terminal method(Context context) throws Exception {
@@ -52,10 +70,25 @@ public record SetGlobalVariableFunction(
         return List.of(
                 new LabelGuiComponent("set global"),
                 new TextFieldGuiComponent(name),
-                new ParameterGuiComponent(value),
+                new ParameterGuiComponent("value", value),
                 new LabelGuiComponent("if"),
-                new ParameterGuiComponent(predicate)
+                new ParameterGuiComponent("predicate", predicate)
         );
+    }
+
+    @Override
+    public Function withParam(String name, Either<Terminal, Function> value) {
+        return switch (name) {
+            default -> this;
+        };
+    }
+
+    @Override
+    public void setParameter(String name, Either<Terminal, Function> value) {
+        switch (name) {
+            case "value" -> this.value = value;
+            case "predicate" -> predicate = value;
+        }
     }
 
     @Override

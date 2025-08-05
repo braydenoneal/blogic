@@ -14,11 +14,7 @@ import net.minecraft.util.math.BlockPos;
 
 import java.util.List;
 
-public record ReadRedstoneFunction(
-        Either<Terminal, Function> x,
-        Either<Terminal, Function> y,
-        Either<Terminal, Function> z
-) implements Function {
+public class ReadRedstoneFunction implements Function {
     public static final MapCodec<ReadRedstoneFunction> CODEC = RecordCodecBuilder.mapCodec(
             instance -> instance.group(
                     Codec.either(Terminal.CODEC, Function.CODEC).fieldOf("x").forGetter(ReadRedstoneFunction::x),
@@ -26,6 +22,28 @@ public record ReadRedstoneFunction(
                     Codec.either(Terminal.CODEC, Function.CODEC).fieldOf("z").forGetter(ReadRedstoneFunction::z)
             ).apply(instance, ReadRedstoneFunction::new)
     );
+
+    private Either<Terminal, Function> x;
+    private Either<Terminal, Function> y;
+    private Either<Terminal, Function> z;
+
+    public ReadRedstoneFunction(Either<Terminal, Function> x, Either<Terminal, Function> y, Either<Terminal, Function> z) {
+        this.x = x;
+        this.y = y;
+        this.z = z;
+    }
+
+    public Either<Terminal, Function> x() {
+        return x;
+    }
+
+    public Either<Terminal, Function> y() {
+        return y;
+    }
+
+    public Either<Terminal, Function> z() {
+        return z;
+    }
 
     @Override
     public Terminal method(Context context) throws Exception {
@@ -46,12 +64,31 @@ public record ReadRedstoneFunction(
         return List.of(
                 new LabelGuiComponent("read redstone"),
                 new LabelGuiComponent("x"),
-                new ParameterGuiComponent(x),
+                new ParameterGuiComponent("x", x),
                 new LabelGuiComponent("y"),
-                new ParameterGuiComponent(y),
+                new ParameterGuiComponent("y", y),
                 new LabelGuiComponent("z"),
-                new ParameterGuiComponent(z)
+                new ParameterGuiComponent("z", z)
         );
+    }
+
+    @Override
+    public Function withParam(String name, Either<Terminal, Function> value) {
+        return switch (name) {
+            case "x" -> new ReadRedstoneFunction(value, y, z);
+            case "y" -> new ReadRedstoneFunction(x, value, z);
+            case "z" -> new ReadRedstoneFunction(x, y, value);
+            default -> this;
+        };
+    }
+
+    @Override
+    public void setParameter(String name, Either<Terminal, Function> value) {
+        switch (name) {
+            case "x" -> x = value;
+            case "y" -> y = value;
+            case "z" -> z = value;
+        }
     }
 
     @Override

@@ -41,10 +41,21 @@ public record CallFunction(String name, Map<String, Either<Terminal, Function>> 
 
         for (Map.Entry<String, Either<Terminal, Function>> parameter : parameters.entrySet()) {
             components.add(new LabelGuiComponent(parameter.getKey()));
-            components.add(new ParameterGuiComponent(parameter.getValue()));
+            components.add(new ParameterGuiComponent(parameter.getKey(), parameter.getValue()));
         }
 
         return components;
+    }
+
+    @Override
+    public Function withParam(String name, Either<Terminal, Function> value) {
+        return switch (name) {
+            default -> this;
+        };
+    }
+
+    @Override
+    public void setParameter(String name, Either<Terminal, Function> value) {
     }
 
     @Override

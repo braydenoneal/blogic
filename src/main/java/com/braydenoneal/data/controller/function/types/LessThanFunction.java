@@ -14,13 +14,29 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 
 import java.util.List;
 
-public record LessThanFunction(Either<Terminal, Function> a, Either<Terminal, Function> b) implements Function {
+public class LessThanFunction implements Function {
     public static final MapCodec<LessThanFunction> CODEC = RecordCodecBuilder.mapCodec(
             instance -> instance.group(
                     Codec.either(Terminal.CODEC, Function.CODEC).fieldOf("a").forGetter(LessThanFunction::a),
                     Codec.either(Terminal.CODEC, Function.CODEC).fieldOf("b").forGetter(LessThanFunction::b)
             ).apply(instance, LessThanFunction::new)
     );
+
+    private Either<Terminal, Function> a;
+    private Either<Terminal, Function> b;
+
+    public LessThanFunction(Either<Terminal, Function> a, Either<Terminal, Function> b) {
+        this.a = a;
+        this.b = b;
+    }
+
+    public Either<Terminal, Function> a() {
+        return a;
+    }
+
+    public Either<Terminal, Function> b() {
+        return b;
+    }
 
     @Override
     public Terminal method(Context context) throws Exception {
@@ -30,10 +46,27 @@ public record LessThanFunction(Either<Terminal, Function> a, Either<Terminal, Fu
     @Override
     public List<GuiComponent> getGuiComponents() {
         return List.of(
-                new ParameterGuiComponent(a),
+                new ParameterGuiComponent("a", a),
                 new LabelGuiComponent("<"),
-                new ParameterGuiComponent(b)
+                new ParameterGuiComponent("b", b)
         );
+    }
+
+    @Override
+    public Function withParam(String name, Either<Terminal, Function> value) {
+        return switch (name) {
+            case "a" -> new LessThanFunction(value, b);
+            case "b" -> new LessThanFunction(a, value);
+            default -> this;
+        };
+    }
+
+    @Override
+    public void setParameter(String name, Either<Terminal, Function> value) {
+        switch (name) {
+            case "a" -> a = value;
+            case "b" -> b = value;
+        }
     }
 
     @Override

@@ -7,6 +7,7 @@ import com.braydenoneal.data.controller.function.FunctionType;
 import com.braydenoneal.data.controller.function.FunctionTypes;
 import com.braydenoneal.data.controller.terminal.Terminal;
 import com.braydenoneal.data.controller.terminal.types.ErrorTerminal;
+import com.mojang.datafixers.util.Either;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
@@ -42,6 +43,17 @@ public record GetGlobalVariableFunction(String name) implements Function {
                 new LabelGuiComponent("get global"),
                 new TextFieldGuiComponent(name)
         );
+    }
+
+    @Override
+    public Function withParam(String name, Either<Terminal, Function> value) {
+        return switch (name) {
+            default -> this;
+        };
+    }
+
+    @Override
+    public void setParameter(String name, Either<Terminal, Function> value) {
     }
 
     @Override

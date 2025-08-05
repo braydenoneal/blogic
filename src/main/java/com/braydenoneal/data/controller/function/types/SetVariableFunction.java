@@ -13,7 +13,7 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 
 import java.util.List;
 
-public record SetVariableFunction(String name, Either<Terminal, Function> value) implements Function {
+public class SetVariableFunction implements Function {
     public static final MapCodec<SetVariableFunction> CODEC = RecordCodecBuilder.mapCodec(
             instance -> instance.group(
                     Codec.STRING.fieldOf("name").forGetter(SetVariableFunction::name),
@@ -21,6 +21,22 @@ public record SetVariableFunction(String name, Either<Terminal, Function> value)
                             .fieldOf("value").forGetter(SetVariableFunction::value)
             ).apply(instance, SetVariableFunction::new)
     );
+
+    private String name;
+    private Either<Terminal, Function> value;
+
+    public SetVariableFunction(String name, Either<Terminal, Function> value) {
+        this.name = name;
+        this.value = value;
+    }
+
+    public String name() {
+        return name;
+    }
+
+    public Either<Terminal, Function> value() {
+        return value;
+    }
 
     @Override
     public Terminal method(Context context) {
@@ -32,8 +48,20 @@ public record SetVariableFunction(String name, Either<Terminal, Function> value)
         return List.of(
                 new LabelGuiComponent("set"),
                 new TextFieldGuiComponent(name),
-                new ParameterGuiComponent(value)
+                new ParameterGuiComponent("value", value)
         );
+    }
+
+    @Override
+    public Function withParam(String name, Either<Terminal, Function> value) {
+        return switch (name) {
+            default -> this;
+        };
+    }
+
+    @Override
+    public void setParameter(String name, Either<Terminal, Function> value) {
+        this.value = value;
     }
 
     @Override

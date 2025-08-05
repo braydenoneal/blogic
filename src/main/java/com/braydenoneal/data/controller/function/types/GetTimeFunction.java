@@ -6,6 +6,7 @@ import com.braydenoneal.data.controller.function.FunctionType;
 import com.braydenoneal.data.controller.function.FunctionTypes;
 import com.braydenoneal.data.controller.terminal.Terminal;
 import com.braydenoneal.data.controller.terminal.types.IntegerTerminal;
+import com.mojang.datafixers.util.Either;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 
@@ -21,9 +22,16 @@ public record GetTimeFunction() implements Function {
 
     @Override
     public List<GuiComponent> getGuiComponents() {
-        return List.of(
-                new LabelGuiComponent("get time")
-        );
+        return List.of(new LabelGuiComponent("get time"));
+    }
+
+    @Override
+    public Function withParam(String name, Either<Terminal, Function> value) {
+        return this;
+    }
+
+    @Override
+    public void setParameter(String name, Either<Terminal, Function> value) {
     }
 
     @Override
