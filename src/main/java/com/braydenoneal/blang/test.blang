@@ -1,0 +1,31 @@
+/*
+Multi-line comment
+*/
+
+// Comment
+
+pub int num = 12;
+
+pub int test(int a) {
+    num + a
+}
+
+pub struct Foo {
+    int foo,
+    bool bar
+}
+
+impl Foo {
+    pub Self new() {
+        Self(default_foo(), false)
+    }
+
+    int default_foo() {
+        0
+    }
+}
+
+void main() {
+    Foo foo = Foo.new();
+    foo.foo = test(2);
+}
