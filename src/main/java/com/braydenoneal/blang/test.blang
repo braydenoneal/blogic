@@ -4,28 +4,32 @@ Multi-line comment
 
 // Comment
 
-pub int num = 12;
+pub var num1 int = 12;
 
-pub int test(int a) {
+pub fn test(a int) int {
     num + a
 }
 
 pub struct Foo {
-    int foo,
-    bool bar
+    foo int,
+    bar bool
 }
 
 impl Foo {
-    pub Self new() {
+    pub fn new() Self {
         Self(default_foo(), false)
     }
 
-    int default_foo() {
+    fn default_foo() int {
         0
     }
 }
 
-void main() {
-    Foo foo = Foo.new();
+fn main() {
+    foo Foo = Foo.new();
     foo.foo = test(2);
+}
+
+fn tick() {
+    var something bool = true;
 }
