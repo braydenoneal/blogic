@@ -53,6 +53,7 @@ Expression
     Operator
     Member Expression
     Call Expression
+    Assign Expression
 
 Struct Creation
     [ID, '.'], ID, '(', [Expression, ','], Expression ')'
