@@ -5,18 +5,19 @@ import com.braydenoneal.blang.tokenizer.Token;
 import java.util.List;
 
 public class Program {
-    private List<BlockStatement> blockStatements;
+    private List<ImportStatement> imports;
+    private List<Statement> statements;
     private final List<Token> tokens;
     private int current;
 
     public Program(String source) throws Exception {
         tokens = Token.tokenize(source);
         current = 0;
-        blockStatements = List.of();
+        statements = List.of();
     }
 
     public void compile() {
-        blockStatements = List.of();
+        statements = List.of();
     }
 
     public Token getToken(int offset) {
