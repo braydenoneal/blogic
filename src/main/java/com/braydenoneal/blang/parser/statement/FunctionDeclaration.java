@@ -24,4 +24,8 @@ public record FunctionDeclaration(
 
         return returnValue;
     }
+
+    public static Statement parse(Program program) throws Exception {
+        return null;
+    }
 }

@@ -1,41 +1,89 @@
 package com.braydenoneal.blang.parser;
 
-import com.braydenoneal.blang.parser.statement.FunctionDeclaration;
-import com.braydenoneal.blang.parser.statement.ImportStatement;
-import com.braydenoneal.blang.parser.statement.Statement;
+import com.braydenoneal.blang.parser.statement.*;
 import com.braydenoneal.blang.tokenizer.Token;
+import com.braydenoneal.blang.tokenizer.Type;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Stack;
+import java.util.*;
 
 public class Program {
-    private List<ImportStatement> imports;
-    private List<Statement> statements;
+    private final List<Token> tokens;
+    private int position;
+    private final List<ImportStatement> imports;
+    private final List<Statement> statements;
     private final Map<String, FunctionDeclaration> functions;
     private final Stack<Scope> scopes;
-    private final List<Token> tokens;
-    private int current;
 
     public Program(String source) throws Exception {
         tokens = Token.tokenize(source);
-        current = 0;
-        statements = List.of();
-        scopes = new Stack<>();
+        position = 0;
+        imports = new ArrayList<>();
+        statements = new ArrayList<>();
         functions = new HashMap<>();
+        scopes = new Stack<>();
+        scopes.push(new Scope(null));
+        parse();
     }
 
-    public void compile() {
-        statements = List.of();
+    public void run() {
+        for (Statement statement : statements) {
+            statement.execute();
+        }
     }
 
-    public Token getToken(int offset) {
-        return tokens.get(current + offset);
+    public void parse() throws Exception {
+        while (position < tokens.size()) {
+            statements.add(parseStatement());
+        }
     }
 
-    public void offsetLocation(int offset) {
-        current += offset;
+    public Token peek() {
+        return tokens.get(position);
+    }
+
+    public boolean peekIs(Type type, String value) {
+        Token token = peek();
+        return token.type() == type && token.value().equals(value);
+    }
+
+    public Token next() {
+        return tokens.get(position++);
+    }
+
+    public void expect(Type type, String value) throws Exception {
+        Token token = next();
+
+        if (token.type() == type && token.value().equals(value)) {
+            return;
+        }
+
+        throw new Exception("Parse error");
+    }
+
+    public String expect(Type type) throws Exception {
+        Token token = next();
+
+        if (token.type() == type) {
+            return token.value();
+        }
+
+        throw new Exception("Parse error");
+    }
+
+    public Statement parseStatement() throws Exception {
+        Token token = peek();
+
+        if (token.type() == Type.KEYWORD) {
+            if (token.value().equals("fn")) {
+                return FunctionDeclaration.parse(this);
+            } else if (token.value().equals("print")) {
+                return PrintStatement.parse(this);
+            }
+        } else if (token.type() == Type.IDENTIFIER) {
+            return AssignmentStatement.parse(this);
+        }
+
+        return null;
     }
 
     public void addFunction(String name, FunctionDeclaration function) {
@@ -47,7 +95,7 @@ public class Program {
     }
 
     public void newScope() {
-        scopes.push(new Scope(scopes.isEmpty() ? null : scopes.peek()));
+        scopes.push(new Scope(scopes.peek()));
     }
 
     public Scope getScope() {

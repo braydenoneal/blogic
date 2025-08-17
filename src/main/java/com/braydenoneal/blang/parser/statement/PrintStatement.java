@@ -5,25 +5,24 @@ import com.braydenoneal.blang.parser.expression.Expression;
 import com.braydenoneal.blang.parser.expression.value.Value;
 import com.braydenoneal.blang.tokenizer.Type;
 
-public record AssignmentStatement(
-        Program program,
-        String name,
+public record PrintStatement(
         Expression expression
 ) implements Statement {
     @Override
     public Value<?> execute() {
-        program.getScope().set(name, expression.evaluate());
+        System.out.println(expression.evaluate().value());
         return null;
     }
 
     public static Statement parse(Program program) throws Exception {
-        String name = program.expect(Type.IDENTIFIER);
-        program.expect(Type.ASSIGN, "=");
+        program.expect(Type.KEYWORD, "print");
+        program.expect(Type.PARENTHESIS, "(");
 
         Expression expression = Expression.parse(program);
 
+        program.expect(Type.PARENTHESIS, ")");
         program.expect(Type.SEMICOLON);
 
-        return new AssignmentStatement(program, name, expression);
+        return new PrintStatement(expression);
     }
 }

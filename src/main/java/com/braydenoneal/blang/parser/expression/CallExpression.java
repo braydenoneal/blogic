@@ -25,4 +25,8 @@ public record CallExpression(Program program, String name, List<Expression> argu
 
         return null;
     }
+
+    public static Expression parse(Program program) {
+        return null;
+    }
 }
