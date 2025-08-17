@@ -1,13 +1,12 @@
-package com.braydenoneal.blang.parser;
+package com.braydenoneal.blang.parser.statement;
 
-import com.braydenoneal.blang.parser.datatype.DataType;
 import com.braydenoneal.blang.parser.expression.value.Value;
 
-import java.util.Map;
+import java.util.List;
 
 public record StructDeclaration(
         String name,
-        Map<String, DataType> members
+        List<String> members
 ) implements Statement {
     @Override
     public Value<?> execute() {

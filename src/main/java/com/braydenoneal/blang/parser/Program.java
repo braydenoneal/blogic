@@ -1,6 +1,8 @@
 package com.braydenoneal.blang.parser;
 
-import com.braydenoneal.blang.parser.scope.Scope;
+import com.braydenoneal.blang.parser.statement.FunctionDeclaration;
+import com.braydenoneal.blang.parser.statement.ImportStatement;
+import com.braydenoneal.blang.parser.statement.Statement;
 import com.braydenoneal.blang.tokenizer.Token;
 
 import java.util.HashMap;

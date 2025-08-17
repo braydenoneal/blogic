@@ -1,4 +1,4 @@
-package com.braydenoneal.blang.parser;
+package com.braydenoneal.blang.parser.statement;
 
 import java.util.List;
 

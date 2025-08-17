@@ -1,4 +1,4 @@
-package com.braydenoneal.blang.parser.scope;
+package com.braydenoneal.blang.parser;
 
 import com.braydenoneal.blang.parser.expression.value.Value;
 import org.jetbrains.annotations.Nullable;

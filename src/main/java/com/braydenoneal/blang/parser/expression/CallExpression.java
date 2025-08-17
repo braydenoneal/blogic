@@ -1,8 +1,8 @@
 package com.braydenoneal.blang.parser.expression;
 
-import com.braydenoneal.blang.parser.FunctionDeclaration;
 import com.braydenoneal.blang.parser.Program;
 import com.braydenoneal.blang.parser.expression.value.Value;
+import com.braydenoneal.blang.parser.statement.FunctionDeclaration;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -5,23 +5,23 @@ Multi-line comment
 // Comment
 
 // Variables are always private, but can be exposed through pub or prot functions
-var num1 int = 12;
+var num1 = 12;
 
-pub fn test(a int) int {
+pub fn test(a) {
     num + a
 }
 
 pub struct Foo {
-    foo int,
-    bar bool
+    foo,
+    bar,
 }
 
 impl Foo {
-    pub fn new() Self {
+    pub fn new() {
         Self(default_foo(), false)
     }
 
-    fn default_foo() int {
+    fn default_foo() {
         0
     }
 }
@@ -32,5 +32,5 @@ fn main() {
 }
 
 fn tick() {
-    var something bool = true;
+    var something = true;
 }

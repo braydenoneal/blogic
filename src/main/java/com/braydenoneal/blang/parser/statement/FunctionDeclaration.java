@@ -1,15 +1,13 @@
-package com.braydenoneal.blang.parser;
+package com.braydenoneal.blang.parser.statement;
 
-import com.braydenoneal.blang.parser.datatype.DataType;
+import com.braydenoneal.blang.parser.Program;
 import com.braydenoneal.blang.parser.expression.value.Value;
 
 import java.util.List;
-import java.util.Map;
 
 public record FunctionDeclaration(
         Program program,
-        DataType returnType,
-        Map<String, DataType> arguments,
+        List<String> arguments,
         List<Statement> statements
 ) implements Statement {
     @Override
