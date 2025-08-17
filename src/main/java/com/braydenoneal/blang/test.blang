@@ -4,7 +4,8 @@ Multi-line comment
 
 // Comment
 
-pub var num1 int = 12;
+// Variables are always private, but can be exposed through pub or prot functions
+var num1 int = 12;
 
 pub fn test(a int) int {
     num + a

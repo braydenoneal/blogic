@@ -17,7 +17,6 @@ public record Token(String value, Type type) {
                 Matcher matcher = Pattern.compile("^" + type.regex).matcher(source.substring(position));
 
                 if (matcher.find()) {
-                    System.out.println(matcher.group());
                     if (type != Type.WHITESPACE && type != Type.COMMENT) {
                         tokens.add(new Token(matcher.group(), type));
                     }
@@ -33,7 +32,6 @@ public record Token(String value, Type type) {
             }
         }
 
-        System.out.println(tokens);
         return tokens;
     }
 }
