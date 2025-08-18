@@ -16,6 +16,9 @@ public interface Statement {
                 case "fn" -> {
                     return FunctionDeclaration.parse(program);
                 }
+                case "if" -> {
+                    return IfStatement.parse(program);
+                }
                 case "print" -> {
                     return PrintStatement.parse(program);
                 }

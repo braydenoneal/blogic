@@ -22,8 +22,32 @@ public class Blang {
                 
                 c = add(num1, num2);
                 print(c);
+                
+                if false {
+                    print(1);
+                } elif false {
+                    print(2);
+                } elif false {
+                    print(3);
+                } else {
+                    print(4);
+                }
                 """);
 
         program.run();
     }
 }
+
+/*
+for, while, iterators
+operator precedence
+list literals
+better builtin functions logic
+type casting, auto casting (2 + 1.2), (int(1.2))
+ternary operator
+structs
+imports, access modifiers
+struct implementations
+static types
+list comprehension?
+ */
