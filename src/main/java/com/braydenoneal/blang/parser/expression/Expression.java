@@ -11,7 +11,7 @@ import com.braydenoneal.blang.tokenizer.Type;
 public interface Expression {
     Value<?> evaluate();
 
-    static Expression parse(Program program) {
+    static Expression parse(Program program) throws Exception {
         Token token = program.next();
 
         Expression expression = switch (token.type()) {
@@ -21,7 +21,7 @@ public interface Expression {
             case Type.INTEGER -> new IntegerValue(Integer.valueOf(token.value()));
             default /* IDENTIFIER */ -> {
                 if (program.peekIs(Type.PARENTHESIS, "(")) {
-                    yield CallExpression.parse(program);
+                    yield CallExpression.parse(program, token.value());
                 } else {
                     yield new VariableExpression(program, token.value());
                 }
@@ -46,6 +46,5 @@ public interface Expression {
             }
             default -> expression;
         };
-
     }
 }

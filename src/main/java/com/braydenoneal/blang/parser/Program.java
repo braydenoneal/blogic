@@ -1,6 +1,8 @@
 package com.braydenoneal.blang.parser;
 
-import com.braydenoneal.blang.parser.statement.*;
+import com.braydenoneal.blang.parser.statement.FunctionDeclaration;
+import com.braydenoneal.blang.parser.statement.ImportStatement;
+import com.braydenoneal.blang.parser.statement.Statement;
 import com.braydenoneal.blang.tokenizer.Token;
 import com.braydenoneal.blang.tokenizer.Type;
 
@@ -33,7 +35,7 @@ public class Program {
 
     public void parse() throws Exception {
         while (position < tokens.size()) {
-            statements.add(parseStatement());
+            statements.add(Statement.parse(this));
         }
     }
 
@@ -68,22 +70,6 @@ public class Program {
         }
 
         throw new Exception("Parse error");
-    }
-
-    public Statement parseStatement() throws Exception {
-        Token token = peek();
-
-        if (token.type() == Type.KEYWORD) {
-            if (token.value().equals("fn")) {
-                return FunctionDeclaration.parse(this);
-            } else if (token.value().equals("print")) {
-                return PrintStatement.parse(this);
-            }
-        } else if (token.type() == Type.IDENTIFIER) {
-            return AssignmentStatement.parse(this);
-        }
-
-        return null;
     }
 
     public void addFunction(String name, FunctionDeclaration function) {
