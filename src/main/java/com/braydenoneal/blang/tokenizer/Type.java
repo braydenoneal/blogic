@@ -3,7 +3,8 @@ package com.braydenoneal.blang.tokenizer;
 public enum Type {
     WHITESPACE("[ \\n\\t\\r]"),
     COMMENT("(\\/\\/([^\\n]*)|\\/\\*(.*)\\*\\//s)"),
-    KEYWORD("(and|or|pub|struct|impl|var|fn|bool|int|float|str|char|return|continue|pass|if|else|elif|while|for|in|loop|print)"),
+    KEYWORD("(pub|struct|impl|var|fn|bool|int|float|str|char|return|continue|pass|if|else|elif|while|for|in|loop|print)"),
+    BOOLEAN_OPERATOR("(and|or)"),
     BOOLEAN("(true|false)"),
     IDENTIFIER("[A-Za-z_][A-Za-z0-9_]*"),
     QUOTE("(\"|')(?:\\\\\\1|(?!\\1).)*(\\1)"),
@@ -17,8 +18,8 @@ public enum Type {
     DOT("\\."),
     COMMA(","),
     SEMICOLON(";"),
-    UNARY_OPERATOR("(!|++|--)"),
-    BINARY_OPERATOR("(\\+|\\-|\\*|\\/|%|\\^)"),
+    UNARY_OPERATOR("(!|\\+\\+|--)"),
+    ARITHMETIC_OPERATOR("(\\+|\\-|\\*|\\/|%|\\^)"),
     TERNARY_OPERATOR("[?:]"),
     ;
 

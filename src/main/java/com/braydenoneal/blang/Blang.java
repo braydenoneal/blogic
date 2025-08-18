@@ -5,8 +5,8 @@ import com.braydenoneal.blang.parser.Program;
 public class Blang {
     public static void main(String[] args) throws Exception {
         Program program1 = new Program("""
-                num = 0;
-                num = 12;
+                num = 4;
+                num = num + 12 + 4;
                 print(num);
                 num1 = -12.3;
                 print(num1);
