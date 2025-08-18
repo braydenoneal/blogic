@@ -32,6 +32,13 @@ public class Blang {
                 } else {
                     print(4);
                 }
+                
+                i = 0;
+                
+                while i < 10 {
+                    print(i);
+                    i = i + 1;
+                }
                 """);
 
         program.run();
@@ -39,12 +46,15 @@ public class Blang {
 }
 
 /*
-for, while, iterators
 operator precedence
 list literals
 better builtin functions logic
 type casting, auto casting (2 + 1.2), (int(1.2))
++=, -=
 ternary operator
+for, iterators
+break, continue, pass
+++, --
 structs
 imports, access modifiers
 struct implementations

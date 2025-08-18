@@ -19,6 +19,9 @@ public interface Statement {
                 case "if" -> {
                     return IfStatement.parse(program);
                 }
+                case "while" -> {
+                    return WhileStatement.parse(program);
+                }
                 case "print" -> {
                     return PrintStatement.parse(program);
                 }
