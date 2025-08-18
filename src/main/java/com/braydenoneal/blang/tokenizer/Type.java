@@ -18,7 +18,7 @@ public enum Type {
     DOT("\\."),
     COMMA(","),
     SEMICOLON(";"),
-    UNARY_OPERATOR("(!|\\+\\+|--)"),
+    UNARY_OPERATOR("!"),
     ARITHMETIC_OPERATOR("(\\+|\\-|\\*|\\/|%|\\^)"),
     TERNARY_OPERATOR("[?:]"),
     ;

@@ -4,7 +4,7 @@ import com.braydenoneal.blang.parser.expression.Expression;
 import com.braydenoneal.blang.parser.expression.value.BooleanValue;
 import com.braydenoneal.blang.parser.expression.value.Value;
 
-public record UnaryOperator(String operator, Expression operand) implements Operator, Expression {
+public record UnaryOperator(Expression operand) implements Operator, Expression {
     @Override
     public Value<?> evaluate() {
         Value<?> value = operand.evaluate();
@@ -13,7 +13,6 @@ public record UnaryOperator(String operator, Expression operand) implements Oper
             return new BooleanValue(!value1.value());
         }
 
-        // TODO: ++ and --
         return new BooleanValue(false);
     }
 }

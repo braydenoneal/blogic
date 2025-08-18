@@ -4,6 +4,7 @@ import com.braydenoneal.blang.parser.Program;
 import com.braydenoneal.blang.parser.expression.operator.ArithmeticOperator;
 import com.braydenoneal.blang.parser.expression.operator.BooleanOperator;
 import com.braydenoneal.blang.parser.expression.operator.ComparisonOperator;
+import com.braydenoneal.blang.parser.expression.operator.UnaryOperator;
 import com.braydenoneal.blang.parser.expression.value.*;
 import com.braydenoneal.blang.tokenizer.Token;
 import com.braydenoneal.blang.tokenizer.Type;
@@ -19,6 +20,7 @@ public interface Expression {
             case Type.QUOTE -> new StringValue(token.value());
             case Type.FLOAT -> new FloatValue(Float.valueOf(token.value()));
             case Type.INTEGER -> new IntegerValue(Integer.valueOf(token.value()));
+            case Type.UNARY_OPERATOR -> new UnaryOperator(parse(program));
             default /* IDENTIFIER */ -> {
                 if (program.peekIs(Type.PARENTHESIS, "(")) {
                     yield CallExpression.parse(program, token.value());
