@@ -11,34 +11,37 @@ public class Blang {
                 // num1 = -12.3;
                 // print(num1);
                 
-                num1 = 12;
-                num2 = 0;
-                num2 = 4;
+                // num1 = 12;
+                // num2 = 0;
+                // num2 = 4;
                 
-                fn add(a, b) {
-                    c = a + b;
-                    return c;
-                }
+                // fn add(a, b) {
+                //     c = a + b;
+                //     return c;
+                // }
                 
-                c = add(num1, num2);
-                print(c);
+                // c = add(num1, num2);
+                // print(c);
                 
-                if false {
-                    print(1);
-                } elif false {
-                    print(2);
-                } elif false {
-                    print(3);
-                } else {
-                    print(4);
-                }
+                // if false {
+                //     print(1);
+                // } elif false {
+                //     print(2);
+                // } elif false {
+                //     print(3);
+                // } else {
+                //     print(4);
+                // }
                 
-                i = 0;
+                // i = 0;
                 
-                while i < 10 {
-                    print(i);
-                    i = i + 1;
-                }
+                // while i < 10 {
+                //     print(i);
+                //     i = i + 1;
+                // }
+                
+                num = 3 + 4 * 2 / ( 1 - 5 ) ^ 2 ^ 3;
+                print(num);
                 """);
 
         program.run();
@@ -46,7 +49,6 @@ public class Blang {
 }
 
 /*
-operator precedence
 list literals
 better builtin functions logic
 type casting, auto casting (2 + 1.2), (int(1.2))
