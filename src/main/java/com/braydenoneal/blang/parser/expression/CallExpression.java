@@ -28,8 +28,7 @@ public record CallExpression(Program program, String name, List<Expression> argu
         return null;
     }
 
-    public static Expression parse(Program program) throws Exception {
-        String name = program.next().value();
+    public static Expression parse(Program program, String name) throws Exception {
         List<Expression> arguments = new ArrayList<>();
         program.expect(Type.PARENTHESIS, "(");
 

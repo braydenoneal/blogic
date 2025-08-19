@@ -2,6 +2,7 @@ package com.braydenoneal.blang.parser.statement;
 
 import com.braydenoneal.blang.parser.Program;
 import com.braydenoneal.blang.parser.expression.Expression;
+import com.braydenoneal.blang.parser.expression.value.StringValue;
 import com.braydenoneal.blang.parser.expression.value.Value;
 import com.braydenoneal.blang.tokenizer.Type;
 
@@ -10,7 +11,14 @@ public record PrintStatement(
 ) implements Statement {
     @Override
     public Value<?> execute() {
-        System.out.println(expression.evaluate().toString());
+        Value<?> value = expression.evaluate();
+        String string = value.toString();
+
+        if (value instanceof StringValue) {
+            string = string.substring(1, string.length() - 1);
+        }
+
+        System.out.println(string);
         return null;
     }
 

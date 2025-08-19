@@ -47,6 +47,8 @@ public class Blang {
                 print(list + ["end"]);
                 
                 print(1.0 + 1);
+                
+                print("Num: " + 1);
                 """);
 
         program.run();
@@ -54,7 +56,6 @@ public class Blang {
 }
 
 /*
-better builtin functions logic
 type casting (int(1.2))
 +=, -=
 ternary operator
@@ -65,6 +66,7 @@ break, continue, pass
 better tokenizing, parsing, and runtime exceptions
 structs
 imports, access modifiers
+better builtin functions logic
 struct implementations
 static types
 dictionaries?

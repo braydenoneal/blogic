@@ -22,11 +22,11 @@ public interface Statement {
                 case "while" -> {
                     return WhileStatement.parse(program);
                 }
-                case "print" -> {
-                    return PrintStatement.parse(program);
-                }
                 case "return" -> {
                     return ReturnStatement.parse(program);
+                }
+                case "print" -> {
+                    return PrintStatement.parse(program);
                 }
             }
         } else if (token.type() == Type.IDENTIFIER) {

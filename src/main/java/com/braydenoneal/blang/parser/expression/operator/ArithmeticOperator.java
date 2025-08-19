@@ -19,6 +19,10 @@ public record ArithmeticOperator(
             a = new FloatValue((float) a1.value());
         } else if (a instanceof FloatValue && b instanceof IntegerValue b1) {
             b = new FloatValue((float) b1.value());
+        } else if (b instanceof StringValue) {
+            a = new StringValue(a.value().toString());
+        } else if (a instanceof StringValue) {
+            b = new StringValue(b.value().toString());
         }
 
         if (a instanceof IntegerValue a1 && b instanceof IntegerValue b1) {

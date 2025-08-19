@@ -98,10 +98,10 @@ public interface Expression {
                             yield new UnaryOperator(parse(program));
                         }
                         default /* IDENTIFIER */ -> {
+                            program.next();
                             if (program.peekIs(Type.PARENTHESIS, "(")) {
-                                yield CallExpression.parse(program);
+                                yield CallExpression.parse(program, token.value());
                             } else {
-                                program.next();
                                 yield new VariableExpression(program, token.value());
                             }
                         }
