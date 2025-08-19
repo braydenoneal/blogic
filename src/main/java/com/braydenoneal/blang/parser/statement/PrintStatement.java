@@ -10,7 +10,7 @@ public record PrintStatement(
 ) implements Statement {
     @Override
     public Value<?> execute() {
-        System.out.println(expression.evaluate().value());
+        System.out.println(expression.evaluate().toString());
         return null;
     }
 

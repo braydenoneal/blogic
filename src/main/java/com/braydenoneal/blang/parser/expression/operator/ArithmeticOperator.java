@@ -3,6 +3,8 @@ package com.braydenoneal.blang.parser.expression.operator;
 import com.braydenoneal.blang.parser.expression.Expression;
 import com.braydenoneal.blang.parser.expression.value.*;
 
+import java.util.stream.Stream;
+
 public record ArithmeticOperator(
         String operator,
         Expression operand_a,
@@ -37,6 +39,10 @@ public record ArithmeticOperator(
 
         if (operator.equals("+") && a instanceof StringValue a1 && b instanceof StringValue b1) {
             return new StringValue(a1.value() + b1.value());
+        }
+
+        if (operator.equals("+") && a instanceof ListValue a1 && b instanceof ListValue b1) {
+            return new ListValue(Stream.concat(a1.value().stream(), b1.value().stream()).toList());
         }
 
         // TODO: Exception value?

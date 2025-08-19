@@ -4,4 +4,9 @@ public class StringValue extends Value<String> {
     public StringValue(String value) {
         super(value);
     }
+
+    @Override
+    public String toString() {
+        return "\"" + value() + "\"";
+    }
 }

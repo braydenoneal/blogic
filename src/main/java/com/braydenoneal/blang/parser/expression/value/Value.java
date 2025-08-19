@@ -17,4 +17,9 @@ public class Value<T> implements Expression {
     public Value<?> evaluate() {
         return this;
     }
+
+    @Override
+    public String toString() {
+        return value().toString();
+    }
 }

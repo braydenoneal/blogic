@@ -50,7 +50,12 @@ public interface Expression {
         Stack<Operator> operators = new Stack<>();
         boolean openedParenthesis = false;
 
-        while (!(program.peekIs(Type.PARENTHESIS, ")") || program.peekIs(Type.SEMICOLON, ";")) || openedParenthesis) {
+        while (!(program.peekIs(Type.PARENTHESIS, ")") ||
+                program.peekIs(Type.SEMICOLON, ";") ||
+                program.peekIs(Type.CURLY_BRACE, "{") ||
+                program.peekIs(Type.SQUARE_BRACE, "]") ||
+                program.peekIs(Type.COMMA, ",")
+        ) || openedParenthesis) {
             switch (program.peek().type()) {
                 case Type.BOOLEAN_OPERATOR, Type.COMPARISON_OPERATOR, Type.ARITHMETIC_OPERATOR:
                     String operator = program.next().value();
@@ -77,18 +82,26 @@ public interface Expression {
 
                     break;
                 default:
-                    Token token = program.next();
+                    Token token = program.peek();
 
                     Expression expression = switch (token.type()) {
-                        case Type.BOOLEAN -> new BooleanValue(token.value().equals("true"));
-                        case Type.QUOTE -> new StringValue(token.value());
-                        case Type.FLOAT -> new FloatValue(Float.valueOf(token.value()));
-                        case Type.INTEGER -> new IntegerValue(Integer.valueOf(token.value()));
-                        case Type.UNARY_OPERATOR -> new UnaryOperator(parse(program));
+                        case Type.BOOLEAN -> new BooleanValue(program.next().value().equals("true"));
+                        case Type.QUOTE -> {
+                            String string = program.next().value();
+                            yield new StringValue(string.substring(1, string.length() - 1));
+                        }
+                        case Type.FLOAT -> new FloatValue(Float.valueOf(program.next().value()));
+                        case Type.INTEGER -> new IntegerValue(Integer.valueOf(program.next().value()));
+                        case Type.SQUARE_BRACE -> ListExpression.parse(program);
+                        case Type.UNARY_OPERATOR -> {
+                            program.next();
+                            yield new UnaryOperator(parse(program));
+                        }
                         default /* IDENTIFIER */ -> {
                             if (program.peekIs(Type.PARENTHESIS, "(")) {
-                                yield CallExpression.parse(program, token.value());
+                                yield CallExpression.parse(program);
                             } else {
+                                program.next();
                                 yield new VariableExpression(program, token.value());
                             }
                         }
@@ -123,44 +136,5 @@ public interface Expression {
         }
 
         return expressions.peek();
-        /*
-        outs = []
-        ops = []
-        open_par = false
-
-        while !open_par && peek != ')':
-            if peek == op:
-                if peek.precedence >= ops.peek.precedence:
-                    ops.add(next)
-                 else:
-                    outs.add(ops.pop)
-                    ops.add(next)
-            elif peek == '(':
-                open_par = true
-                ops.add('(')
-            elif peek == ')':
-                open_par = false
-                while ops.peek != '(':
-                    outs.add(ops.pop)
-                ops.pop
-            else:
-                outs.add(next)
-
-         while !ops.empty:
-            outs.add(ops.pop)
-
-         exps = []
-
-         while !outs.empty:
-            if outs.peek is operand:
-                exps.add(outs.pop)
-            else:
-                right = exps.pop
-                left = exps.pop
-                op = outs.pop
-                exps.add(Op{op, left, right})
-
-         return exps.peek
-         */
     }
 }
