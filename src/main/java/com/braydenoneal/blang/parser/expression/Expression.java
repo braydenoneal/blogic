@@ -1,6 +1,7 @@
 package com.braydenoneal.blang.parser.expression;
 
 import com.braydenoneal.blang.parser.Program;
+import com.braydenoneal.blang.parser.expression.builtin.BuiltinExpression;
 import com.braydenoneal.blang.parser.expression.operator.ArithmeticOperator;
 import com.braydenoneal.blang.parser.expression.operator.BooleanOperator;
 import com.braydenoneal.blang.parser.expression.operator.ComparisonOperator;
@@ -100,7 +101,8 @@ public interface Expression {
                         default /* IDENTIFIER */ -> {
                             program.next();
                             if (program.peekIs(Type.PARENTHESIS, "(")) {
-                                yield CallExpression.parse(program, token.value());
+                                Expression builtin = BuiltinExpression.identifierToBuiltin(program, token.value());
+                                yield builtin == null ? CallExpression.parse(program, token.value()) : builtin;
                             } else {
                                 yield new VariableExpression(program, token.value());
                             }

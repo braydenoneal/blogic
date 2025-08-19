@@ -49,6 +49,6 @@ public record ArithmeticOperator(
             return new ListValue(Stream.concat(a1.value().stream(), b1.value().stream()).toList());
         }
 
-        return new BooleanValue(false);
+        return null;
     }
 }

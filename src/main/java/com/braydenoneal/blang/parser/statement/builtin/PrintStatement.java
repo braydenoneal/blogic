@@ -1,10 +1,10 @@
-package com.braydenoneal.blang.parser.statement;
+package com.braydenoneal.blang.parser.statement.builtin;
 
 import com.braydenoneal.blang.parser.Program;
 import com.braydenoneal.blang.parser.expression.Expression;
 import com.braydenoneal.blang.parser.expression.value.StringValue;
 import com.braydenoneal.blang.parser.expression.value.Value;
-import com.braydenoneal.blang.tokenizer.Type;
+import com.braydenoneal.blang.parser.statement.Statement;
 
 public record PrintStatement(
         Expression expression
@@ -23,14 +23,6 @@ public record PrintStatement(
     }
 
     public static Statement parse(Program program) throws Exception {
-        program.expect(Type.KEYWORD, "print");
-        program.expect(Type.PARENTHESIS, "(");
-
-        Expression expression = Expression.parse(program);
-
-        program.expect(Type.PARENTHESIS, ")");
-        program.expect(Type.SEMICOLON);
-
-        return new PrintStatement(expression);
+        return new PrintStatement(BuiltinStatement.parseArguments(program, "print").getFirst());
     }
 }

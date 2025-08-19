@@ -49,6 +49,14 @@ public class Blang {
                 print(1.0 + 1);
                 
                 print("Num: " + 1);
+                
+                print(abs(-1));
+                print(int(2.0));
+                print(float(3));
+                print(str(4));
+                print(round(5.4));
+                print(min(6, 7));
+                print(max(6, 7));
                 """);
 
         program.run();

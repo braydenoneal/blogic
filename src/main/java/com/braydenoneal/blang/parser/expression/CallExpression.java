@@ -1,11 +1,10 @@
 package com.braydenoneal.blang.parser.expression;
 
 import com.braydenoneal.blang.parser.Program;
+import com.braydenoneal.blang.parser.expression.builtin.BuiltinExpression;
 import com.braydenoneal.blang.parser.expression.value.Value;
 import com.braydenoneal.blang.parser.statement.FunctionDeclaration;
-import com.braydenoneal.blang.tokenizer.Type;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public record CallExpression(Program program, String name, List<Expression> arguments) implements Expression {
@@ -29,19 +28,7 @@ public record CallExpression(Program program, String name, List<Expression> argu
     }
 
     public static Expression parse(Program program, String name) throws Exception {
-        List<Expression> arguments = new ArrayList<>();
-        program.expect(Type.PARENTHESIS, "(");
-
-        while (!program.peekIs(Type.PARENTHESIS, ")")) {
-            arguments.add(Expression.parse(program));
-
-            if (!program.peekIs(Type.PARENTHESIS, ")")) {
-                program.expect(Type.COMMA);
-            }
-        }
-
-        program.expect(Type.PARENTHESIS, ")");
-
+        List<Expression> arguments = BuiltinExpression.parseArguments(program);
         return new CallExpression(program, name, arguments);
     }
 }

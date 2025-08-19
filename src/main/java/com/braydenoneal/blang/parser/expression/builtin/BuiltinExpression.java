@@ -1,0 +1,40 @@
+package com.braydenoneal.blang.parser.expression.builtin;
+
+import com.braydenoneal.blang.parser.Program;
+import com.braydenoneal.blang.parser.expression.Expression;
+import com.braydenoneal.blang.tokenizer.Type;
+
+import java.util.ArrayList;
+import java.util.List;
+
+public class BuiltinExpression {
+    public static Expression identifierToBuiltin(Program program, String name) throws Exception {
+        return switch (name) {
+            case "abs" -> new AbsoluteValueBuiltin(parseArguments(program).getFirst());
+            case "int" -> new IntegerCastBuiltin(parseArguments(program).getFirst());
+            case "float" -> new FloatCastBuiltin(parseArguments(program).getFirst());
+            case "str" -> new StringCastBuiltin(parseArguments(program).getFirst());
+            case "round" -> new RoundBuiltin(parseArguments(program).getFirst());
+            case "min" -> new MinimumBuiltin(parseArguments(program));
+            case "max" -> new MaximumBuiltin(parseArguments(program));
+            default -> null;
+        };
+    }
+
+    public static List<Expression> parseArguments(Program program) throws Exception {
+        List<Expression> arguments = new ArrayList<>();
+        program.expect(Type.PARENTHESIS, "(");
+
+        while (!program.peekIs(Type.PARENTHESIS, ")")) {
+            arguments.add(Expression.parse(program));
+
+            if (!program.peekIs(Type.PARENTHESIS, ")")) {
+                program.expect(Type.COMMA);
+            }
+        }
+
+        program.expect(Type.PARENTHESIS, ")");
+
+        return arguments;
+    }
+}

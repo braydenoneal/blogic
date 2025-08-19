@@ -3,7 +3,7 @@ package com.braydenoneal.blang.tokenizer;
 public enum Type {
     WHITESPACE("[ \\n\\t\\r]"),
     COMMENT("(\\/\\/([^\\n]*)|\\/\\*(.*)\\*\\//s)"),
-    KEYWORD("(pub|struct|impl|var|fn|bool|int|float|str|char|return|continue|pass|if|else|elif|while|for|in|loop|print)"),
+    KEYWORD("(fn|return|if|else|elif|while|for)"),
     BOOLEAN_OPERATOR("(and|or)"),
     BOOLEAN("(true|false)"),
     IDENTIFIER("[A-Za-z_][A-Za-z0-9_]*"),
