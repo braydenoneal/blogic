@@ -45,6 +45,8 @@ public class Blang {
                 
                 list = [3, 4 + 3, [false, 'hello' + ' world']];
                 print(list + ["end"]);
+                
+                print(1.0 + 1);
                 """);
 
         program.run();
@@ -53,13 +55,14 @@ public class Blang {
 
 /*
 better builtin functions logic
-type casting, auto casting (2 + 1.2), (int(1.2))
+type casting (int(1.2))
 +=, -=
 ternary operator
 list functions (get, size, etc.)
 for, iterators
 break, continue, pass
 ++, --
+better tokenizing, parsing, and runtime exceptions
 structs
 imports, access modifiers
 struct implementations
@@ -67,4 +70,5 @@ static types
 dictionaries?
 enums?
 list comprehension?
+errors, exceptions?
  */
