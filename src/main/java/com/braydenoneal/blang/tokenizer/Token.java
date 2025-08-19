@@ -17,11 +17,15 @@ public record Token(String value, Type type) {
                 Matcher matcher = Pattern.compile("^" + type.regex).matcher(source.substring(position));
 
                 if (matcher.find()) {
-                    if (type != Type.WHITESPACE && type != Type.COMMENT) {
-                        tokens.add(new Token(matcher.group(), type));
+                    String group = type == Type.QUOTE ? matcher.group(0) : matcher.group(1);
+
+                    if (type == Type.QUOTE) {
+                        tokens.add(new Token(group.substring(1, group.length() - 1), type));
+                    } else if (type != Type.WHITESPACE && type != Type.COMMENT) {
+                        tokens.add(new Token(group, type));
                     }
 
-                    position += matcher.group().length();
+                    position += group.length();
                     error = false;
                     break;
                 }

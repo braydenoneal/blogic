@@ -1,13 +1,13 @@
 package com.braydenoneal.blang.tokenizer;
 
 public enum Type {
-    WHITESPACE("[ \\n\\t\\r]"),
+    WHITESPACE("([ \\n\\t\\r])"),
     COMMENT("(\\/\\/([^\\n]*)|\\/\\*(.*)\\*\\//s)"),
-    KEYWORD("(fn|return|if|else|elif|while|for)"),
-    BOOLEAN_OPERATOR("(and|or)"),
-    BOOLEAN("(true|false)"),
-    IDENTIFIER("[A-Za-z_][A-Za-z0-9_]*"),
-    QUOTE("(\"|')(?:\\\\\\1|(?!\\1).)*(\\1)"),
+    KEYWORD("(fn|return|if|else|elif|while|for|in)([^A-Za-z0-9_]{1})"),
+    BOOLEAN_OPERATOR("(and|or)([^A-Za-z0-9_]{1})"),
+    BOOLEAN("(true|false)([^A-Za-z0-9_]{1})"),
+    IDENTIFIER("([A-Za-z_][A-Za-z0-9_]*)"),
+    QUOTE("(\"|')((?:\\\\\\1|(?!\\1).)*)(\\1)"),
     FLOAT("(-?[0-9]+\\.[0-9]*)"),
     INTEGER("(-?[0-9]+)"),
     CURLY_BRACE("(\\{|\\})"),
@@ -15,12 +15,12 @@ public enum Type {
     SQUARE_BRACE("(\\[|\\])"),
     COMPARISON_OPERATOR("(==|!=|<=|>=|<|>)"),
     ASSIGN("(=|\\+=|-=)"),
-    DOT("\\."),
-    COMMA(","),
-    SEMICOLON(";"),
-    UNARY_OPERATOR("!"),
+    DOT("(\\.)"),
+    COMMA("(,)"),
+    SEMICOLON("(;)"),
+    UNARY_OPERATOR("(!)"),
     ARITHMETIC_OPERATOR("(\\+|\\-|\\*|\\/|%|\\^)"),
-    TERNARY_OPERATOR("[?:]"),
+    TERNARY_OPERATOR("([?:])"),
     ;
 
     public final String regex;
