@@ -57,6 +57,8 @@ public class Blang {
                 print(round(5.4));
                 print(min(6, 7));
                 print(max(6, 7));
+                
+                print(len([0, 1, 2, 3, 4, 5, 6, 7]));
                 """);
 
         program.run();
@@ -64,7 +66,6 @@ public class Blang {
 }
 
 /*
-type casting (int(1.2))
 +=, -=
 ternary operator
 list functions (get, size, etc.)

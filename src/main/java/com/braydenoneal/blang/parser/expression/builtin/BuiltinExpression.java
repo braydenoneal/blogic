@@ -15,6 +15,7 @@ public class BuiltinExpression {
             case "float" -> new FloatCastBuiltin(parseArguments(program).getFirst());
             case "str" -> new StringCastBuiltin(parseArguments(program).getFirst());
             case "round" -> new RoundBuiltin(parseArguments(program).getFirst());
+            case "len" -> new LengthBuiltin(parseArguments(program).getFirst());
             case "min" -> new MinimumBuiltin(parseArguments(program));
             case "max" -> new MaximumBuiltin(parseArguments(program));
             default -> null;
