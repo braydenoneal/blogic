@@ -106,6 +106,13 @@ public interface Expression {
                         }
                     };
 
+                    if (program.peekIs(Type.SQUARE_BRACE, "[")) {
+                        program.next();
+                        Expression index = parse(program);
+                        expression = new ListAccessExpression(expression, index);
+                        program.expect(Type.SQUARE_BRACE, "]");
+                    }
+
                     outputs.push(new Operand(expression));
                     break;
             }

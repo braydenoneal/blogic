@@ -59,6 +59,10 @@ public class Blang {
                 print(max(6, 7));
                 
                 print(len([0, 1, 2, 3, 4, 5, 6, 7]));
+                
+                print([8, 9][1]);
+                list = [8, 9, 10];
+                print(list[2]);
                 """);
 
         program.run();
@@ -68,8 +72,8 @@ public class Blang {
 /*
 +=, -=
 ternary operator
-list functions (get, size, etc.)
-for, iterators
+for, iterators, range
+more list functions (add, remove, contains, etc.)
 break, continue, pass
 ++, --
 better tokenizing, parsing, and runtime exceptions
