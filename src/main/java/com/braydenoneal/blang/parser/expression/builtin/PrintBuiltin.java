@@ -1,16 +1,12 @@
-package com.braydenoneal.blang.parser.statement.builtin;
+package com.braydenoneal.blang.parser.expression.builtin;
 
-import com.braydenoneal.blang.parser.Program;
 import com.braydenoneal.blang.parser.expression.Expression;
 import com.braydenoneal.blang.parser.expression.value.StringValue;
 import com.braydenoneal.blang.parser.expression.value.Value;
-import com.braydenoneal.blang.parser.statement.Statement;
 
-public record PrintStatement(
-        Expression expression
-) implements Statement {
+public record PrintBuiltin(Expression expression) implements Expression {
     @Override
-    public Value<?> execute() {
+    public Value<?> evaluate() {
         Value<?> value = expression.evaluate();
         String string = value.toString();
 
@@ -19,11 +15,6 @@ public record PrintStatement(
         }
 
         System.out.println(string);
-
         return null;
-    }
-
-    public static Statement parse(Program program) throws Exception {
-        return new PrintStatement(BuiltinStatement.parseArguments(program, "print").getFirst());
     }
 }

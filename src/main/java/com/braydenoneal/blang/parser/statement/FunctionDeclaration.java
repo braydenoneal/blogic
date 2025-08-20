@@ -15,7 +15,6 @@ public record FunctionDeclaration(
 ) implements Statement {
     @Override
     public Value<?> execute() {
-        program.addFunction(name, this);
         return null;
     }
 
@@ -58,6 +57,8 @@ public record FunctionDeclaration(
 
         program.expect(Type.CURLY_BRACE, "}");
 
-        return new FunctionDeclaration(program, name, arguments, statements);
+        FunctionDeclaration functionDeclaration = new FunctionDeclaration(program, name, arguments, statements);
+        program.addFunction(name, functionDeclaration);
+        return functionDeclaration;
     }
 }

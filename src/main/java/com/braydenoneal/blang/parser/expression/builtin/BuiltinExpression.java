@@ -1,6 +1,7 @@
 package com.braydenoneal.blang.parser.expression.builtin;
 
 import com.braydenoneal.blang.parser.Program;
+import com.braydenoneal.blang.parser.expression.CallExpression;
 import com.braydenoneal.blang.parser.expression.Expression;
 import com.braydenoneal.blang.tokenizer.Type;
 
@@ -8,7 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class BuiltinExpression {
-    public static Expression identifierToBuiltin(Program program, String name) throws Exception {
+    public static Expression parse(Program program, String name) throws Exception {
         return switch (name) {
             case "abs" -> new AbsoluteValueBuiltin(parseArguments(program).getFirst());
             case "int" -> new IntegerCastBuiltin(parseArguments(program).getFirst());
@@ -16,9 +17,10 @@ public class BuiltinExpression {
             case "str" -> new StringCastBuiltin(parseArguments(program).getFirst());
             case "round" -> new RoundBuiltin(parseArguments(program).getFirst());
             case "len" -> new LengthBuiltin(parseArguments(program).getFirst());
+            case "print" -> new PrintBuiltin(parseArguments(program).getFirst());
             case "min" -> new MinimumBuiltin(parseArguments(program));
             case "max" -> new MaximumBuiltin(parseArguments(program));
-            default -> null;
+            default -> CallExpression.parse(program, name);
         };
     }
 

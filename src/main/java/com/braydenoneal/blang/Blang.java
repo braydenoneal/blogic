@@ -63,6 +63,9 @@ public class Blang {
                 print([8, 9][1]);
                 list = [8, 9, 10];
                 print(list[2]);
+                
+                print(str = "string");
+                print(str);
                 """);
 
         program.run();
@@ -70,6 +73,9 @@ public class Blang {
 }
 
 /*
+connect to controller block
+some world functions
+game of life
 +=, -=
 ternary operator
 for, iterators, range

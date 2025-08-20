@@ -97,9 +97,11 @@ public interface Expression {
                         }
                         default /* IDENTIFIER */ -> {
                             program.next();
+
                             if (program.peekIs(Type.PARENTHESIS, "(")) {
-                                Expression builtin = BuiltinExpression.identifierToBuiltin(program, token.value());
-                                yield builtin == null ? CallExpression.parse(program, token.value()) : builtin;
+                                yield BuiltinExpression.parse(program, token.value());
+                            } else if (program.peek().type() == Type.ASSIGN) {
+                                yield AssignmentExpression.parse(program, token.value());
                             } else {
                                 yield new VariableExpression(program, token.value());
                             }
