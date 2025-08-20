@@ -7,6 +7,7 @@ import com.braydenoneal.data.controller.function.FunctionTypes;
 import com.braydenoneal.data.controller.parameter.ParameterTypes;
 import com.braydenoneal.data.controller.terminal.TerminalTypes;
 import com.braydenoneal.item.ModItems;
+import com.braydenoneal.networking.ModNetworking;
 import net.fabricmc.api.ModInitializer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,6 +21,7 @@ public class Blogic implements ModInitializer {
         ModBlocks.initialize();
         ModBlockEntities.initialize();
         ModItems.initialize();
+        ModNetworking.initialize();
         ModComponents.initialize();
         FunctionTypes.initialize();
         ParameterTypes.initialize();

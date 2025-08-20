@@ -6,13 +6,14 @@ import com.braydenoneal.data.controller.function.CustomFunction;
 import com.braydenoneal.data.controller.parameter.types.VoidParameter;
 import com.braydenoneal.data.controller.terminal.Terminal;
 import com.mojang.serialization.Codec;
+import net.fabricmc.fabric.api.screenhandler.v1.ExtendedScreenHandlerFactory;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.registry.RegistryWrapper;
-import net.minecraft.screen.NamedScreenHandlerFactory;
 import net.minecraft.screen.ScreenHandler;
+import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.storage.ReadView;
 import net.minecraft.storage.WriteView;
 import net.minecraft.text.Text;
@@ -23,7 +24,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.List;
 import java.util.Map;
 
-public class ControllerBlockEntity extends AbstractNetworkBlockEntity implements NamedScreenHandlerFactory {
+public class ControllerBlockEntity extends AbstractNetworkBlockEntity implements ExtendedScreenHandlerFactory<BlockPos> {
     private CustomFunction function;
     private Map<String, Terminal> variables;
     private Program program;
@@ -87,8 +88,22 @@ public class ControllerBlockEntity extends AbstractNetworkBlockEntity implements
         return Text.translatable(getCachedState().getBlock().getTranslationKey());
     }
 
+    public String source() {
+        return source;
+    }
+
+    public void setSource(String source) {
+        this.source = source;
+        markDirty();
+    }
+
     @Override
     public @Nullable ScreenHandler createMenu(int syncId, PlayerInventory playerInventory, PlayerEntity player) {
-        return new ControllerScreenHandler(syncId, playerInventory);
+        return new ControllerScreenHandler(syncId, playerInventory, pos);
+    }
+
+    @Override
+    public BlockPos getScreenOpeningData(ServerPlayerEntity player) {
+        return pos;
     }
 }

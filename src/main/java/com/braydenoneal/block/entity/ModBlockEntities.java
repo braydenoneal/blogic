@@ -3,20 +3,19 @@ package com.braydenoneal.block.entity;
 import com.braydenoneal.Blogic;
 import com.braydenoneal.block.ModBlocks;
 import net.fabricmc.fabric.api.object.builder.v1.block.entity.FabricBlockEntityTypeBuilder;
+import net.fabricmc.fabric.api.screenhandler.v1.ExtendedScreenHandlerType;
 import net.minecraft.block.Block;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
-import net.minecraft.resource.featuretoggle.FeatureSet;
 import net.minecraft.screen.ScreenHandlerType;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.math.BlockPos;
 
 public class ModBlockEntities {
-    public static final BlockEntityType<ControllerBlockEntity> CONTROLLER_BLOCK_ENTITY =
-            register("controller", ControllerBlockEntity::new, ModBlocks.CONTROLLER);
-    public static final ScreenHandlerType<ControllerScreenHandler> CONTROLLER_SCREEN_HANDLER = Registry.register(Registries.SCREEN_HANDLER, Identifier.of("blogic", "controller_block"), new ScreenHandlerType<>(ControllerScreenHandler::new, FeatureSet.empty()));
-
+    public static final BlockEntityType<ControllerBlockEntity> CONTROLLER_BLOCK_ENTITY = register("controller", ControllerBlockEntity::new, ModBlocks.CONTROLLER);
+    public static final ScreenHandlerType<ControllerScreenHandler> CONTROLLER_SCREEN_HANDLER = Registry.register(Registries.SCREEN_HANDLER, Identifier.of("blogic", "controller_block"), new ExtendedScreenHandlerType<>(ControllerScreenHandler::new, BlockPos.PACKET_CODEC));
 
     private static <T extends BlockEntity> BlockEntityType<T> register(
             String name,

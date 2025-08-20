@@ -3,7 +3,7 @@ package com.braydenoneal.blang;
 import com.braydenoneal.blang.parser.Program;
 
 public class Blang {
-    public static void main(String[] args) throws Exception {
+    public static void main(String[] args) {
         Program program = new Program("""
                 num = 4;
                 num = num + 12 + 4;
@@ -79,8 +79,6 @@ public class Blang {
 }
 
 /*
-some world functions
-game of life
 +=, -=
 ternary operator
 for, iterators, range
