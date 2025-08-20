@@ -32,10 +32,7 @@ public class ControllerScreen extends HandledScreen<ControllerScreenHandler> {
             close();
         }).dimensions(width / 2 - 4 - 150, height - 40, 150, 20).build());
         addDrawableChild(ButtonWidget.builder(ScreenTexts.CANCEL, button -> close()).dimensions(width / 2 + 4, height - 40, 150, 20).build());
-    }
-
-    public void reset() {
-        this.clearAndInit();
+        setFocused(editBoxWidget);
     }
 
     @Override

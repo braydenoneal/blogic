@@ -2,9 +2,6 @@ package com.braydenoneal.block.entity;
 
 import com.braydenoneal.blang.Context;
 import com.braydenoneal.blang.parser.Program;
-import com.braydenoneal.data.controller.function.CustomFunction;
-import com.braydenoneal.data.controller.parameter.types.VoidParameter;
-import com.braydenoneal.data.controller.terminal.Terminal;
 import com.mojang.serialization.Codec;
 import net.fabricmc.fabric.api.screenhandler.v1.ExtendedScreenHandlerFactory;
 import net.minecraft.block.BlockState;
@@ -21,19 +18,12 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.List;
-import java.util.Map;
-
 public class ControllerBlockEntity extends AbstractNetworkBlockEntity implements ExtendedScreenHandlerFactory<BlockPos> {
-    private CustomFunction function;
-    private Map<String, Terminal> variables;
     private Program program;
     private String source;
 
     public ControllerBlockEntity(BlockPos pos, BlockState state) {
         super(ModBlockEntities.CONTROLLER_BLOCK_ENTITY, pos, state);
-        function = new CustomFunction("main", new VoidParameter(), Map.of(), List.of());
-        variables = Map.of();
         source = "";
         program = new Program("", new Context(world, pos, this));
     }
@@ -41,8 +31,6 @@ public class ControllerBlockEntity extends AbstractNetworkBlockEntity implements
     @Override
     protected void readData(ReadView view) {
         super.readData(view);
-        function = view.read("function", CustomFunction.CODEC).orElse(new CustomFunction("main", new VoidParameter(), Map.of(), List.of()));
-        variables = view.read("variables", Codec.unboundedMap(Codec.STRING, Terminal.CODEC)).orElse(Map.of());
         source = view.read("source", Codec.STRING).orElse("");
 
         program = new Program(source, new Context(world, pos, this));
@@ -52,8 +40,6 @@ public class ControllerBlockEntity extends AbstractNetworkBlockEntity implements
     @Override
     protected void writeData(WriteView view) {
         super.writeData(view);
-        view.put("function", CustomFunction.CODEC, function);
-        view.put("variables", Codec.unboundedMap(Codec.STRING, Terminal.CODEC), variables);
         view.put("source", Codec.STRING, source);
 
         program = new Program(source, new Context(world, pos, this));
@@ -63,18 +49,6 @@ public class ControllerBlockEntity extends AbstractNetworkBlockEntity implements
     @Override
     public NbtCompound toInitialChunkDataNbt(RegistryWrapper.WrapperLookup registryLookup) {
         return createNbt(registryLookup);
-    }
-
-    public Map<String, Terminal> getVariables() {
-        return variables;
-    }
-
-    public void setVariables(Map<String, Terminal> variables) {
-        this.variables = variables;
-    }
-
-    public CustomFunction getFunction() {
-        return function;
     }
 
     public static void tick(World world, BlockPos blockPos, BlockState ignoredBlockState, ControllerBlockEntity entity) {
