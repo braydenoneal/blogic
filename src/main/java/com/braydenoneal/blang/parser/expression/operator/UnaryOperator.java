@@ -13,6 +13,6 @@ public record UnaryOperator(Expression operand) implements Operator, Expression 
             return new BooleanValue(!value1.value());
         }
 
-        return new BooleanValue(false);
+        return null;
     }
 }

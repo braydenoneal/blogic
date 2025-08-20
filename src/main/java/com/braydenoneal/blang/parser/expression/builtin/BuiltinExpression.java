@@ -18,6 +18,8 @@ public class BuiltinExpression {
             case "round" -> new RoundBuiltin(parseArguments(program).getFirst());
             case "len" -> new LengthBuiltin(parseArguments(program).getFirst());
             case "print" -> new PrintBuiltin(parseArguments(program).getFirst());
+            case "isAirBlock" -> new IsAirBlockBuiltin(program, parseArguments(program));
+            case "placeBlock" -> new PlaceBlockBuiltin(program, parseArguments(program));
             case "min" -> new MinimumBuiltin(parseArguments(program));
             case "max" -> new MaximumBuiltin(parseArguments(program));
             default -> CallExpression.parse(program, name);

@@ -22,6 +22,6 @@ public record BooleanOperator(
             }
         }
 
-        return new BooleanValue(false);
+        return null;
     }
 }

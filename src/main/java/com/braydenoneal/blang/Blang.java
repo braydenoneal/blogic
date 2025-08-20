@@ -66,7 +66,13 @@ public class Blang {
                 
                 print(str = "string");
                 print(str);
-                """);
+                
+                print(8 < 2 or 8 > 3);
+                
+                print(-1 % 16);
+                print((-1 + 16) % 16);
+                """,
+                new Context(null, null, null));
 
         program.run();
     }

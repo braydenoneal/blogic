@@ -26,21 +26,21 @@ public interface Expression {
     }
 
     Map<String, Integer> operatorPrecedence = Map.ofEntries(
-            Map.entry("(", -1),
-            Map.entry(")", -1),
-            Map.entry("and", 0),
-            Map.entry("or", 0),
-            Map.entry("==", 0),
-            Map.entry("!=", 0),
-            Map.entry("<=", 0),
-            Map.entry(">=", 0),
-            Map.entry("<", 0),
-            Map.entry(">", 0),
+            Map.entry("(", -3),
+            Map.entry(")", -3),
+            Map.entry("and", -2),
+            Map.entry("or", -2),
+            Map.entry("==", -1),
+            Map.entry("!=", -1),
+            Map.entry("<=", -1),
+            Map.entry(">=", -1),
+            Map.entry("<", -1),
+            Map.entry(">", -1),
             Map.entry("+", 0),
             Map.entry("-", 0),
             Map.entry("*", 1),
             Map.entry("/", 1),
-            Map.entry("%", 0),
+            Map.entry("%", 1),
             Map.entry("^", 2)
     );
 

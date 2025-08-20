@@ -29,9 +29,7 @@ public record ComparisonOperator(
                 case "<" -> new BooleanValue(a1.value() < b1.value());
                 default /* > */ -> new BooleanValue(a1.value() > b1.value());
             };
-        }
-
-        if (a instanceof FloatValue a1 && b instanceof FloatValue b1) {
+        } else if (a instanceof FloatValue a1 && b instanceof FloatValue b1) {
             return switch (operator) {
                 case "<=" -> new BooleanValue(a1.value() <= b1.value());
                 case ">=" -> new BooleanValue(a1.value() >= b1.value());
@@ -40,6 +38,6 @@ public record ComparisonOperator(
             };
         }
 
-        return new BooleanValue(false);
+        return null;
     }
 }

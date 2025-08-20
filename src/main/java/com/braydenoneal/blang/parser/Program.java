@@ -1,5 +1,6 @@
 package com.braydenoneal.blang.parser;
 
+import com.braydenoneal.blang.Context;
 import com.braydenoneal.blang.parser.statement.FunctionDeclaration;
 import com.braydenoneal.blang.parser.statement.Statement;
 import com.braydenoneal.blang.tokenizer.Token;
@@ -13,28 +14,53 @@ public class Program {
     private final List<Statement> statements;
     private final Map<String, FunctionDeclaration> functions;
     private final Stack<Scope> scopes;
+    private final Context context;
 
-    public Program(String source) throws Exception {
-        tokens = Token.tokenize(source);
+    public Program(String source, Context context) {
+        List<Token> tokens;
+        this.context = context;
+        try {
+            tokens = Token.tokenize(source);
+        } catch (Exception e) {
+            System.out.println("Tokenize error: " + e);
+            tokens = new ArrayList<>();
+        }
+        this.tokens = tokens;
         position = 0;
         statements = new ArrayList<>();
         functions = new HashMap<>();
         scopes = new Stack<>();
         scopes.push(new Scope(null));
-        parse();
+        try {
+            parse();
+        } catch (Exception e) {
+            System.out.println("Parse error: " + e);
+        }
+    }
+
+    public Context context() {
+        return context;
     }
 
     public void run() {
-        for (Statement statement : statements) {
-            statement.execute();
+        try {
+            for (Statement statement : statements) {
+                statement.execute();
+            }
+        } catch (Exception e) {
+            System.out.println("Run error: " + e);
         }
     }
 
     public void runMain() {
-        FunctionDeclaration main = functions.get("main");
+        try {
+            FunctionDeclaration main = functions.get("main");
 
-        if (main != null) {
-            main.call();
+            if (main != null) {
+                main.call();
+            }
+        } catch (Exception e) {
+            System.out.println("Run main error: " + e);
         }
     }
 

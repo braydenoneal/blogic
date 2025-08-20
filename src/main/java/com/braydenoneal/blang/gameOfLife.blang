@@ -1,0 +1,57 @@
+fn main() {
+    y = 2;
+
+    x = 0;
+    xs = [];
+    while x < 16 {
+        z = 0;
+        zs = [];
+        while z < 16 {
+            directions = [[-1, -1], [-1, 0], [-1, 1], [0, -1], [0, 1], [1, -1], [1, 0], [1, 1]];
+            d = 0;
+            n = 0;
+            while d < len(directions) {
+                xd = directions[d];
+                xd = xd[0];
+                zd = directions[d];
+                zd = zd[1];
+
+                if !isAirBlock((x + xd) % 16, y, (z + zd) % 16) {
+                    n = n + 1;
+                }
+                d = d + 1;
+            }
+
+            live = 0;
+            if n == 3 {
+                live = 1;
+            }
+            if n < 2 or n > 3 {
+                live = -1;
+            }
+
+            zs = zs + [live];
+            z = z + 1;
+        }
+        xs = xs + [zs];
+        x = x + 1;
+    }
+
+
+    x = 0;
+    while x < 16 {
+        z = 0;
+        while z < 16 {
+            live = xs[x];
+            live = live[z];
+            if live == 1 {
+                placeBlock(x, y, z, 1);
+            } elif live == -1 {
+                placeBlock(x, y, z, 0);
+            }
+
+            z = z + 1;
+        }
+        x = x + 1;
+    }
+}

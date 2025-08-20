@@ -31,7 +31,7 @@ public record ArithmeticOperator(
                 case "-" -> new IntegerValue(a1.value() - b1.value());
                 case "*" -> new IntegerValue(a1.value() * b1.value());
                 case "/" -> new IntegerValue(a1.value() / b1.value());
-                case "%" -> new IntegerValue(a1.value() % b1.value());
+                case "%" -> new IntegerValue((a1.value() + b1.value()) % b1.value());
                 default /* ^ */ -> new IntegerValue((int) Math.pow(a1.value(), b1.value()));
             };
         } else if (a instanceof FloatValue a1 && b instanceof FloatValue b1) {
@@ -40,7 +40,7 @@ public record ArithmeticOperator(
                 case "-" -> new FloatValue(a1.value() - b1.value());
                 case "*" -> new FloatValue(a1.value() * b1.value());
                 case "/" -> new FloatValue(a1.value() / b1.value());
-                case "%" -> new FloatValue(a1.value() % b1.value());
+                case "%" -> new FloatValue((a1.value() + b1.value()) % b1.value());
                 default /* ^ */ -> new FloatValue((float) Math.pow(a1.value(), b1.value()));
             };
         } else if (operator.equals("+") && a instanceof StringValue a1 && b instanceof StringValue b1) {

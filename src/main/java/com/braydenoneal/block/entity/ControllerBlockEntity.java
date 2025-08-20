@@ -1,5 +1,6 @@
 package com.braydenoneal.block.entity;
 
+import com.braydenoneal.blang.Context;
 import com.braydenoneal.blang.parser.Program;
 import com.braydenoneal.data.controller.function.CustomFunction;
 import com.braydenoneal.data.controller.parameter.types.VoidParameter;
@@ -33,13 +34,7 @@ public class ControllerBlockEntity extends AbstractNetworkBlockEntity implements
         function = new CustomFunction("main", new VoidParameter(), Map.of(), List.of());
         variables = Map.of();
         source = "";
-
-        try {
-            program = new Program("");
-            program.run();
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
+        program = new Program("", new Context(world, pos, this));
     }
 
     @Override
@@ -49,12 +44,8 @@ public class ControllerBlockEntity extends AbstractNetworkBlockEntity implements
         variables = view.read("variables", Codec.unboundedMap(Codec.STRING, Terminal.CODEC)).orElse(Map.of());
         source = view.read("source", Codec.STRING).orElse("");
 
-        try {
-            program = new Program(source);
-            program.run();
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
+        program = new Program(source, new Context(world, pos, this));
+        program.run();
     }
 
     @Override
@@ -64,12 +55,8 @@ public class ControllerBlockEntity extends AbstractNetworkBlockEntity implements
         view.put("variables", Codec.unboundedMap(Codec.STRING, Terminal.CODEC), variables);
         view.put("source", Codec.STRING, source);
 
-        try {
-            program = new Program(source);
-            program.run();
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
+        program = new Program(source, new Context(world, pos, this));
+        program.run();
     }
 
     @Override
