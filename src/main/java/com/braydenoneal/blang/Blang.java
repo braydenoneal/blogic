@@ -73,7 +73,6 @@ public class Blang {
 }
 
 /*
-connect to controller block
 some world functions
 game of life
 +=, -=
@@ -82,6 +81,7 @@ for, iterators, range
 more list functions (add, remove, contains, etc.)
 break, continue, pass
 ++, --
+persistent variables after world reload (program codec)
 better tokenizing, parsing, and runtime exceptions
 structs
 imports, access modifiers

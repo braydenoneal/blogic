@@ -1,6 +1,6 @@
 package com.braydenoneal.block.entity;
 
-import com.braydenoneal.data.controller.function.Context;
+import com.braydenoneal.blang.parser.Program;
 import com.braydenoneal.data.controller.function.CustomFunction;
 import com.braydenoneal.data.controller.parameter.types.VoidParameter;
 import com.braydenoneal.data.controller.terminal.Terminal;
@@ -25,11 +25,21 @@ import java.util.Map;
 public class ControllerBlockEntity extends AbstractNetworkBlockEntity implements NamedScreenHandlerFactory {
     private CustomFunction function;
     private Map<String, Terminal> variables;
+    private Program program;
+    private String source;
 
     public ControllerBlockEntity(BlockPos pos, BlockState state) {
         super(ModBlockEntities.CONTROLLER_BLOCK_ENTITY, pos, state);
         function = new CustomFunction("main", new VoidParameter(), Map.of(), List.of());
         variables = Map.of();
+        source = "";
+
+        try {
+            program = new Program("");
+            program.run();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Override
@@ -37,6 +47,14 @@ public class ControllerBlockEntity extends AbstractNetworkBlockEntity implements
         super.readData(view);
         function = view.read("function", CustomFunction.CODEC).orElse(new CustomFunction("main", new VoidParameter(), Map.of(), List.of()));
         variables = view.read("variables", Codec.unboundedMap(Codec.STRING, Terminal.CODEC)).orElse(Map.of());
+        source = view.read("source", Codec.STRING).orElse("");
+
+        try {
+            program = new Program(source);
+            program.run();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Override
@@ -44,6 +62,14 @@ public class ControllerBlockEntity extends AbstractNetworkBlockEntity implements
         super.writeData(view);
         view.put("function", CustomFunction.CODEC, function);
         view.put("variables", Codec.unboundedMap(Codec.STRING, Terminal.CODEC), variables);
+        view.put("source", Codec.STRING, source);
+
+        try {
+            program = new Program(source);
+            program.run();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Override
@@ -63,14 +89,9 @@ public class ControllerBlockEntity extends AbstractNetworkBlockEntity implements
         return function;
     }
 
-    @Override
-    public void update(World world, BlockPos pos, BlockState state) {
-    }
-
-    // TODO: Some way to choose between every tick or only on interaction
     public static void tick(World world, BlockPos blockPos, BlockState ignoredBlockState, ControllerBlockEntity entity) {
         if (world.isReceivingRedstonePower(blockPos)) {
-            entity.function.call(new Context(world, blockPos, Map.of()), Map.of());
+            entity.program.runMain();
         }
     }
 

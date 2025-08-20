@@ -1,7 +1,6 @@
 package com.braydenoneal.blang.parser;
 
 import com.braydenoneal.blang.parser.statement.FunctionDeclaration;
-import com.braydenoneal.blang.parser.statement.ImportStatement;
 import com.braydenoneal.blang.parser.statement.Statement;
 import com.braydenoneal.blang.tokenizer.Token;
 import com.braydenoneal.blang.tokenizer.Type;
@@ -11,7 +10,6 @@ import java.util.*;
 public class Program {
     private final List<Token> tokens;
     private int position;
-    private final List<ImportStatement> imports;
     private final List<Statement> statements;
     private final Map<String, FunctionDeclaration> functions;
     private final Stack<Scope> scopes;
@@ -19,7 +17,6 @@ public class Program {
     public Program(String source) throws Exception {
         tokens = Token.tokenize(source);
         position = 0;
-        imports = new ArrayList<>();
         statements = new ArrayList<>();
         functions = new HashMap<>();
         scopes = new Stack<>();
@@ -30,6 +27,14 @@ public class Program {
     public void run() {
         for (Statement statement : statements) {
             statement.execute();
+        }
+    }
+
+    public void runMain() {
+        FunctionDeclaration main = functions.get("main");
+
+        if (main != null) {
+            main.call();
         }
     }
 
@@ -92,53 +97,3 @@ public class Program {
         scopes.pop();
     }
 }
-
-/*
-Program
-    [Import Statement], [Statement]
-
-Import Statement
-    'import', [ID, '.'], ID
-
-Statement
-    Variable Declaration, ';'
-    Call Expression, ';'
-    Function Declaration
-    Struct Declaration
-    Struct Implementation
-    If Statement
-    While Statement
-    For Loop
-
-Expression
-    Literal
-    ID
-    Struct Creation
-    Operator
-    Member Expression
-    Call Expression
-    Assign Expression
-
-Struct Creation
-    [ID, '.'], ID, '(', [Expression, ','], Expression ')'
-
-Operator
-    Unary Operator
-    Binary Operator
-    Ternary Operator
-
-Member Expression
-    ID, '.', ID
-    Member Expression, '.', ID
-    Call Expression, '.', ID
-
-Call Expression
-    ID, '(', [Expression, ','], Expression ')'
-    Member Expression, '.', Call Expression
-
-Variable Declaration
-    'var', ID, Type, ['[]'], '=', Expression
-    'pub', 'var', ID, Type, ['[]'], '=', Expression
-    'prot', 'var', ID, Type, ['[]'], '=', Expression
-
- */

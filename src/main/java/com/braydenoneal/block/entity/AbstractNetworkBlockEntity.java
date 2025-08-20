@@ -72,5 +72,6 @@ public abstract class AbstractNetworkBlockEntity extends BlockEntity {
         }
     }
 
-    public abstract void update(World world, BlockPos pos, BlockState state);
+    public void update(World world, BlockPos pos, BlockState state) {
+    }
 }
