@@ -1,8 +1,9 @@
 package com.braydenoneal.blang.parser.expression.value;
 
 import com.braydenoneal.blang.parser.expression.Expression;
+import com.mojang.serialization.Codec;
 
-public class Value<T> implements Expression {
+public abstract class Value<T> implements Expression {
     private final T value;
 
     public Value(T value) {
@@ -22,4 +23,9 @@ public class Value<T> implements Expression {
     public String toString() {
         return value().toString();
     }
+
+    public abstract ValueType<?> getType();
+
+    private static final Codec<ValueType<?>> VALUE_TYPE_CODEC = ValueType.REGISTRY.getCodec();
+    public static final Codec<Value<?>> CODEC = VALUE_TYPE_CODEC.dispatch("type", Value::getType, ValueType::codec);
 }

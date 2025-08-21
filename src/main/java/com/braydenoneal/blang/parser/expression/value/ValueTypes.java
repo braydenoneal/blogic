@@ -1,0 +1,17 @@
+package com.braydenoneal.blang.parser.expression.value;
+
+import net.minecraft.registry.Registry;
+import net.minecraft.util.Identifier;
+
+public class ValueTypes {
+    public static final ValueType<IntegerValue> INTEGER = register("integer", new ValueType<>(IntegerValue.CODEC));
+    public static final ValueType<BooleanValue> BOOLEAN = register("boolean", new ValueType<>(BooleanValue.CODEC));
+    public static final ValueType<FloatValue> FLOAT = register("float", new ValueType<>(FloatValue.CODEC));
+    public static final ValueType<ListValue> LIST = register("list", new ValueType<>(ListValue.CODEC));
+    public static final ValueType<RangeValue> RANGE = register("range", new ValueType<>(RangeValue.CODEC));
+    public static final ValueType<StringValue> STRING = register("string", new ValueType<>(StringValue.CODEC));
+
+    public static <T extends Value<?>> ValueType<T> register(String id, ValueType<T> beanType) {
+        return Registry.register(ValueType.REGISTRY, Identifier.of("blogic", id), beanType);
+    }
+}

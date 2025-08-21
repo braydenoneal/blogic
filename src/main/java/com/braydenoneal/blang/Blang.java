@@ -117,7 +117,6 @@ more list functions (add, remove, contains, etc.)
 fix scope issues when updating a variable from a deeper scope
 break, continue, pass
 ++, --
-persistent variables after world reload (program codec)
 better tokenizing, parsing, and runtime exceptions
 structs
 imports, access modifiers
@@ -127,5 +126,6 @@ static types
 dictionaries?
 enums?
 list comprehension?
-errors, exceptions?
+in-language errors, exceptions?
+codec for entire program?
  */
