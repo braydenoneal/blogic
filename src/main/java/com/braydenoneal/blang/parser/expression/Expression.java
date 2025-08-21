@@ -108,7 +108,7 @@ public interface Expression {
                         }
                     };
 
-                    if (program.peekIs(Type.SQUARE_BRACE, "[")) {
+                    while (program.peekIs(Type.SQUARE_BRACE, "[")) {
                         program.next();
                         Expression index = parse(program);
                         expression = new ListAccessExpression(expression, index);

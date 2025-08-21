@@ -71,6 +71,8 @@ public class Blang {
                 
                 print(-1 % 16);
                 print((-1 + 16) % 16);
+                
+                print([[[0]]][0][0][0]);
                 """,
                 new Context(null, null, null));
 
