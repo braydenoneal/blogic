@@ -22,6 +22,9 @@ public interface Statement {
                 case "while" -> {
                     return WhileStatement.parse(program);
                 }
+                case "for" -> {
+                    return ForStatement.parse(program);
+                }
                 case "return" -> {
                     return ReturnStatement.parse(program);
                 }

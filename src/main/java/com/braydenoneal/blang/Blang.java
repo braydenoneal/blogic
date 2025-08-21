@@ -80,6 +80,22 @@ public class Blang {
                 l = [];
                 l += [1];
                 print(l);
+                
+                for i in [2, 1, 3] {
+                    print(i);
+                }
+                
+                for i in range(3) {
+                    print(i);
+                }
+                
+                for i in range(0, 3) {
+                    print(i);
+                }
+                
+                for i in range(0, 3, 1) {
+                    print(i);
+                }
                 """,
                 new Context(null, null, null));
 
@@ -91,6 +107,7 @@ public class Blang {
 ternary operator
 for, iterators, range
 more list functions (add, remove, contains, etc.)
+fix scope issues when updating a variable from a deeper scope
 break, continue, pass
 ++, --
 persistent variables after world reload (program codec)

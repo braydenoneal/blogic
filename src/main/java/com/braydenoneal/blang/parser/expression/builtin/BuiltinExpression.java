@@ -22,6 +22,7 @@ public class BuiltinExpression {
             case "placeBlock" -> new PlaceBlockBuiltin(program, parseArguments(program));
             case "min" -> new MinimumBuiltin(parseArguments(program));
             case "max" -> new MaximumBuiltin(parseArguments(program));
+            case "range" -> new RangeBuiltin(parseArguments(program));
             default -> CallExpression.parse(program, name);
         };
     }

@@ -1,51 +1,43 @@
 fn main() {
     y = 2;
-
-    x = 0;
     xs = [];
-    while x < 16 {
-        z = 0;
+
+    for x in range(16) {
         zs = [];
-        while z < 16 {
+
+        for z in range(16) {
             directions = [[-1, -1], [-1, 0], [-1, 1], [0, -1], [0, 1], [1, -1], [1, 0], [1, 1]];
-            d = 0;
             n = 0;
-            while d < len(directions) {
-                if !isAirBlock((x + directions[d][0]) % 16, y, (z + directions[d][1]) % 16) {
+
+            for d in directions {
+                if !isAirBlock((x + d[0]) % 16, y, (z + d[1]) % 16) {
                     n += 1;
                 }
-                d += 1;
             }
 
             live = 0;
+
             if n == 3 {
                 live = 1;
-            }
-            if n < 2 or n > 3 {
+            } elif n < 2 or n > 3 {
                 live = -1;
             }
 
-            zs = zs + [live];
-            z += 1;
+            zs += [live];
         }
+
         xs += [zs];
-        x += 1;
     }
 
-
-    x = 0;
-    while x < 16 {
-        z = 0;
-        while z < 16 {
+    for x in range(16) {
+        for z in range(16) {
             live = xs[x][z];
+
             if live == 1 {
                 placeBlock(x, y, z, 1);
             } elif live == -1 {
                 placeBlock(x, y, z, 0);
             }
-
-            z += 1;
         }
-        x += 1;
     }
 }

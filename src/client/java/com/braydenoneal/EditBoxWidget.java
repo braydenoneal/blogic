@@ -64,8 +64,6 @@ public class EditBoxWidget extends ScrollableTextFieldWidget {
     @Override
     public boolean mouseScrolled(double mouseX, double mouseY, double horizontalAmount, double verticalAmount) {
         super.mouseScrolled(mouseX, mouseY, horizontalAmount, verticalAmount);
-        super.mouseScrolled(mouseX, mouseY, horizontalAmount, verticalAmount);
-        super.mouseScrolled(mouseX, mouseY, horizontalAmount, verticalAmount);
         return super.mouseScrolled(mouseX, mouseY, horizontalAmount, verticalAmount);
     }
 
