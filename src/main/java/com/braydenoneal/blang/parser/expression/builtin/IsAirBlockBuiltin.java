@@ -23,6 +23,10 @@ public record IsAirBlockBuiltin(Program program, List<Expression> arguments) imp
             return new BooleanValue(program.context().world().getBlockState(pos).getBlock() == Blocks.AIR);
         }
 
+        System.out.println("isAirBlock");
+        System.out.println(xValue);
+        System.out.println(yValue);
+        System.out.println(zValue);
         return null;
     }
 }

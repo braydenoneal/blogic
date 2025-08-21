@@ -30,6 +30,9 @@ public record MaximumBuiltin(List<Expression> arguments) implements Expression {
             return new FloatValue(Math.max(a1.value(), b1.value()));
         }
 
+        System.out.println("max");
+        System.out.println(a);
+        System.out.println(b);
         return null;
     }
 }

@@ -53,6 +53,9 @@ public record ArithmeticOperator(
             return new ListValue(Stream.concat(b1.value().stream(), Stream.of(a)).toList());
         }
 
+        System.out.println(operator);
+        System.out.println(operand_a);
+        System.out.println(operand_b);
         return null;
     }
 }

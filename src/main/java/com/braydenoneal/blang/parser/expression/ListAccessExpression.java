@@ -13,11 +13,14 @@ public record ListAccessExpression(Expression listExpression, Expression indexEx
         if (listValue instanceof ListValue list && indexValue instanceof IntegerValue index) {
             if (index.value() < 0) {
                 return list.value().get(list.value().size() - index.value());
-            } else {
-                return list.value().get(index.value());
             }
+
+            return list.value().get(index.value());
         }
 
+        System.out.println("listAccess");
+        System.out.println(listValue);
+        System.out.println(indexValue);
         return null;
     }
 }

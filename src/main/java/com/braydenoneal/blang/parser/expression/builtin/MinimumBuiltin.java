@@ -30,6 +30,9 @@ public record MinimumBuiltin(List<Expression> arguments) implements Expression {
             return new FloatValue(Math.min(a1.value(), b1.value()));
         }
 
+        System.out.println("min");
+        System.out.println(a);
+        System.out.println(b);
         return null;
     }
 }

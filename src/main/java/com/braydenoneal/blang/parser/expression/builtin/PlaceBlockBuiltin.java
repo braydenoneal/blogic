@@ -25,8 +25,14 @@ public record PlaceBlockBuiltin(Program program, List<Expression> arguments) imp
             BlockPos entityPos = program.context().pos();
             BlockPos pos = new BlockPos(entityPos.getX() + x.value(), entityPos.getY() + y.value(), entityPos.getZ() + z.value());
             program.context().world().setBlockState(pos, block.value() == 0 ? Blocks.AIR.getDefaultState() : Blocks.STONE.getDefaultState());
+            return null;
         }
 
+        System.out.println("placeBlock");
+        System.out.println(xValue);
+        System.out.println(yValue);
+        System.out.println(zValue);
+        System.out.println(blockValue);
         return null;
     }
 }

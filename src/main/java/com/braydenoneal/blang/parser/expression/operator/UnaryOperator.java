@@ -13,6 +13,7 @@ public record UnaryOperator(Expression operand) implements Operator, Expression 
             return new BooleanValue(!value1.value());
         }
 
+        System.out.println(operand);
         return null;
     }
 }

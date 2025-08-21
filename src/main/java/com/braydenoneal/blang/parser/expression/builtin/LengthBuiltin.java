@@ -14,6 +14,8 @@ public record LengthBuiltin(Expression expression) implements Expression {
             return new IntegerValue(listValue.value().size());
         }
 
+        System.out.println("len");
+        System.out.println(value);
         return null;
     }
 }

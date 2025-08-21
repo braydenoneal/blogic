@@ -14,6 +14,8 @@ public record IntegerCastBuiltin(Expression expression) implements Expression {
             return new IntegerValue(floatValue.value().intValue());
         }
 
+        System.out.println("int");
+        System.out.println(value);
         return null;
     }
 }

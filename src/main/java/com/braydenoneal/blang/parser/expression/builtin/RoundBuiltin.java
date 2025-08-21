@@ -16,6 +16,8 @@ public record RoundBuiltin(Expression expression) implements Expression {
             return new IntegerValue(Math.round(floatValue.value()));
         }
 
+        System.out.println("round");
+        System.out.println(value);
         return null;
     }
 }

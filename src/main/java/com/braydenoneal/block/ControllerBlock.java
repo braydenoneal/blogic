@@ -79,6 +79,10 @@ public class ControllerBlock extends BlockWithEntity {
     @Nullable
     @Override
     public <T extends BlockEntity> BlockEntityTicker<T> getTicker(World world, BlockState state, BlockEntityType<T> type) {
-        return validateTicker(type, ModBlockEntities.CONTROLLER_BLOCK_ENTITY, ControllerBlockEntity::tick);
+        if (!world.isClient) {
+            return validateTicker(type, ModBlockEntities.CONTROLLER_BLOCK_ENTITY, ControllerBlockEntity::tick);
+        }
+
+        return null;
     }
 }

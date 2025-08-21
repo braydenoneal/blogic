@@ -24,6 +24,9 @@ public record CallExpression(Program program, String name, List<Expression> argu
             return value;
         }
 
+        System.out.println("call");
+        System.out.println(name);
+        System.out.println(arguments);
         return null;
     }
 

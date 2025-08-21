@@ -16,6 +16,8 @@ public record AbsoluteValueBuiltin(Expression expression) implements Expression 
             return new FloatValue(Math.abs(floatValue.value()));
         }
 
+        System.out.println("abs");
+        System.out.println(value);
         return null;
     }
 }
