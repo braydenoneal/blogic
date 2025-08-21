@@ -25,7 +25,8 @@ public class Scope {
         return value;
     }
 
-    public void set(String name, Value<?> value) {
+    public Value<?> set(String name, Value<?> value) {
         variables.put(name, value);
+        return value;
     }
 }

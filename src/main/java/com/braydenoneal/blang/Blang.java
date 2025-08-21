@@ -73,6 +73,13 @@ public class Blang {
                 print((-1 + 16) % 16);
                 
                 print([[[0]]][0][0][0]);
+                
+                i = 0;
+                i += 1;
+                print(i);
+                l = [];
+                l += [1];
+                print(l);
                 """,
                 new Context(null, null, null));
 
@@ -81,7 +88,6 @@ public class Blang {
 }
 
 /*
-+=, -=
 ternary operator
 for, iterators, range
 more list functions (add, remove, contains, etc.)
