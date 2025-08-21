@@ -10,7 +10,6 @@ import net.minecraft.client.gui.Element;
 import net.minecraft.client.gui.Selectable;
 import net.minecraft.client.gui.screen.ingame.HandledScreen;
 import net.minecraft.client.gui.widget.ButtonWidget;
-import net.minecraft.client.gui.widget.EditBoxWidget;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.screen.ScreenTexts;
 import net.minecraft.text.Text;
@@ -23,7 +22,7 @@ public class ControllerScreen extends HandledScreen<ControllerScreenHandler> {
     @Override
     protected void init() {
         super.init();
-        EditBoxWidget editBoxWidget = new EditBoxWidget.Builder().x(20).y(20).build(MinecraftClient.getInstance().textRenderer, width - 40, height - 80, Text.of(""));
+        EditBoxWidget editBoxWidget = EditBoxWidget.builder().x(20).y(20).build(MinecraftClient.getInstance().textRenderer, width - 40, height - 80, Text.of(""));
         editBoxWidget.setText(handler.source());
         addDrawableChild(editBoxWidget);
         addDrawableChild(ButtonWidget.builder(ScreenTexts.DONE, button -> {
@@ -54,5 +53,11 @@ public class ControllerScreen extends HandledScreen<ControllerScreenHandler> {
         }
 
         return super.keyPressed(keyCode, scanCode, modifiers);
+    }
+
+    @Override
+    public boolean mouseScrolled(double mouseX, double mouseY, double horizontalAmount, double verticalAmount) {
+        children().getFirst().mouseScrolled(mouseX, mouseY, horizontalAmount, verticalAmount);
+        return super.mouseScrolled(mouseX, mouseY, horizontalAmount, verticalAmount);
     }
 }
