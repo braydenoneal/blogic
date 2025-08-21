@@ -50,7 +50,7 @@ public record ArithmeticOperator(
         } else if (operator.equals("+") && a instanceof ListValue a1) {
             return new ListValue(Stream.concat(a1.value().stream(), Stream.of(b)).toList());
         } else if (operator.equals("+") && b instanceof ListValue b1) {
-            return new ListValue(Stream.concat(Stream.of(a), b1.value().stream()).toList());
+            return new ListValue(Stream.concat(b1.value().stream(), Stream.of(a)).toList());
         }
 
         return null;

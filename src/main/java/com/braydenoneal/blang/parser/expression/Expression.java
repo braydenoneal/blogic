@@ -55,7 +55,8 @@ public interface Expression {
                 program.peekIs(Type.SEMICOLON, ";") ||
                 program.peekIs(Type.CURLY_BRACE, "{") ||
                 program.peekIs(Type.SQUARE_BRACE, "]") ||
-                program.peekIs(Type.COMMA, ",")
+                program.peekIs(Type.COMMA, ",") ||
+                program.peekIs(Type.KEYWORD, "else")
         ) || openedParenthesis) {
             switch (program.peek().type()) {
                 case Type.BOOLEAN_OPERATOR, Type.COMPARISON_OPERATOR, Type.ARITHMETIC_OPERATOR:
@@ -113,6 +114,10 @@ public interface Expression {
                         Expression index = parse(program);
                         expression = new ListAccessExpression(expression, index);
                         program.expect(Type.SQUARE_BRACE, "]");
+                    }
+
+                    if (program.peekIs(Type.KEYWORD, "if")) {
+                        expression = IfElseExpression.parse(program, expression);
                     }
 
                     outputs.push(new Operand(expression));

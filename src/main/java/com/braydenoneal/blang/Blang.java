@@ -101,6 +101,10 @@ public class Blang {
                 a += 1;
                 a += 2;
                 print(a);
+                
+                print(1 + [0]);
+                
+                print(1 if true else 0);
                 """,
                 new Context(null, null, null));
 
@@ -109,8 +113,6 @@ public class Blang {
 }
 
 /*
-ternary operator
-for, iterators, range
 more list functions (add, remove, contains, etc.)
 fix scope issues when updating a variable from a deeper scope
 break, continue, pass
