@@ -22,6 +22,7 @@ public record BooleanOperator(
             }
         }
 
+        System.out.println("boolean operator");
         System.out.println(operator);
         System.out.println(operand_a);
         System.out.println(operand_b);

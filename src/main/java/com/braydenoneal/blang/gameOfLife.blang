@@ -17,7 +17,7 @@ fn main() {
                 n = 0;
 
                 for d in directions {
-                    if !isAirBlock((x + d[0]) % w, y, (z + d[1]) % l) {
+                    if getBlock((x + d[0]) % w, y, (z + d[1]) % l) != block("air") {
                         n += 1;
                     }
                 }
@@ -41,9 +41,9 @@ fn main() {
                 live = xs[x][z];
 
                 if live == 1 {
-                    placeBlock(x, y, z, "white_concrete");
+                    placeBlock(x, y, z, block("white_concrete"));
                 } elif live == -1 {
-                    placeBlock(x, y, z, "air");
+                    placeBlock(x, y, z, block("air"));
                 }
             }
         }

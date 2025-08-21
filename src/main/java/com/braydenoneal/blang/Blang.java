@@ -105,6 +105,11 @@ public class Blang {
                 print(1 + [0]);
                 
                 print(1 if true else 0);
+                
+                print(range(0) == range(0));
+                print(0 == 0);
+                
+                // print(block("minecraft:stone") == block("stone"));
                 """,
                 new Context(null, null, null));
 

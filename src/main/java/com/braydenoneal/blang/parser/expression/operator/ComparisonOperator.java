@@ -17,9 +17,9 @@ public record ComparisonOperator(
         Value<?> b = operand_b.evaluate();
 
         if (operator.equals("==")) {
-            return new BooleanValue(a.value() == b.value());
+            return new BooleanValue(a.equals(b));
         } else if (operator.equals("!=")) {
-            return new BooleanValue(a.value() != b.value());
+            return new BooleanValue(!a.equals(b));
         }
 
         if (a instanceof IntegerValue a1 && b instanceof IntegerValue b1) {
@@ -38,6 +38,7 @@ public record ComparisonOperator(
             };
         }
 
+        System.out.println("comparison operator");
         System.out.println(operator);
         System.out.println(operand_a);
         System.out.println(operand_b);

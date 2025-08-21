@@ -24,6 +24,15 @@ public abstract class Value<T> implements Expression {
         return value().toString();
     }
 
+    @Override
+    public boolean equals(Object obj) {
+        if (obj instanceof Value<?> value1) {
+            return value.equals(value1.value());
+        }
+
+        return super.equals(obj);
+    }
+
     public abstract ValueType<?> getType();
 
     private static final Codec<ValueType<?>> VALUE_TYPE_CODEC = ValueType.REGISTRY.getCodec();
