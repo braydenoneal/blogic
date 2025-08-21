@@ -3,8 +3,10 @@ package com.braydenoneal.blang.parser.expression.builtin;
 import com.braydenoneal.blang.parser.Program;
 import com.braydenoneal.blang.parser.expression.Expression;
 import com.braydenoneal.blang.parser.expression.value.IntegerValue;
+import com.braydenoneal.blang.parser.expression.value.StringValue;
 import com.braydenoneal.blang.parser.expression.value.Value;
-import net.minecraft.block.Blocks;
+import net.minecraft.registry.Registries;
+import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 
 import java.util.List;
@@ -20,11 +22,11 @@ public record PlaceBlockBuiltin(Program program, List<Expression> arguments) imp
         if (xValue instanceof IntegerValue x &&
                 yValue instanceof IntegerValue y &&
                 zValue instanceof IntegerValue z &&
-                blockValue instanceof IntegerValue block
+                blockValue instanceof StringValue block
         ) {
             BlockPos entityPos = program.context().pos();
             BlockPos pos = new BlockPos(entityPos.getX() + x.value(), entityPos.getY() + y.value(), entityPos.getZ() + z.value());
-            program.context().world().setBlockState(pos, block.value() == 0 ? Blocks.AIR.getDefaultState() : Blocks.STONE.getDefaultState());
+            program.context().world().setBlockState(pos, Registries.BLOCK.get(Identifier.of(block.value())).getDefaultState());
             return null;
         }
 

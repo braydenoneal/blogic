@@ -115,6 +115,7 @@ public class Blang {
 /*
 more list functions (add, remove, contains, etc.)
 fix scope issues when updating a variable from a deeper scope
+fix nested returns
 break, continue, pass
 ++, --
 better tokenizing, parsing, and runtime exceptions

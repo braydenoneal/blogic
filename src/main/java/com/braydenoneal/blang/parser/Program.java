@@ -111,15 +111,7 @@ public class Program {
         return functions.get(name);
     }
 
-    public void newScope() {
-        scopes.push(new Scope(scopes.peek()));
-    }
-
     public Scope getScope() {
         return scopes.peek();
-    }
-
-    public void endScope() {
-        scopes.pop();
     }
 }
