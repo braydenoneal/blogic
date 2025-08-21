@@ -96,6 +96,11 @@ public class Blang {
                 for i in range(0, 3, 1) {
                     print(i);
                 }
+                
+                a = [];
+                a += 1;
+                a += 2;
+                print(a);
                 """,
                 new Context(null, null, null));
 

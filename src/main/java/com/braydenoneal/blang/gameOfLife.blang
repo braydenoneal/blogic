@@ -23,10 +23,10 @@ fn main() {
                 live = -1;
             }
 
-            zs += [live];
+            zs += live;
         }
 
-        xs += [zs];
+        xs += zs;
     }
 
     for x in range(16) {
