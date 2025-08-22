@@ -13,6 +13,7 @@ public class Program {
     private int position;
     private final List<Statement> statements;
     private final Map<String, FunctionDeclaration> functions;
+    private final Scope topScope;
     private final Stack<Scope> scopes;
     private final Context context;
 
@@ -29,8 +30,9 @@ public class Program {
         position = 0;
         statements = new ArrayList<>();
         functions = new HashMap<>();
+        topScope = new Scope(null);
         scopes = new Stack<>();
-        scopes.push(new Scope(null));
+        scopes.push(topScope);
         try {
             parse();
         } catch (Exception e) {
@@ -109,6 +111,18 @@ public class Program {
 
     public FunctionDeclaration getFunction(String name) {
         return functions.get(name);
+    }
+
+    public void newScope() {
+        scopes.add(new Scope(scopes.peek()));
+    }
+
+    public void endScope() {
+        scopes.pop();
+    }
+
+    public Scope topScope() {
+        return topScope;
     }
 
     public Scope getScope() {

@@ -2,7 +2,6 @@ package com.braydenoneal;
 
 import com.braydenoneal.block.ModBlocks;
 import com.braydenoneal.block.entity.ModBlockEntities;
-import com.braydenoneal.component.ModComponents;
 import com.braydenoneal.item.ModItems;
 import com.braydenoneal.networking.ModNetworking;
 import net.fabricmc.api.ModInitializer;
@@ -19,6 +18,5 @@ public class Blogic implements ModInitializer {
         ModBlockEntities.initialize();
         ModItems.initialize();
         ModNetworking.initialize();
-        ModComponents.initialize();
     }
 }

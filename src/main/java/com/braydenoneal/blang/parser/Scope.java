@@ -36,8 +36,21 @@ public class Scope {
         return value;
     }
 
+    private Scope parentWithVariable(String name) {
+        if (variables.containsKey(name)) {
+            return this;
+        }
+
+        return parent != null ? parent.parentWithVariable(name) : null;
+    }
+
     public Value<?> set(String name, Value<?> value) {
-        variables.put(name, value);
-        return value;
+        Scope parentWithVariable = parentWithVariable(name);
+
+        if (parentWithVariable != null) {
+            return parentWithVariable.variables.put(name, value);
+        }
+
+        return variables.put(name, value);
     }
 }

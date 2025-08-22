@@ -109,8 +109,6 @@ public class Blang {
                 print(range(0) == range(0));
                 print(0 == 0);
                 
-                // print(block("minecraft:stone") == block("stone"));
-                
                 e = [0];
                 e.set(0, 1);
                 e.append(2);
@@ -140,15 +138,13 @@ public class Blang {
 }
 
 /*
-more list functions (add, remove, contains, etc.)
-fix scope issues when updating a variable from a deeper scope
+basic imports, access modifiers
 fix nested returns
 break, continue, pass
 ++, --
 better tokenizing, parsing, and runtime exceptions
 move these tests into a testing system
 structs
-imports, access modifiers
 better builtin functions logic
 struct implementations
 static types

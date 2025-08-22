@@ -42,7 +42,7 @@ public class ControllerBlockEntity extends AbstractNetworkBlockEntity implements
         this.source = source;
         program = new Program(source, new Context(world, pos, this));
         program.run();
-        variables = program.getScope().variables();
+        variables = program.topScope().variables();
         markDirty();
     }
 
@@ -53,7 +53,7 @@ public class ControllerBlockEntity extends AbstractNetworkBlockEntity implements
         source = view.read("source", Codec.STRING).orElse("");
 
         program = new Program(source, new Context(world, pos, this));
-        program.getScope().setVariables(variables);
+        program.topScope().setVariables(variables);
     }
 
     @Override
@@ -71,7 +71,7 @@ public class ControllerBlockEntity extends AbstractNetworkBlockEntity implements
     public static void tick(World world, BlockPos blockPos, BlockState ignoredBlockState, ControllerBlockEntity entity) {
         if (world.isReceivingRedstonePower(blockPos)) {
             entity.program.runMain();
-            entity.variables = entity.program.getScope().variables();
+            entity.variables = entity.program.topScope().variables();
             entity.markDirty();
         }
     }

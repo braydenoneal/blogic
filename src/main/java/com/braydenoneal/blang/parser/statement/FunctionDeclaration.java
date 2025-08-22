@@ -20,6 +20,7 @@ public record FunctionDeclaration(
 
     public Value<?> call() {
         Value<?> returnValue = null;
+        program.newScope();
 
         for (Statement statement : statements) {
             returnValue = statement.execute();
@@ -29,6 +30,7 @@ public record FunctionDeclaration(
             }
         }
 
+        program.endScope();
         return returnValue;
     }
 

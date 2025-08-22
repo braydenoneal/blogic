@@ -2,6 +2,5 @@
   "block.blogic.cable": "Cable",
   "block.blogic.controller": "Controller",
   "item.blogic.cable": "Cable",
-  "item.blogic.controller": "Controller",
-  "item.blogic.file": "File"
+  "item.blogic.controller": "Controller"
 }
