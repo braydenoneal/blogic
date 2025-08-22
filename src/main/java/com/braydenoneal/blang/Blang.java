@@ -5,120 +5,126 @@ import com.braydenoneal.blang.parser.Program;
 public class Blang {
     public static void main(String[] args) {
         Program program = new Program("""
-                //num = 4;
-                //num = num + 12 + 4;
-                //print(num);
-                //num1 = -12.3;
-                //print(num1);
-                //
-                //num1 = 12;
-                //num2 = 0;
-                //num2 = 4;
-                //
-                //fn add(a, b) {
-                //    c = a + b;
-                //    return c;
-                //}
-                //
-                //c = add(num1, num2);
-                //print(c);
-                //
-                //if false {
-                //    print(1);
-                //} elif false {
-                //    print(2);
-                //} elif false {
-                //    print(3);
-                //} else {
-                //    print(4);
-                //}
-                //
-                //i = 0;
-                //
-                //while i < 10 {
-                //    print(i);
-                //    i = i + 1;
-                //}
-                //
-                //num = 3 + 4 * 2 / ( 1 - 5 ) ^ 2 ^ 3;
-                //print(num);
-                //
-                //list = [3, 4 + 3, [false, 'hello' + ' world']];
-                //print(list + ["end"]);
-                //
-                //print(1.0 + 1);
-                //
-                //print("Num: " + 1);
-                //
-                //print(abs(-1));
-                //print(int(2.0));
-                //print(float(3));
-                //print(str(4));
-                //print(round(5.4));
-                //print(min(6, 7));
-                //print(max(6, 7));
-                //
-                //print(len([0, 1, 2, 3, 4, 5, 6, 7]));
-                //
-                //print([8, 9][1]);
-                //list = [8, 9, 10];
-                //print(list[2]);
-                //
-                //print(str = "string");
-                //print(str);
-                //
-                //print(8 < 2 or 8 > 3);
-                //
-                //print(-1 % 16);
-                //print((-1 + 16) % 16);
-                //
-                //print([[[0]]][0][0][0]);
-                //
-                //i = 0;
-                //i += 1;
-                //print(i);
-                //l = [];
-                //l += [1];
-                //print(l);
-                //
-                //for i in [2, 1, 3] {
-                //    print(i);
-                //}
-                //
-                //for i in range(3) {
-                //    print(i);
-                //}
-                //
-                //for i in range(0, 3) {
-                //    print(i);
-                //}
-                //
-                //for i in range(0, 3, 1) {
-                //    print(i);
-                //}
-                //
-                //a = [];
-                //a += [1];
-                //a += [2];
-                //print(a);
-                //
-                //print([1] + [0]);
-                //
-                //print(1 if true else 0);
-                //
-                //print(range(0) == range(0));
-                //print(0 == 0);
-                //
-                //// print(block("minecraft:stone") == block("stone"));
-                //
-                //e = [0];
-                //e.set(0, 1);
-                //e.append(2);
-                //print(e);
-                //
-                a = [[0]];
-                a[0][0] = 1;
+                num = 4;
+                num = num + 12 + 4;
+                print(num);
+                num1 = -12.3;
+                print(num1);
+                
+                num1 = 12;
+                num2 = 0;
+                num2 = 4;
+                
+                fn add(a, b) {
+                    c = a + b;
+                    return c;
+                }
+                
+                c = add(num1, num2);
+                print(c);
+                
+                if false {
+                    print(1);
+                } elif false {
+                    print(2);
+                } elif false {
+                    print(3);
+                } else {
+                    print(4);
+                }
+                
+                i = 0;
+                
+                while i < 10 {
+                    print(i);
+                    i = i + 1;
+                }
+                
+                num = 3 + 4 * 2 / ( 1 - 5 ) ^ 2 ^ 3;
+                print(num);
+                
+                list = [3, 4 + 3, [false, 'hello' + ' world']];
+                print(list + ["end"]);
+                
+                print(1.0 + 1);
+                
+                print("Num: " + 1);
+                
+                print(abs(-1));
+                print(int(2.0));
+                print(float(3));
+                print(str(4));
+                print(round(5.4));
+                print(min(6, 7));
+                print(max(6, 7));
+                
+                print(len([0, 1, 2, 3, 4, 5, 6, 7]));
+                
+                print([8, 9][1]);
+                list = [8, 9, 10];
+                print(list[2]);
+                
+                print(str = "string");
+                print(str);
+                
+                print(8 < 2 or 8 > 3);
+                
+                print(-1 % 16);
+                print((-1 + 16) % 16);
+                
+                print([[[0]]][0][0][0]);
+                
+                i = 0;
+                i += 1;
+                print(i);
+                l = [];
+                l += [1];
+                print(l);
+                
+                for i in [2, 1, 3] {
+                    print(i);
+                }
+                
+                for i in range(3) {
+                    print(i);
+                }
+                
+                for i in range(0, 3) {
+                    print(i);
+                }
+                
+                for i in range(0, 3, 1) {
+                    print(i);
+                }
+                
+                a = [];
+                a += [1];
+                a += [2];
                 print(a);
+                
+                print([1] + [0]);
+                
+                print(1 if true else 0);
+                
+                print(range(0) == range(0));
+                print(0 == 0);
+                
+                // print(block("minecraft:stone") == block("stone"));
+                
+                e = [0];
+                e.set(0, 1);
+                e.append(2);
+                print(e);
+                
+                a = [[0, [0, [1]]]];
+                print(a);
+                a[0][1][1][0] = 2;
+                print(a);
+                print(a[0][1][1][0]);
+                
+                a = [0];
+                b = [1];
+                print(a + b);
                 """,
                 new Context(null, null, null));
 

@@ -1,5 +1,6 @@
 package com.braydenoneal.blang.parser.expression.value;
 
+import com.braydenoneal.blang.parser.expression.Expression;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
@@ -36,21 +37,54 @@ public class ListValue extends Value<List<Value<?>>> {
         return print + "]";
     }
 
-    public static ListValue setNested(ListValue list, List<Integer> indices, Value<?> value) {
+    public static List<Value<?>> toIndexValues(List<Expression> expressions) {
+        List<Value<?>> indices = new ArrayList<>();
+
+        for (Expression expression : expressions) {
+            indices.add(expression.evaluate());
+        }
+
+        return indices;
+    }
+
+    public static ListValue setNested(ListValue list, List<? extends Value<?>> indexValues, Value<?> value) {
         List<Value<?>> newList = new ArrayList<>(list.value());
+        Value<?> indexValue = indexValues.getFirst();
 
         for (int i = 0; i < newList.size(); i++) {
-            if (indices.getFirst() != i) {
-                break;
+            if (indexValue instanceof IntegerValue index && index.value() != i) {
+                continue;
             }
 
-            if (indices.size() > 1 && newList.get(i) instanceof ListValue nestedList) {
-                newList.set(i, setNested(nestedList, indices.subList(1, newList.size() + 1), value));
+            if (indexValues.size() > 1 && newList.get(i) instanceof ListValue nestedList) {
+                newList.set(i, setNested(nestedList, indexValues.subList(1, indexValues.size()), value));
             } else {
                 newList.set(i, value);
             }
+
+            break;
         }
 
         return new ListValue(newList);
+    }
+
+    public static Value<?> getNested(ListValue list, List<? extends Value<?>> indexValues) {
+        Value<?> indexValue = indexValues.getFirst();
+
+        for (int i = 0; i < list.value().size(); i++) {
+            if (indexValue instanceof IntegerValue index && index.value() != i) {
+                continue;
+            }
+
+            if (indexValues.size() > 1 && list.value().get(i) instanceof ListValue nestedList) {
+                return getNested(nestedList, indexValues.subList(1, indexValues.size()));
+            } else {
+                return list.value().get(i);
+            }
+        }
+
+        System.out.println("getNested");
+        System.out.println(list);
+        return null;
     }
 }

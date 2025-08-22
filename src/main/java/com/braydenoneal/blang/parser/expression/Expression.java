@@ -10,10 +10,7 @@ import com.braydenoneal.blang.parser.expression.value.*;
 import com.braydenoneal.blang.tokenizer.Token;
 import com.braydenoneal.blang.tokenizer.Type;
 
-import java.util.ArrayDeque;
-import java.util.Deque;
-import java.util.Map;
-import java.util.Stack;
+import java.util.*;
 
 public interface Expression {
     interface Output {
@@ -109,17 +106,26 @@ public interface Expression {
                         }
                     };
 
+                    List<Expression> indices = new ArrayList<>();
+
                     while (program.peekIs(Type.SQUARE_BRACE, "[")) {
                         program.next();
-                        Expression index = parse(program);
-                        expression = new ListAccessExpression(expression, index);
+                        indices.add(parse(program));
                         program.expect(Type.SQUARE_BRACE, "]");
+                    }
+
+                    if (!indices.isEmpty()) {
+                        if (expression instanceof VariableExpression variableExpression) {
+                            expression = new NamedListAccessExpression(variableExpression.name(), expression, indices);
+                        } else if (expression instanceof ListExpression) {
+                            expression = new ListAccessExpression(expression, indices);
+                        }
                     }
 
                     if (program.peekIs(Type.KEYWORD, "if")) {
                         expression = IfElseExpression.parse(program, expression);
                     } else if (program.peek().type() == Type.ASSIGN) {
-                        return AssignmentExpression.parse(program, token.value());
+                        expression = AssignmentExpression.parse(program, expression);
                     }
 
                     outputs.push(new Operand(expression));

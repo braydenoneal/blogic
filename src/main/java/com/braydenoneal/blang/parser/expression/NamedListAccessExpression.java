@@ -5,7 +5,11 @@ import com.braydenoneal.blang.parser.expression.value.Value;
 
 import java.util.List;
 
-public record ListAccessExpression(Expression listExpression, List<Expression> indices) implements Expression {
+public record NamedListAccessExpression(
+        String name,
+        Expression listExpression,
+        List<Expression> indices
+) implements Expression {
     @Override
     public Value<?> evaluate() {
         Value<?> listValue = listExpression.evaluate();
