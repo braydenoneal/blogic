@@ -2,8 +2,7 @@ package com.braydenoneal.blang.parser.expression;
 
 import com.braydenoneal.blang.parser.Program;
 import com.braydenoneal.blang.parser.expression.builtin.BuiltinExpression;
-import com.braydenoneal.blang.parser.expression.builtin.list.ListAppendBuiltin;
-import com.braydenoneal.blang.parser.expression.builtin.list.ListSetBuiltin;
+import com.braydenoneal.blang.parser.expression.builtin.list.*;
 import com.braydenoneal.blang.parser.expression.value.ListValue;
 import com.braydenoneal.blang.parser.expression.value.Value;
 import com.braydenoneal.blang.tokenizer.Type;
@@ -22,10 +21,16 @@ public record MemberCallExpression(
 
         if (object instanceof ListValue listValue) {
             switch (functionName) {
-                case "set":
-                    return new ListSetBuiltin(program, name, listValue, arguments).evaluate();
                 case "append":
                     return new ListAppendBuiltin(program, name, listValue, arguments).evaluate();
+                case "insert":
+                    return new ListInsertBuiltin(program, name, listValue, arguments).evaluate();
+                case "remove":
+                    return new ListRemoveBuiltin(program, name, listValue, arguments).evaluate();
+                case "pop":
+                    return new ListPopBuiltin(program, name, listValue).evaluate();
+                case "contains":
+                    return new ListContainsBuiltin(listValue, arguments).evaluate();
             }
         }
 

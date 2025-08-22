@@ -7,18 +7,15 @@ import com.braydenoneal.blang.parser.expression.value.Value;
 
 import java.util.List;
 
-public record ListAppendBuiltin(
+public record ListPopBuiltin(
         Program program,
         String name,
-        ListValue listValue,
-        List<Expression> arguments
+        ListValue listValue
 ) implements Expression {
     @Override
     public Value<?> evaluate() {
-        Value<?> appendValue = arguments.getFirst().evaluate();
-
         List<Value<?>> localList = listValue.value();
-        localList.add(appendValue);
+        localList.removeLast();
 
         return program.getScope().set(name, new ListValue(localList));
     }

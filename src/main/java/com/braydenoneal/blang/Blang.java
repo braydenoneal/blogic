@@ -125,6 +125,13 @@ public class Blang {
                 a = [0];
                 b = [1];
                 print(a + b);
+                
+                a = [];
+                print(a.append(2));
+                print(a.insert(0, 1));
+                print(a.remove(0));
+                print(a.contains(2));
+                print(a.pop());
                 """,
                 new Context(null, null, null));
 

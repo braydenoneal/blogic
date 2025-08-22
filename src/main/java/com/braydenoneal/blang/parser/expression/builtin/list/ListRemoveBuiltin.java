@@ -8,7 +8,7 @@ import com.braydenoneal.blang.parser.expression.value.Value;
 
 import java.util.List;
 
-public record ListSetBuiltin(
+public record ListRemoveBuiltin(
         Program program,
         String name,
         ListValue listValue,
@@ -16,19 +16,16 @@ public record ListSetBuiltin(
 ) implements Expression {
     @Override
     public Value<?> evaluate() {
-        Value<?> indexValue = arguments.getFirst().evaluate();
-        Value<?> setValue = arguments.get(1).evaluate();
+        Value<?> removeValue = arguments.getFirst().evaluate();
 
-        if (indexValue instanceof IntegerValue index) {
-            List<Value<?>> localList = listValue.value();
-            localList.set(index.value(), setValue);
-            program.getScope().set(name, new ListValue(localList));
-            return null;
+        List<Value<?>> localList = listValue.value();
+
+        if (removeValue instanceof IntegerValue integerValue) {
+            localList.remove((int) integerValue.value());
+        } else {
+            localList.remove(removeValue);
         }
 
-        System.out.println("listSet");
-        System.out.println(indexValue);
-        System.out.println(setValue);
-        return null;
+        return program.getScope().set(name, new ListValue(localList));
     }
 }
