@@ -101,8 +101,8 @@ public interface Expression {
 
                             if (program.peekIs(Type.PARENTHESIS, "(")) {
                                 yield BuiltinExpression.parse(program, token.value());
-                            } else if (program.peek().type() == Type.ASSIGN) {
-                                yield AssignmentExpression.parse(program, token.value());
+                            } else if (program.peek().type() == Type.DOT) {
+                                yield MemberCallExpression.parse(program, token.value());
                             } else {
                                 yield new VariableExpression(program, token.value());
                             }
@@ -118,6 +118,8 @@ public interface Expression {
 
                     if (program.peekIs(Type.KEYWORD, "if")) {
                         expression = IfElseExpression.parse(program, expression);
+                    } else if (program.peek().type() == Type.ASSIGN) {
+                        return AssignmentExpression.parse(program, token.value());
                     }
 
                     outputs.push(new Operand(expression));

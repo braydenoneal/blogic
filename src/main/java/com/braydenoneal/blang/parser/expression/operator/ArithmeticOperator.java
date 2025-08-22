@@ -47,10 +47,6 @@ public record ArithmeticOperator(
             return new StringValue(a1.value() + b1.value());
         } else if (operator.equals("+") && a instanceof ListValue a1 && b instanceof ListValue b1) {
             return new ListValue(Stream.concat(a1.value().stream(), b1.value().stream()).toList());
-        } else if (operator.equals("+") && a instanceof ListValue a1) {
-            return new ListValue(Stream.concat(a1.value().stream(), Stream.of(b)).toList());
-        } else if (operator.equals("+") && b instanceof ListValue b1) {
-            return new ListValue(Stream.concat(b1.value().stream(), Stream.of(a)).toList());
         }
 
         System.out.println("arithmetic operator");
