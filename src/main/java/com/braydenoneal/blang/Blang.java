@@ -64,9 +64,6 @@ public class Blang {
                 list = [8, 9, 10];
                 print(list[2]);
                 
-                print(str = "string");
-                print(str);
-                
                 print(8 < 2 or 8 > 3);
                 
                 print(-1 % 16);

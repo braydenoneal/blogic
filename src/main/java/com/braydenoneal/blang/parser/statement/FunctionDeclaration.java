@@ -14,7 +14,7 @@ public record FunctionDeclaration(
         List<Statement> statements
 ) implements Statement {
     @Override
-    public Value<?> execute() {
+    public Statement execute() {
         return null;
     }
 
@@ -22,12 +22,10 @@ public record FunctionDeclaration(
         Value<?> returnValue = null;
         program.newScope();
 
-        for (Statement statement : statements) {
-            returnValue = statement.execute();
+        Statement statement = Statement.runStatements(statements);
 
-            if (statement instanceof ReturnStatement) {
-                return returnValue;
-            }
+        if (statement instanceof ReturnStatement returnStatement) {
+            returnValue = returnStatement.returnValue();
         }
 
         program.endScope();

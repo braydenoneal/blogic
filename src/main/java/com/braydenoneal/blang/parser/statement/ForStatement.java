@@ -18,23 +18,25 @@ public record ForStatement(
         List<Statement> statements
 ) implements Statement {
     @Override
-    public Value<?> execute() {
+    public Statement execute() {
         Value<?> listValue = listExpression.evaluate();
 
         if (listValue instanceof ListValue list) {
             for (Value<?> item : list.value()) {
                 program.getScope().set(itemName, item);
+                Statement statement = Statement.runStatements(statements);
 
-                for (Statement statement : statements) {
-                    statement.execute();
+                if (statement != null) {
+                    return statement;
                 }
             }
         } else if (listValue instanceof RangeValue range) {
             for (int i = range.value().start(); i < range.value().end(); i += range.value().step()) {
                 program.getScope().set(itemName, new IntegerValue(i));
+                Statement statement = Statement.runStatements(statements);
 
-                for (Statement statement : statements) {
-                    statement.execute();
+                if (statement != null) {
+                    return statement;
                 }
             }
         }

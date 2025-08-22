@@ -2,15 +2,15 @@ package com.braydenoneal.blang.parser.statement;
 
 import com.braydenoneal.blang.parser.Program;
 import com.braydenoneal.blang.parser.expression.Expression;
-import com.braydenoneal.blang.parser.expression.value.Value;
 import com.braydenoneal.blang.tokenizer.Type;
 
 public record ExpressionStatement(
         Expression expression
 ) implements Statement {
     @Override
-    public Value<?> execute() {
-        return expression.evaluate();
+    public Statement execute() {
+        expression.evaluate();
+        return this;
     }
 
     public static Statement parse(Program program) throws Exception {

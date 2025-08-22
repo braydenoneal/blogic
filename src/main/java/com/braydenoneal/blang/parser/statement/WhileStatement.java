@@ -3,7 +3,6 @@ package com.braydenoneal.blang.parser.statement;
 import com.braydenoneal.blang.parser.Program;
 import com.braydenoneal.blang.parser.expression.Expression;
 import com.braydenoneal.blang.parser.expression.value.BooleanValue;
-import com.braydenoneal.blang.parser.expression.value.Value;
 import com.braydenoneal.blang.tokenizer.Type;
 
 import java.util.ArrayList;
@@ -14,10 +13,12 @@ public record WhileStatement(
         List<Statement> statements
 ) implements Statement {
     @Override
-    public Value<?> execute() {
+    public Statement execute() {
         while (condition.evaluate() instanceof BooleanValue booleanValue && booleanValue.value()) {
-            for (Statement statement : statements) {
-                statement.execute();
+            Statement statement = Statement.runStatements(statements);
+
+            if (statement != null) {
+                return statement;
             }
         }
 
