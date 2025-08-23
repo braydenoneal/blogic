@@ -2,6 +2,7 @@ package com.braydenoneal.blang.parser;
 
 import com.braydenoneal.blang.Context;
 import com.braydenoneal.blang.parser.statement.FunctionDeclaration;
+import com.braydenoneal.blang.parser.statement.ImportStatement;
 import com.braydenoneal.blang.parser.statement.Statement;
 import com.braydenoneal.blang.tokenizer.Token;
 import com.braydenoneal.blang.tokenizer.Type;
@@ -11,6 +12,7 @@ import java.util.*;
 public class Program {
     private final List<Token> tokens;
     private int position;
+    private final List<ImportStatement> imports;
     private final List<Statement> statements;
     private final Map<String, FunctionDeclaration> functions;
     private final Scope topScope;
@@ -28,6 +30,7 @@ public class Program {
         }
         this.tokens = tokens;
         position = 0;
+        imports = new ArrayList<>();
         statements = new ArrayList<>();
         functions = new HashMap<>();
         topScope = new Scope(null);
@@ -67,6 +70,8 @@ public class Program {
     }
 
     public void parse() throws Exception {
+        ImportStatement.parse(this);
+
         while (position < tokens.size()) {
             statements.add(Statement.parse(this));
         }

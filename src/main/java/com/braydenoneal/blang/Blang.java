@@ -5,6 +5,9 @@ import com.braydenoneal.blang.parser.Program;
 public class Blang {
     public static void main(String[] args) {
         Program program = new Program("""
+                import one.two.three;
+                import one.two;
+                
                 num = 4;
                 num = num + 12 + 4;
                 print(num);
