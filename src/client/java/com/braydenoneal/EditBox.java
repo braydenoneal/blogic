@@ -40,14 +40,16 @@ public class EditBox {
     private int maxLength = Integer.MAX_VALUE;
     private int maxLines = Integer.MAX_VALUE;
     private final int width;
+    private final int lineHeight;
     private Consumer<String> changeListener = text -> {
     };
     private Runnable cursorChangeListener = () -> {
     };
 
-    public EditBox(TextRenderer textRenderer, int width) {
+    public EditBox(TextRenderer textRenderer, int width, int lineHeight) {
         this.textRenderer = textRenderer;
         this.width = width;
+        this.lineHeight = lineHeight;
         this.setText("");
     }
 
@@ -276,8 +278,8 @@ public class EditBox {
      */
     public void moveCursor(double x, double y) {
         int i = MathHelper.floor(x);
-        int j = MathHelper.floor(y / 9.0);
-        EditBox.Substring substring = (EditBox.Substring) this.lines.get(MathHelper.clamp(j, 0, this.lines.size() - 1));
+        int j = MathHelper.floor(y / lineHeight);
+        EditBox.Substring substring = this.lines.get(MathHelper.clamp(j, 0, this.lines.size() - 1));
         int k = this.textRenderer.trimToWidth(this.text.substring(substring.beginIndex, substring.endIndex), i).length();
         this.moveCursor(CursorMovement.ABSOLUTE, substring.beginIndex + k);
     }
