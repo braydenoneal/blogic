@@ -85,6 +85,10 @@ public interface Expression {
 
                     Expression expression = switch (token.type()) {
                         case Type.BOOLEAN -> new BooleanValue(program.next().value().equals("true"));
+                        case Type.NULL -> {
+                            program.next();
+                            yield Null.value();
+                        }
                         case Type.QUOTE -> new StringValue(program.next().value());
                         case Type.FLOAT -> new FloatValue(Float.valueOf(program.next().value()));
                         case Type.INTEGER -> new IntegerValue(Integer.valueOf(program.next().value()));

@@ -140,6 +140,9 @@ public class Blang {
                 
                 fn emptyReturn() { return; }
                 print(emptyReturn());
+                
+                n = null;
+                print(n);
                 """,
                 new Context(null, null, null));
 

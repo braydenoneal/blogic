@@ -6,6 +6,7 @@ public enum Type {
     KEYWORD("(fn|return|if|else|elif|while|for|in|break|continue)([^A-Za-z0-9_]{1})"),
     BOOLEAN_OPERATOR("(and|or)([^A-Za-z0-9_]{1})"),
     BOOLEAN("(true|false)([^A-Za-z0-9_]{1})"),
+    NULL("(null)([^A-Za-z0-9_]{1})"),
     IDENTIFIER("([A-Za-z_][A-Za-z0-9_]*)"),
     QUOTE("(\"|')((?:\\\\\\1|(?!\\1).)*)(\\1)"),
     FLOAT("(-?[0-9]+\\.[0-9]*)"),
