@@ -14,6 +14,9 @@ public interface Statement {
 
         if (token.type() == Type.KEYWORD) {
             switch (token.value()) {
+                case "import" -> {
+                    return ImportStatement.parse(program);
+                }
                 case "fn" -> {
                     return FunctionDeclaration.parse(program);
                 }

@@ -69,9 +69,11 @@ public class Program {
         }
     }
 
-    public void parse() throws Exception {
-        ImportStatement.parse(this);
+    public void addImport(ImportStatement importStatement) {
+        imports.add(importStatement);
+    }
 
+    public void parse() throws Exception {
         while (position < tokens.size()) {
             statements.add(Statement.parse(this));
         }
