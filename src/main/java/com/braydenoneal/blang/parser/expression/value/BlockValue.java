@@ -20,11 +20,6 @@ public class BlockValue extends Value<Block> {
     }
 
     @Override
-    public String toString() {
-        return "\"" + value() + "\"";
-    }
-
-    @Override
     public boolean equals(Object obj) {
         try {
             if (obj instanceof BlockValue blockValue) {

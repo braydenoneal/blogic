@@ -10,6 +10,7 @@ import net.fabricmc.fabric.api.screenhandler.v1.ExtendedScreenHandlerFactory;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
+import net.minecraft.block.entity.LockableContainerBlockEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.nbt.NbtCompound;
@@ -50,9 +51,14 @@ public class ControllerBlockEntity extends BlockEntity implements ExtendedScreen
 
     public void setSource(String source) {
         this.source = source;
-        program = new Program(source, new Context(world, pos, this));
-        program.run();
-        variables = program.topScope().variables();
+        assert world != null;
+
+        if (!world.isClient) {
+            program = new Program(source, new Context(world, pos, this));
+            program.run();
+            variables = program.topScope().variables();
+        }
+
         markDirty();
     }
 
@@ -144,6 +150,56 @@ public class ControllerBlockEntity extends BlockEntity implements ExtendedScreen
             BlockEntity adjacentBlockEntity = world.getBlockEntity(pos);
 
             if (adjacentBlockEntity instanceof ControllerBlockEntity controller) {
+                controllers.add(controller);
+            }
+        }
+
+        return controllers;
+    }
+
+    public List<LockableContainerBlockEntity> getConnectedContainers() {
+        Set<BlockPos> cables = new HashSet<>();
+        List<BlockPos> networkBlocks = new ArrayList<>();
+
+        Stack<BlockPos> stack = new Stack<>();
+        stack.push(pos);
+
+        while (!stack.isEmpty()) {
+            BlockPos pos = stack.pop();
+
+            for (Direction direction : DIRECTIONS) {
+                BlockPos adjacentPos = pos.offset(direction);
+
+                if (cables.contains(adjacentPos)) {
+                    continue;
+                }
+
+                assert world != null;
+                Block adjacentBlock = world.getBlockState(adjacentPos).getBlock();
+
+                if (adjacentBlock instanceof CableBlock) {
+                    stack.push(adjacentPos);
+                    cables.add(adjacentPos);
+                }
+
+                if (networkBlocks.contains(adjacentPos)) {
+                    continue;
+                }
+
+                BlockEntity adjacentBlockEntity = world.getBlockEntity(adjacentPos);
+
+                if (adjacentBlockEntity instanceof LockableContainerBlockEntity) {
+                    networkBlocks.add(adjacentPos);
+                }
+            }
+        }
+
+        List<LockableContainerBlockEntity> controllers = new ArrayList<>();
+
+        for (BlockPos pos : networkBlocks) {
+            BlockEntity adjacentBlockEntity = world.getBlockEntity(pos);
+
+            if (adjacentBlockEntity instanceof LockableContainerBlockEntity controller) {
                 controllers.add(controller);
             }
         }

@@ -18,6 +18,8 @@ public class BuiltinExpression {
             case "round" -> new RoundBuiltin(parseArguments(program).getFirst());
             case "len" -> new LengthBuiltin(parseArguments(program).getFirst());
             case "block" -> new BlockBuiltin(parseArguments(program).getFirst());
+            case "item" -> new ItemBuiltin(parseArguments(program).getFirst());
+            case "getItems" -> new GetItemsBuiltin(program);
             case "print" -> new PrintBuiltin(program, parseArguments(program).getFirst());
             case "getBlock" -> new GetBlockBuiltin(program, parseArguments(program));
             case "placeBlock" -> new PlaceBlockBuiltin(program, parseArguments(program));

@@ -6,6 +6,7 @@ import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.ShapeContext;
 import net.minecraft.block.entity.BlockEntity;
+import net.minecraft.block.entity.LockableContainerBlockEntity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.state.StateManager;
@@ -105,7 +106,7 @@ public class CableBlock extends Block {
             BlockPos adjacentPos = pos.offset(direction);
             BlockState adjacentState = world.getBlockState(adjacentPos);
             BlockEntity adjacentBlockEntity = world.getBlockEntity(adjacentPos);
-            boolean connectSide = adjacentState.getBlock() instanceof CableBlock || adjacentBlockEntity instanceof ControllerBlockEntity;
+            boolean connectSide = adjacentState.getBlock() instanceof CableBlock || adjacentBlockEntity instanceof ControllerBlockEntity || adjacentBlockEntity instanceof LockableContainerBlockEntity;
             newState = newState.with(DIRECTION_BOOLEAN_PROPERTY_MAP.get(direction), connectSide);
         }
 

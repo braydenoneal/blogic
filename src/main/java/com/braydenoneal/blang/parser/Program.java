@@ -67,7 +67,9 @@ public class Program {
             FunctionDeclaration main = functions.get("main");
 
             if (main != null) {
+                newScope();
                 main.call();
+                endScope();
             }
         } catch (Exception e) {
             System.out.println("Run main error: " + e);
