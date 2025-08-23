@@ -20,15 +20,12 @@ public record FunctionDeclaration(
 
     public Value<?> call() {
         Value<?> returnValue = null;
-        program.newScope();
-
         Statement statement = Statement.runStatements(statements);
 
         if (statement instanceof ReturnStatement returnStatement) {
             returnValue = returnStatement.returnValue();
         }
 
-        program.endScope();
         return returnValue;
     }
 

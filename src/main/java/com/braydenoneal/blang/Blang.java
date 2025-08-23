@@ -5,6 +5,7 @@ import com.braydenoneal.blang.parser.Program;
 public class Blang {
     public static void main(String[] args) {
         Program program = new Program("""
+                fileName;
                 import one.two.three;
                 import one.two;
                 
@@ -110,7 +111,6 @@ public class Blang {
                 print(0 == 0);
                 
                 e = [0];
-                e.set(0, 1);
                 e.append(2);
                 print(e);
                 

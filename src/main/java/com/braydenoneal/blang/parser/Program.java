@@ -12,6 +12,7 @@ import java.util.*;
 public class Program {
     private final List<Token> tokens;
     private int position;
+    private final String name;
     private final List<ImportStatement> imports;
     private final List<Statement> statements;
     private final Map<String, FunctionDeclaration> functions;
@@ -36,11 +37,15 @@ public class Program {
         topScope = new Scope(null);
         scopes = new Stack<>();
         scopes.push(topScope);
+        String name = "";
         try {
+            name = expect(Type.IDENTIFIER);
+            expect(Type.SEMICOLON);
             parse();
         } catch (Exception e) {
             System.out.println("Parse error: " + e);
         }
+        this.name = name;
     }
 
     public Context context() {
@@ -67,6 +72,14 @@ public class Program {
         } catch (Exception e) {
             System.out.println("Run main error: " + e);
         }
+    }
+
+    public String name() {
+        return name;
+    }
+
+    public List<ImportStatement> imports() {
+        return imports;
     }
 
     public void addImport(ImportStatement importStatement) {

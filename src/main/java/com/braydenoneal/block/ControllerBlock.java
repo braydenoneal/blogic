@@ -1,6 +1,5 @@
 package com.braydenoneal.block;
 
-import com.braydenoneal.block.entity.AbstractNetworkBlockEntity;
 import com.braydenoneal.block.entity.ControllerBlockEntity;
 import com.braydenoneal.block.entity.ModBlockEntities;
 import com.mojang.serialization.MapCodec;
@@ -22,7 +21,6 @@ import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.world.World;
-import net.minecraft.world.block.WireOrientation;
 import org.jetbrains.annotations.Nullable;
 
 public class ControllerBlock extends BlockWithEntity {
@@ -50,12 +48,6 @@ public class ControllerBlock extends BlockWithEntity {
     @Override
     public BlockEntity createBlockEntity(BlockPos pos, BlockState state) {
         return new ControllerBlockEntity(pos, state);
-    }
-
-    @Override
-    protected void neighborUpdate(BlockState state, World world, BlockPos pos, Block sourceBlock, @Nullable WireOrientation wireOrientation, boolean notify) {
-        AbstractNetworkBlockEntity.updateNetwork(world, pos);
-        super.neighborUpdate(state, world, pos, sourceBlock, wireOrientation, notify);
     }
 
     @Override

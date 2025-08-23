@@ -5,7 +5,9 @@ import com.braydenoneal.blang.parser.expression.builtin.BuiltinExpression;
 import com.braydenoneal.blang.parser.expression.builtin.list.*;
 import com.braydenoneal.blang.parser.expression.value.ListValue;
 import com.braydenoneal.blang.parser.expression.value.Value;
+import com.braydenoneal.blang.parser.statement.ImportStatement;
 import com.braydenoneal.blang.tokenizer.Type;
+import com.braydenoneal.block.entity.ControllerBlockEntity;
 
 import java.util.List;
 
@@ -17,6 +19,23 @@ public record MemberCallExpression(
 ) implements Expression {
     @Override
     public Value<?> evaluate() {
+        for (ImportStatement importStatement : program.imports()) {
+            if (importStatement.identifiers().getLast().equals(name)) {
+                Program importProgram = program;
+
+                for (String importName : importStatement.identifiers()) {
+                    for (ControllerBlockEntity controller : importProgram.context().entity().getConnectedControllerBlockEntities()) {
+                        if (controller.program().name().equals(importName)) {
+                            importProgram = controller.program();
+                        }
+                    }
+                }
+
+                CallExpression callExpression = new CallExpression(importProgram, functionName, arguments);
+                return callExpression.evaluate();
+            }
+        }
+
         Value<?> object = program.getScope().get(name);
 
         if (object instanceof ListValue listValue) {

@@ -13,11 +13,15 @@ public record CallExpression(Program program, String name, List<Expression> argu
         FunctionDeclaration function = program.getFunction(name);
 
         if (function != null) {
+            program.newScope();
+
             for (int i = 0; i < arguments.size(); i++) {
                 program.getScope().set(function.arguments().get(i), arguments.get(i).evaluate());
             }
 
-            return function.call();
+            Value<?> returnValue = function.call();
+            program.endScope();
+            return returnValue;
         }
 
         System.out.println("call");

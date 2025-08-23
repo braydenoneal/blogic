@@ -1,6 +1,6 @@
 package com.braydenoneal.block;
 
-import com.braydenoneal.block.entity.AbstractNetworkBlockEntity;
+import com.braydenoneal.block.entity.ControllerBlockEntity;
 import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -19,7 +19,6 @@ import net.minecraft.util.shape.VoxelShapes;
 import net.minecraft.world.BlockView;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldView;
-import net.minecraft.world.block.WireOrientation;
 import net.minecraft.world.tick.ScheduledTickView;
 import org.jetbrains.annotations.Nullable;
 
@@ -106,10 +105,7 @@ public class CableBlock extends Block {
             BlockPos adjacentPos = pos.offset(direction);
             BlockState adjacentState = world.getBlockState(adjacentPos);
             BlockEntity adjacentBlockEntity = world.getBlockEntity(adjacentPos);
-
-            boolean connectSide = adjacentState.getBlock() instanceof CableBlock ||
-                    adjacentBlockEntity instanceof AbstractNetworkBlockEntity;
-
+            boolean connectSide = adjacentState.getBlock() instanceof CableBlock || adjacentBlockEntity instanceof ControllerBlockEntity;
             newState = newState.with(DIRECTION_BOOLEAN_PROPERTY_MAP.get(direction), connectSide);
         }
 
@@ -120,11 +116,5 @@ public class CableBlock extends Block {
     public void onPlaced(World world, BlockPos pos, BlockState state, @Nullable LivingEntity placer, ItemStack itemStack) {
         super.onPlaced(world, pos, state, placer, itemStack);
         world.setBlockState(pos, getUpdatedState(state, world, pos));
-    }
-
-    @Override
-    protected void neighborUpdate(BlockState state, World world, BlockPos pos, Block sourceBlock, @Nullable WireOrientation wireOrientation, boolean notify) {
-        super.neighborUpdate(state, world, pos, sourceBlock, wireOrientation, notify);
-        AbstractNetworkBlockEntity.updateNetwork(world, pos);
     }
 }
