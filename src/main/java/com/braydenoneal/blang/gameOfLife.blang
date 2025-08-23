@@ -4,6 +4,14 @@ w = 18;
 l = 18;
 y = 2;
 
+for x in range(w) {
+    for z in range(l) {
+        if x != 0 or z != 0 {
+            placeBlock(x, y - 1, z, block("gray_concrete"));
+        }
+    }
+}
+
 fn main() {
     step = (step + 1) % size;
 

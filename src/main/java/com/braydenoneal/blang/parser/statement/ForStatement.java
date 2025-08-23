@@ -26,8 +26,10 @@ public record ForStatement(
                 program.getScope().set(itemName, item);
                 Statement statement = Statement.runStatements(statements);
 
-                if (statement != null) {
+                if (statement instanceof ReturnStatement) {
                     return statement;
+                } else if (statement instanceof BreakStatement) {
+                    break;
                 }
             }
         } else if (listValue instanceof RangeValue range) {
@@ -35,8 +37,10 @@ public record ForStatement(
                 program.getScope().set(itemName, new IntegerValue(i));
                 Statement statement = Statement.runStatements(statements);
 
-                if (statement != null) {
+                if (statement instanceof ReturnStatement) {
                     return statement;
+                } else if (statement instanceof BreakStatement) {
+                    break;
                 }
             }
         }

@@ -26,6 +26,12 @@ public interface Statement {
                 case "for" -> {
                     return ForStatement.parse(program);
                 }
+                case "break" -> {
+                    return BreakStatement.parse(program);
+                }
+                case "continue" -> {
+                    return ContinueStatement.parse(program);
+                }
                 case "return" -> {
                     return ReturnStatement.parse(program);
                 }
@@ -41,8 +47,11 @@ public interface Statement {
         for (Statement statement : statements) {
             Statement statementResult = statement.execute();
 
-            if (statementResult instanceof ReturnStatement returnStatement) {
-                return returnStatement;
+            if (statementResult instanceof ReturnStatement ||
+                    statementResult instanceof BreakStatement ||
+                    statementResult instanceof ContinueStatement
+            ) {
+                return statementResult;
             }
         }
 

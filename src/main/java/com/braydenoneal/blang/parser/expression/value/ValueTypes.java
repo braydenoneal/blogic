@@ -11,6 +11,7 @@ public class ValueTypes {
     public static final ValueType<RangeValue> RANGE = register("range", new ValueType<>(RangeValue.CODEC));
     public static final ValueType<StringValue> STRING = register("string", new ValueType<>(StringValue.CODEC));
     public static final ValueType<BlockValue> BLOCK = register("block", new ValueType<>(BlockValue.CODEC));
+    public static final ValueType<NullValue> NULL = register("null", new ValueType<>(NullValue.CODEC));
 
     public static <T extends Value<?>> ValueType<T> register(String id, ValueType<T> beanType) {
         return Registry.register(ValueType.REGISTRY, Identifier.of("blogic", id), beanType);

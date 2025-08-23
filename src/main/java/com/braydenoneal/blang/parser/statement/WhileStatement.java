@@ -17,8 +17,10 @@ public record WhileStatement(
         while (condition.evaluate() instanceof BooleanValue booleanValue && booleanValue.value()) {
             Statement statement = Statement.runStatements(statements);
 
-            if (statement != null) {
+            if (statement instanceof ReturnStatement) {
                 return statement;
+            } else if (statement instanceof BreakStatement) {
+                break;
             }
         }
 

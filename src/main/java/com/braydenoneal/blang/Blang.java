@@ -127,6 +127,19 @@ public class Blang {
                 print(a.remove(0));
                 print(a.contains(2));
                 print(a.pop());
+                
+                for i in range(10) {
+                    if i == 5 { continue; }
+                    print(i);
+                }
+                
+                for i in range(10) {
+                    if i == 5 { break; }
+                    print(i);
+                }
+                
+                fn emptyReturn() { return; }
+                print(emptyReturn());
                 """,
                 new Context(null, null, null));
 
@@ -136,8 +149,6 @@ public class Blang {
 
 /*
 basic imports, access modifiers
-fix nested returns
-break, continue, pass
 ++, --
 better tokenizing, parsing, and runtime exceptions
 move these tests into a testing system

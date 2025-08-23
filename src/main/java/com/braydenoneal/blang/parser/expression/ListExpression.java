@@ -11,13 +11,7 @@ import java.util.List;
 public record ListExpression(Program program, List<Expression> expressions) implements Expression {
     @Override
     public Value<?> evaluate() {
-        List<Value<?>> values = new ArrayList<>();
-
-        for (Expression expression : expressions) {
-            values.add(expression.evaluate());
-        }
-
-        return new ListValue(values);
+        return new ListValue(ListValue.toIndexValues(expressions));
     }
 
     public static Expression parse(Program program) throws Exception {
