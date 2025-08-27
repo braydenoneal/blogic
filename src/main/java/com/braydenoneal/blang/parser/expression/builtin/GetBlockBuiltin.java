@@ -6,6 +6,7 @@ import com.braydenoneal.blang.parser.expression.value.BlockValue;
 import com.braydenoneal.blang.parser.expression.value.IntegerValue;
 import com.braydenoneal.blang.parser.expression.value.Value;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.World;
 
 import java.util.List;
 
@@ -19,7 +20,11 @@ public record GetBlockBuiltin(Program program, List<Expression> arguments) imple
         if (xValue instanceof IntegerValue x && yValue instanceof IntegerValue y && zValue instanceof IntegerValue z) {
             BlockPos entityPos = program.context().pos();
             BlockPos pos = new BlockPos(entityPos.getX() + x.value(), entityPos.getY() + y.value(), entityPos.getZ() + z.value());
-            return new BlockValue(program.context().world().getBlockState(pos).getBlock());
+            World world = program.context().entity().getWorld();
+
+            if (world != null) {
+                return new BlockValue(world.getBlockState(pos).getBlock());
+            }
         }
 
         System.out.println("getBlock");

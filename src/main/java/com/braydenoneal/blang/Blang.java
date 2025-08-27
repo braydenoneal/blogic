@@ -147,7 +147,7 @@ public class Blang {
                 n = null;
                 print(n);
                 """,
-                new Context(null, null, null));
+                new Context(null, null));
 
         program.run();
     }

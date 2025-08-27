@@ -18,7 +18,7 @@ public record PrintBuiltin(Program program, Expression expression) implements Ex
             string = string.substring(1, string.length() - 1);
         }
 
-        World world = program.context().world();
+        World world = program.context().entity().getWorld();
 
         if (world != null && world.getServer() != null) {
             for (ServerPlayerEntity player : world.getServer().getPlayerManager().getPlayerList()) {

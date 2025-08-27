@@ -6,6 +6,7 @@ import com.braydenoneal.blang.parser.expression.value.BlockValue;
 import com.braydenoneal.blang.parser.expression.value.IntegerValue;
 import com.braydenoneal.blang.parser.expression.value.Value;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.World;
 
 import java.util.List;
 
@@ -24,8 +25,12 @@ public record PlaceBlockBuiltin(Program program, List<Expression> arguments) imp
         ) {
             BlockPos entityPos = program.context().pos();
             BlockPos pos = new BlockPos(entityPos.getX() + x.value(), entityPos.getY() + y.value(), entityPos.getZ() + z.value());
-            program.context().world().setBlockState(pos, block.value().getDefaultState());
-            return null;
+            World world = program.context().entity().getWorld();
+
+            if (world != null) {
+                world.setBlockState(pos, block.value().getDefaultState());
+                return null;
+            }
         }
 
         System.out.println("placeBlock");

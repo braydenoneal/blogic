@@ -18,4 +18,7 @@ public class ValueTypes {
     public static <T extends Value<?>> ValueType<T> register(String id, ValueType<T> beanType) {
         return Registry.register(ValueType.REGISTRY, Identifier.of("blogic", id), beanType);
     }
+
+    public static void initialize() {
+    }
 }

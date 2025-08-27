@@ -4,7 +4,7 @@ import com.braydenoneal.blang.parser.expression.Expression;
 import com.mojang.serialization.Codec;
 
 public abstract class Value<T> implements Expression {
-    private T value;
+    private final T value;
 
     public Value(T value) {
         this.value = value;
@@ -12,10 +12,6 @@ public abstract class Value<T> implements Expression {
 
     public T value() {
         return value;
-    }
-
-    public void setValue(T newValue) {
-        value = newValue;
     }
 
     @Override

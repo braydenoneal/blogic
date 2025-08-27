@@ -1,5 +1,6 @@
 package com.braydenoneal;
 
+import com.braydenoneal.blang.parser.expression.value.ValueTypes;
 import com.braydenoneal.block.ModBlocks;
 import com.braydenoneal.block.entity.ModBlockEntities;
 import com.braydenoneal.item.ModItems;
@@ -18,5 +19,6 @@ public class Blogic implements ModInitializer {
         ModBlockEntities.initialize();
         ModItems.initialize();
         ModNetworking.initialize();
+        ValueTypes.initialize();
     }
 }

@@ -37,7 +37,7 @@ public class ControllerBlockEntity extends BlockEntity implements ExtendedScreen
     public ControllerBlockEntity(BlockPos pos, BlockState state) {
         super(ModBlockEntities.CONTROLLER_BLOCK_ENTITY, pos, state);
         source = "name;";
-        program = new Program(source, new Context(world, pos, this));
+        program = new Program(source, new Context(pos, this));
         variables = Map.of();
     }
 
@@ -54,7 +54,7 @@ public class ControllerBlockEntity extends BlockEntity implements ExtendedScreen
         assert world != null;
 
         if (!world.isClient) {
-            program = new Program(source, new Context(world, pos, this));
+            program = new Program(source, new Context(pos, this));
             program.run();
             variables = program.topScope().variables();
         }
@@ -68,8 +68,8 @@ public class ControllerBlockEntity extends BlockEntity implements ExtendedScreen
         variables = view.read("variables", Scope.VARIABLES_CODEC).orElse(Map.of());
         source = view.read("source", Codec.STRING).orElse("name;");
 
-        program = new Program(source, new Context(world, pos, this));
-        program.topScope().setVariables(variables);
+        program = new Program(source, new Context(pos, this));
+        program.topScope().setVariables(new HashMap<>(variables));
     }
 
     @Override
