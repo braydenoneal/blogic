@@ -14,7 +14,7 @@ public record ReturnStatement(
         return this;
     }
 
-    Value<?> returnValue() {
+    public Value<?> returnValue() {
         return expression.evaluate();
     }
 

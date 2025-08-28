@@ -14,6 +14,7 @@ public enum Type {
     CURLY_BRACE("(\\{|\\})"),
     PARENTHESIS("(\\(|\\))"),
     SQUARE_BRACE("(\\[|\\])"),
+    PIPE("(\\|)"),
     COMPARISON_OPERATOR("(==|!=|<=|>=|<|>)"),
     ASSIGN("(=|\\+=|-=)"),
     DOT("(\\.)"),

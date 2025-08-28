@@ -1,0 +1,88 @@
+package com.braydenoneal.blang.parser.expression.builtin;
+
+import com.braydenoneal.blang.parser.Program;
+import com.braydenoneal.blang.parser.expression.Expression;
+import com.braydenoneal.blang.parser.expression.value.IntegerValue;
+import com.braydenoneal.blang.parser.expression.value.ItemValue;
+import com.braydenoneal.blang.parser.expression.value.Value;
+import net.minecraft.block.entity.BlockEntity;
+import net.minecraft.block.entity.LockableContainerBlockEntity;
+import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.World;
+
+import java.util.List;
+
+public record ExportAllItemsBuiltin(Program program, List<Expression> arguments) implements Expression {
+    @Override
+    public Value<?> evaluate() {
+        Value<?> xValue = arguments.get(0).evaluate();
+        Value<?> yValue = arguments.get(1).evaluate();
+        Value<?> zValue = arguments.get(2).evaluate();
+        Value<?> itemValue = arguments.get(3).evaluate();
+
+        if (xValue instanceof IntegerValue x &&
+                yValue instanceof IntegerValue y &&
+                zValue instanceof IntegerValue z &&
+                itemValue instanceof ItemValue item
+        ) {
+            World world = program.context().entity().getWorld();
+
+            if (world == null) {
+                return null;
+            }
+
+            BlockPos entityPos = program.context().pos();
+            BlockEntity exportEntity = world.getBlockEntity(new BlockPos(entityPos.getX() + x.value(), entityPos.getY() + y.value(), entityPos.getZ() + z.value()));
+
+            if (exportEntity instanceof LockableContainerBlockEntity exportContainer) {
+                List<LockableContainerBlockEntity> containers = program.context().entity().getConnectedContainers();
+
+                for (LockableContainerBlockEntity container : containers) {
+                    for (int i = 0; i < container.size(); i++) {
+                        ItemStack stack = container.getStack(i);
+
+                        if (stack.isOf(item.value())) {
+                            for (int j = 0; j < exportContainer.size(); j++) {
+                                ItemStack exportStack = exportContainer.getStack(j);
+
+                                if (exportStack.isOf(Items.AIR)) {
+                                    container.removeStack(i);
+                                    exportContainer.setStack(j, stack);
+                                    break;
+                                }
+
+                                if (exportStack.isOf(item.value())) {
+                                    int available = exportStack.getMaxCount() - exportStack.getCount();
+                                    int move = Math.min(stack.getCount(), available);
+
+                                    stack.decrement(move);
+                                    exportStack.increment(move);
+
+                                    if (stack.isEmpty()) {
+                                        container.removeStack(i);
+                                        exportContainer.setStack(j, exportStack);
+                                        break;
+                                    } else {
+                                        container.setStack(i, stack);
+                                        exportContainer.setStack(j, exportStack);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+
+                return null;
+            }
+        }
+
+        System.out.println("exportAllItems");
+        System.out.println(xValue);
+        System.out.println(yValue);
+        System.out.println(zValue);
+        System.out.println(itemValue);
+        return null;
+    }
+}

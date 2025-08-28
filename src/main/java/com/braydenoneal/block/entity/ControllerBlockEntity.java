@@ -112,7 +112,18 @@ public class ControllerBlockEntity extends BlockEntity implements ExtendedScreen
         List<BlockPos> networkBlocks = new ArrayList<>();
 
         Stack<BlockPos> stack = new Stack<>();
-        stack.push(pos);
+
+        for (Direction direction : DIRECTIONS) {
+            BlockPos adjacentPos = pos.offset(direction);
+
+            assert world != null;
+            Block adjacentBlock = world.getBlockState(adjacentPos).getBlock();
+
+            if (adjacentBlock instanceof CableBlock) {
+                stack.push(adjacentPos);
+                cables.add(adjacentPos);
+            }
+        }
 
         while (!stack.isEmpty()) {
             BlockPos pos = stack.pop();
@@ -162,7 +173,18 @@ public class ControllerBlockEntity extends BlockEntity implements ExtendedScreen
         List<BlockPos> networkBlocks = new ArrayList<>();
 
         Stack<BlockPos> stack = new Stack<>();
-        stack.push(pos);
+
+        for (Direction direction : DIRECTIONS) {
+            BlockPos adjacentPos = pos.offset(direction);
+
+            assert world != null;
+            Block adjacentBlock = world.getBlockState(adjacentPos).getBlock();
+
+            if (adjacentBlock instanceof CableBlock) {
+                stack.push(adjacentPos);
+                cables.add(adjacentPos);
+            }
+        }
 
         while (!stack.isEmpty()) {
             BlockPos pos = stack.pop();

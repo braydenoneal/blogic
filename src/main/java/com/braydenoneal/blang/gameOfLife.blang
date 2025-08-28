@@ -1,16 +1,10 @@
-step = 0;
-size = 4;
-w = 18;
-l = 18;
-y = 2;
+gameOfLife;
 
-for x in range(w) {
-    for z in range(l) {
-        if x != 0 or z != 0 {
-            placeBlock(x, y - 1, z, block("gray_concrete"));
-        }
-    }
-}
+step = 0;
+size = 1;
+w = 19;
+l = 19;
+y = 2;
 
 fn main() {
     step = (step + 1) % size;
@@ -29,7 +23,7 @@ fn main() {
             n = 0;
 
             for d in directions {
-                if getBlock((x + d[0]) % w, y, (z + d[1]) % l) != block("air") {
+                if getBlock((x + d[0]) % w, y, (z + d[1]) % l) == block("white_concrete") {
                     n += 1;
                 }
             }
@@ -53,9 +47,11 @@ fn main() {
             live = xs[x][z];
 
             if live == 1 {
-                placeBlock(x, y, z, block("white_concrete"));
+                breakBlock(x, y, z, |block| { return true; });
+                placeBlock(x, y, z, |item| { return item == item("white_concrete"); });
             } elif live == -1 {
-                placeBlock(x, y, z, block("air"));
+                breakBlock(x, y, z, |block| { return true; });
+                placeBlock(x, y, z, |item| { return item == item("black_concrete"); });
             }
         }
     }

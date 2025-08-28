@@ -19,13 +19,15 @@ public class BuiltinExpression {
             case "len" -> new LengthBuiltin(parseArguments(program).getFirst());
             case "block" -> new BlockBuiltin(parseArguments(program).getFirst());
             case "item" -> new ItemBuiltin(parseArguments(program).getFirst());
-            case "getItems" -> new GetItemsBuiltin(program);
             case "print" -> new PrintBuiltin(program, parseArguments(program).getFirst());
             case "getBlock" -> new GetBlockBuiltin(program, parseArguments(program));
             case "placeBlock" -> new PlaceBlockBuiltin(program, parseArguments(program));
+            case "breakBlock" -> new BreakBlockBuiltin(program, parseArguments(program));
+            case "exportAllItems" -> new ExportAllItemsBuiltin(program, parseArguments(program));
             case "min" -> new MinimumBuiltin(parseArguments(program));
             case "max" -> new MaximumBuiltin(parseArguments(program));
             case "range" -> new RangeBuiltin(parseArguments(program));
+            case "getItems" -> new GetItemsBuiltin(program);
             default -> CallExpression.parse(program, name);
         };
     }

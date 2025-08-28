@@ -93,6 +93,7 @@ public interface Expression {
                         case Type.FLOAT -> new FloatValue(Float.valueOf(program.next().value()));
                         case Type.INTEGER -> new IntegerValue(Integer.valueOf(program.next().value()));
                         case Type.SQUARE_BRACE -> ListExpression.parse(program);
+                        case Type.PIPE -> FunctionExpression.parse(program);
                         case Type.UNARY_OPERATOR -> {
                             program.next();
                             yield new UnaryOperator(parse(program));

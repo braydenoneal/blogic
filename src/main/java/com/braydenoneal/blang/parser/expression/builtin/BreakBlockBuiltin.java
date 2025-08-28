@@ -3,12 +3,13 @@ package com.braydenoneal.blang.parser.expression.builtin;
 import com.braydenoneal.blang.parser.Program;
 import com.braydenoneal.blang.parser.expression.Expression;
 import com.braydenoneal.blang.parser.expression.FunctionExpression;
+import com.braydenoneal.blang.parser.expression.value.BlockValue;
 import com.braydenoneal.blang.parser.expression.value.BooleanValue;
 import com.braydenoneal.blang.parser.expression.value.IntegerValue;
-import com.braydenoneal.blang.parser.expression.value.ItemValue;
 import com.braydenoneal.blang.parser.expression.value.Value;
+import net.minecraft.block.Block;
+import net.minecraft.block.Blocks;
 import net.minecraft.block.entity.LockableContainerBlockEntity;
-import net.minecraft.item.BlockItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.util.math.BlockPos;
@@ -16,7 +17,7 @@ import net.minecraft.world.World;
 
 import java.util.List;
 
-public record PlaceBlockBuiltin(Program program, List<Expression> arguments) implements Expression {
+public record BreakBlockBuiltin(Program program, List<Expression> arguments) implements Expression {
     @Override
     public Value<?> evaluate() {
         Value<?> xValue = arguments.get(0).evaluate();
@@ -37,30 +38,33 @@ public record PlaceBlockBuiltin(Program program, List<Expression> arguments) imp
                 return null;
             }
 
+            Block block = world.getBlockState(pos).getBlock();
+
+            program.newScope();
+            program.getScope().set(itemPredicate.arguments().getFirst(), new BlockValue(block));
+            Value<?> predicateResult = itemPredicate.evaluate();
+            program.endScope();
+
+            if (!(predicateResult instanceof BooleanValue booleanValue && booleanValue.value())) {
+                return null;
+            }
+
             List<LockableContainerBlockEntity> containers = program.context().entity().getConnectedContainers();
 
             for (LockableContainerBlockEntity container : containers) {
                 for (int i = 0; i < container.size(); i++) {
                     ItemStack stack = container.getStack(i);
 
-                    if (stack.isOf(Items.AIR)) {
-                        continue;
+                    if (stack.isOf(block.asItem()) && stack.getCount() < stack.getMaxCount()) {
+                        stack.increment(1);
+                        container.setStack(i, stack);
+                        world.setBlockState(pos, Blocks.AIR.getDefaultState());
+                        return null;
                     }
 
-                    program.newScope();
-                    program.getScope().set(itemPredicate.arguments().getFirst(), new ItemValue(stack.getItem()));
-                    Value<?> predicateResult = itemPredicate.evaluate();
-                    program.endScope();
-
-                    if (predicateResult instanceof BooleanValue booleanValue && booleanValue.value()) {
-                        for (var entry : BlockItem.BLOCK_ITEMS.entrySet()) {
-                            if (stack.isOf(entry.getValue())) {
-                                stack.decrement(1);
-                                container.setStack(i, stack);
-                                world.setBlockState(pos, entry.getKey().getDefaultState());
-                            }
-                        }
-
+                    if (stack.isOf(Items.AIR)) {
+                        container.setStack(i, new ItemStack(block.asItem()));
+                        world.setBlockState(pos, Blocks.AIR.getDefaultState());
                         return null;
                     }
                 }
@@ -69,11 +73,10 @@ public record PlaceBlockBuiltin(Program program, List<Expression> arguments) imp
             return null;
         }
 
-        System.out.println("placeBlock");
+        System.out.println("breakBlock");
         System.out.println(xValue);
         System.out.println(yValue);
         System.out.println(zValue);
-        System.out.println(itemPredicateExpression);
         return null;
     }
 }
