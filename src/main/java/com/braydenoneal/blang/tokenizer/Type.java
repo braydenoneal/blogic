@@ -14,15 +14,14 @@ public enum Type {
     CURLY_BRACE("(\\{|\\})"),
     PARENTHESIS("(\\(|\\))"),
     SQUARE_BRACE("(\\[|\\])"),
-    PIPE("(\\|)"),
     COMPARISON_OPERATOR("(==|!=|<=|>=|<|>)"),
     ASSIGN("(=|\\+=|-=)"),
     DOT("(\\.)"),
     COMMA("(,)"),
     SEMICOLON("(;)"),
+    COLON("(:)"),
     UNARY_OPERATOR("(!)"),
     ARITHMETIC_OPERATOR("(\\+|\\-|\\*|\\/|%|\\^)"),
-    TERNARY_OPERATOR("([?:])"),
     ;
 
     public final String regex;

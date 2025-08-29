@@ -30,24 +30,30 @@ public record FunctionExpression(
         List<String> arguments = new ArrayList<>();
         List<Statement> statements = new ArrayList<>();
 
-        program.expect(Type.PIPE);
+        program.expect(Type.KEYWORD, "fn");
 
-        while (program.peek().type() != Type.PIPE) {
+        while (program.peek().type() != Type.COLON) {
             arguments.add(program.expect(Type.IDENTIFIER));
 
-            if (program.peek().type() != Type.PIPE) {
+            if (program.peek().type() != Type.COLON) {
                 program.expect(Type.COMMA);
             }
         }
 
-        program.expect(Type.PIPE);
-        program.expect(Type.CURLY_BRACE, "{");
+        program.expect(Type.COLON);
 
-        while (!program.peekIs(Type.CURLY_BRACE, "}")) {
-            statements.add(Statement.parse(program));
+        if (program.peekIs(Type.CURLY_BRACE, "{")) {
+            program.next();
+
+            while (!program.peekIs(Type.CURLY_BRACE, "}")) {
+                statements.add(Statement.parse(program));
+            }
+
+            program.expect(Type.CURLY_BRACE, "}");
+        } else {
+            statements.add(new ReturnStatement(Expression.parse(program)));
         }
 
-        program.expect(Type.CURLY_BRACE, "}");
         return new FunctionExpression(program, arguments, statements);
     }
 }

@@ -17,6 +17,7 @@ import net.minecraft.nbt.NbtCompound;
 import net.minecraft.registry.RegistryWrapper;
 import net.minecraft.screen.ScreenHandler;
 import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.state.property.Properties;
 import net.minecraft.storage.ReadView;
 import net.minecraft.storage.WriteView;
 import net.minecraft.text.Text;
@@ -90,6 +91,10 @@ public class ControllerBlockEntity extends BlockEntity implements ExtendedScreen
             entity.variables = entity.program.topScope().variables();
             entity.markDirty();
         }
+    }
+
+    public Direction getFacing() {
+        return getCachedState().get(Properties.FACING);
     }
 
     @Override

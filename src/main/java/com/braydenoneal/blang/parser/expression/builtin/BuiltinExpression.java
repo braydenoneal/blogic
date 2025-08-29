@@ -23,6 +23,7 @@ public class BuiltinExpression {
             case "getBlock" -> new GetBlockBuiltin(program, parseArguments(program));
             case "placeBlock" -> new PlaceBlockBuiltin(program, parseArguments(program));
             case "breakBlock" -> new BreakBlockBuiltin(program, parseArguments(program));
+            case "useItem" -> new UseItemBuiltin(program, parseArguments(program));
             case "exportAllItems" -> new ExportAllItemsBuiltin(program, parseArguments(program));
             case "min" -> new MinimumBuiltin(parseArguments(program));
             case "max" -> new MaximumBuiltin(parseArguments(program));

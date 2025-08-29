@@ -47,11 +47,11 @@ fn main() {
             live = xs[x][z];
 
             if live == 1 {
-                breakBlock(x, y, z, |block| { return true; });
-                placeBlock(x, y, z, |item| { return item == item("white_concrete"); });
+                breakBlock(x, y, z, fn block: true);
+                placeBlock(x, y, z, fn item: item == item("white_concrete"));
             } elif live == -1 {
-                breakBlock(x, y, z, |block| { return true; });
-                placeBlock(x, y, z, |item| { return item == item("black_concrete"); });
+                breakBlock(x, y, z, fn block: true);
+                placeBlock(x, y, z, fn item: item == item("black_concrete"));
             }
         }
     }

@@ -83,6 +83,10 @@ public interface Expression {
                 default:
                     Token token = program.peek();
 
+                    if (program.peekIs(Type.KEYWORD, "fn")) {
+                        return FunctionExpression.parse(program);
+                    }
+
                     Expression expression = switch (token.type()) {
                         case Type.BOOLEAN -> new BooleanValue(program.next().value().equals("true"));
                         case Type.NULL -> {
@@ -93,7 +97,6 @@ public interface Expression {
                         case Type.FLOAT -> new FloatValue(Float.valueOf(program.next().value()));
                         case Type.INTEGER -> new IntegerValue(Integer.valueOf(program.next().value()));
                         case Type.SQUARE_BRACE -> ListExpression.parse(program);
-                        case Type.PIPE -> FunctionExpression.parse(program);
                         case Type.UNARY_OPERATOR -> {
                             program.next();
                             yield new UnaryOperator(parse(program));
@@ -105,9 +108,9 @@ public interface Expression {
                                 yield BuiltinExpression.parse(program, token.value());
                             } else if (program.peek().type() == Type.DOT) {
                                 yield MemberCallExpression.parse(program, token.value());
-                            } else {
-                                yield new VariableExpression(program, token.value());
                             }
+
+                            yield new VariableExpression(program, token.value());
                         }
                     };
 
