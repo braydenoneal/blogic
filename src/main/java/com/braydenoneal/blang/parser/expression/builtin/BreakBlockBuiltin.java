@@ -7,11 +7,18 @@ import com.braydenoneal.blang.parser.expression.value.BlockValue;
 import com.braydenoneal.blang.parser.expression.value.BooleanValue;
 import com.braydenoneal.blang.parser.expression.value.IntegerValue;
 import com.braydenoneal.blang.parser.expression.value.Value;
+import net.fabricmc.fabric.api.entity.FakePlayer;
 import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.entity.LockableContainerBlockEntity;
+import net.minecraft.enchantment.Enchantment;
+import net.minecraft.enchantment.Enchantments;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
+import net.minecraft.registry.Registry;
+import net.minecraft.registry.RegistryKeys;
+import net.minecraft.registry.entry.RegistryEntry;
+import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
@@ -24,6 +31,7 @@ public record BreakBlockBuiltin(Program program, List<Expression> arguments) imp
         Value<?> yValue = arguments.get(1).evaluate();
         Value<?> zValue = arguments.get(2).evaluate();
         Expression blockPredicateExpression = arguments.get(3);
+        boolean silkTouch = arguments.size() > 4 && arguments.get(4).evaluate() instanceof BooleanValue booleanValue ? booleanValue.value() : false;
 
         if (xValue instanceof IntegerValue x &&
                 yValue instanceof IntegerValue y &&
@@ -50,22 +58,43 @@ public record BreakBlockBuiltin(Program program, List<Expression> arguments) imp
             }
 
             List<LockableContainerBlockEntity> containers = program.context().entity().getConnectedContainers();
+            ItemStack tool = new ItemStack(Items.DIAMOND_PICKAXE);
 
-            for (LockableContainerBlockEntity container : containers) {
-                for (int i = 0; i < container.size(); i++) {
-                    ItemStack stack = container.getStack(i);
+            if (silkTouch) {
+                Registry<Enchantment> registry = world.getRegistryManager().getOrThrow(RegistryKeys.ENCHANTMENT);
+                RegistryEntry<Enchantment> enchantment = registry.getEntry(registry.get(Enchantments.SILK_TOUCH));
+                tool.addEnchantment(enchantment, 1);
+            }
 
-                    if (stack.isOf(block.asItem()) && stack.getCount() < stack.getMaxCount()) {
-                        stack.increment(1);
-                        container.setStack(i, stack);
-                        world.setBlockState(pos, Blocks.AIR.getDefaultState());
-                        return null;
+            List<ItemStack> drops = Block.getDroppedStacks(world.getBlockState(pos), (ServerWorld) world, pos, world.getBlockEntity(pos), FakePlayer.get((ServerWorld) world), tool);
+            world.setBlockState(pos, Blocks.AIR.getDefaultState());
+
+            for (ItemStack drop : drops) {
+                for (LockableContainerBlockEntity container : containers) {
+                    for (int i = 0; i < container.size(); i++) {
+                        ItemStack stack = container.getStack(i);
+
+                        if (stack.isOf(drop.getItem()) && stack.getCount() < stack.getMaxCount()) {
+                            int move = Math.min(drop.getCount(), stack.getMaxCount() - stack.getCount());
+
+                            drop.decrement(move);
+                            stack.increment(move);
+
+                            container.setStack(i, stack);
+                        }
+
+                        if (stack.isOf(Items.AIR)) {
+                            container.setStack(i, drop.copy());
+                            drop.setCount(0);
+                        }
+
+                        if (drop.isEmpty()) {
+                            break;
+                        }
                     }
 
-                    if (stack.isOf(Items.AIR)) {
-                        container.setStack(i, new ItemStack(block.asItem()));
-                        world.setBlockState(pos, Blocks.AIR.getDefaultState());
-                        return null;
+                    if (drop.isEmpty()) {
+                        break;
                     }
                 }
             }

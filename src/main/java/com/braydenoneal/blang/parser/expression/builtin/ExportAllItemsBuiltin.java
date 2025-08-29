@@ -61,8 +61,7 @@ public record ExportAllItemsBuiltin(Program program, List<Expression> arguments)
                                 }
 
                                 if (exportStack.isOf(stack.getItem())) {
-                                    int available = exportStack.getMaxCount() - exportStack.getCount();
-                                    int move = Math.min(stack.getCount(), available);
+                                    int move = Math.min(stack.getCount(), exportStack.getMaxCount() - exportStack.getCount());
 
                                     stack.decrement(move);
                                     exportStack.increment(move);

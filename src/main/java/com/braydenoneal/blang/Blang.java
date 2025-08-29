@@ -169,4 +169,5 @@ enums?
 list comprehension?
 in-language errors, exceptions?
 codec for entire program?
+balancing: breaking blocks requires tool, and takes time
  */
