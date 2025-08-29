@@ -2,6 +2,8 @@ package com.braydenoneal.blang.parser.expression.builtin;
 
 import com.braydenoneal.blang.parser.Program;
 import com.braydenoneal.blang.parser.expression.Expression;
+import com.braydenoneal.blang.parser.expression.FunctionExpression;
+import com.braydenoneal.blang.parser.expression.value.BooleanValue;
 import com.braydenoneal.blang.parser.expression.value.IntegerValue;
 import com.braydenoneal.blang.parser.expression.value.ItemValue;
 import com.braydenoneal.blang.parser.expression.value.Value;
@@ -20,12 +22,12 @@ public record ExportAllItemsBuiltin(Program program, List<Expression> arguments)
         Value<?> xValue = arguments.get(0).evaluate();
         Value<?> yValue = arguments.get(1).evaluate();
         Value<?> zValue = arguments.get(2).evaluate();
-        Value<?> itemValue = arguments.get(3).evaluate();
+        Expression itemPredicateExpression = arguments.get(3);
 
         if (xValue instanceof IntegerValue x &&
                 yValue instanceof IntegerValue y &&
                 zValue instanceof IntegerValue z &&
-                itemValue instanceof ItemValue item
+                itemPredicateExpression instanceof FunctionExpression itemPredicate
         ) {
             World world = program.context().entity().getWorld();
 
@@ -43,7 +45,12 @@ public record ExportAllItemsBuiltin(Program program, List<Expression> arguments)
                     for (int i = 0; i < container.size(); i++) {
                         ItemStack stack = container.getStack(i);
 
-                        if (stack.isOf(item.value())) {
+                        program.newScope();
+                        program.getScope().set(itemPredicate.arguments().getFirst(), new ItemValue(stack.getItem()));
+                        Value<?> predicateResult = itemPredicate.evaluate();
+                        program.endScope();
+
+                        if (predicateResult instanceof BooleanValue booleanValue && booleanValue.value()) {
                             for (int j = 0; j < exportContainer.size(); j++) {
                                 ItemStack exportStack = exportContainer.getStack(j);
 
@@ -53,7 +60,7 @@ public record ExportAllItemsBuiltin(Program program, List<Expression> arguments)
                                     break;
                                 }
 
-                                if (exportStack.isOf(item.value())) {
+                                if (exportStack.isOf(stack.getItem())) {
                                     int available = exportStack.getMaxCount() - exportStack.getCount();
                                     int move = Math.min(stack.getCount(), available);
 
@@ -82,7 +89,7 @@ public record ExportAllItemsBuiltin(Program program, List<Expression> arguments)
         System.out.println(xValue);
         System.out.println(yValue);
         System.out.println(zValue);
-        System.out.println(itemValue);
+        System.out.println(itemPredicateExpression);
         return null;
     }
 }

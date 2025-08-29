@@ -7,6 +7,7 @@ import com.braydenoneal.blang.parser.expression.value.BooleanValue;
 import com.braydenoneal.blang.parser.expression.value.IntegerValue;
 import com.braydenoneal.blang.parser.expression.value.ItemValue;
 import com.braydenoneal.blang.parser.expression.value.Value;
+import net.minecraft.block.Blocks;
 import net.minecraft.block.entity.LockableContainerBlockEntity;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.ItemStack;
@@ -33,7 +34,7 @@ public record PlaceBlockBuiltin(Program program, List<Expression> arguments) imp
             BlockPos pos = new BlockPos(entityPos.getX() + x.value(), entityPos.getY() + y.value(), entityPos.getZ() + z.value());
             World world = program.context().entity().getWorld();
 
-            if (world == null) {
+            if (world == null || !world.getBlockState(pos).getBlock().equals(Blocks.AIR)) {
                 return null;
             }
 
@@ -56,7 +57,13 @@ public record PlaceBlockBuiltin(Program program, List<Expression> arguments) imp
                         for (var entry : BlockItem.BLOCK_ITEMS.entrySet()) {
                             if (stack.isOf(entry.getValue())) {
                                 stack.decrement(1);
-                                container.setStack(i, stack);
+
+                                if (stack.isEmpty()) {
+                                    container.setStack(i, ItemStack.EMPTY);
+                                } else {
+                                    container.setStack(i, stack);
+                                }
+
                                 world.setBlockState(pos, entry.getKey().getDefaultState());
                             }
                         }
