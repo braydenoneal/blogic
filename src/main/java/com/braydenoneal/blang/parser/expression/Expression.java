@@ -106,13 +106,15 @@ public interface Expression {
 
                             if (program.peekIs(Type.PARENTHESIS, "(")) {
                                 yield BuiltinExpression.parse(program, token.value());
-                            } else if (program.peek().type() == Type.DOT) {
-                                yield MemberCallExpression.parse(program, token.value());
                             }
 
                             yield new VariableExpression(program, token.value());
                         }
                     };
+
+                    if (program.peek().type() == Type.DOT) {
+                        expression = MemberCallExpression.parse(program, expression);
+                    }
 
                     List<Expression> indices = new ArrayList<>();
 

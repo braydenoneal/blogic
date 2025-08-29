@@ -57,26 +57,48 @@ fn main() {
     }
 }
 
+dirtAndOakFarm;
+
+neededItems = [item("moss_block"), item("azalea"), item("flowering_azalea"), item("bone_meal"), item("iron_shovel")];
+saplings = [item("azalea"), item("flowering_azalea")];
+exportItems = [item("oak_log"), item("dirt")];
+
+fn main() {
+    if !getItems().containsAll(neededItems) {
+        return 0;
+    }
+
+    placeBlock(-1, 0, 0, fn item: item == item("moss_block"));
+    placeBlock(-1, 1, 0, fn item: saplings.contains(item));
+    useItem(-1, 1, 0, fn item: item == item("bone_meal"));
+
+    for y in range(1, 8) {
+        breakBlock(-1, y, 0, fn block: block == block("oak_log"));
+    }
+
+    useItem(-1, 0, 0, fn item: item == item("iron_shovel"));
+    breakBlock(-1, 0, 0, fn block: true);
+    exportAllItems(-2, 0, 0, fn item: exportItems.contains(item));
+}
+
+
 treeFarm;
 
 neededItems = [item("oak_sapling"), item("bone_meal")];
 keepItems = [item("oak_sapling"), item("bone_meal"), item("oak_log")];
 
 fn main() {
-    items = getItems();
-
-    if !items.containsAll(neededItems) {
+    if !getItems().containsAll(neededItems) {
         return 0;
     }
 
     placeBlock(0, 2, 0, fn item: item == item("oak_sapling"));
 
-    while getBlock(0, 2, 0) == block("oak_sapling") and items.contains(item("bone_meal")) {
-        items = getItems();
+    while getBlock(0, 2, 0) == block("oak_sapling") and getItems().contains(item("bone_meal")) {
         useItem(0, 2, 0, fn item: item == item("bone_meal"));
     }
 
-    for x in range(-2, 2) { for z in range(-2, 2) { for y in range(2, 8) {
+    for x in range(-2, 3) { for z in range(-2, 3) { for y in range(2, 8) {
         breakBlock(x, y, z, fn block: true);
     }}}
 

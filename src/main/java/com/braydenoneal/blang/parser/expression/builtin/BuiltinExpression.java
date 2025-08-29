@@ -26,10 +26,10 @@ public class BuiltinExpression {
             case "useItem" -> new UseItemBuiltin(program, parseArguments(program));
             case "exportAllItems" -> new ExportAllItemsBuiltin(program, parseArguments(program));
             case "deleteItems" -> new DeleteItemsBuiltin(program, parseArguments(program));
+            case "getItems" -> new GetItemsBuiltin(program, parseArguments(program));
             case "min" -> new MinimumBuiltin(parseArguments(program));
             case "max" -> new MaximumBuiltin(parseArguments(program));
             case "range" -> new RangeBuiltin(parseArguments(program));
-            case "getItems" -> new GetItemsBuiltin(program);
             default -> CallExpression.parse(program, name);
         };
     }

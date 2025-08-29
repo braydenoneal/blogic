@@ -170,4 +170,63 @@ list comprehension?
 in-language errors, exceptions?
 codec for entire program?
 balancing: breaking blocks requires tool, and takes time
+
+ideas
+- portable controller that executes from player
+- wait/sleep function to control tick time
+- reader, importer, and exporter blocks instead of available everywhere?
+- time/amount/too easy balancing
+- maybe action functions (read, import, export) each take 1 tick to execute
+- read entities like commands (@n, etc)
+- storage and auto-crafting features like ae2
+- storage blocks like drawers, trash, etc
+- chunk loaders
+- mob farm features like apothic spawners and mob grind utils
+- redstone blocks like switches and indicators
+- display blocks for text, items, pixels?, etc
+- inventory management features like sophisticated backpacks
+- building features like building gadgets
+- wireless imports/exports
+- fluids and energy
+- xp pickup
+- ways to control logic with keybinds (create gamepad thingy)
+
+farms
+- stone/cobblestone
+- moss/azalea
+- dirt/oak
+- all trees
+- sugar cane
+- bamboo
+- dripstone
+- lava
+- piglin barter
+- smart furnace array
+- basic item flow control
+- overflow
+- advanced filtering with nbt, tags, etc
+
+read
+- redstone
+- inventory
+- block
+- fluid
+- world
+- network
+
+import
+- inventory
+- block
+- fluid
+- item
+- energy
+
+export
+- redstone
+- inventory
+- block
+- fluid
+- item
+- energy
+- interaction
  */
