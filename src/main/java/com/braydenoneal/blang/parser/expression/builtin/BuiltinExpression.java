@@ -25,6 +25,7 @@ public class BuiltinExpression {
             case "breakBlock" -> new BreakBlockBuiltin(program, parseArguments(program));
             case "useItem" -> new UseItemBuiltin(program, parseArguments(program));
             case "exportAllItems" -> new ExportAllItemsBuiltin(program, parseArguments(program));
+            case "deleteItems" -> new DeleteItemsBuiltin(program, parseArguments(program));
             case "min" -> new MinimumBuiltin(parseArguments(program));
             case "max" -> new MaximumBuiltin(parseArguments(program));
             case "range" -> new RangeBuiltin(parseArguments(program));

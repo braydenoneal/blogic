@@ -2,7 +2,7 @@ package com.braydenoneal.blang.parser.expression.builtin;
 
 import com.braydenoneal.blang.parser.Program;
 import com.braydenoneal.blang.parser.expression.Expression;
-import com.braydenoneal.blang.parser.expression.value.ItemStackValue;
+import com.braydenoneal.blang.parser.expression.value.ItemValue;
 import com.braydenoneal.blang.parser.expression.value.ListValue;
 import com.braydenoneal.blang.parser.expression.value.Value;
 import net.minecraft.block.entity.LockableContainerBlockEntity;
@@ -20,7 +20,7 @@ public record GetItemsBuiltin(Program program) implements Expression {
         for (LockableContainerBlockEntity container : containers) {
             container.iterator().forEachRemaining(stack -> {
                 if (!stack.isOf(Items.AIR)) {
-                    items.add(new ItemStackValue(stack));
+                    items.add(new ItemValue(stack.getItem()));
                 }
             });
         }

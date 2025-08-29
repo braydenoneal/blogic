@@ -50,6 +50,8 @@ public record MemberCallExpression(
                     return new ListPopBuiltin(program, name, listValue).evaluate();
                 case "contains":
                     return new ListContainsBuiltin(listValue, arguments).evaluate();
+                case "containsAll":
+                    return new ListContainsAllBuiltin(listValue, arguments).evaluate();
             }
         }
 
