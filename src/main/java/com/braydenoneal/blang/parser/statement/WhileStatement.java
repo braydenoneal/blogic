@@ -14,6 +14,8 @@ public record WhileStatement(
 ) implements Statement {
     @Override
     public Statement execute() {
+        long start = System.currentTimeMillis();
+
         while (condition.evaluate() instanceof BooleanValue booleanValue && booleanValue.value()) {
             Statement statement = Statement.runStatements(statements);
 
@@ -21,6 +23,11 @@ public record WhileStatement(
                 return statement;
             } else if (statement instanceof BreakStatement) {
                 break;
+            }
+
+            if (System.currentTimeMillis() - start > 15) {
+                System.out.println("while statement: max time exceeded");
+                return null;
             }
         }
 

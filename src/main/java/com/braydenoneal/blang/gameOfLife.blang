@@ -56,3 +56,29 @@ fn main() {
         }
     }
 }
+
+treeFarm;
+
+neededItems = [item("oak_sapling"), item("bone_meal")];
+keepItems = [item("oak_sapling"), item("bone_meal"), item("oak_log")];
+
+fn main() {
+    items = getItems();
+
+    if !items.containsAll(neededItems) {
+        return 0;
+    }
+
+    placeBlock(0, 2, 0, fn item: item == item("oak_sapling"));
+
+    while getBlock(0, 2, 0) == block("oak_sapling") and items.contains(item("bone_meal")) {
+        items = getItems();
+        useItem(0, 2, 0, fn item: item == item("bone_meal"));
+    }
+
+    for x in range(-2, 2) { for z in range(-2, 2) { for y in range(2, 8) {
+        breakBlock(x, y, z, fn block: true);
+    }}}
+
+    deleteItems(fn item: !keepItems.contains(item));
+}
