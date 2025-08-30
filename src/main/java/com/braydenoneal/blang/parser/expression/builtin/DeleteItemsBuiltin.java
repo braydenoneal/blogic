@@ -41,7 +41,7 @@ public record DeleteItemsBuiltin(Arguments arguments) implements Expression {
                     throw new RunException("itemPredicate is not a predicate");
                 }
 
-                if (((BooleanValue) predicateResult).value()) {
+                if (!((BooleanValue) predicateResult).value()) {
                     continue;
                 }
 
