@@ -5,6 +5,9 @@ import com.braydenoneal.blang.parser.expression.Expression;
 import com.braydenoneal.blang.parser.expression.value.BooleanValue;
 import com.braydenoneal.blang.parser.expression.value.Value;
 import com.braydenoneal.blang.tokenizer.Type;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
@@ -81,6 +84,11 @@ public record IfStatement(
 
             return new ElseIfStatement(condition, statements);
         }
+
+        public static final Codec<ElseIfStatement> CODEC = RecordCodecBuilder.create(instance -> instance.group(
+                Expression.CODEC.fieldOf("condition").forGetter(ElseIfStatement::condition),
+                Codec.list(Statement.CODEC).fieldOf("statements").forGetter(ElseIfStatement::statements)
+        ).apply(instance, ElseIfStatement::new));
     }
 
     record ElseStatement(List<Statement> statements) {
@@ -98,5 +106,21 @@ public record IfStatement(
 
             return new ElseStatement(statements);
         }
+
+        public static final MapCodec<ElseStatement> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
+                Codec.list(Statement.CODEC).fieldOf("statements").forGetter(ElseStatement::statements)
+        ).apply(instance, ElseStatement::new));
+    }
+
+    public static final MapCodec<IfStatement> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
+            Expression.CODEC.fieldOf("condition").forGetter(IfStatement::condition),
+            Codec.list(Statement.CODEC).fieldOf("statements").forGetter(IfStatement::statements),
+            Codec.list(ElseIfStatement.CODEC).fieldOf("elseIfStatements").forGetter(IfStatement::elseIfStatements),
+            ElseStatement.CODEC.fieldOf("ElseStatement").forGetter(IfStatement::elseStatement)
+    ).apply(instance, IfStatement::new));
+
+    @Override
+    public StatementType<?> getType() {
+        return StatementTypes.IF_STATEMENT;
     }
 }

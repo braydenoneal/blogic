@@ -2,6 +2,8 @@ package com.braydenoneal.blang.parser.statement;
 
 import com.braydenoneal.blang.parser.Program;
 import com.braydenoneal.blang.tokenizer.Type;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
 
 public record BreakStatement() implements Statement {
     @Override
@@ -13,5 +15,12 @@ public record BreakStatement() implements Statement {
         program.expect(Type.KEYWORD, "break");
         program.expect(Type.SEMICOLON);
         return new BreakStatement();
+    }
+
+    public static final MapCodec<BreakStatement> CODEC = Codec.unit(new BreakStatement()).fieldOf("break_statement");
+
+    @Override
+    public StatementType<?> getType() {
+        return StatementTypes.BREAK_STATEMENT;
     }
 }

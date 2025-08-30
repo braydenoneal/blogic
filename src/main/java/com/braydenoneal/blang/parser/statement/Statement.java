@@ -3,6 +3,7 @@ package com.braydenoneal.blang.parser.statement;
 import com.braydenoneal.blang.parser.Program;
 import com.braydenoneal.blang.tokenizer.Token;
 import com.braydenoneal.blang.tokenizer.Type;
+import com.mojang.serialization.Codec;
 
 import java.util.List;
 
@@ -60,4 +61,8 @@ public interface Statement {
 
         return null;
     }
+
+    StatementType<?> getType();
+
+    Codec<Statement> CODEC = StatementType.REGISTRY.getCodec().dispatch("type", Statement::getType, StatementType::codec);
 }

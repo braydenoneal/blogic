@@ -14,7 +14,7 @@ public class BooleanValue extends Value<Boolean> {
     }
 
     @Override
-    public ValueType<?> getType() {
+    public ValueType<?> getValueType() {
         return ValueTypes.BOOLEAN;
     }
 }

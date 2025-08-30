@@ -2,7 +2,10 @@ package com.braydenoneal.blang.parser.expression.value;
 
 import com.braydenoneal.blang.parser.Program;
 import com.braydenoneal.blang.parser.expression.Expression;
+import com.braydenoneal.blang.parser.expression.ExpressionType;
+import com.braydenoneal.blang.parser.expression.ExpressionTypes;
 import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
 
 public abstract class Value<T> implements Expression {
     private final T value;
@@ -34,8 +37,13 @@ public abstract class Value<T> implements Expression {
         return super.equals(obj);
     }
 
-    public abstract ValueType<?> getType();
+    @Override
+    public ExpressionType<?> getType() {
+        return ExpressionTypes.VALUE;
+    }
 
-    private static final Codec<ValueType<?>> VALUE_TYPE_CODEC = ValueType.REGISTRY.getCodec();
-    public static final Codec<Value<?>> CODEC = VALUE_TYPE_CODEC.dispatch("type", Value::getType, ValueType::codec);
+    public abstract ValueType<?> getValueType();
+
+    public static final Codec<Value<?>> CODEC = ValueType.REGISTRY.getCodec().dispatch("type", Value::getValueType, ValueType::codec);
+    public static final MapCodec<Value<?>> MAP_CODEC = CODEC.fieldOf("value");
 }

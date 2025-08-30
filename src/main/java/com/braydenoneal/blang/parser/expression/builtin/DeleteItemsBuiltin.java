@@ -2,10 +2,15 @@ package com.braydenoneal.blang.parser.expression.builtin;
 
 import com.braydenoneal.blang.parser.Program;
 import com.braydenoneal.blang.parser.expression.Expression;
-import com.braydenoneal.blang.parser.expression.FunctionExpression;
+import com.braydenoneal.blang.parser.expression.ExpressionType;
+import com.braydenoneal.blang.parser.expression.ExpressionTypes;
 import com.braydenoneal.blang.parser.expression.value.BooleanValue;
+import com.braydenoneal.blang.parser.expression.value.FunctionValue;
 import com.braydenoneal.blang.parser.expression.value.ItemValue;
 import com.braydenoneal.blang.parser.expression.value.Value;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.block.entity.LockableContainerBlockEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
@@ -17,7 +22,7 @@ public record DeleteItemsBuiltin(List<Expression> arguments) implements Expressi
     public Value<?> evaluate(Program program) {
         Expression itemPredicateExpression = arguments.getFirst();
 
-        if (itemPredicateExpression instanceof FunctionExpression itemPredicate) {
+        if (itemPredicateExpression instanceof FunctionValue itemPredicate) {
             World world = program.context().entity().getWorld();
 
             if (world == null) {
@@ -31,8 +36,8 @@ public record DeleteItemsBuiltin(List<Expression> arguments) implements Expressi
                     ItemStack stack = container.getStack(i);
 
                     program.newScope();
-                    program.getScope().set(itemPredicate.arguments().getFirst(), new ItemValue(stack.getItem()));
-                    Value<?> predicateResult = itemPredicate.evaluate(program);
+                    program.getScope().set(itemPredicate.value().arguments().getFirst(), new ItemValue(stack.getItem()));
+                    Value<?> predicateResult = itemPredicate.call(program);
                     program.endScope();
 
                     if (predicateResult instanceof BooleanValue booleanValue && booleanValue.value()) {
@@ -47,5 +52,14 @@ public record DeleteItemsBuiltin(List<Expression> arguments) implements Expressi
         System.out.println("deleteItems");
         System.out.println(itemPredicateExpression);
         return null;
+    }
+
+    public static final MapCodec<DeleteItemsBuiltin> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
+            Codec.list(Expression.CODEC).fieldOf("arguments").forGetter(DeleteItemsBuiltin::arguments)
+    ).apply(instance, DeleteItemsBuiltin::new));
+
+    @Override
+    public ExpressionType<?> getType() {
+        return ExpressionTypes.DELETE_ITEMS_BUILTIN;
     }
 }

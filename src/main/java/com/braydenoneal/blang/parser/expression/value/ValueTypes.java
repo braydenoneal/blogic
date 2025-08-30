@@ -14,9 +14,10 @@ public class ValueTypes {
     public static final ValueType<ItemValue> ITEM = register("item", new ValueType<>(ItemValue.CODEC));
     public static final ValueType<ItemStackValue> ITEM_STACK = register("item_stack", new ValueType<>(ItemStackValue.CODEC));
     public static final ValueType<NullValue> NULL = register("null", new ValueType<>(NullValue.CODEC));
+    public static final ValueType<FunctionValue> FUNCTION = register("function", new ValueType<>(FunctionValue.CODEC));
 
-    public static <T extends Value<?>> ValueType<T> register(String id, ValueType<T> beanType) {
-        return Registry.register(ValueType.REGISTRY, Identifier.of("blogic", id), beanType);
+    public static <T extends Value<?>> ValueType<T> register(String id, ValueType<T> valueType) {
+        return Registry.register(ValueType.REGISTRY, Identifier.of("blogic", id), valueType);
     }
 
     public static void initialize() {

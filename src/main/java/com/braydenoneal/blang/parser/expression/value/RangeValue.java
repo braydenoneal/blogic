@@ -13,7 +13,7 @@ public class RangeValue extends Value<Range> {
     }
 
     @Override
-    public ValueType<?> getType() {
+    public ValueType<?> getValueType() {
         return ValueTypes.RANGE;
     }
 

@@ -1,19 +1,28 @@
-package com.braydenoneal.blang.parser.expression;
+package com.braydenoneal.blang.parser.expression.value;
 
 import com.braydenoneal.blang.parser.Program;
-import com.braydenoneal.blang.parser.expression.value.Value;
+import com.braydenoneal.blang.parser.expression.Expression;
 import com.braydenoneal.blang.parser.statement.ReturnStatement;
 import com.braydenoneal.blang.parser.statement.Statement;
 import com.braydenoneal.blang.tokenizer.Type;
+import com.mojang.serialization.MapCodec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public record FunctionExpression(List<String> arguments, List<Statement> statements) implements Expression {
-    @Override
-    public Value<?> evaluate(Program program) {
+public class FunctionValue extends Value<Function> {
+    public static final MapCodec<FunctionValue> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
+            Function.CODEC.fieldOf("value").forGetter(FunctionValue::value)
+    ).apply(instance, FunctionValue::new));
+
+    public FunctionValue(Function value) {
+        super(value);
+    }
+
+    public Value<?> call(Program program) {
         Value<?> returnValue = null;
-        Statement statement = Statement.runStatements(program, statements);
+        Statement statement = Statement.runStatements(program, value().statements());
 
         if (statement instanceof ReturnStatement returnStatement) {
             returnValue = returnStatement.returnValue(program);
@@ -50,6 +59,16 @@ public record FunctionExpression(List<String> arguments, List<Statement> stateme
             statements.add(new ReturnStatement(Expression.parse(program)));
         }
 
-        return new FunctionExpression(arguments, statements);
+        return new FunctionValue(new Function(arguments, statements));
+    }
+
+    @Override
+    public ValueType<?> getValueType() {
+        return ValueTypes.FUNCTION;
+    }
+
+    @Override
+    public String toString() {
+        return "fn" + value().arguments().toString() + ": " + value().statements().toString();
     }
 }

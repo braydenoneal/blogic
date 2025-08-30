@@ -2,7 +2,12 @@ package com.braydenoneal.blang.parser.expression.operator;
 
 import com.braydenoneal.blang.parser.Program;
 import com.braydenoneal.blang.parser.expression.Expression;
+import com.braydenoneal.blang.parser.expression.ExpressionType;
+import com.braydenoneal.blang.parser.expression.ExpressionTypes;
 import com.braydenoneal.blang.parser.expression.value.*;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 
 import java.util.stream.Stream;
 
@@ -55,5 +60,16 @@ public record ArithmeticOperator(
         System.out.println(operand_a);
         System.out.println(operand_b);
         return null;
+    }
+
+    public static final MapCodec<ArithmeticOperator> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
+            Codec.STRING.fieldOf("operator").forGetter(ArithmeticOperator::operator),
+            Expression.CODEC.fieldOf("operand_a").forGetter(ArithmeticOperator::operand_a),
+            Expression.CODEC.fieldOf("operand_b").forGetter(ArithmeticOperator::operand_b)
+    ).apply(instance, ArithmeticOperator::new));
+
+    @Override
+    public ExpressionType<?> getType() {
+        return ExpressionTypes.ARITHMETIC_OPERATOR;
     }
 }

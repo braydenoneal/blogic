@@ -3,6 +3,9 @@ package com.braydenoneal.blang.parser.statement;
 import com.braydenoneal.blang.parser.Program;
 import com.braydenoneal.blang.parser.expression.value.Value;
 import com.braydenoneal.blang.tokenizer.Type;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -56,5 +59,16 @@ public record FunctionDeclaration(
         FunctionDeclaration functionDeclaration = new FunctionDeclaration(name, arguments, statements);
         program.addFunction(name, functionDeclaration);
         return functionDeclaration;
+    }
+
+    public static final MapCodec<FunctionDeclaration> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
+            Codec.STRING.fieldOf("name").forGetter(FunctionDeclaration::name),
+            Codec.list(Codec.STRING).fieldOf("arguments").forGetter(FunctionDeclaration::arguments),
+            Codec.list(Statement.CODEC).fieldOf("statements").forGetter(FunctionDeclaration::statements)
+    ).apply(instance, FunctionDeclaration::new));
+
+    @Override
+    public StatementType<?> getType() {
+        return StatementTypes.FUNCTION_DECLARATION;
     }
 }

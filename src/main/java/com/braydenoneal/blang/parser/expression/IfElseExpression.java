@@ -4,6 +4,8 @@ import com.braydenoneal.blang.parser.Program;
 import com.braydenoneal.blang.parser.expression.value.BooleanValue;
 import com.braydenoneal.blang.parser.expression.value.Value;
 import com.braydenoneal.blang.tokenizer.Type;
+import com.mojang.serialization.MapCodec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 
 public record IfElseExpression(
         Expression condition,
@@ -27,5 +29,16 @@ public record IfElseExpression(
         program.expect(Type.KEYWORD, "else");
         Expression expression_b = Expression.parse(program);
         return new IfElseExpression(condition, expression_a, expression_b);
+    }
+
+    public static final MapCodec<IfElseExpression> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
+            Expression.CODEC.fieldOf("condition").forGetter(IfElseExpression::condition),
+            Expression.CODEC.fieldOf("expression_a").forGetter(IfElseExpression::expression_a),
+            Expression.CODEC.fieldOf("expression_b").forGetter(IfElseExpression::expression_b)
+    ).apply(instance, IfElseExpression::new));
+
+    @Override
+    public ExpressionType<?> getType() {
+        return ExpressionTypes.IF_ELSE_EXPRESSION;
     }
 }

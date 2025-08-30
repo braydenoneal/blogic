@@ -14,7 +14,7 @@ public class IntegerValue extends Value<Integer> {
     }
 
     @Override
-    public ValueType<?> getType() {
+    public ValueType<?> getValueType() {
         return ValueTypes.INTEGER;
     }
 }

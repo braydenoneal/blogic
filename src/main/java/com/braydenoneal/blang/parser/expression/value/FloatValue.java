@@ -14,7 +14,7 @@ public class FloatValue extends Value<Float> {
     }
 
     @Override
-    public ValueType<?> getType() {
+    public ValueType<?> getValueType() {
         return ValueTypes.FLOAT;
     }
 }

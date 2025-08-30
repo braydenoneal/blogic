@@ -13,7 +13,7 @@ public class NullValue extends Value<Null> {
     }
 
     @Override
-    public ValueType<?> getType() {
+    public ValueType<?> getValueType() {
         return ValueTypes.NULL;
     }
 

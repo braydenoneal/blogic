@@ -15,7 +15,7 @@ public class BlockValue extends Value<Block> {
     }
 
     @Override
-    public ValueType<?> getType() {
+    public ValueType<?> getValueType() {
         return ValueTypes.BLOCK;
     }
 

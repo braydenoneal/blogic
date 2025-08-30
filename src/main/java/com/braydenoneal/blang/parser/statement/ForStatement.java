@@ -7,6 +7,9 @@ import com.braydenoneal.blang.parser.expression.value.ListValue;
 import com.braydenoneal.blang.parser.expression.value.RangeValue;
 import com.braydenoneal.blang.parser.expression.value.Value;
 import com.braydenoneal.blang.tokenizer.Type;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -63,5 +66,16 @@ public record ForStatement(
         program.expect(Type.CURLY_BRACE, "}");
 
         return new ForStatement(itemName, expression, statements);
+    }
+
+    public static final MapCodec<ForStatement> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
+            Codec.STRING.fieldOf("itemName").forGetter(ForStatement::itemName),
+            Expression.CODEC.fieldOf("listExpression").forGetter(ForStatement::listExpression),
+            Codec.list(Statement.CODEC).fieldOf("statements").forGetter(ForStatement::statements)
+    ).apply(instance, ForStatement::new));
+
+    @Override
+    public StatementType<?> getType() {
+        return StatementTypes.FOR_STATEMENT;
     }
 }

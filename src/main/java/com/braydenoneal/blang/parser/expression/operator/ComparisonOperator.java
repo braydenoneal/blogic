@@ -2,10 +2,15 @@ package com.braydenoneal.blang.parser.expression.operator;
 
 import com.braydenoneal.blang.parser.Program;
 import com.braydenoneal.blang.parser.expression.Expression;
+import com.braydenoneal.blang.parser.expression.ExpressionType;
+import com.braydenoneal.blang.parser.expression.ExpressionTypes;
 import com.braydenoneal.blang.parser.expression.value.BooleanValue;
 import com.braydenoneal.blang.parser.expression.value.FloatValue;
 import com.braydenoneal.blang.parser.expression.value.IntegerValue;
 import com.braydenoneal.blang.parser.expression.value.Value;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 
 public record ComparisonOperator(
         String operator,
@@ -44,5 +49,16 @@ public record ComparisonOperator(
         System.out.println(operand_a);
         System.out.println(operand_b);
         return null;
+    }
+
+    public static final MapCodec<ComparisonOperator> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
+            Codec.STRING.fieldOf("operator").forGetter(ComparisonOperator::operator),
+            Expression.CODEC.fieldOf("operand_a").forGetter(ComparisonOperator::operand_a),
+            Expression.CODEC.fieldOf("operand_b").forGetter(ComparisonOperator::operand_b)
+    ).apply(instance, ComparisonOperator::new));
+
+    @Override
+    public ExpressionType<?> getType() {
+        return ExpressionTypes.COMPARISON_OPERATOR;
     }
 }

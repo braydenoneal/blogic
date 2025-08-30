@@ -1,6 +1,8 @@
 package com.braydenoneal;
 
+import com.braydenoneal.blang.parser.expression.ExpressionTypes;
 import com.braydenoneal.blang.parser.expression.value.ValueTypes;
+import com.braydenoneal.blang.parser.statement.StatementTypes;
 import com.braydenoneal.block.ModBlocks;
 import com.braydenoneal.block.entity.ModBlockEntities;
 import com.braydenoneal.item.ModItems;
@@ -20,5 +22,7 @@ public class Blogic implements ModInitializer {
         ModItems.initialize();
         ModNetworking.initialize();
         ValueTypes.initialize();
+        ExpressionTypes.initialize();
+        StatementTypes.initialize();
     }
 }

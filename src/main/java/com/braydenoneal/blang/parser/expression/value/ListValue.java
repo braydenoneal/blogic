@@ -19,7 +19,7 @@ public class ListValue extends Value<List<Value<?>>> {
     }
 
     @Override
-    public ValueType<?> getType() {
+    public ValueType<?> getValueType() {
         return ValueTypes.LIST;
     }
 

@@ -2,10 +2,15 @@ package com.braydenoneal.blang.parser.expression.builtin;
 
 import com.braydenoneal.blang.parser.Program;
 import com.braydenoneal.blang.parser.expression.Expression;
+import com.braydenoneal.blang.parser.expression.ExpressionType;
+import com.braydenoneal.blang.parser.expression.ExpressionTypes;
 import com.braydenoneal.blang.parser.expression.value.IntegerValue;
 import com.braydenoneal.blang.parser.expression.value.Range;
 import com.braydenoneal.blang.parser.expression.value.RangeValue;
 import com.braydenoneal.blang.parser.expression.value.Value;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 
 import java.util.List;
 
@@ -41,5 +46,14 @@ public record RangeBuiltin(List<Expression> arguments) implements Expression {
         }
 
         return new RangeValue(new Range(start, end, step));
+    }
+
+    public static final MapCodec<RangeBuiltin> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
+            Codec.list(Expression.CODEC).fieldOf("arguments").forGetter(RangeBuiltin::arguments)
+    ).apply(instance, RangeBuiltin::new));
+
+    @Override
+    public ExpressionType<?> getType() {
+        return ExpressionTypes.RANGE_BUILTIN;
     }
 }

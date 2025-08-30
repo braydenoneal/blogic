@@ -2,11 +2,12 @@ package com.braydenoneal.blang.parser.expression.builtin;
 
 import com.braydenoneal.blang.parser.Program;
 import com.braydenoneal.blang.parser.expression.Expression;
-import com.braydenoneal.blang.parser.expression.FunctionExpression;
-import com.braydenoneal.blang.parser.expression.value.BooleanValue;
-import com.braydenoneal.blang.parser.expression.value.IntegerValue;
-import com.braydenoneal.blang.parser.expression.value.ItemValue;
-import com.braydenoneal.blang.parser.expression.value.Value;
+import com.braydenoneal.blang.parser.expression.ExpressionType;
+import com.braydenoneal.blang.parser.expression.ExpressionTypes;
+import com.braydenoneal.blang.parser.expression.value.*;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.LockableContainerBlockEntity;
 import net.minecraft.item.ItemStack;
@@ -27,7 +28,7 @@ public record ExportAllItemsBuiltin(List<Expression> arguments) implements Expre
         if (xValue instanceof IntegerValue x &&
                 yValue instanceof IntegerValue y &&
                 zValue instanceof IntegerValue z &&
-                itemPredicateExpression instanceof FunctionExpression itemPredicate
+                itemPredicateExpression instanceof FunctionValue itemPredicate
         ) {
             World world = program.context().entity().getWorld();
 
@@ -46,8 +47,8 @@ public record ExportAllItemsBuiltin(List<Expression> arguments) implements Expre
                         ItemStack stack = container.getStack(i);
 
                         program.newScope();
-                        program.getScope().set(itemPredicate.arguments().getFirst(), new ItemValue(stack.getItem()));
-                        Value<?> predicateResult = itemPredicate.evaluate(program);
+                        program.getScope().set(itemPredicate.value().arguments().getFirst(), new ItemValue(stack.getItem()));
+                        Value<?> predicateResult = itemPredicate.call(program);
                         program.endScope();
 
                         if (predicateResult instanceof BooleanValue booleanValue && booleanValue.value()) {
@@ -90,5 +91,14 @@ public record ExportAllItemsBuiltin(List<Expression> arguments) implements Expre
         System.out.println(zValue);
         System.out.println(itemPredicateExpression);
         return null;
+    }
+
+    public static final MapCodec<ExportAllItemsBuiltin> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
+            Codec.list(Expression.CODEC).fieldOf("arguments").forGetter(ExportAllItemsBuiltin::arguments)
+    ).apply(instance, ExportAllItemsBuiltin::new));
+
+    @Override
+    public ExpressionType<?> getType() {
+        return ExpressionTypes.EXPORT_ALL_ITEMS_BUILTIN;
     }
 }

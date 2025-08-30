@@ -2,11 +2,12 @@ package com.braydenoneal.blang.parser.expression.builtin;
 
 import com.braydenoneal.blang.parser.Program;
 import com.braydenoneal.blang.parser.expression.Expression;
-import com.braydenoneal.blang.parser.expression.FunctionExpression;
-import com.braydenoneal.blang.parser.expression.value.BooleanValue;
-import com.braydenoneal.blang.parser.expression.value.IntegerValue;
-import com.braydenoneal.blang.parser.expression.value.ItemValue;
-import com.braydenoneal.blang.parser.expression.value.Value;
+import com.braydenoneal.blang.parser.expression.ExpressionType;
+import com.braydenoneal.blang.parser.expression.ExpressionTypes;
+import com.braydenoneal.blang.parser.expression.value.*;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.entity.LockableContainerBlockEntity;
 import net.minecraft.item.BlockItem;
@@ -28,7 +29,7 @@ public record PlaceBlockBuiltin(List<Expression> arguments) implements Expressio
         if (xValue instanceof IntegerValue x &&
                 yValue instanceof IntegerValue y &&
                 zValue instanceof IntegerValue z &&
-                itemPredicateExpression instanceof FunctionExpression itemPredicate
+                itemPredicateExpression instanceof FunctionValue itemPredicate
         ) {
             BlockPos entityPos = program.context().pos();
             BlockPos pos = new BlockPos(entityPos.getX() + x.value(), entityPos.getY() + y.value(), entityPos.getZ() + z.value());
@@ -49,8 +50,8 @@ public record PlaceBlockBuiltin(List<Expression> arguments) implements Expressio
                     }
 
                     program.newScope();
-                    program.getScope().set(itemPredicate.arguments().getFirst(), new ItemValue(stack.getItem()));
-                    Value<?> predicateResult = itemPredicate.evaluate(program);
+                    program.getScope().set(itemPredicate.value().arguments().getFirst(), new ItemValue(stack.getItem()));
+                    Value<?> predicateResult = itemPredicate.call(program);
                     program.endScope();
 
                     if (predicateResult instanceof BooleanValue booleanValue && booleanValue.value()) {
@@ -82,5 +83,14 @@ public record PlaceBlockBuiltin(List<Expression> arguments) implements Expressio
         System.out.println(zValue);
         System.out.println(itemPredicateExpression);
         return null;
+    }
+
+    public static final MapCodec<PlaceBlockBuiltin> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
+            Codec.list(Expression.CODEC).fieldOf("arguments").forGetter(PlaceBlockBuiltin::arguments)
+    ).apply(instance, PlaceBlockBuiltin::new));
+
+    @Override
+    public ExpressionType<?> getType() {
+        return ExpressionTypes.PLACE_BLOCK_BUILTIN;
     }
 }

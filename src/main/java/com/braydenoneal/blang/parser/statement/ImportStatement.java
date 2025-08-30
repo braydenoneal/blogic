@@ -2,6 +2,9 @@ package com.braydenoneal.blang.parser.statement;
 
 import com.braydenoneal.blang.parser.Program;
 import com.braydenoneal.blang.tokenizer.Type;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,5 +30,14 @@ public record ImportStatement(List<String> identifiers) implements Statement {
 
         program.expect(Type.SEMICOLON);
         return new ImportStatement(identifiers);
+    }
+
+    public static final MapCodec<ImportStatement> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
+            Codec.list(Codec.STRING).fieldOf("identifiers").forGetter(ImportStatement::identifiers)
+    ).apply(instance, ImportStatement::new));
+
+    @Override
+    public StatementType<?> getType() {
+        return StatementTypes.IMPORT_STATEMENT;
     }
 }

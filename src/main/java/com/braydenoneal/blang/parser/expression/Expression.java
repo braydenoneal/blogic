@@ -9,6 +9,7 @@ import com.braydenoneal.blang.parser.expression.operator.UnaryOperator;
 import com.braydenoneal.blang.parser.expression.value.*;
 import com.braydenoneal.blang.tokenizer.Token;
 import com.braydenoneal.blang.tokenizer.Type;
+import com.mojang.serialization.Codec;
 
 import java.util.*;
 
@@ -84,7 +85,7 @@ public interface Expression {
                     Token token = program.peek();
 
                     if (program.peekIs(Type.KEYWORD, "fn")) {
-                        return FunctionExpression.parse(program);
+                        return FunctionValue.parse(program);
                     }
 
                     Expression expression = switch (token.type()) {
@@ -168,4 +169,8 @@ public interface Expression {
 
         return expressions.peek();
     }
+
+    ExpressionType<?> getType();
+
+    Codec<Expression> CODEC = ExpressionType.REGISTRY.getCodec().dispatch("type", Expression::getType, ExpressionType::codec);
 }

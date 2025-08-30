@@ -8,6 +8,9 @@ import com.braydenoneal.blang.parser.expression.value.Value;
 import com.braydenoneal.blang.parser.statement.ImportStatement;
 import com.braydenoneal.blang.tokenizer.Type;
 import com.braydenoneal.block.entity.ControllerBlockEntity;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 
 import java.util.List;
 
@@ -79,5 +82,16 @@ public record MemberCallExpression(
         String functionName = program.expect(Type.IDENTIFIER);
         List<Expression> arguments = BuiltinExpression.parseArguments(program);
         return new MemberCallExpression(member, functionName, arguments);
+    }
+
+    public static final MapCodec<MemberCallExpression> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
+            Expression.CODEC.fieldOf("member").forGetter(MemberCallExpression::member),
+            Codec.STRING.fieldOf("functionName").forGetter(MemberCallExpression::functionName),
+            Codec.list(Expression.CODEC).fieldOf("arguments").forGetter(MemberCallExpression::arguments)
+    ).apply(instance, MemberCallExpression::new));
+
+    @Override
+    public ExpressionType<?> getType() {
+        return ExpressionTypes.MEMBER_CALL_EXPRESSION;
     }
 }

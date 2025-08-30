@@ -5,6 +5,9 @@ import com.braydenoneal.blang.parser.expression.operator.ArithmeticOperator;
 import com.braydenoneal.blang.parser.expression.value.ListValue;
 import com.braydenoneal.blang.parser.expression.value.Value;
 import com.braydenoneal.blang.tokenizer.Type;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 
 import java.util.List;
 
@@ -18,7 +21,6 @@ public record AssignmentExpression(
         Value<?> value = expression.evaluate(program);
 
         if (variableExpression instanceof VariableExpression(String name)) {
-
             if (type.equals("=")) {
                 return program.getScope().set(name, value);
             }
@@ -52,5 +54,16 @@ public record AssignmentExpression(
         String type = program.expect(Type.ASSIGN);
         Expression expression = Expression.parse(program);
         return new AssignmentExpression(type, variableExpression, expression);
+    }
+
+    public static final MapCodec<AssignmentExpression> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
+            Codec.STRING.fieldOf("type").forGetter(AssignmentExpression::type),
+            Expression.CODEC.fieldOf("variable_expression").forGetter(AssignmentExpression::variableExpression),
+            Expression.CODEC.fieldOf("expression").forGetter(AssignmentExpression::variableExpression)
+    ).apply(instance, AssignmentExpression::new));
+
+    @Override
+    public ExpressionType<?> getType() {
+        return ExpressionTypes.ASSIGNMENT_EXPRESSION;
     }
 }

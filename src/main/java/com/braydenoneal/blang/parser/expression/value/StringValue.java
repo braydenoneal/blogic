@@ -14,7 +14,7 @@ public class StringValue extends Value<String> {
     }
 
     @Override
-    public ValueType<?> getType() {
+    public ValueType<?> getValueType() {
         return ValueTypes.STRING;
     }
 

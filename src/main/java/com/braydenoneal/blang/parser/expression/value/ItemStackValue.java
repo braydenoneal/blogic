@@ -14,7 +14,7 @@ public class ItemStackValue extends Value<ItemStack> {
     }
 
     @Override
-    public ValueType<?> getType() {
+    public ValueType<?> getValueType() {
         return ValueTypes.ITEM_STACK;
     }
 

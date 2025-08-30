@@ -146,6 +146,10 @@ public class Blang {
                 
                 n = null;
                 print(n);
+                
+                l = fn v: print("Hello, " + v);
+                print(l);
+                l("world!");
                 """,
                 new Context(null, null));
 
@@ -158,8 +162,7 @@ import and export items from connected containers
 ++, --?
 better tokenizing, parsing, and runtime exceptions
 move these tests into a testing system
-call imported functions from the caller's context
-import blocks, access modifiers
+add block for import?, access modifiers
 structs
 better builtin functions logic
 struct implementations

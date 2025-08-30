@@ -2,9 +2,14 @@ package com.braydenoneal.blang.parser.expression.builtin;
 
 import com.braydenoneal.blang.parser.Program;
 import com.braydenoneal.blang.parser.expression.Expression;
+import com.braydenoneal.blang.parser.expression.ExpressionType;
+import com.braydenoneal.blang.parser.expression.ExpressionTypes;
 import com.braydenoneal.blang.parser.expression.value.BlockValue;
 import com.braydenoneal.blang.parser.expression.value.IntegerValue;
 import com.braydenoneal.blang.parser.expression.value.Value;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
@@ -32,5 +37,14 @@ public record GetBlockBuiltin(List<Expression> arguments) implements Expression 
         System.out.println(yValue);
         System.out.println(zValue);
         return null;
+    }
+
+    public static final MapCodec<GetBlockBuiltin> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
+            Codec.list(Expression.CODEC).fieldOf("arguments").forGetter(GetBlockBuiltin::arguments)
+    ).apply(instance, GetBlockBuiltin::new));
+
+    @Override
+    public ExpressionType<?> getType() {
+        return ExpressionTypes.GET_BLOCK_BUILTIN;
     }
 }

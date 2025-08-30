@@ -4,6 +4,9 @@ import com.braydenoneal.blang.parser.Program;
 import com.braydenoneal.blang.parser.expression.Expression;
 import com.braydenoneal.blang.parser.expression.value.BooleanValue;
 import com.braydenoneal.blang.tokenizer.Type;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -45,5 +48,15 @@ public record WhileStatement(Expression condition, List<Statement> statements) i
         program.expect(Type.CURLY_BRACE, "}");
 
         return new WhileStatement(condition, statements);
+    }
+
+    public static final MapCodec<WhileStatement> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
+            Expression.CODEC.fieldOf("condition").forGetter(WhileStatement::condition),
+            Codec.list(Statement.CODEC).fieldOf("statements").forGetter(WhileStatement::statements)
+    ).apply(instance, WhileStatement::new));
+
+    @Override
+    public StatementType<?> getType() {
+        return StatementTypes.WHILE_STATEMENT;
     }
 }

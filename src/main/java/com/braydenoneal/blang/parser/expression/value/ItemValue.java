@@ -15,7 +15,7 @@ public class ItemValue extends Value<Item> {
     }
 
     @Override
-    public ValueType<?> getType() {
+    public ValueType<?> getValueType() {
         return ValueTypes.ITEM;
     }
 

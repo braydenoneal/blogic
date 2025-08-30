@@ -2,8 +2,13 @@ package com.braydenoneal.blang.parser.expression.operator;
 
 import com.braydenoneal.blang.parser.Program;
 import com.braydenoneal.blang.parser.expression.Expression;
+import com.braydenoneal.blang.parser.expression.ExpressionType;
+import com.braydenoneal.blang.parser.expression.ExpressionTypes;
 import com.braydenoneal.blang.parser.expression.value.BooleanValue;
 import com.braydenoneal.blang.parser.expression.value.Value;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 
 public record BooleanOperator(
         String operator,
@@ -28,5 +33,16 @@ public record BooleanOperator(
         System.out.println(operand_a);
         System.out.println(operand_b);
         return null;
+    }
+
+    public static final MapCodec<BooleanOperator> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
+            Codec.STRING.fieldOf("operator").forGetter(BooleanOperator::operator),
+            Expression.CODEC.fieldOf("operand_a").forGetter(BooleanOperator::operand_a),
+            Expression.CODEC.fieldOf("operand_b").forGetter(BooleanOperator::operand_b)
+    ).apply(instance, BooleanOperator::new));
+
+    @Override
+    public ExpressionType<?> getType() {
+        return ExpressionTypes.BOOLEAN_OPERATOR;
     }
 }
