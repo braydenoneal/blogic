@@ -68,7 +68,7 @@ public record ExportAllItemsBuiltin(Arguments arguments) implements Expression {
                     }
 
                     if (!exportStack.isOf(stack.getItem())) {
-                        break;
+                        continue;
                     }
 
                     int move = Math.min(stack.getCount(), exportStack.getMaxCount() - exportStack.getCount());
