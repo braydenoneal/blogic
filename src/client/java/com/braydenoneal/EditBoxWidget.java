@@ -1,5 +1,6 @@
 package com.braydenoneal;
 
+import com.braydenoneal.blang.tokenizer.Type;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.font.TextRenderer;
@@ -16,12 +17,11 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.StringHelper;
 import net.minecraft.util.Util;
 
-import java.util.function.Consumer;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class EditBoxWidget extends ScrollableTextFieldWidget {
-    private static final int CURSOR_COLOR = -3092272;
-    private static final int FOCUSED_BOX_TEXT_COLOR = -2039584;
-    private static final int UNFOCUSED_BOX_TEXT_COLOR = -857677600;
+    private static final int UNFOCUSED_BOX_TEXT_COLOR = 0xCCE0E0E0;
     private static final int CURSOR_BLINK_INTERVAL = 500;
     private static final int LINE_HEIGHT = 11;
     private final TextRenderer textRenderer;
@@ -31,9 +31,6 @@ public class EditBoxWidget extends ScrollableTextFieldWidget {
      */
     private final Text placeholder;
     private final EditBox editBox;
-    private final int textColor;
-    private final boolean textShadow;
-    private final int cursorColor;
     private long lastSwitchFocusTime = Util.getMeasuringTimeMs();
 
     EditBoxWidget(
@@ -44,17 +41,11 @@ public class EditBoxWidget extends ScrollableTextFieldWidget {
             int height,
             Text placeholder,
             Text message,
-            int textColor,
-            boolean textShadow,
-            int cursorColor,
             boolean hasBackground,
             boolean hasOverlay
     ) {
         super(x, y, width, height, message, hasBackground, hasOverlay);
         this.textRenderer = textRenderer;
-        this.textShadow = textShadow;
-        this.textColor = textColor;
-        this.cursorColor = cursorColor;
         this.placeholder = placeholder;
         this.editBox = new EditBox(textRenderer, width - this.getPadding(), LINE_HEIGHT);
         this.editBox.setCursorChangeListener(this::onCursorChange);
@@ -63,32 +54,6 @@ public class EditBoxWidget extends ScrollableTextFieldWidget {
     @Override
     public boolean mouseScrolled(double mouseX, double mouseY, double horizontalAmount, double verticalAmount) {
         return super.mouseScrolled(mouseX, mouseY, horizontalAmount, verticalAmount);
-    }
-
-    /**
-     * Sets the maximum length of the edit box text in characters.
-     *
-     * <p>If {@code maxLength} equals {@link EditBox#UNLIMITED_LENGTH}, the edit box does not
-     * have a length limit, and the widget does not show the current text length indicator.
-     *
-     * @throws IllegalArgumentException if {@code maxLength} is negative
-     * @see EditBox#setMaxLength
-     */
-    public void setMaxLength(int maxLength) {
-        this.editBox.setMaxLength(maxLength);
-    }
-
-    public void setMaxLines(int maxLines) {
-        this.editBox.setMaxLines(maxLines);
-    }
-
-    /**
-     * Sets the change listener that is called every time the text changes.
-     *
-     * @param changeListener the listener that takes the new text of the edit box
-     */
-    public void setChangeListener(Consumer<String> changeListener) {
-        this.editBox.setChangeListener(changeListener);
     }
 
     /**
@@ -111,7 +76,7 @@ public class EditBoxWidget extends ScrollableTextFieldWidget {
 
     @Override
     public void appendClickableNarrations(NarrationMessageBuilder builder) {
-        builder.put(NarrationPart.TITLE, Text.translatable("gui.narrate.editBox", new Object[]{this.getMessage(), this.getText()}));
+        builder.put(NarrationPart.TITLE, Text.translatable("gui.narrate.editBox", this.getMessage(), this.getText()));
     }
 
     @Override
@@ -142,66 +107,94 @@ public class EditBoxWidget extends ScrollableTextFieldWidget {
         }
     }
 
+    private void drawText(DrawContext context, String text, int x, int y) {
+        int position = 0;
+
+        while (position < text.length()) {
+            for (Type type : Type.values()) {
+                Matcher matcher = Pattern.compile("^" + type.regex).matcher(text.substring(position) + "\n");
+
+                if (matcher.find()) {
+                    String group = type == Type.QUOTE ? matcher.group(0) : matcher.group(1);
+
+                    int color = switch (type) {
+                        case Type.QUOTE -> 0xFF6AAB73;
+                        case Type.KEYWORD, Type.BOOLEAN, Type.BOOLEAN_OPERATOR, Type.NULL -> 0xFFCF8E6D;
+                        case Type.INTEGER, Type.FLOAT -> 0xFF2AACB8;
+                        case Type.IDENTIFIER -> 0xFFC77DBB;
+                        case Type.COMMENT -> 0xFF7A7E85;
+                        default -> 0xFFBCBEC4;
+                    };
+
+                    context.drawText(textRenderer, group, x, y, color, false);
+                    position += group.length();
+                    x += textRenderer.getWidth(group);
+                    break;
+                }
+            }
+        }
+    }
+
     @Override
     protected void renderContents(DrawContext context, int mouseX, int mouseY, float deltaTicks) {
-        String text = this.editBox.getText();
-        if (text.isEmpty() && !this.isFocused()) {
-            context.drawWrappedTextWithShadow(this.textRenderer, this.placeholder, this.getTextX(), this.getTextY() + 2, this.width - this.getPadding(), UNFOCUSED_BOX_TEXT_COLOR);
-        } else {
-            int pos = this.editBox.getCursor();
-            boolean focused = this.isFocused() && (Util.getMeasuringTimeMs() - this.lastSwitchFocusTime) / CURSOR_BLINK_INTERVAL % 2L == 0L;
-            int x;
-            int textY = this.getTextY() + 2;
+        String text = editBox.getText();
 
-            for (EditBox.Substring line : this.editBox.getLines()) {
-                boolean isVisible = this.isVisible(textY, textY + LINE_HEIGHT);
-                int textX = this.getTextX();
-                if (focused && pos >= line.beginIndex() && pos <= line.endIndex()) {
-                    if (isVisible) {
-                        String lineUntilPos = text.substring(line.beginIndex(), pos);
-                        context.drawText(this.textRenderer, lineUntilPos, textX, textY, this.textColor, this.textShadow);
-                        x = textX + this.textRenderer.getWidth(lineUntilPos);
-                        context.fill(x, textY - 2, x + 1, textY + 9, this.cursorColor);
-                        context.drawText(this.textRenderer, text.substring(pos, line.endIndex()), x, textY, this.textColor, this.textShadow);
+        if (text.isEmpty() && !isFocused()) {
+            context.drawWrappedTextWithShadow(textRenderer, placeholder, getTextX(), getTextY() + 2, width - getPadding(), UNFOCUSED_BOX_TEXT_COLOR);
+            return;
+        }
+
+        int pos = editBox.getCursor();
+        boolean focused = isFocused() && (Util.getMeasuringTimeMs() - lastSwitchFocusTime) / CURSOR_BLINK_INTERVAL % 2L == 0L;
+        int x;
+        int textY = getTextY() + 2;
+
+        for (EditBox.Substring line : editBox.getLines()) {
+            boolean isVisible = isVisible(textY, textY + LINE_HEIGHT);
+            int textX = getTextX();
+
+            if (isVisible) {
+                String fullLineText = text.substring(line.beginIndex(), line.endIndex());
+                drawText(context, fullLineText, textX, textY);
+            }
+
+            if (focused && pos >= line.beginIndex() && pos <= line.endIndex()) {
+                if (isVisible) {
+                    String lineUntilPos = text.substring(line.beginIndex(), pos);
+                    x = textX + textRenderer.getWidth(lineUntilPos);
+                    context.fill(x, textY - 2, x + 1, textY + 9, 0xE0FFFFFF);
+                }
+            }
+
+            textY += LINE_HEIGHT;
+        }
+
+        if (editBox.hasSelection()) {
+            EditBox.Substring substring2 = editBox.getSelection();
+            int n = getTextX();
+            textY = getTextY();
+
+            for (EditBox.Substring substring3 : editBox.getLines()) {
+                if (substring2.beginIndex() <= substring3.endIndex()) {
+                    if (substring3.beginIndex() > substring2.endIndex()) {
+                        break;
                     }
-                } else {
-                    if (isVisible) {
-                        String fullLineText = text.substring(line.beginIndex(), line.endIndex());
-                        context.drawText(this.textRenderer, fullLineText, textX, textY, this.textColor, this.textShadow);
+
+                    if (isVisible(textY, textY + LINE_HEIGHT)) {
+                        int o = textRenderer.getWidth(text.substring(substring3.beginIndex(), Math.max(substring2.beginIndex(), substring3.beginIndex())));
+                        int p;
+
+                        if (substring2.endIndex() > substring3.endIndex()) {
+                            p = width - getTextMargin();
+                        } else {
+                            p = textRenderer.getWidth(text.substring(substring3.beginIndex(), substring2.endIndex()));
+                        }
+
+                        context.drawSelection(n + o, textY, n + p, textY + LINE_HEIGHT);
                     }
                 }
 
                 textY += LINE_HEIGHT;
-            }
-
-            if (this.editBox.hasSelection()) {
-                EditBox.Substring substring2 = this.editBox.getSelection();
-                int n = this.getTextX();
-                textY = this.getTextY();
-
-                for (EditBox.Substring substring3 : this.editBox.getLines()) {
-                    if (substring2.beginIndex() > substring3.endIndex()) {
-                        textY += LINE_HEIGHT;
-                    } else {
-                        if (substring3.beginIndex() > substring2.endIndex()) {
-                            break;
-                        }
-
-                        if (this.isVisible(textY, textY + LINE_HEIGHT)) {
-                            int o = this.textRenderer.getWidth(text.substring(substring3.beginIndex(), Math.max(substring2.beginIndex(), substring3.beginIndex())));
-                            int p;
-                            if (substring2.endIndex() > substring3.endIndex()) {
-                                p = this.width - this.getTextMargin();
-                            } else {
-                                p = this.textRenderer.getWidth(text.substring(substring3.beginIndex(), substring2.endIndex()));
-                            }
-
-                            context.drawSelection(n + o, textY, n + p, textY + LINE_HEIGHT);
-                        }
-
-                        textY += LINE_HEIGHT;
-                    }
-                }
             }
         }
     }
@@ -211,7 +204,7 @@ public class EditBoxWidget extends ScrollableTextFieldWidget {
         super.renderOverlay(context);
         if (this.editBox.hasMaxLength()) {
             int i = this.editBox.getMaxLength();
-            Text text = Text.translatable("gui.multiLineEditBox.character_limit", new Object[]{this.editBox.getText().length(), i}).getWithStyle(Style.EMPTY.withFont(Identifier.ofVanilla("uniform"))).getFirst();
+            Text text = Text.translatable("gui.multiLineEditBox.character_limit", this.editBox.getText().length(), i).getWithStyle(Style.EMPTY.withFont(Identifier.ofVanilla("uniform"))).getFirst();
             context.drawTextWithShadow(
                     this.textRenderer, text, this.getX() + this.width - this.textRenderer.getWidth(text), this.getY() + this.height + 4, Colors.LIGHT_GRAY
             );
@@ -265,12 +258,6 @@ public class EditBoxWidget extends ScrollableTextFieldWidget {
     public static class Builder {
         private int x;
         private int y;
-        private Text placeholder = ScreenTexts.EMPTY;
-        private int textColor = FOCUSED_BOX_TEXT_COLOR;
-        private boolean textShadow = true;
-        private int cursorColor = CURSOR_COLOR;
-        private boolean hasBackground = true;
-        private boolean hasOverlay = true;
 
         public EditBoxWidget.Builder x(int x) {
             this.x = x;
@@ -282,50 +269,19 @@ public class EditBoxWidget extends ScrollableTextFieldWidget {
             return this;
         }
 
-        public EditBoxWidget.Builder placeholder(Text placeholder) {
-            this.placeholder = placeholder;
-            return this;
-        }
-
-        public EditBoxWidget.Builder textColor(int textColor) {
-            this.textColor = textColor;
-            return this;
-        }
-
-        public EditBoxWidget.Builder textShadow(boolean textShadow) {
-            this.textShadow = textShadow;
-            return this;
-        }
-
-        public EditBoxWidget.Builder cursorColor(int cursorColor) {
-            this.cursorColor = cursorColor;
-            return this;
-        }
-
-        public EditBoxWidget.Builder hasBackground(boolean hasBackground) {
-            this.hasBackground = hasBackground;
-            return this;
-        }
-
-        public EditBoxWidget.Builder hasOverlay(boolean hasOverlay) {
-            this.hasOverlay = hasOverlay;
-            return this;
-        }
-
         public EditBoxWidget build(TextRenderer textRenderer, int width, int height, Text message) {
+            boolean hasBackground = true;
+            boolean hasOverlay = true;
             return new EditBoxWidget(
                     textRenderer,
                     this.x,
                     this.y,
                     width,
                     height,
-                    this.placeholder,
+                    ScreenTexts.EMPTY,
                     message,
-                    this.textColor,
-                    this.textShadow,
-                    this.cursorColor,
-                    this.hasBackground,
-                    this.hasOverlay
+                    hasBackground,
+                    hasOverlay
             );
         }
     }
