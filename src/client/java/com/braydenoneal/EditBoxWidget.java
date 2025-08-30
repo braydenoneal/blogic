@@ -137,6 +137,7 @@ public class EditBoxWidget extends ScrollableTextFieldWidget {
 
     @Override
     protected void renderContents(DrawContext context, int mouseX, int mouseY, float deltaTicks) {
+        context.fill(getX(), getY(), getX() + getWidth(), getY() + Math.max(getHeight(), editBox.getLineCount() * LINE_HEIGHT + 6), 0xFF1E1F22);
         String text = editBox.getText();
 
         if (text.isEmpty() && !isFocused()) {
