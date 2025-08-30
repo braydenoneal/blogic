@@ -27,7 +27,7 @@ public record WhileStatement(Expression condition, List<Statement> statements) i
                 break;
             }
 
-            if (System.currentTimeMillis() - start > 15) {
+            if (System.currentTimeMillis() - start > 20) {
                 throw new RunException("Maximum while statement iterations exceeded");
             }
         }
