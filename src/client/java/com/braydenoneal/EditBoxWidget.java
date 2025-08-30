@@ -121,10 +121,13 @@ public class EditBoxWidget extends ScrollableTextFieldWidget {
                         case Type.QUOTE -> 0xFF6AAB73;
                         case Type.KEYWORD, Type.BOOLEAN, Type.BOOLEAN_OPERATOR, Type.NULL -> 0xFFCF8E6D;
                         case Type.INTEGER, Type.FLOAT -> 0xFF2AACB8;
-                        case Type.IDENTIFIER -> 0xFFC77DBB;
                         case Type.COMMENT -> 0xFF7A7E85;
                         default -> 0xFFBCBEC4;
                     };
+
+                    if (type == Type.IDENTIFIER && position + group.length() < text.length() && text.charAt(position + group.length()) == '(') {
+                        color = 0xFFC77DBB;
+                    }
 
                     context.drawText(textRenderer, group, x, y, color, false);
                     position += group.length();
