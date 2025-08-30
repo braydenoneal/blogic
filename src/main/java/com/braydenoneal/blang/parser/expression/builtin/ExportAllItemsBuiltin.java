@@ -1,6 +1,7 @@
 package com.braydenoneal.blang.parser.expression.builtin;
 
 import com.braydenoneal.blang.parser.Program;
+import com.braydenoneal.blang.parser.RunException;
 import com.braydenoneal.blang.parser.expression.Expression;
 import com.braydenoneal.blang.parser.expression.ExpressionType;
 import com.braydenoneal.blang.parser.expression.ExpressionTypes;
@@ -33,7 +34,7 @@ public record ExportAllItemsBuiltin(List<Expression> arguments) implements Expre
             World world = program.context().entity().getWorld();
 
             if (world == null) {
-                return null;
+                throw new RunException("World is null");
             }
 
             BlockPos entityPos = program.context().pos();
@@ -81,16 +82,11 @@ public record ExportAllItemsBuiltin(List<Expression> arguments) implements Expre
                     }
                 }
 
-                return null;
+                return Null.value();
             }
         }
 
-        System.out.println("exportAllItems");
-        System.out.println(xValue);
-        System.out.println(yValue);
-        System.out.println(zValue);
-        System.out.println(itemPredicateExpression);
-        return null;
+        throw new RunException("Invalid arguments");
     }
 
     public static final MapCodec<ExportAllItemsBuiltin> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(

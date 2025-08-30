@@ -1,6 +1,7 @@
 package com.braydenoneal.blang.parser.expression.builtin;
 
 import com.braydenoneal.blang.parser.Program;
+import com.braydenoneal.blang.parser.RunException;
 import com.braydenoneal.blang.parser.expression.Expression;
 import com.braydenoneal.blang.parser.expression.ExpressionType;
 import com.braydenoneal.blang.parser.expression.ExpressionTypes;
@@ -44,7 +45,7 @@ public record BreakBlockBuiltin(List<Expression> arguments) implements Expressio
             World world = program.context().entity().getWorld();
 
             if (world == null) {
-                return null;
+                throw new RunException("World is null");
             }
 
             Block block = world.getBlockState(pos).getBlock();
@@ -55,7 +56,7 @@ public record BreakBlockBuiltin(List<Expression> arguments) implements Expressio
             program.endScope();
 
             if (!(predicateResult instanceof BooleanValue booleanValue && booleanValue.value())) {
-                return null;
+                return new BooleanValue(false);
             }
 
             List<LockableContainerBlockEntity> containers = program.context().entity().getConnectedContainers();
@@ -108,15 +109,10 @@ public record BreakBlockBuiltin(List<Expression> arguments) implements Expressio
                 }
             }
 
-            return null;
+            return new BooleanValue(true);
         }
 
-        System.out.println("breakBlock");
-        System.out.println(xValue);
-        System.out.println(yValue);
-        System.out.println(zValue);
-        System.out.println(blockPredicateExpression);
-        return null;
+        throw new RunException("Invalid arguments");
     }
 
     public static final MapCodec<BreakBlockBuiltin> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(

@@ -1,6 +1,7 @@
 package com.braydenoneal.blang.parser.expression;
 
 import com.braydenoneal.blang.parser.Program;
+import com.braydenoneal.blang.parser.RunException;
 import com.braydenoneal.blang.parser.expression.value.ListValue;
 import com.braydenoneal.blang.parser.expression.value.Value;
 import com.mojang.serialization.Codec;
@@ -22,10 +23,7 @@ public record NamedListAccessExpression(
             return ListValue.getNested(list, ListValue.toIndexValues(program, indices));
         }
 
-        System.out.println("listAccess");
-        System.out.println(listValue);
-        System.out.println(indices);
-        return null;
+        throw new RunException("Expression is not a list");
     }
 
     public static final MapCodec<NamedListAccessExpression> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(

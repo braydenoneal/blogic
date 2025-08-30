@@ -1,5 +1,6 @@
 package com.braydenoneal.blang.parser.statement;
 
+import com.braydenoneal.blang.parser.ParseException;
 import com.braydenoneal.blang.parser.Program;
 import com.braydenoneal.blang.tokenizer.Token;
 import com.braydenoneal.blang.tokenizer.Type;
@@ -10,7 +11,7 @@ import java.util.List;
 public interface Statement {
     Statement execute(Program program);
 
-    static Statement parse(Program program) throws Exception {
+    static Statement parse(Program program) throws ParseException {
         Token token = program.peek();
 
         if (token.type() == Type.KEYWORD) {
@@ -44,7 +45,7 @@ public interface Statement {
             return ExpressionStatement.parse(program);
         }
 
-        return null;
+        throw new ParseException("Unrecognized statement at " + token);
     }
 
     static Statement runStatements(Program program, List<Statement> statements) {

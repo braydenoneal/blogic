@@ -1,6 +1,7 @@
 package com.braydenoneal.blang.parser.expression.builtin;
 
 import com.braydenoneal.blang.parser.Program;
+import com.braydenoneal.blang.parser.RunException;
 import com.braydenoneal.blang.parser.expression.Expression;
 import com.braydenoneal.blang.parser.expression.ExpressionType;
 import com.braydenoneal.blang.parser.expression.ExpressionTypes;
@@ -21,9 +22,7 @@ public record AbsoluteValueBuiltin(Expression expression) implements Expression 
             return new FloatValue(Math.abs(floatValue.value()));
         }
 
-        System.out.println("abs");
-        System.out.println(value);
-        return null;
+        throw new RunException("Expression is not a number");
     }
 
     public static final MapCodec<AbsoluteValueBuiltin> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(

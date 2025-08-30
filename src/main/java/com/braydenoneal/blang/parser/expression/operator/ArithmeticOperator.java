@@ -1,6 +1,7 @@
 package com.braydenoneal.blang.parser.expression.operator;
 
 import com.braydenoneal.blang.parser.Program;
+import com.braydenoneal.blang.parser.RunException;
 import com.braydenoneal.blang.parser.expression.Expression;
 import com.braydenoneal.blang.parser.expression.ExpressionType;
 import com.braydenoneal.blang.parser.expression.ExpressionTypes;
@@ -55,11 +56,7 @@ public record ArithmeticOperator(
             return new ListValue(Stream.concat(a1.value().stream(), b1.value().stream()).toList());
         }
 
-        System.out.println("arithmetic operator");
-        System.out.println(operator);
-        System.out.println(operand_a);
-        System.out.println(operand_b);
-        return null;
+        throw new RunException("Invalid operands");
     }
 
     public static final MapCodec<ArithmeticOperator> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(

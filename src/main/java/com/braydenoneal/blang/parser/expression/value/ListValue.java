@@ -1,6 +1,7 @@
 package com.braydenoneal.blang.parser.expression.value;
 
 import com.braydenoneal.blang.parser.Program;
+import com.braydenoneal.blang.parser.RunException;
 import com.braydenoneal.blang.parser.expression.Expression;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
@@ -84,8 +85,6 @@ public class ListValue extends Value<List<Value<?>>> {
             }
         }
 
-        System.out.println("getNested");
-        System.out.println(list);
-        return null;
+        throw new RunException("Nested value does not exist");
     }
 }

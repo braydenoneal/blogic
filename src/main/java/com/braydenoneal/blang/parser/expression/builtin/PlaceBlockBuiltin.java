@@ -1,6 +1,7 @@
 package com.braydenoneal.blang.parser.expression.builtin;
 
 import com.braydenoneal.blang.parser.Program;
+import com.braydenoneal.blang.parser.RunException;
 import com.braydenoneal.blang.parser.expression.Expression;
 import com.braydenoneal.blang.parser.expression.ExpressionType;
 import com.braydenoneal.blang.parser.expression.ExpressionTypes;
@@ -36,7 +37,7 @@ public record PlaceBlockBuiltin(List<Expression> arguments) implements Expressio
             World world = program.context().entity().getWorld();
 
             if (world == null || !world.getBlockState(pos).getBlock().equals(Blocks.AIR)) {
-                return null;
+                return new BooleanValue(false);
             }
 
             List<LockableContainerBlockEntity> containers = program.context().entity().getConnectedContainers();
@@ -66,23 +67,17 @@ public record PlaceBlockBuiltin(List<Expression> arguments) implements Expressio
                                 }
 
                                 world.setBlockState(pos, entry.getKey().getDefaultState());
+                                return new BooleanValue(true);
                             }
                         }
-
-                        return null;
                     }
                 }
             }
 
-            return null;
+            return new BooleanValue(false);
         }
 
-        System.out.println("placeBlock");
-        System.out.println(xValue);
-        System.out.println(yValue);
-        System.out.println(zValue);
-        System.out.println(itemPredicateExpression);
-        return null;
+        throw new RunException("Invalid arguments");
     }
 
     public static final MapCodec<PlaceBlockBuiltin> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(

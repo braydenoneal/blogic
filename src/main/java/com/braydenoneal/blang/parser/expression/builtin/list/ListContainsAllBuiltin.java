@@ -1,6 +1,7 @@
 package com.braydenoneal.blang.parser.expression.builtin.list;
 
 import com.braydenoneal.blang.parser.Program;
+import com.braydenoneal.blang.parser.RunException;
 import com.braydenoneal.blang.parser.expression.Expression;
 import com.braydenoneal.blang.parser.expression.ExpressionType;
 import com.braydenoneal.blang.parser.expression.ExpressionTypes;
@@ -25,9 +26,7 @@ public record ListContainsAllBuiltin(
             return new BooleanValue(listValue.value().containsAll(list.value()));
         }
 
-        System.out.println("containsAll");
-        System.out.println(arguments.getFirst());
-        return null;
+        throw new RunException("Expression is not a list");
     }
 
     public static final MapCodec<ListContainsAllBuiltin> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(

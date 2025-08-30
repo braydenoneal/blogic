@@ -1,5 +1,6 @@
 package com.braydenoneal.blang.parser.statement;
 
+import com.braydenoneal.blang.parser.ParseException;
 import com.braydenoneal.blang.parser.Program;
 import com.braydenoneal.blang.parser.expression.Expression;
 import com.braydenoneal.blang.parser.expression.value.Null;
@@ -18,7 +19,7 @@ public record ReturnStatement(Expression expression) implements Statement {
         return expression.evaluate(program);
     }
 
-    public static Statement parse(Program program) throws Exception {
+    public static Statement parse(Program program) throws ParseException {
         program.expect(Type.KEYWORD, "return");
         Expression expression = program.peek().type() == Type.SEMICOLON ? Null.value() : Expression.parse(program);
         program.expect(Type.SEMICOLON);

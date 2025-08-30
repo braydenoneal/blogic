@@ -1,5 +1,6 @@
 package com.braydenoneal.blang.parser.expression.value;
 
+import com.braydenoneal.blang.parser.ParseException;
 import com.braydenoneal.blang.parser.Program;
 import com.braydenoneal.blang.parser.expression.Expression;
 import com.braydenoneal.blang.parser.statement.ReturnStatement;
@@ -21,7 +22,7 @@ public class FunctionValue extends Value<Function> {
     }
 
     public Value<?> call(Program program) {
-        Value<?> returnValue = null;
+        Value<?> returnValue = Null.value();
         Statement statement = Statement.runStatements(program, value().statements());
 
         if (statement instanceof ReturnStatement returnStatement) {
@@ -31,7 +32,7 @@ public class FunctionValue extends Value<Function> {
         return returnValue;
     }
 
-    public static Expression parse(Program program) throws Exception {
+    public static Expression parse(Program program) throws ParseException {
         List<String> arguments = new ArrayList<>();
         List<Statement> statements = new ArrayList<>();
 

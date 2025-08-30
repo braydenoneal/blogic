@@ -1,5 +1,6 @@
 package com.braydenoneal.blang.parser.expression.builtin;
 
+import com.braydenoneal.blang.parser.ParseException;
 import com.braydenoneal.blang.parser.Program;
 import com.braydenoneal.blang.parser.expression.CallExpression;
 import com.braydenoneal.blang.parser.expression.Expression;
@@ -9,7 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class BuiltinExpression {
-    public static Expression parse(Program program, String name) throws Exception {
+    public static Expression parse(Program program, String name) throws ParseException {
         return switch (name) {
             case "abs" -> new AbsoluteValueBuiltin(parseArguments(program).getFirst());
             case "int" -> new IntegerCastBuiltin(parseArguments(program).getFirst());
@@ -34,7 +35,7 @@ public class BuiltinExpression {
         };
     }
 
-    public static List<Expression> parseArguments(Program program) throws Exception {
+    public static List<Expression> parseArguments(Program program) throws ParseException {
         List<Expression> arguments = new ArrayList<>();
         program.expect(Type.PARENTHESIS, "(");
 

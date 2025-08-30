@@ -1,5 +1,6 @@
 package com.braydenoneal.blang.parser.expression.value;
 
+import com.braydenoneal.blang.parser.RunException;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.block.Block;
@@ -26,7 +27,7 @@ public class BlockValue extends Value<Block> {
                 return value().equals(blockValue.value());
             }
         } catch (Error e) {
-            System.out.println("Cannot equate block values outside of the game");
+            throw new RunException("Cannot equate block values outside of the game");
         }
 
         return false;

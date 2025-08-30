@@ -1,6 +1,7 @@
 package com.braydenoneal.blang.parser.expression.builtin.list;
 
 import com.braydenoneal.blang.parser.Program;
+import com.braydenoneal.blang.parser.RunException;
 import com.braydenoneal.blang.parser.expression.Expression;
 import com.braydenoneal.blang.parser.expression.ExpressionType;
 import com.braydenoneal.blang.parser.expression.ExpressionTypes;
@@ -29,10 +30,7 @@ public record ListInsertBuiltin(
             return program.getScope().set(name, new ListValue(localList));
         }
 
-        System.out.println("listInsert");
-        System.out.println(indexValue);
-        System.out.println(insertValue);
-        return null;
+        throw new RunException("Expression is not an integer");
     }
 
     public static final MapCodec<ListInsertBuiltin> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(

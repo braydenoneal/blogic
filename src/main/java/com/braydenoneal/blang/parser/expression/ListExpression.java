@@ -1,5 +1,6 @@
 package com.braydenoneal.blang.parser.expression;
 
+import com.braydenoneal.blang.parser.ParseException;
 import com.braydenoneal.blang.parser.Program;
 import com.braydenoneal.blang.parser.expression.value.ListValue;
 import com.braydenoneal.blang.parser.expression.value.Value;
@@ -17,7 +18,7 @@ public record ListExpression(List<Expression> expressions) implements Expression
         return new ListValue(ListValue.toIndexValues(program, expressions));
     }
 
-    public static Expression parse(Program program) throws Exception {
+    public static Expression parse(Program program) throws ParseException {
         List<Expression> expressions = new ArrayList<>();
         program.expect(Type.SQUARE_BRACE, "[");
 

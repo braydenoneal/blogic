@@ -1,6 +1,8 @@
 package com.braydenoneal.blang.parser.expression;
 
+import com.braydenoneal.blang.parser.ParseException;
 import com.braydenoneal.blang.parser.Program;
+import com.braydenoneal.blang.parser.RunException;
 import com.braydenoneal.blang.parser.expression.value.BooleanValue;
 import com.braydenoneal.blang.parser.expression.value.Value;
 import com.braydenoneal.blang.tokenizer.Type;
@@ -16,14 +18,14 @@ public record IfElseExpression(
     public Value<?> evaluate(Program program) {
         Value<?> conditionValue = condition.evaluate(program);
 
-        if (conditionValue instanceof BooleanValue booleanValue && booleanValue.value()) {
-            return expression_a.evaluate(program);
+        if (conditionValue instanceof BooleanValue booleanValue) {
+            return booleanValue.value() ? expression_a.evaluate(program) : expression_b.evaluate(program);
         }
 
-        return expression_b.evaluate(program);
+        throw new RunException("Condition is not a boolean");
     }
 
-    public static Expression parse(Program program, Expression expression_a) throws Exception {
+    public static Expression parse(Program program, Expression expression_a) throws ParseException {
         program.expect(Type.KEYWORD, "if");
         Expression condition = Expression.parse(program);
         program.expect(Type.KEYWORD, "else");

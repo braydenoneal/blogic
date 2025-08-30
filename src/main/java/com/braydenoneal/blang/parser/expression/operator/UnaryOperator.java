@@ -1,6 +1,7 @@
 package com.braydenoneal.blang.parser.expression.operator;
 
 import com.braydenoneal.blang.parser.Program;
+import com.braydenoneal.blang.parser.RunException;
 import com.braydenoneal.blang.parser.expression.Expression;
 import com.braydenoneal.blang.parser.expression.ExpressionType;
 import com.braydenoneal.blang.parser.expression.ExpressionTypes;
@@ -18,8 +19,7 @@ public record UnaryOperator(Expression operand) implements Operator, Expression 
             return new BooleanValue(!value1.value());
         }
 
-        System.out.println(operand);
-        return null;
+        throw new RunException("Operand is not a boolean");
     }
 
     public static final MapCodec<UnaryOperator> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(

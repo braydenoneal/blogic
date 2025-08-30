@@ -1,5 +1,6 @@
 package com.braydenoneal.blang.parser.statement;
 
+import com.braydenoneal.blang.parser.ParseException;
 import com.braydenoneal.blang.parser.Program;
 import com.braydenoneal.blang.parser.expression.Expression;
 import com.braydenoneal.blang.tokenizer.Type;
@@ -13,7 +14,7 @@ public record ExpressionStatement(Expression expression) implements Statement {
         return this;
     }
 
-    public static Statement parse(Program program) throws Exception {
+    public static Statement parse(Program program) throws ParseException {
         Expression expression = Expression.parse(program);
         program.expect(Type.SEMICOLON);
         return new ExpressionStatement(expression);

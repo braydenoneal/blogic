@@ -1,5 +1,6 @@
 package com.braydenoneal.blang.parser.statement;
 
+import com.braydenoneal.blang.parser.ParseException;
 import com.braydenoneal.blang.parser.Program;
 import com.braydenoneal.blang.parser.expression.Expression;
 import com.braydenoneal.blang.parser.expression.value.IntegerValue;
@@ -47,10 +48,10 @@ public record ForStatement(
             }
         }
 
-        return null;
+        return this;
     }
 
-    public static Statement parse(Program program) throws Exception {
+    public static Statement parse(Program program) throws ParseException {
         List<Statement> statements = new ArrayList<>();
 
         program.expect(Type.KEYWORD, "for");

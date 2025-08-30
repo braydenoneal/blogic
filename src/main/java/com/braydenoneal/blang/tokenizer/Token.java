@@ -6,7 +6,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public record Token(String value, Type type) {
-    public static List<Token> tokenize(String source) throws Exception {
+    public static List<Token> tokenize(String source) throws TokenException {
         List<Token> tokens = new ArrayList<>();
         int position = 0;
 
@@ -32,7 +32,7 @@ public record Token(String value, Type type) {
             }
 
             if (error) {
-                throw new Exception("Error");
+                throw new TokenException("Unrecognized character '" + source.charAt(position) + "' at position " + position);
             }
         }
 

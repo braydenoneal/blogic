@@ -1,13 +1,11 @@
 package com.braydenoneal.blang.parser.expression.builtin;
 
 import com.braydenoneal.blang.parser.Program;
+import com.braydenoneal.blang.parser.RunException;
 import com.braydenoneal.blang.parser.expression.Expression;
 import com.braydenoneal.blang.parser.expression.ExpressionType;
 import com.braydenoneal.blang.parser.expression.ExpressionTypes;
-import com.braydenoneal.blang.parser.expression.value.BooleanValue;
-import com.braydenoneal.blang.parser.expression.value.FunctionValue;
-import com.braydenoneal.blang.parser.expression.value.ItemValue;
-import com.braydenoneal.blang.parser.expression.value.Value;
+import com.braydenoneal.blang.parser.expression.value.*;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
@@ -26,7 +24,7 @@ public record DeleteItemsBuiltin(List<Expression> arguments) implements Expressi
             World world = program.context().entity().getWorld();
 
             if (world == null) {
-                return null;
+                throw new RunException("World is null");
             }
 
             List<LockableContainerBlockEntity> containers = program.context().entity().getConnectedContainers();
@@ -46,12 +44,10 @@ public record DeleteItemsBuiltin(List<Expression> arguments) implements Expressi
                 }
             }
 
-            return null;
+            return Null.value();
         }
 
-        System.out.println("deleteItems");
-        System.out.println(itemPredicateExpression);
-        return null;
+        throw new RunException("Expression is not a function");
     }
 
     public static final MapCodec<DeleteItemsBuiltin> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(

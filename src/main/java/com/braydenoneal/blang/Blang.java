@@ -158,9 +158,9 @@ public class Blang {
 }
 
 /*
-import and export items from connected containers
 ++, --?
-better tokenizing, parsing, and runtime exceptions
+floor division //
+better arguments length and type checking
 move these tests into a testing system
 add block for import?, access modifiers
 structs

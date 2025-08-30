@@ -4,6 +4,7 @@ import com.braydenoneal.blang.parser.Program;
 import com.braydenoneal.blang.parser.expression.Expression;
 import com.braydenoneal.blang.parser.expression.ExpressionType;
 import com.braydenoneal.blang.parser.expression.ExpressionTypes;
+import com.braydenoneal.blang.parser.expression.value.Null;
 import com.braydenoneal.blang.parser.expression.value.StringValue;
 import com.braydenoneal.blang.parser.expression.value.Value;
 import com.mojang.serialization.MapCodec;
@@ -34,7 +35,7 @@ public record PrintBuiltin(Expression expression) implements Expression {
             System.out.println(string);
         }
 
-        return null;
+        return Null.value();
     }
 
     public static final MapCodec<PrintBuiltin> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(

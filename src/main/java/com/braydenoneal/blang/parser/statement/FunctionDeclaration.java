@@ -1,6 +1,8 @@
 package com.braydenoneal.blang.parser.statement;
 
+import com.braydenoneal.blang.parser.ParseException;
 import com.braydenoneal.blang.parser.Program;
+import com.braydenoneal.blang.parser.expression.value.Null;
 import com.braydenoneal.blang.parser.expression.value.Value;
 import com.braydenoneal.blang.tokenizer.Type;
 import com.mojang.serialization.Codec;
@@ -17,11 +19,11 @@ public record FunctionDeclaration(
 ) implements Statement {
     @Override
     public Statement execute(Program program) {
-        return null;
+        return this;
     }
 
     public Value<?> call(Program program) {
-        Value<?> returnValue = null;
+        Value<?> returnValue = Null.value();
         Statement statement = Statement.runStatements(program, statements);
 
         if (statement instanceof ReturnStatement returnStatement) {
@@ -31,7 +33,7 @@ public record FunctionDeclaration(
         return returnValue;
     }
 
-    public static Statement parse(Program program) throws Exception {
+    public static Statement parse(Program program) throws ParseException {
         List<String> arguments = new ArrayList<>();
         List<Statement> statements = new ArrayList<>();
 

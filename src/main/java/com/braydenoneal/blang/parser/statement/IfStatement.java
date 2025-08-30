@@ -1,5 +1,6 @@
 package com.braydenoneal.blang.parser.statement;
 
+import com.braydenoneal.blang.parser.ParseException;
 import com.braydenoneal.blang.parser.Program;
 import com.braydenoneal.blang.parser.expression.Expression;
 import com.braydenoneal.blang.parser.expression.value.BooleanValue;
@@ -36,13 +37,13 @@ public record IfStatement(
         }
 
         if (elseStatement == null) {
-            return null;
+            return this;
         }
 
         return Statement.runStatements(program, elseStatement.statements);
     }
 
-    public static Statement parse(Program program) throws Exception {
+    public static Statement parse(Program program) throws ParseException {
         List<Statement> statements = new ArrayList<>();
         List<ElseIfStatement> elseIfStatements = new ArrayList<>();
         ElseStatement elseStatement = null;
@@ -69,7 +70,7 @@ public record IfStatement(
     }
 
     record ElseIfStatement(Expression condition, List<Statement> statements) {
-        public static ElseIfStatement parse(Program program) throws Exception {
+        public static ElseIfStatement parse(Program program) throws ParseException {
             List<Statement> statements = new ArrayList<>();
 
             program.expect(Type.KEYWORD, "elif");
@@ -92,7 +93,7 @@ public record IfStatement(
     }
 
     record ElseStatement(List<Statement> statements) {
-        public static ElseStatement parse(Program program) throws Exception {
+        public static ElseStatement parse(Program program) throws ParseException {
             List<Statement> statements = new ArrayList<>();
 
             program.expect(Type.KEYWORD, "else");

@@ -1,5 +1,6 @@
 package com.braydenoneal.blang.parser.statement;
 
+import com.braydenoneal.blang.parser.ParseException;
 import com.braydenoneal.blang.parser.Program;
 import com.braydenoneal.blang.tokenizer.Type;
 import com.mojang.serialization.Codec;
@@ -13,10 +14,10 @@ public record ImportStatement(List<String> identifiers) implements Statement {
     @Override
     public Statement execute(Program program) {
         program.addImport(this);
-        return null;
+        return this;
     }
 
-    public static Statement parse(Program program) throws Exception {
+    public static Statement parse(Program program) throws ParseException {
         List<String> identifiers = new ArrayList<>();
         program.expect(Type.KEYWORD, "import");
 

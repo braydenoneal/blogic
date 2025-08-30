@@ -1,6 +1,8 @@
 package com.braydenoneal.blang.parser.expression;
 
+import com.braydenoneal.blang.parser.ParseException;
 import com.braydenoneal.blang.parser.Program;
+import com.braydenoneal.blang.parser.RunException;
 import com.braydenoneal.blang.parser.expression.operator.ArithmeticOperator;
 import com.braydenoneal.blang.parser.expression.value.ListValue;
 import com.braydenoneal.blang.parser.expression.value.Value;
@@ -44,13 +46,10 @@ public record AssignmentExpression(
             }
         }
 
-        System.out.println("assignmentExpression");
-        System.out.println(variableExpression);
-        System.out.println(value);
-        return null;
+        throw new RunException("Expression is not a variable nor named list access");
     }
 
-    public static Expression parse(Program program, Expression variableExpression) throws Exception {
+    public static Expression parse(Program program, Expression variableExpression) throws ParseException {
         String type = program.expect(Type.ASSIGN);
         Expression expression = Expression.parse(program);
         return new AssignmentExpression(type, variableExpression, expression);

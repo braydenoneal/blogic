@@ -1,6 +1,7 @@
 package com.braydenoneal.blang.parser.expression.builtin;
 
 import com.braydenoneal.blang.parser.Program;
+import com.braydenoneal.blang.parser.RunException;
 import com.braydenoneal.blang.parser.expression.Expression;
 import com.braydenoneal.blang.parser.expression.ExpressionType;
 import com.braydenoneal.blang.parser.expression.ExpressionTypes;
@@ -19,9 +20,7 @@ public record FloatCastBuiltin(Expression expression) implements Expression {
             return new FloatValue((float) integerValue.value());
         }
 
-        System.out.println("float");
-        System.out.println(value);
-        return null;
+        throw new RunException("Expression is not an integer");
     }
 
     public static final MapCodec<FloatCastBuiltin> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(

@@ -1,6 +1,7 @@
 package com.braydenoneal.blang.parser.expression.builtin;
 
 import com.braydenoneal.blang.parser.Program;
+import com.braydenoneal.blang.parser.RunException;
 import com.braydenoneal.blang.parser.expression.Expression;
 import com.braydenoneal.blang.parser.expression.ExpressionType;
 import com.braydenoneal.blang.parser.expression.ExpressionTypes;
@@ -21,9 +22,7 @@ public record ItemBuiltin(Expression expression) implements Expression {
             return new ItemValue(Registries.ITEM.get(Identifier.of(name.value())));
         }
 
-        System.out.println("item");
-        System.out.println(value);
-        return null;
+        throw new RunException("Expression is not a string");
     }
 
     public static final MapCodec<ItemBuiltin> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(

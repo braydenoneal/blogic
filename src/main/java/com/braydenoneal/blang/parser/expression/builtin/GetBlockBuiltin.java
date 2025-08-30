@@ -1,6 +1,7 @@
 package com.braydenoneal.blang.parser.expression.builtin;
 
 import com.braydenoneal.blang.parser.Program;
+import com.braydenoneal.blang.parser.RunException;
 import com.braydenoneal.blang.parser.expression.Expression;
 import com.braydenoneal.blang.parser.expression.ExpressionType;
 import com.braydenoneal.blang.parser.expression.ExpressionTypes;
@@ -32,11 +33,7 @@ public record GetBlockBuiltin(List<Expression> arguments) implements Expression 
             }
         }
 
-        System.out.println("getBlock");
-        System.out.println(xValue);
-        System.out.println(yValue);
-        System.out.println(zValue);
-        return null;
+        throw new RunException("Invalid arguments");
     }
 
     public static final MapCodec<GetBlockBuiltin> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(

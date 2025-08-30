@@ -1,6 +1,8 @@
 package com.braydenoneal.blang.parser.statement;
 
+import com.braydenoneal.blang.parser.ParseException;
 import com.braydenoneal.blang.parser.Program;
+import com.braydenoneal.blang.parser.RunException;
 import com.braydenoneal.blang.parser.expression.Expression;
 import com.braydenoneal.blang.parser.expression.value.BooleanValue;
 import com.braydenoneal.blang.tokenizer.Type;
@@ -26,15 +28,14 @@ public record WhileStatement(Expression condition, List<Statement> statements) i
             }
 
             if (System.currentTimeMillis() - start > 15) {
-                System.out.println("while statement: max time exceeded");
-                return null;
+                throw new RunException("Maximum while statement iterations exceeded");
             }
         }
 
-        return null;
+        return this;
     }
 
-    public static Statement parse(Program program) throws Exception {
+    public static Statement parse(Program program) throws ParseException {
         List<Statement> statements = new ArrayList<>();
 
         program.expect(Type.KEYWORD, "while");

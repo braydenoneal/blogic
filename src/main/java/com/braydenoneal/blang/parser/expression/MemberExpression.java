@@ -1,6 +1,7 @@
 package com.braydenoneal.blang.parser.expression;
 
 import com.braydenoneal.blang.parser.Program;
+import com.braydenoneal.blang.parser.expression.value.Null;
 import com.braydenoneal.blang.parser.expression.value.Value;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
@@ -9,7 +10,7 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 public record MemberExpression(Expression object, String property) implements Expression {
     @Override
     public Value<?> evaluate(Program program) {
-        return null;
+        return Null.value();
     }
 
     public static final MapCodec<MemberExpression> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(

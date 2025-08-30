@@ -1,6 +1,8 @@
 package com.braydenoneal.blang.parser.expression;
 
+import com.braydenoneal.blang.parser.ParseException;
 import com.braydenoneal.blang.parser.Program;
+import com.braydenoneal.blang.parser.RunException;
 import com.braydenoneal.blang.parser.expression.builtin.BuiltinExpression;
 import com.braydenoneal.blang.parser.expression.value.FunctionValue;
 import com.braydenoneal.blang.parser.expression.value.Value;
@@ -46,13 +48,10 @@ public record CallExpression(String name, List<Expression> arguments) implements
             return returnValue;
         }
 
-        System.out.println("call");
-        System.out.println(name);
-        System.out.println(arguments);
-        return null;
+        throw new RunException("'" + name + "' does not refer to a function");
     }
 
-    public static Expression parse(Program program, String name) throws Exception {
+    public static Expression parse(Program program, String name) throws ParseException {
         List<Expression> arguments = BuiltinExpression.parseArguments(program);
         return new CallExpression(name, arguments);
     }

@@ -1,6 +1,8 @@
 package com.braydenoneal.blang.parser.expression;
 
+import com.braydenoneal.blang.parser.ParseException;
 import com.braydenoneal.blang.parser.Program;
+import com.braydenoneal.blang.parser.RunException;
 import com.braydenoneal.blang.parser.expression.builtin.BuiltinExpression;
 import com.braydenoneal.blang.parser.expression.builtin.list.*;
 import com.braydenoneal.blang.parser.expression.value.ListValue;
@@ -70,14 +72,10 @@ public record MemberCallExpression(
             }
         }
 
-        System.out.println("memberCall");
-        System.out.println(member);
-        System.out.println(functionName);
-        System.out.println(arguments);
-        return null;
+        throw new RunException("Member is not a variable nor a list");
     }
 
-    public static Expression parse(Program program, Expression member) throws Exception {
+    public static Expression parse(Program program, Expression member) throws ParseException {
         program.expect(Type.DOT);
         String functionName = program.expect(Type.IDENTIFIER);
         List<Expression> arguments = BuiltinExpression.parseArguments(program);

@@ -6,45 +6,52 @@ import com.braydenoneal.blang.parser.statement.ImportStatement;
 import com.braydenoneal.blang.parser.statement.Statement;
 import com.braydenoneal.blang.tokenizer.Token;
 import com.braydenoneal.blang.tokenizer.Type;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.util.*;
 
 public class Program {
+    private static final Logger log = LogManager.getLogger(Program.class);
+    private final List<ImportStatement> imports = new ArrayList<>();
+    private final List<Statement> statements = new ArrayList<>();
+    private final Map<String, FunctionDeclaration> functions = new HashMap<>();
+    private final Scope topScope = new Scope(null);
+    private final Stack<Scope> scopes = new Stack<>();
+    private boolean hasRuntimeError = false;
+    private int position = 0;
+
     private final List<Token> tokens;
-    private int position;
     private final String name;
-    private final List<ImportStatement> imports;
-    private final List<Statement> statements;
-    private final Map<String, FunctionDeclaration> functions;
-    private final Scope topScope;
-    private final Stack<Scope> scopes;
     private final Context context;
 
     public Program(String source, Context context) {
-        List<Token> tokens;
         this.context = context;
+        List<Token> tokens;
+
         try {
             tokens = Token.tokenize(source);
         } catch (Exception e) {
-            System.out.println("Tokenize error: " + e);
+            log.error("Tokenize error", e);
             tokens = new ArrayList<>();
         }
+
         this.tokens = tokens;
-        position = 0;
-        imports = new ArrayList<>();
-        statements = new ArrayList<>();
-        functions = new HashMap<>();
-        topScope = new Scope(null);
-        scopes = new Stack<>();
         scopes.push(topScope);
         String name = "";
+
         try {
-            name = expect(Type.IDENTIFIER);
-            expect(Type.SEMICOLON);
-            parse();
+            if (!tokens.isEmpty()) {
+                name = expect(Type.IDENTIFIER);
+                expect(Type.SEMICOLON);
+                parse();
+            }
         } catch (Exception e) {
-            System.out.println("Parse error: " + e);
+            log.error("Parse error", e);
+            statements.clear();
+            functions.clear();
         }
+
         this.name = name;
     }
 
@@ -58,11 +65,15 @@ public class Program {
                 statement.execute(this);
             }
         } catch (Exception e) {
-            System.out.println("Run error: " + e);
+            log.error("Run error", e);
         }
     }
 
     public void runMain() {
+        if (hasRuntimeError) {
+            return;
+        }
+
         try {
             FunctionDeclaration main = functions.get("main");
 
@@ -72,7 +83,8 @@ public class Program {
                 endScope();
             }
         } catch (Exception e) {
-            System.out.println("Run main error: " + e);
+            log.error("Run main error", e);
+            hasRuntimeError = true;
         }
     }
 
@@ -88,7 +100,7 @@ public class Program {
         imports.add(importStatement);
     }
 
-    public void parse() throws Exception {
+    public void parse() throws ParseException {
         while (position < tokens.size()) {
             statements.add(Statement.parse(this));
         }
@@ -107,24 +119,24 @@ public class Program {
         return tokens.get(position++);
     }
 
-    public void expect(Type type, String value) throws Exception {
+    public void expect(Type type, String value) throws ParseException {
         Token token = next();
 
         if (token.type() == type && token.value().equals(value)) {
             return;
         }
 
-        throw new Exception("Parse error");
+        throw new ParseException("Expected token of type " + type + " and value " + value);
     }
 
-    public String expect(Type type) throws Exception {
+    public String expect(Type type) throws ParseException {
         Token token = next();
 
         if (token.type() == type) {
             return token.value();
         }
 
-        throw new Exception("Parse error");
+        throw new ParseException("Expected token of type " + type);
     }
 
     public void addFunction(String name, FunctionDeclaration function) {

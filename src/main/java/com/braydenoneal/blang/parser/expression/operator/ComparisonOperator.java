@@ -1,6 +1,7 @@
 package com.braydenoneal.blang.parser.expression.operator;
 
 import com.braydenoneal.blang.parser.Program;
+import com.braydenoneal.blang.parser.RunException;
 import com.braydenoneal.blang.parser.expression.Expression;
 import com.braydenoneal.blang.parser.expression.ExpressionType;
 import com.braydenoneal.blang.parser.expression.ExpressionTypes;
@@ -44,11 +45,7 @@ public record ComparisonOperator(
             };
         }
 
-        System.out.println("comparison operator");
-        System.out.println(operator);
-        System.out.println(operand_a);
-        System.out.println(operand_b);
-        return null;
+        throw new RunException("Operands are not comparable");
     }
 
     public static final MapCodec<ComparisonOperator> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(

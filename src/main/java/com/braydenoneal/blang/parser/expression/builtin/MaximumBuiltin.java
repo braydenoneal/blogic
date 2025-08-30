@@ -1,12 +1,12 @@
 package com.braydenoneal.blang.parser.expression.builtin;
 
 import com.braydenoneal.blang.parser.Program;
+import com.braydenoneal.blang.parser.RunException;
 import com.braydenoneal.blang.parser.expression.Expression;
 import com.braydenoneal.blang.parser.expression.ExpressionType;
 import com.braydenoneal.blang.parser.expression.ExpressionTypes;
 import com.braydenoneal.blang.parser.expression.value.FloatValue;
 import com.braydenoneal.blang.parser.expression.value.IntegerValue;
-import com.braydenoneal.blang.parser.expression.value.StringValue;
 import com.braydenoneal.blang.parser.expression.value.Value;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
@@ -24,10 +24,6 @@ public record MaximumBuiltin(List<Expression> arguments) implements Expression {
             a = new FloatValue((float) a1.value());
         } else if (a instanceof FloatValue && b instanceof IntegerValue b1) {
             b = new FloatValue((float) b1.value());
-        } else if (b instanceof StringValue) {
-            a = new StringValue(a.value().toString());
-        } else if (a instanceof StringValue) {
-            b = new StringValue(b.value().toString());
         }
 
         if (a instanceof IntegerValue a1 && b instanceof IntegerValue b1) {
@@ -36,10 +32,7 @@ public record MaximumBuiltin(List<Expression> arguments) implements Expression {
             return new FloatValue(Math.max(a1.value(), b1.value()));
         }
 
-        System.out.println("max");
-        System.out.println(a);
-        System.out.println(b);
-        return null;
+        throw new RunException("Arguments are not numbers");
     }
 
     public static final MapCodec<MaximumBuiltin> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(

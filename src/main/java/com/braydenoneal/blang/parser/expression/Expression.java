@@ -1,5 +1,6 @@
 package com.braydenoneal.blang.parser.expression;
 
+import com.braydenoneal.blang.parser.ParseException;
 import com.braydenoneal.blang.parser.Program;
 import com.braydenoneal.blang.parser.expression.builtin.BuiltinExpression;
 import com.braydenoneal.blang.parser.expression.operator.ArithmeticOperator;
@@ -44,7 +45,7 @@ public interface Expression {
 
     Value<?> evaluate(Program program);
 
-    static Expression parse(Program program) throws Exception {
+    static Expression parse(Program program) throws ParseException {
         Deque<Output> outputs = new ArrayDeque<>();
         Stack<Operator> operators = new Stack<>();
         boolean openedParenthesis = false;
@@ -165,6 +166,10 @@ public interface Expression {
                     default -> new ArithmeticOperator(operator, left, right);
                 });
             }
+        }
+
+        if (expressions.isEmpty()) {
+            throw new ParseException("Incomplete expression at " + program.peek());
         }
 
         return expressions.peek();
