@@ -55,7 +55,7 @@ public class Program {
     public void run() {
         try {
             for (Statement statement : statements) {
-                statement.execute();
+                statement.execute(this);
             }
         } catch (Exception e) {
             System.out.println("Run error: " + e);
@@ -68,7 +68,7 @@ public class Program {
 
             if (main != null) {
                 newScope();
-                main.call();
+                main.call(this);
                 endScope();
             }
         } catch (Exception e) {

@@ -7,19 +7,23 @@ import com.braydenoneal.blang.parser.statement.FunctionDeclaration;
 
 import java.util.List;
 
-public record CallExpression(Program program, String name, List<Expression> arguments) implements Expression {
+public record CallExpression(String name, List<Expression> arguments) implements Expression {
     @Override
-    public Value<?> evaluate() {
-        FunctionDeclaration function = program.getFunction(name);
+    public Value<?> evaluate(Program program) {
+        return call(program, program);
+    }
+
+    public Value<?> call(Program program, Program functionProgram) {
+        FunctionDeclaration function = functionProgram.getFunction(name);
 
         if (function != null) {
             program.newScope();
 
             for (int i = 0; i < arguments.size(); i++) {
-                program.getScope().set(function.arguments().get(i), arguments.get(i).evaluate());
+                program.getScope().set(function.arguments().get(i), arguments.get(i).evaluate(program));
             }
 
-            Value<?> returnValue = function.call();
+            Value<?> returnValue = function.call(program);
             program.endScope();
             return returnValue;
         }
@@ -32,6 +36,6 @@ public record CallExpression(Program program, String name, List<Expression> argu
 
     public static Expression parse(Program program, String name) throws Exception {
         List<Expression> arguments = BuiltinExpression.parseArguments(program);
-        return new CallExpression(program, name, arguments);
+        return new CallExpression(name, arguments);
     }
 }

@@ -6,9 +6,9 @@ import com.braydenoneal.blang.tokenizer.Type;
 import java.util.ArrayList;
 import java.util.List;
 
-public record ImportStatement(Program program, List<String> identifiers) implements Statement {
+public record ImportStatement(List<String> identifiers) implements Statement {
     @Override
-    public Statement execute() {
+    public Statement execute(Program program) {
         program.addImport(this);
         return null;
     }
@@ -26,6 +26,6 @@ public record ImportStatement(Program program, List<String> identifiers) impleme
         }
 
         program.expect(Type.SEMICOLON);
-        return new ImportStatement(program, identifiers);
+        return new ImportStatement(identifiers);
     }
 }

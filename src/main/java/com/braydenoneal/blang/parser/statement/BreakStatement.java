@@ -5,7 +5,7 @@ import com.braydenoneal.blang.tokenizer.Type;
 
 public record BreakStatement() implements Statement {
     @Override
-    public Statement execute() {
+    public Statement execute(Program program) {
         return this;
     }
 

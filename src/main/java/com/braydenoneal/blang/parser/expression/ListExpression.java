@@ -8,10 +8,10 @@ import com.braydenoneal.blang.tokenizer.Type;
 import java.util.ArrayList;
 import java.util.List;
 
-public record ListExpression(Program program, List<Expression> expressions) implements Expression {
+public record ListExpression(List<Expression> expressions) implements Expression {
     @Override
-    public Value<?> evaluate() {
-        return new ListValue(ListValue.toIndexValues(expressions));
+    public Value<?> evaluate(Program program) {
+        return new ListValue(ListValue.toIndexValues(program, expressions));
     }
 
     public static Expression parse(Program program) throws Exception {
@@ -27,6 +27,6 @@ public record ListExpression(Program program, List<Expression> expressions) impl
         }
 
         program.expect(Type.SQUARE_BRACE, "]");
-        return new ListExpression(program, expressions);
+        return new ListExpression(expressions);
     }
 }

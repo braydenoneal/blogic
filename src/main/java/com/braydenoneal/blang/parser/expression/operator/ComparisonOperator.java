@@ -1,5 +1,6 @@
 package com.braydenoneal.blang.parser.expression.operator;
 
+import com.braydenoneal.blang.parser.Program;
 import com.braydenoneal.blang.parser.expression.Expression;
 import com.braydenoneal.blang.parser.expression.value.BooleanValue;
 import com.braydenoneal.blang.parser.expression.value.FloatValue;
@@ -12,9 +13,9 @@ public record ComparisonOperator(
         Expression operand_b
 ) implements Operator, Expression {
     @Override
-    public Value<?> evaluate() {
-        Value<?> a = operand_a.evaluate();
-        Value<?> b = operand_b.evaluate();
+    public Value<?> evaluate(Program program) {
+        Value<?> a = operand_a.evaluate(program);
+        Value<?> b = operand_b.evaluate(program);
 
         if (operator.equals("==")) {
             return new BooleanValue(a.equals(b));

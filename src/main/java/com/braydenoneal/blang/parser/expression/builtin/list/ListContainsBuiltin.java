@@ -1,5 +1,6 @@
 package com.braydenoneal.blang.parser.expression.builtin.list;
 
+import com.braydenoneal.blang.parser.Program;
 import com.braydenoneal.blang.parser.expression.Expression;
 import com.braydenoneal.blang.parser.expression.value.BooleanValue;
 import com.braydenoneal.blang.parser.expression.value.ListValue;
@@ -12,7 +13,7 @@ public record ListContainsBuiltin(
         List<Expression> arguments
 ) implements Expression {
     @Override
-    public Value<?> evaluate() {
-        return new BooleanValue(listValue.value().contains(arguments.getFirst().evaluate()));
+    public Value<?> evaluate(Program program) {
+        return new BooleanValue(listValue.value().contains(arguments.getFirst().evaluate(program)));
     }
 }

@@ -41,7 +41,7 @@ public interface Expression {
             Map.entry("^", 2)
     );
 
-    Value<?> evaluate();
+    Value<?> evaluate(Program program);
 
     static Expression parse(Program program) throws Exception {
         Deque<Output> outputs = new ArrayDeque<>();
@@ -108,7 +108,7 @@ public interface Expression {
                                 yield BuiltinExpression.parse(program, token.value());
                             }
 
-                            yield new VariableExpression(program, token.value());
+                            yield new VariableExpression(token.value());
                         }
                     };
 
@@ -125,8 +125,8 @@ public interface Expression {
                     }
 
                     if (!indices.isEmpty()) {
-                        if (expression instanceof VariableExpression variableExpression) {
-                            expression = new NamedListAccessExpression(variableExpression.name(), expression, indices);
+                        if (expression instanceof VariableExpression(String name)) {
+                            expression = new NamedListAccessExpression(name, expression, indices);
                         } else if (expression instanceof ListExpression) {
                             expression = new ListAccessExpression(expression, indices);
                         }

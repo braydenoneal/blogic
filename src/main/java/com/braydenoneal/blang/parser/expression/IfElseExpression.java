@@ -11,14 +11,14 @@ public record IfElseExpression(
         Expression expression_b
 ) implements Expression {
     @Override
-    public Value<?> evaluate() {
-        Value<?> conditionValue = condition.evaluate();
+    public Value<?> evaluate(Program program) {
+        Value<?> conditionValue = condition.evaluate(program);
 
         if (conditionValue instanceof BooleanValue booleanValue && booleanValue.value()) {
-            return expression_a.evaluate();
+            return expression_a.evaluate(program);
         }
 
-        return expression_b.evaluate();
+        return expression_b.evaluate(program);
     }
 
     public static Expression parse(Program program, Expression expression_a) throws Exception {

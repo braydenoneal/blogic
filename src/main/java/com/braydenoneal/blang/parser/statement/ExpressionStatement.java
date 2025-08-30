@@ -4,12 +4,10 @@ import com.braydenoneal.blang.parser.Program;
 import com.braydenoneal.blang.parser.expression.Expression;
 import com.braydenoneal.blang.tokenizer.Type;
 
-public record ExpressionStatement(
-        Expression expression
-) implements Statement {
+public record ExpressionStatement(Expression expression) implements Statement {
     @Override
-    public Statement execute() {
-        expression.evaluate();
+    public Statement execute(Program program) {
+        expression.evaluate(program);
         return this;
     }
 

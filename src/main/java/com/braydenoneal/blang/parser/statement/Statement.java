@@ -7,7 +7,7 @@ import com.braydenoneal.blang.tokenizer.Type;
 import java.util.List;
 
 public interface Statement {
-    Statement execute();
+    Statement execute(Program program);
 
     static Statement parse(Program program) throws Exception {
         Token token = program.peek();
@@ -46,9 +46,9 @@ public interface Statement {
         return null;
     }
 
-    static Statement runStatements(List<Statement> statements) {
+    static Statement runStatements(Program program, List<Statement> statements) {
         for (Statement statement : statements) {
-            Statement statementResult = statement.execute();
+            Statement statementResult = statement.execute(program);
 
             if (statementResult instanceof ReturnStatement ||
                     statementResult instanceof BreakStatement ||

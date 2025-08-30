@@ -10,12 +10,12 @@ import net.minecraft.world.World;
 
 import java.util.List;
 
-public record GetBlockBuiltin(Program program, List<Expression> arguments) implements Expression {
+public record GetBlockBuiltin(List<Expression> arguments) implements Expression {
     @Override
-    public Value<?> evaluate() {
-        Value<?> xValue = arguments.get(0).evaluate();
-        Value<?> yValue = arguments.get(1).evaluate();
-        Value<?> zValue = arguments.get(2).evaluate();
+    public Value<?> evaluate(Program program) {
+        Value<?> xValue = arguments.get(0).evaluate(program);
+        Value<?> yValue = arguments.get(1).evaluate(program);
+        Value<?> zValue = arguments.get(2).evaluate(program);
 
         if (xValue instanceof IntegerValue x && yValue instanceof IntegerValue y && zValue instanceof IntegerValue z) {
             BlockPos entityPos = program.context().pos();

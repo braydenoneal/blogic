@@ -1,5 +1,6 @@
 package com.braydenoneal.blang.parser.expression.value;
 
+import com.braydenoneal.blang.parser.Program;
 import com.braydenoneal.blang.parser.expression.Expression;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
@@ -37,11 +38,11 @@ public class ListValue extends Value<List<Value<?>>> {
         return print + "]";
     }
 
-    public static List<Value<?>> toIndexValues(List<Expression> expressions) {
+    public static List<Value<?>> toIndexValues(Program program, List<Expression> expressions) {
         List<Value<?>> indices = new ArrayList<>();
 
         for (Expression expression : expressions) {
-            indices.add(expression.evaluate());
+            indices.add(expression.evaluate(program));
         }
 
         return indices;

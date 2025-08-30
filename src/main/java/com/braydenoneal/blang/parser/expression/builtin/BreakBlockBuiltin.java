@@ -24,14 +24,14 @@ import net.minecraft.world.World;
 
 import java.util.List;
 
-public record BreakBlockBuiltin(Program program, List<Expression> arguments) implements Expression {
+public record BreakBlockBuiltin(List<Expression> arguments) implements Expression {
     @Override
-    public Value<?> evaluate() {
-        Value<?> xValue = arguments.get(0).evaluate();
-        Value<?> yValue = arguments.get(1).evaluate();
-        Value<?> zValue = arguments.get(2).evaluate();
+    public Value<?> evaluate(Program program) {
+        Value<?> xValue = arguments.get(0).evaluate(program);
+        Value<?> yValue = arguments.get(1).evaluate(program);
+        Value<?> zValue = arguments.get(2).evaluate(program);
         Expression blockPredicateExpression = arguments.get(3);
-        boolean silkTouch = arguments.size() > 4 && arguments.get(4).evaluate() instanceof BooleanValue booleanValue ? booleanValue.value() : false;
+        boolean silkTouch = arguments.size() > 4 && arguments.get(4).evaluate(program) instanceof BooleanValue booleanValue ? booleanValue.value() : false;
 
         if (xValue instanceof IntegerValue x &&
                 yValue instanceof IntegerValue y &&
@@ -50,7 +50,7 @@ public record BreakBlockBuiltin(Program program, List<Expression> arguments) imp
 
             program.newScope();
             program.getScope().set(blockPredicate.arguments().getFirst(), new BlockValue(block));
-            Value<?> predicateResult = blockPredicate.evaluate();
+            Value<?> predicateResult = blockPredicate.evaluate(program);
             program.endScope();
 
             if (!(predicateResult instanceof BooleanValue booleanValue && booleanValue.value())) {

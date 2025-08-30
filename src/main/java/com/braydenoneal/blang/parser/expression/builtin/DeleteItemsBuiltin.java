@@ -12,9 +12,9 @@ import net.minecraft.world.World;
 
 import java.util.List;
 
-public record DeleteItemsBuiltin(Program program, List<Expression> arguments) implements Expression {
+public record DeleteItemsBuiltin(List<Expression> arguments) implements Expression {
     @Override
-    public Value<?> evaluate() {
+    public Value<?> evaluate(Program program) {
         Expression itemPredicateExpression = arguments.getFirst();
 
         if (itemPredicateExpression instanceof FunctionExpression itemPredicate) {
@@ -32,7 +32,7 @@ public record DeleteItemsBuiltin(Program program, List<Expression> arguments) im
 
                     program.newScope();
                     program.getScope().set(itemPredicate.arguments().getFirst(), new ItemValue(stack.getItem()));
-                    Value<?> predicateResult = itemPredicate.evaluate();
+                    Value<?> predicateResult = itemPredicate.evaluate(program);
                     program.endScope();
 
                     if (predicateResult instanceof BooleanValue booleanValue && booleanValue.value()) {

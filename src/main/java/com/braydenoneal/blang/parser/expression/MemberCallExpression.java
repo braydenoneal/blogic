@@ -12,16 +12,13 @@ import com.braydenoneal.block.entity.ControllerBlockEntity;
 import java.util.List;
 
 public record MemberCallExpression(
-        Program program,
         Expression member,
         String functionName,
         List<Expression> arguments
 ) implements Expression {
     @Override
-    public Value<?> evaluate() {
-        if (member instanceof VariableExpression variableExpression) {
-            String name = variableExpression.name();
-
+    public Value<?> evaluate(Program program) {
+        if (member instanceof VariableExpression(String name)) {
             for (ImportStatement importStatement : program.imports()) {
                 if (importStatement.identifiers().getLast().equals(name)) {
                     Program importProgram = program;
@@ -34,8 +31,8 @@ public record MemberCallExpression(
                         }
                     }
 
-                    CallExpression callExpression = new CallExpression(importProgram, functionName, arguments);
-                    return callExpression.evaluate();
+                    CallExpression callExpression = new CallExpression(functionName, arguments);
+                    return callExpression.call(program, importProgram);
                 }
             }
 
@@ -44,28 +41,28 @@ public record MemberCallExpression(
             if (object instanceof ListValue listValue) {
                 switch (functionName) {
                     case "append":
-                        return new ListAppendBuiltin(program, name, listValue, arguments).evaluate();
+                        return new ListAppendBuiltin(name, listValue, arguments).evaluate(program);
                     case "insert":
-                        return new ListInsertBuiltin(program, name, listValue, arguments).evaluate();
+                        return new ListInsertBuiltin(name, listValue, arguments).evaluate(program);
                     case "remove":
-                        return new ListRemoveBuiltin(program, name, listValue, arguments).evaluate();
+                        return new ListRemoveBuiltin(name, listValue, arguments).evaluate(program);
                     case "pop":
-                        return new ListPopBuiltin(program, name, listValue).evaluate();
+                        return new ListPopBuiltin(name, listValue).evaluate(program);
                     case "contains":
-                        return new ListContainsBuiltin(listValue, arguments).evaluate();
+                        return new ListContainsBuiltin(listValue, arguments).evaluate(program);
                     case "containsAll":
-                        return new ListContainsAllBuiltin(listValue, arguments).evaluate();
+                        return new ListContainsAllBuiltin(listValue, arguments).evaluate(program);
                 }
             }
         } else {
-            Value<?> value = member.evaluate();
+            Value<?> value = member.evaluate(program);
 
             if (value instanceof ListValue listValue) {
                 switch (functionName) {
                     case "contains":
-                        return new ListContainsBuiltin(listValue, arguments).evaluate();
+                        return new ListContainsBuiltin(listValue, arguments).evaluate(program);
                     case "containsAll":
-                        return new ListContainsAllBuiltin(listValue, arguments).evaluate();
+                        return new ListContainsAllBuiltin(listValue, arguments).evaluate(program);
                 }
             }
         }
@@ -81,6 +78,6 @@ public record MemberCallExpression(
         program.expect(Type.DOT);
         String functionName = program.expect(Type.IDENTIFIER);
         List<Expression> arguments = BuiltinExpression.parseArguments(program);
-        return new MemberCallExpression(program, member, functionName, arguments);
+        return new MemberCallExpression(member, functionName, arguments);
     }
 }

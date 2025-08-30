@@ -8,12 +8,11 @@ import com.braydenoneal.blang.parser.expression.value.Value;
 import java.util.List;
 
 public record ListPopBuiltin(
-        Program program,
         String name,
         ListValue listValue
 ) implements Expression {
     @Override
-    public Value<?> evaluate() {
+    public Value<?> evaluate(Program program) {
         List<Value<?>> localList = listValue.value();
         localList.removeLast();
 

@@ -1,10 +1,11 @@
 package com.braydenoneal.blang.parser.expression;
 
+import com.braydenoneal.blang.parser.Program;
 import com.braydenoneal.blang.parser.expression.value.Value;
 
 public record MemberExpression(Expression object, String property) implements Expression {
     @Override
-    public Value<?> evaluate() {
+    public Value<?> evaluate(Program program) {
         return null;
     }
 }

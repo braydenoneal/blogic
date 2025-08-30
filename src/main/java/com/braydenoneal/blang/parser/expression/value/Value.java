@@ -1,5 +1,6 @@
 package com.braydenoneal.blang.parser.expression.value;
 
+import com.braydenoneal.blang.parser.Program;
 import com.braydenoneal.blang.parser.expression.Expression;
 import com.mojang.serialization.Codec;
 
@@ -15,7 +16,7 @@ public abstract class Value<T> implements Expression {
     }
 
     @Override
-    public Value<?> evaluate() {
+    public Value<?> evaluate(Program program) {
         return this;
     }
 

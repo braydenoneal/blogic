@@ -8,22 +8,21 @@ import java.util.ArrayList;
 import java.util.List;
 
 public record FunctionDeclaration(
-        Program program,
         String name,
         List<String> arguments,
         List<Statement> statements
 ) implements Statement {
     @Override
-    public Statement execute() {
+    public Statement execute(Program program) {
         return null;
     }
 
-    public Value<?> call() {
+    public Value<?> call(Program program) {
         Value<?> returnValue = null;
-        Statement statement = Statement.runStatements(statements);
+        Statement statement = Statement.runStatements(program, statements);
 
         if (statement instanceof ReturnStatement returnStatement) {
-            returnValue = returnStatement.returnValue();
+            returnValue = returnStatement.returnValue(program);
         }
 
         return returnValue;
@@ -54,7 +53,7 @@ public record FunctionDeclaration(
 
         program.expect(Type.CURLY_BRACE, "}");
 
-        FunctionDeclaration functionDeclaration = new FunctionDeclaration(program, name, arguments, statements);
+        FunctionDeclaration functionDeclaration = new FunctionDeclaration(name, arguments, statements);
         program.addFunction(name, functionDeclaration);
         return functionDeclaration;
     }

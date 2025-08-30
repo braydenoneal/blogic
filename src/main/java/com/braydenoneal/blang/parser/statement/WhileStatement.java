@@ -8,16 +8,13 @@ import com.braydenoneal.blang.tokenizer.Type;
 import java.util.ArrayList;
 import java.util.List;
 
-public record WhileStatement(
-        Expression condition,
-        List<Statement> statements
-) implements Statement {
+public record WhileStatement(Expression condition, List<Statement> statements) implements Statement {
     @Override
-    public Statement execute() {
+    public Statement execute(Program program) {
         long start = System.currentTimeMillis();
 
-        while (condition.evaluate() instanceof BooleanValue booleanValue && booleanValue.value()) {
-            Statement statement = Statement.runStatements(statements);
+        while (condition.evaluate(program) instanceof BooleanValue booleanValue && booleanValue.value()) {
+            Statement statement = Statement.runStatements(program, statements);
 
             if (statement instanceof ReturnStatement) {
                 return statement;

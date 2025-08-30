@@ -9,14 +9,13 @@ import com.braydenoneal.blang.parser.expression.value.Value;
 import java.util.List;
 
 public record ListRemoveBuiltin(
-        Program program,
         String name,
         ListValue listValue,
         List<Expression> arguments
 ) implements Expression {
     @Override
-    public Value<?> evaluate() {
-        Value<?> removeValue = arguments.getFirst().evaluate();
+    public Value<?> evaluate(Program program) {
+        Value<?> removeValue = arguments.getFirst().evaluate(program);
 
         List<Value<?>> localList = listValue.value();
 

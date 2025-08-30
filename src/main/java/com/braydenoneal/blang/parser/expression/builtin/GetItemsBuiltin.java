@@ -11,9 +11,9 @@ import net.minecraft.item.Items;
 import java.util.ArrayList;
 import java.util.List;
 
-public record GetItemsBuiltin(Program program, List<Expression> arguments) implements Expression {
+public record GetItemsBuiltin(List<Expression> arguments) implements Expression {
     @Override
-    public Value<?> evaluate() {
+    public Value<?> evaluate(Program program) {
         List<LockableContainerBlockEntity> containers = program.context().entity().getConnectedContainers();
         List<Value<?>> items = new ArrayList<>();
 

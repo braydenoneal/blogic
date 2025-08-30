@@ -1,5 +1,6 @@
 package com.braydenoneal.blang.parser.expression.operator;
 
+import com.braydenoneal.blang.parser.Program;
 import com.braydenoneal.blang.parser.expression.Expression;
 import com.braydenoneal.blang.parser.expression.value.*;
 
@@ -11,9 +12,9 @@ public record ArithmeticOperator(
         Expression operand_b
 ) implements Operator, Expression {
     @Override
-    public Value<?> evaluate() {
-        Value<?> a = operand_a.evaluate();
-        Value<?> b = operand_b.evaluate();
+    public Value<?> evaluate(Program program) {
+        Value<?> a = operand_a.evaluate(program);
+        Value<?> b = operand_b.evaluate(program);
 
         if (a instanceof IntegerValue a1 && b instanceof FloatValue) {
             a = new FloatValue((float) a1.value());

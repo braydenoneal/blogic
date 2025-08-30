@@ -9,18 +9,14 @@ import com.braydenoneal.blang.tokenizer.Type;
 import java.util.ArrayList;
 import java.util.List;
 
-public record FunctionExpression(
-        Program program,
-        List<String> arguments,
-        List<Statement> statements
-) implements Expression {
+public record FunctionExpression(List<String> arguments, List<Statement> statements) implements Expression {
     @Override
-    public Value<?> evaluate() {
+    public Value<?> evaluate(Program program) {
         Value<?> returnValue = null;
-        Statement statement = Statement.runStatements(statements);
+        Statement statement = Statement.runStatements(program, statements);
 
         if (statement instanceof ReturnStatement returnStatement) {
-            returnValue = returnStatement.returnValue();
+            returnValue = returnStatement.returnValue(program);
         }
 
         return returnValue;
@@ -54,6 +50,6 @@ public record FunctionExpression(
             statements.add(new ReturnStatement(Expression.parse(program)));
         }
 
-        return new FunctionExpression(program, arguments, statements);
+        return new FunctionExpression(arguments, statements);
     }
 }

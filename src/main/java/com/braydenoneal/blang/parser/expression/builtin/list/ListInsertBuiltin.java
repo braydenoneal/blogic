@@ -9,15 +9,14 @@ import com.braydenoneal.blang.parser.expression.value.Value;
 import java.util.List;
 
 public record ListInsertBuiltin(
-        Program program,
         String name,
         ListValue listValue,
         List<Expression> arguments
 ) implements Expression {
     @Override
-    public Value<?> evaluate() {
-        Value<?> indexValue = arguments.getFirst().evaluate();
-        Value<?> insertValue = arguments.get(1).evaluate();
+    public Value<?> evaluate(Program program) {
+        Value<?> indexValue = arguments.getFirst().evaluate(program);
+        Value<?> insertValue = arguments.get(1).evaluate(program);
 
         if (indexValue instanceof IntegerValue integerValue) {
             List<Value<?>> localList = listValue.value();

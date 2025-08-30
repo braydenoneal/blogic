@@ -17,18 +17,18 @@ public record IfStatement(
         @Nullable ElseStatement elseStatement
 ) implements Statement {
     @Override
-    public Statement execute() {
-        Value<?> value = condition.evaluate();
+    public Statement execute(Program program) {
+        Value<?> value = condition.evaluate(program);
 
         if (value instanceof BooleanValue booleanValue && booleanValue.value()) {
-            return Statement.runStatements(statements);
+            return Statement.runStatements(program, statements);
         }
 
         for (ElseIfStatement elseIfStatement : elseIfStatements) {
-            Value<?> elseIfValue = elseIfStatement.condition().evaluate();
+            Value<?> elseIfValue = elseIfStatement.condition().evaluate(program);
 
             if (elseIfValue instanceof BooleanValue booleanValue && booleanValue.value()) {
-                return Statement.runStatements(elseIfStatement.statements);
+                return Statement.runStatements(program, elseIfStatement.statements);
             }
         }
 
@@ -36,7 +36,7 @@ public record IfStatement(
             return null;
         }
 
-        return Statement.runStatements(elseStatement.statements);
+        return Statement.runStatements(program, elseStatement.statements);
     }
 
     public static Statement parse(Program program) throws Exception {

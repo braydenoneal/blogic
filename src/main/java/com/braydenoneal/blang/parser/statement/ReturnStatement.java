@@ -6,16 +6,14 @@ import com.braydenoneal.blang.parser.expression.value.Null;
 import com.braydenoneal.blang.parser.expression.value.Value;
 import com.braydenoneal.blang.tokenizer.Type;
 
-public record ReturnStatement(
-        Expression expression
-) implements Statement {
+public record ReturnStatement(Expression expression) implements Statement {
     @Override
-    public Statement execute() {
+    public Statement execute(Program program) {
         return this;
     }
 
-    public Value<?> returnValue() {
-        return expression.evaluate();
+    public Value<?> returnValue(Program program) {
+        return expression.evaluate(program);
     }
 
     public static Statement parse(Program program) throws Exception {

@@ -1,5 +1,6 @@
 package com.braydenoneal.blang.parser.expression.builtin;
 
+import com.braydenoneal.blang.parser.Program;
 import com.braydenoneal.blang.parser.expression.Expression;
 import com.braydenoneal.blang.parser.expression.value.FloatValue;
 import com.braydenoneal.blang.parser.expression.value.IntegerValue;
@@ -10,9 +11,9 @@ import java.util.List;
 
 public record MinimumBuiltin(List<Expression> arguments) implements Expression {
     @Override
-    public Value<?> evaluate() {
-        Value<?> a = arguments.getFirst().evaluate();
-        Value<?> b = arguments.get(1).evaluate();
+    public Value<?> evaluate(Program program) {
+        Value<?> a = arguments.getFirst().evaluate(program);
+        Value<?> b = arguments.get(1).evaluate(program);
 
         if (a instanceof IntegerValue a1 && b instanceof FloatValue) {
             a = new FloatValue((float) a1.value());
