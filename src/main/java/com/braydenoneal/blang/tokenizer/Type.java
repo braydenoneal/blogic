@@ -2,7 +2,7 @@ package com.braydenoneal.blang.tokenizer;
 
 public enum Type {
     WHITESPACE("([ \\n\\t\\r])"),
-    COMMENT("(\\/\\/([^\\n]*)|\\/\\*(.*)\\*\\//s)"),
+    COMMENT("(#([^\\n]*))"),
     KEYWORD("(import|fn|return|if|else|elif|while|for|in|break|continue)([^A-Za-z0-9_]{1})"),
     BOOLEAN_OPERATOR("(and|or)([^A-Za-z0-9_]{1})"),
     BOOLEAN("(true|false)([^A-Za-z0-9_]{1})"),
@@ -21,7 +21,7 @@ public enum Type {
     SEMICOLON("(;)"),
     COLON("(:)"),
     UNARY_OPERATOR("(!)"),
-    ARITHMETIC_OPERATOR("(\\+|\\-|\\*|\\/|%|\\^)"),
+    ARITHMETIC_OPERATOR("(\\+|\\-|\\*|\\/\\/|\\/|%|\\^)"),
     ;
 
     public final String regex;

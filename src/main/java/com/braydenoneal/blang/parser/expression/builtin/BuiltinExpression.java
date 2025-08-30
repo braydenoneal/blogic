@@ -14,6 +14,8 @@ public class BuiltinExpression {
             case "float" -> new FloatCastBuiltin(Arguments.parse(program));
             case "str" -> new StringCastBuiltin(Arguments.parse(program));
             case "round" -> new RoundBuiltin(Arguments.parse(program));
+            case "floor" -> new FloorBuiltin(Arguments.parse(program));
+            case "ceil" -> new CeilBuiltin(Arguments.parse(program));
             case "len" -> new LengthBuiltin(Arguments.parse(program));
             case "block" -> new BlockBuiltin(Arguments.parse(program));
             case "item" -> new ItemBuiltin(Arguments.parse(program));

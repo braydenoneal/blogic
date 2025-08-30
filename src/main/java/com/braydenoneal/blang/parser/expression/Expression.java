@@ -38,6 +38,7 @@ public interface Expression {
             Map.entry("+", 0),
             Map.entry("-", 0),
             Map.entry("*", 1),
+            Map.entry("//", 1),
             Map.entry("/", 1),
             Map.entry("%", 1),
             Map.entry("^", 2)

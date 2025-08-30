@@ -15,7 +15,7 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 public record AbsoluteValueBuiltin(Arguments arguments) implements Expression {
     @Override
     public Value<?> evaluate(Program program) {
-        Value<?> value = arguments().anyValue(program, "value", 0);
+        Value<?> value = arguments.anyValue(program, "value", 0);
 
         if (value instanceof IntegerValue integerValue) {
             return new IntegerValue(Math.abs(integerValue.value()));

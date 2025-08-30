@@ -37,7 +37,7 @@ public record ArithmeticOperator(
                 case "+" -> new IntegerValue(a1.value() + b1.value());
                 case "-" -> new IntegerValue(a1.value() - b1.value());
                 case "*" -> new IntegerValue(a1.value() * b1.value());
-                case "/" -> new IntegerValue(a1.value() / b1.value());
+                case "//", "/" -> new IntegerValue(a1.value() / b1.value());
                 case "%" -> new IntegerValue((a1.value() + b1.value()) % b1.value());
                 default /* ^ */ -> new IntegerValue((int) Math.pow(a1.value(), b1.value()));
             };
@@ -46,6 +46,7 @@ public record ArithmeticOperator(
                 case "+" -> new FloatValue(a1.value() + b1.value());
                 case "-" -> new FloatValue(a1.value() - b1.value());
                 case "*" -> new FloatValue(a1.value() * b1.value());
+                case "//" -> new FloatValue((float) Math.floor(a1.value() / b1.value()));
                 case "/" -> new FloatValue(a1.value() / b1.value());
                 case "%" -> new FloatValue((a1.value() + b1.value()) % b1.value());
                 default /* ^ */ -> new FloatValue((float) Math.pow(a1.value(), b1.value()));
