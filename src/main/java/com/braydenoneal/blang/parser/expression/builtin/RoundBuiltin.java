@@ -15,7 +15,7 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 public record RoundBuiltin(Arguments arguments) implements Expression {
     @Override
     public Value<?> evaluate(Program program) {
-        Value<?> value = arguments.anyValue(program, "value");
+        Value<?> value = arguments.anyValue(program, "value", 0);
 
         if (value instanceof IntegerValue) {
             return value;

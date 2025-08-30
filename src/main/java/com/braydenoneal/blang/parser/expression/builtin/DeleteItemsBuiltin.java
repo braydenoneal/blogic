@@ -18,7 +18,7 @@ import java.util.List;
 public record DeleteItemsBuiltin(Arguments arguments) implements Expression {
     @Override
     public Value<?> evaluate(Program program) {
-        FunctionValue itemPredicate = arguments.functionValue(program, "itemPredicate");
+        FunctionValue itemPredicate = arguments.functionValue(program, "itemPredicate", 0);
 
         World world = program.context().entity().getWorld();
 

@@ -15,8 +15,8 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 public record MaximumBuiltin(Arguments arguments) implements Expression {
     @Override
     public Value<?> evaluate(Program program) {
-        Value<?> a = arguments.anyValue(program, "a");
-        Value<?> b = arguments.anyValue(program, "b");
+        Value<?> a = arguments.anyValue(program, "a", 0);
+        Value<?> b = arguments.anyValue(program, "b", 1);
 
         if (a instanceof IntegerValue a1 && b instanceof FloatValue) {
             a = new FloatValue((float) a1.value());

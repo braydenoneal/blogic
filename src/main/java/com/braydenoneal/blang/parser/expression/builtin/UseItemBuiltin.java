@@ -29,10 +29,10 @@ import java.util.List;
 public record UseItemBuiltin(Arguments arguments) implements Expression {
     @Override
     public Value<?> evaluate(Program program) {
-        int x = arguments.integerValue(program, "x").value();
-        int y = arguments.integerValue(program, "y").value();
-        int z = arguments.integerValue(program, "z").value();
-        FunctionValue itemPredicate = arguments.functionValue(program, "itemPredicate");
+        int x = arguments.integerValue(program, "x", 0).value();
+        int y = arguments.integerValue(program, "y", 1).value();
+        int z = arguments.integerValue(program, "z", 2).value();
+        FunctionValue itemPredicate = arguments.functionValue(program, "itemPredicate", 3);
 
         BlockPos entityPos = program.context().pos();
         BlockPos pos = new BlockPos(entityPos.getX() + x, entityPos.getY() + y, entityPos.getZ() + z);

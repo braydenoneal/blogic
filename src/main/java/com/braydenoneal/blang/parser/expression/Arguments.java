@@ -12,88 +12,88 @@ import java.util.List;
 import java.util.Stack;
 
 public record Arguments(List<Expression> arguments) {
-    public Value<?> anyValue(Program program, String name) {
-        if (arguments.isEmpty()) {
+    public Value<?> anyValue(Program program, String name, int index) {
+        if (index >= arguments.size()) {
             throw new RunException("Missing argument " + name);
         }
 
-        return arguments.removeFirst().evaluate(program);
+        return arguments.get(index).evaluate(program);
     }
 
-    public BlockValue blockValue(Program program, String name) {
-        if (anyValue(program, name) instanceof BlockValue value) {
+    public BlockValue blockValue(Program program, String name, int index) {
+        if (anyValue(program, name, index) instanceof BlockValue value) {
             return value;
         }
 
         throw new RunException(name + " is not a block");
     }
 
-    public BooleanValue booleanValue(Program program, String name) {
-        if (anyValue(program, name) instanceof BooleanValue value) {
+    public BooleanValue booleanValue(Program program, String name, int index) {
+        if (anyValue(program, name, index) instanceof BooleanValue value) {
             return value;
         }
 
         throw new RunException(name + " is not a boolean");
     }
 
-    public FloatValue floatValue(Program program, String name) {
-        if (anyValue(program, name) instanceof FloatValue value) {
+    public FloatValue floatValue(Program program, String name, int index) {
+        if (anyValue(program, name, index) instanceof FloatValue value) {
             return value;
         }
 
         throw new RunException(name + " is not a float");
     }
 
-    public FunctionValue functionValue(Program program, String name) {
-        if (anyValue(program, name) instanceof FunctionValue value) {
+    public FunctionValue functionValue(Program program, String name, int index) {
+        if (anyValue(program, name, index) instanceof FunctionValue value) {
             return value;
         }
 
         throw new RunException(name + " is not a function");
     }
 
-    public IntegerValue integerValue(Program program, String name) {
-        if (anyValue(program, name) instanceof IntegerValue value) {
+    public IntegerValue integerValue(Program program, String name, int index) {
+        if (anyValue(program, name, index) instanceof IntegerValue value) {
             return value;
         }
 
         throw new RunException(name + " is not an integer");
     }
 
-    public ItemStackValue itemStackValue(Program program, String name) {
-        if (anyValue(program, name) instanceof ItemStackValue value) {
+    public ItemStackValue itemStackValue(Program program, String name, int index) {
+        if (anyValue(program, name, index) instanceof ItemStackValue value) {
             return value;
         }
 
         throw new RunException(name + " is not an item stack");
     }
 
-    public ItemValue itemValue(Program program, String name) {
-        if (anyValue(program, name) instanceof ItemValue value) {
+    public ItemValue itemValue(Program program, String name, int index) {
+        if (anyValue(program, name, index) instanceof ItemValue value) {
             return value;
         }
 
         throw new RunException(name + " is not an item");
     }
 
-    public ListValue listValue(Program program, String name) {
-        if (anyValue(program, name) instanceof ListValue value) {
+    public ListValue listValue(Program program, String name, int index) {
+        if (anyValue(program, name, index) instanceof ListValue value) {
             return value;
         }
 
         throw new RunException(name + " is not a list");
     }
 
-    public RangeValue rangeValue(Program program, String name) {
-        if (anyValue(program, name) instanceof RangeValue value) {
+    public RangeValue rangeValue(Program program, String name, int index) {
+        if (anyValue(program, name, index) instanceof RangeValue value) {
             return value;
         }
 
         throw new RunException(name + " is not a range");
     }
 
-    public StringValue stringValue(Program program, String name) {
-        if (anyValue(program, name) instanceof StringValue value) {
+    public StringValue stringValue(Program program, String name, int index) {
+        if (anyValue(program, name, index) instanceof StringValue value) {
             return value;
         }
 

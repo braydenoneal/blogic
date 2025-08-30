@@ -13,7 +13,7 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 public record LengthBuiltin(Arguments arguments) implements Expression {
     @Override
     public Value<?> evaluate(Program program) {
-        return new IntegerValue(arguments.listValue(program, "value").value().size());
+        return new IntegerValue(arguments.listValue(program, "value", 0).value().size());
     }
 
     public static final MapCodec<LengthBuiltin> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(

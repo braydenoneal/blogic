@@ -14,9 +14,9 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 public record RangeBuiltin(Arguments arguments) implements Expression {
     @Override
     public Value<?> evaluate(Program program) {
-        int start = arguments.integerValue(program, "start").value();
-        int end = arguments.arguments().size() > 1 ? arguments.integerValue(program, "end").value() : 0;
-        int step = arguments.arguments().size() > 2 ? arguments.integerValue(program, "step").value() : 1;
+        int start = arguments.integerValue(program, "start", 0).value();
+        int end = arguments.arguments().size() > 1 ? arguments.integerValue(program, "end", 1).value() : 0;
+        int step = arguments.arguments().size() > 2 ? arguments.integerValue(program, "step", 2).value() : 1;
 
         return new RangeValue(new Range(start, end, step));
     }

@@ -15,7 +15,7 @@ import net.minecraft.util.Identifier;
 public record ItemBuiltin(Arguments arguments) implements Expression {
     @Override
     public Value<?> evaluate(Program program) {
-        return new ItemValue(Registries.ITEM.get(Identifier.of(arguments.stringValue(program, "value").value())));
+        return new ItemValue(Registries.ITEM.get(Identifier.of(arguments.stringValue(program, "value", 0).value())));
     }
 
     public static final MapCodec<ItemBuiltin> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(

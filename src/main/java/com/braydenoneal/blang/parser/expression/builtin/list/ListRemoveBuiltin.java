@@ -21,7 +21,7 @@ public record ListRemoveBuiltin(
 ) implements Expression {
     @Override
     public Value<?> evaluate(Program program) {
-        Value<?> removeValue = arguments.anyValue(program, "value");
+        Value<?> removeValue = arguments.anyValue(program, "value", 0);
         List<Value<?>> localList = listValue.value();
 
         if (removeValue instanceof IntegerValue integerValue) {

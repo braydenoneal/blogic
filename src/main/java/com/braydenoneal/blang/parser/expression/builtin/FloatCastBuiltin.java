@@ -13,7 +13,7 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 public record FloatCastBuiltin(Arguments arguments) implements Expression {
     @Override
     public Value<?> evaluate(Program program) {
-        return new FloatValue((float) arguments.integerValue(program, "value").value());
+        return new FloatValue((float) arguments.integerValue(program, "value", 0).value());
     }
 
     public static final MapCodec<FloatCastBuiltin> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(

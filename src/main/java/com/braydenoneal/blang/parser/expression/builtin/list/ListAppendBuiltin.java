@@ -20,7 +20,7 @@ public record ListAppendBuiltin(
 ) implements Expression {
     @Override
     public Value<?> evaluate(Program program) {
-        Value<?> appendValue = arguments.anyValue(program, "value");
+        Value<?> appendValue = arguments.anyValue(program, "value", 0);
 
         List<Value<?>> localList = listValue.value();
         localList.add(appendValue);

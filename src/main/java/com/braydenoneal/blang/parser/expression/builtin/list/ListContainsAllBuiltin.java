@@ -18,7 +18,7 @@ public record ListContainsAllBuiltin(
 ) implements Expression {
     @Override
     public Value<?> evaluate(Program program) {
-        Value<?> nextListValue = arguments.anyValue(program, "value");
+        Value<?> nextListValue = arguments.anyValue(program, "value", 0);
 
         if (nextListValue instanceof ListValue list) {
             return new BooleanValue(listValue.value().containsAll(list.value()));

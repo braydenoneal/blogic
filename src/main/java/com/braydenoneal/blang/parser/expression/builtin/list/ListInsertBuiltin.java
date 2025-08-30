@@ -20,8 +20,8 @@ public record ListInsertBuiltin(
 ) implements Expression {
     @Override
     public Value<?> evaluate(Program program) {
-        int index = arguments.integerValue(program, "index").value();
-        Value<?> insertValue = arguments.anyValue(program, "value");
+        int index = arguments.integerValue(program, "index", 0).value();
+        Value<?> insertValue = arguments.anyValue(program, "value", 1);
 
         List<Value<?>> localList = listValue.value();
         localList.add(index, insertValue);

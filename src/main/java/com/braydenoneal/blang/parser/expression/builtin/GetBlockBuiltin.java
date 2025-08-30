@@ -17,9 +17,9 @@ import net.minecraft.world.World;
 public record GetBlockBuiltin(Arguments arguments) implements Expression {
     @Override
     public Value<?> evaluate(Program program) {
-        IntegerValue x = arguments.integerValue(program, "x");
-        IntegerValue y = arguments.integerValue(program, "y");
-        IntegerValue z = arguments.integerValue(program, "z");
+        IntegerValue x = arguments.integerValue(program, "x", 0);
+        IntegerValue y = arguments.integerValue(program, "y", 1);
+        IntegerValue z = arguments.integerValue(program, "z", 2);
 
         BlockPos entityPos = program.context().pos();
         BlockPos pos = new BlockPos(entityPos.getX() + x.value(), entityPos.getY() + y.value(), entityPos.getZ() + z.value());

@@ -17,7 +17,7 @@ public record ListContainsBuiltin(
 ) implements Expression {
     @Override
     public Value<?> evaluate(Program program) {
-        return new BooleanValue(listValue.value().contains(arguments.anyValue(program, "value").evaluate(program)));
+        return new BooleanValue(listValue.value().contains(arguments.anyValue(program, "value", 0).evaluate(program)));
     }
 
     public static final MapCodec<ListContainsBuiltin> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(

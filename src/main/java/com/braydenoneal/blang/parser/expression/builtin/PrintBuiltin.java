@@ -17,7 +17,7 @@ import net.minecraft.world.World;
 public record PrintBuiltin(Arguments arguments) implements Expression {
     @Override
     public Value<?> evaluate(Program program) {
-        Value<?> value = arguments.arguments().isEmpty() ? new StringValue("") : arguments().anyValue(program, "value");
+        Value<?> value = arguments.arguments().isEmpty() ? new StringValue("") : arguments().anyValue(program, "value", 0);
         String string = value.toString();
 
         if (value instanceof StringValue) {
