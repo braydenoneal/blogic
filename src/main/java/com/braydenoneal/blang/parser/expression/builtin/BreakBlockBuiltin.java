@@ -67,7 +67,6 @@ public record BreakBlockBuiltin(Program program, List<Expression> arguments) imp
             }
 
             List<ItemStack> drops = Block.getDroppedStacks(world.getBlockState(pos), (ServerWorld) world, pos, world.getBlockEntity(pos), FakePlayer.get((ServerWorld) world), tool);
-            // TODO: Only break if there is enough room for the drops?
             world.setBlockState(pos, Blocks.AIR.getDefaultState());
 
             for (ItemStack drop : drops) {
@@ -97,6 +96,14 @@ public record BreakBlockBuiltin(Program program, List<Expression> arguments) imp
                     if (drop.isEmpty()) {
                         break;
                     }
+                }
+            }
+
+            // TODO: Only break if there is enough room for the drops?
+            // Drop items in the world that there wasn't enough room for
+            for (ItemStack drop : drops) {
+                if (!drop.isEmpty()) {
+                    Block.dropStack(world, pos, drop);
                 }
             }
 
