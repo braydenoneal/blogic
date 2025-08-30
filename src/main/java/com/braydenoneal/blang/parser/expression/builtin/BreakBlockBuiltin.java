@@ -2,11 +2,14 @@ package com.braydenoneal.blang.parser.expression.builtin;
 
 import com.braydenoneal.blang.parser.Program;
 import com.braydenoneal.blang.parser.RunException;
+import com.braydenoneal.blang.parser.expression.Arguments;
 import com.braydenoneal.blang.parser.expression.Expression;
 import com.braydenoneal.blang.parser.expression.ExpressionType;
 import com.braydenoneal.blang.parser.expression.ExpressionTypes;
-import com.braydenoneal.blang.parser.expression.value.*;
-import com.mojang.serialization.Codec;
+import com.braydenoneal.blang.parser.expression.value.BlockValue;
+import com.braydenoneal.blang.parser.expression.value.BooleanValue;
+import com.braydenoneal.blang.parser.expression.value.FunctionValue;
+import com.braydenoneal.blang.parser.expression.value.Value;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.fabricmc.fabric.api.entity.FakePlayer;
@@ -26,97 +29,93 @@ import net.minecraft.world.World;
 
 import java.util.List;
 
-public record BreakBlockBuiltin(List<Expression> arguments) implements Expression {
+public record BreakBlockBuiltin(Arguments arguments) implements Expression {
     @Override
     public Value<?> evaluate(Program program) {
-        Value<?> xValue = arguments.get(0).evaluate(program);
-        Value<?> yValue = arguments.get(1).evaluate(program);
-        Value<?> zValue = arguments.get(2).evaluate(program);
-        Expression blockPredicateExpression = arguments.get(3);
-        boolean silkTouch = arguments.size() > 4 && arguments.get(4).evaluate(program) instanceof BooleanValue booleanValue ? booleanValue.value() : false;
+        int x = arguments.integerValue(program, "x").value();
+        int y = arguments.integerValue(program, "y").value();
+        int z = arguments.integerValue(program, "z").value();
+        FunctionValue blockPredicate = arguments.functionValue(program, "blockPredicate");
 
-        if (xValue instanceof IntegerValue x &&
-                yValue instanceof IntegerValue y &&
-                zValue instanceof IntegerValue z &&
-                blockPredicateExpression instanceof FunctionValue blockPredicate
-        ) {
-            BlockPos entityPos = program.context().pos();
-            BlockPos pos = new BlockPos(entityPos.getX() + x.value(), entityPos.getY() + y.value(), entityPos.getZ() + z.value());
-            World world = program.context().entity().getWorld();
+        boolean silkTouch = arguments.arguments().size() > 4 ? arguments.booleanValue(program, "silkTouch").value() : false;
 
-            if (world == null) {
-                throw new RunException("World is null");
-            }
+        BlockPos entityPos = program.context().pos();
+        BlockPos pos = new BlockPos(entityPos.getX() + x, entityPos.getY() + y, entityPos.getZ() + z);
+        World world = program.context().entity().getWorld();
 
-            Block block = world.getBlockState(pos).getBlock();
+        if (world == null) {
+            throw new RunException("World is null");
+        }
 
-            program.newScope();
-            program.getScope().set(blockPredicate.value().arguments().getFirst(), new BlockValue(block));
-            Value<?> predicateResult = blockPredicate.call(program);
-            program.endScope();
+        Block block = world.getBlockState(pos).getBlock();
 
-            if (!(predicateResult instanceof BooleanValue booleanValue && booleanValue.value())) {
-                return new BooleanValue(false);
-            }
+        program.newScope();
+        program.getScope().set(blockPredicate.value().arguments().getFirst(), new BlockValue(block));
+        Value<?> predicateResult = blockPredicate.call(program);
+        program.endScope();
 
-            List<LockableContainerBlockEntity> containers = program.context().entity().getConnectedContainers();
-            ItemStack tool = new ItemStack(Items.DIAMOND_PICKAXE);
+        if (!(predicateResult instanceof BooleanValue)) {
+            throw new RunException("blockPredicate is not a predicate");
+        }
 
-            if (silkTouch) {
-                Registry<Enchantment> registry = world.getRegistryManager().getOrThrow(RegistryKeys.ENCHANTMENT);
-                RegistryEntry<Enchantment> enchantment = registry.getEntry(registry.get(Enchantments.SILK_TOUCH));
-                tool.addEnchantment(enchantment, 1);
-            }
+        if (!((BooleanValue) predicateResult).value()) {
+            return new BooleanValue(false);
+        }
 
-            List<ItemStack> drops = Block.getDroppedStacks(world.getBlockState(pos), (ServerWorld) world, pos, world.getBlockEntity(pos), FakePlayer.get((ServerWorld) world), tool);
-            world.setBlockState(pos, Blocks.AIR.getDefaultState());
+        List<LockableContainerBlockEntity> containers = program.context().entity().getConnectedContainers();
+        ItemStack tool = new ItemStack(Items.DIAMOND_PICKAXE);
 
-            for (ItemStack drop : drops) {
-                for (LockableContainerBlockEntity container : containers) {
-                    for (int i = 0; i < container.size(); i++) {
-                        ItemStack stack = container.getStack(i);
+        if (silkTouch) {
+            Registry<Enchantment> registry = world.getRegistryManager().getOrThrow(RegistryKeys.ENCHANTMENT);
+            RegistryEntry<Enchantment> enchantment = registry.getEntry(registry.get(Enchantments.SILK_TOUCH));
+            tool.addEnchantment(enchantment, 1);
+        }
 
-                        if (stack.isOf(drop.getItem()) && stack.getCount() < stack.getMaxCount()) {
-                            int move = Math.min(drop.getCount(), stack.getMaxCount() - stack.getCount());
+        List<ItemStack> drops = Block.getDroppedStacks(world.getBlockState(pos), (ServerWorld) world, pos, world.getBlockEntity(pos), FakePlayer.get((ServerWorld) world), tool);
+        world.setBlockState(pos, Blocks.AIR.getDefaultState());
 
-                            drop.decrement(move);
-                            stack.increment(move);
+        for (ItemStack drop : drops) {
+            for (LockableContainerBlockEntity container : containers) {
+                for (int slot = 0; slot < container.size(); slot++) {
+                    ItemStack stack = container.getStack(slot);
 
-                            container.setStack(i, stack);
-                        }
+                    if (stack.isOf(drop.getItem()) && stack.getCount() < stack.getMaxCount()) {
+                        int move = Math.min(drop.getCount(), stack.getMaxCount() - stack.getCount());
 
-                        if (stack.isOf(Items.AIR)) {
-                            container.setStack(i, drop.copy());
-                            drop.setCount(0);
-                        }
+                        drop.decrement(move);
+                        stack.increment(move);
 
-                        if (drop.isEmpty()) {
-                            break;
-                        }
+                        container.setStack(slot, stack);
+                    }
+
+                    if (stack.isOf(Items.AIR)) {
+                        container.setStack(slot, drop.copy());
+                        drop.setCount(0);
                     }
 
                     if (drop.isEmpty()) {
                         break;
                     }
                 }
-            }
 
-            // TODO: Only break if there is enough room for the drops?
-            // Drop items in the world that there wasn't enough room for
-            for (ItemStack drop : drops) {
-                if (!drop.isEmpty()) {
-                    Block.dropStack(world, pos, drop);
+                if (drop.isEmpty()) {
+                    break;
                 }
             }
-
-            return new BooleanValue(true);
         }
 
-        throw new RunException("Invalid arguments");
+        // TODO: Only break if there is enough room for the drops?
+        for (ItemStack drop : drops) {
+            if (!drop.isEmpty()) {
+                Block.dropStack(world, pos, drop);
+            }
+        }
+
+        return new BooleanValue(true);
     }
 
     public static final MapCodec<BreakBlockBuiltin> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
-            Codec.list(Expression.CODEC).fieldOf("arguments").forGetter(BreakBlockBuiltin::arguments)
+            Arguments.CODEC.fieldOf("arguments").forGetter(BreakBlockBuiltin::arguments)
     ).apply(instance, BreakBlockBuiltin::new));
 
     @Override

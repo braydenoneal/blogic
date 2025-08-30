@@ -3,7 +3,6 @@ package com.braydenoneal.blang.parser.expression;
 import com.braydenoneal.blang.parser.ParseException;
 import com.braydenoneal.blang.parser.Program;
 import com.braydenoneal.blang.parser.RunException;
-import com.braydenoneal.blang.parser.expression.builtin.BuiltinExpression;
 import com.braydenoneal.blang.parser.expression.builtin.list.*;
 import com.braydenoneal.blang.parser.expression.value.ListValue;
 import com.braydenoneal.blang.parser.expression.value.Value;
@@ -14,12 +13,10 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
-import java.util.List;
-
 public record MemberCallExpression(
         Expression member,
         String functionName,
-        List<Expression> arguments
+        Arguments arguments
 ) implements Expression {
     @Override
     public Value<?> evaluate(Program program) {
@@ -52,7 +49,7 @@ public record MemberCallExpression(
                     case "remove":
                         return new ListRemoveBuiltin(name, listValue, arguments).evaluate(program);
                     case "pop":
-                        return new ListPopBuiltin(name, listValue).evaluate(program);
+                        return new ListPopBuiltin(name, listValue, arguments).evaluate(program);
                     case "contains":
                         return new ListContainsBuiltin(listValue, arguments).evaluate(program);
                     case "containsAll":
@@ -78,14 +75,14 @@ public record MemberCallExpression(
     public static Expression parse(Program program, Expression member) throws ParseException {
         program.expect(Type.DOT);
         String functionName = program.expect(Type.IDENTIFIER);
-        List<Expression> arguments = BuiltinExpression.parseArguments(program);
+        Arguments arguments = Arguments.parse(program);
         return new MemberCallExpression(member, functionName, arguments);
     }
 
     public static final MapCodec<MemberCallExpression> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
             Expression.CODEC.fieldOf("member").forGetter(MemberCallExpression::member),
             Codec.STRING.fieldOf("functionName").forGetter(MemberCallExpression::functionName),
-            Codec.list(Expression.CODEC).fieldOf("arguments").forGetter(MemberCallExpression::arguments)
+            Arguments.CODEC.fieldOf("arguments").forGetter(MemberCallExpression::arguments)
     ).apply(instance, MemberCallExpression::new));
 
     @Override

@@ -1,6 +1,7 @@
 package com.braydenoneal.blang.parser.expression.builtin;
 
 import com.braydenoneal.blang.parser.Program;
+import com.braydenoneal.blang.parser.expression.Arguments;
 import com.braydenoneal.blang.parser.expression.Expression;
 import com.braydenoneal.blang.parser.expression.ExpressionType;
 import com.braydenoneal.blang.parser.expression.ExpressionTypes;
@@ -13,10 +14,10 @@ import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.Text;
 import net.minecraft.world.World;
 
-public record PrintBuiltin(Expression expression) implements Expression {
+public record PrintBuiltin(Arguments arguments) implements Expression {
     @Override
     public Value<?> evaluate(Program program) {
-        Value<?> value = expression.evaluate(program);
+        Value<?> value = arguments.arguments().isEmpty() ? new StringValue("") : arguments().anyValue(program, "value");
         String string = value.toString();
 
         if (value instanceof StringValue) {
@@ -39,7 +40,7 @@ public record PrintBuiltin(Expression expression) implements Expression {
     }
 
     public static final MapCodec<PrintBuiltin> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
-            Expression.CODEC.fieldOf("expression").forGetter(PrintBuiltin::expression)
+            Arguments.CODEC.fieldOf("arguments").forGetter(PrintBuiltin::arguments)
     ).apply(instance, PrintBuiltin::new));
 
     @Override

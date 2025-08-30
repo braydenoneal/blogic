@@ -1,6 +1,7 @@
 package com.braydenoneal.blang.parser.expression.builtin.list;
 
 import com.braydenoneal.blang.parser.Program;
+import com.braydenoneal.blang.parser.expression.Arguments;
 import com.braydenoneal.blang.parser.expression.Expression;
 import com.braydenoneal.blang.parser.expression.ExpressionType;
 import com.braydenoneal.blang.parser.expression.ExpressionTypes;
@@ -15,11 +16,11 @@ import java.util.List;
 public record ListAppendBuiltin(
         String name,
         ListValue listValue,
-        List<Expression> arguments
+        Arguments arguments
 ) implements Expression {
     @Override
     public Value<?> evaluate(Program program) {
-        Value<?> appendValue = arguments.getFirst().evaluate(program);
+        Value<?> appendValue = arguments.anyValue(program, "value");
 
         List<Value<?>> localList = listValue.value();
         localList.add(appendValue);
@@ -30,7 +31,7 @@ public record ListAppendBuiltin(
     public static final MapCodec<ListAppendBuiltin> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
             Codec.STRING.fieldOf("name").forGetter(ListAppendBuiltin::name),
             ListValue.CODEC.fieldOf("listValue").forGetter(ListAppendBuiltin::listValue),
-            Codec.list(Expression.CODEC).fieldOf("arguments").forGetter(ListAppendBuiltin::arguments)
+            Arguments.CODEC.fieldOf("arguments").forGetter(ListAppendBuiltin::arguments)
     ).apply(instance, ListAppendBuiltin::new));
 
     @Override

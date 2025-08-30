@@ -1,6 +1,7 @@
 package com.braydenoneal.blang.parser.expression.builtin.list;
 
 import com.braydenoneal.blang.parser.Program;
+import com.braydenoneal.blang.parser.expression.Arguments;
 import com.braydenoneal.blang.parser.expression.Expression;
 import com.braydenoneal.blang.parser.expression.ExpressionType;
 import com.braydenoneal.blang.parser.expression.ExpressionTypes;
@@ -16,12 +17,11 @@ import java.util.List;
 public record ListRemoveBuiltin(
         String name,
         ListValue listValue,
-        List<Expression> arguments
+        Arguments arguments
 ) implements Expression {
     @Override
     public Value<?> evaluate(Program program) {
-        Value<?> removeValue = arguments.getFirst().evaluate(program);
-
+        Value<?> removeValue = arguments.anyValue(program, "value");
         List<Value<?>> localList = listValue.value();
 
         if (removeValue instanceof IntegerValue integerValue) {
@@ -36,7 +36,7 @@ public record ListRemoveBuiltin(
     public static final MapCodec<ListRemoveBuiltin> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
             Codec.STRING.fieldOf("name").forGetter(ListRemoveBuiltin::name),
             ListValue.CODEC.fieldOf("listValue").forGetter(ListRemoveBuiltin::listValue),
-            Codec.list(Expression.CODEC).fieldOf("arguments").forGetter(ListRemoveBuiltin::arguments)
+            Arguments.CODEC.fieldOf("arguments").forGetter(ListRemoveBuiltin::arguments)
     ).apply(instance, ListRemoveBuiltin::new));
 
     @Override

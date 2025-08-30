@@ -1,6 +1,7 @@
 package com.braydenoneal.blang.parser.expression.builtin.list;
 
 import com.braydenoneal.blang.parser.Program;
+import com.braydenoneal.blang.parser.expression.Arguments;
 import com.braydenoneal.blang.parser.expression.Expression;
 import com.braydenoneal.blang.parser.expression.ExpressionType;
 import com.braydenoneal.blang.parser.expression.ExpressionTypes;
@@ -14,7 +15,8 @@ import java.util.List;
 
 public record ListPopBuiltin(
         String name,
-        ListValue listValue
+        ListValue listValue,
+        Arguments arguments
 ) implements Expression {
     @Override
     public Value<?> evaluate(Program program) {
@@ -26,7 +28,8 @@ public record ListPopBuiltin(
 
     public static final MapCodec<ListPopBuiltin> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
             Codec.STRING.fieldOf("name").forGetter(ListPopBuiltin::name),
-            ListValue.CODEC.fieldOf("listValue").forGetter(ListPopBuiltin::listValue)
+            ListValue.CODEC.fieldOf("listValue").forGetter(ListPopBuiltin::listValue),
+            Arguments.CODEC.fieldOf("arguments").forGetter(ListPopBuiltin::arguments)
     ).apply(instance, ListPopBuiltin::new));
 
     @Override

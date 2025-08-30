@@ -2,23 +2,21 @@ package com.braydenoneal.blang.parser.expression.builtin;
 
 import com.braydenoneal.blang.parser.Program;
 import com.braydenoneal.blang.parser.RunException;
+import com.braydenoneal.blang.parser.expression.Arguments;
 import com.braydenoneal.blang.parser.expression.Expression;
 import com.braydenoneal.blang.parser.expression.ExpressionType;
 import com.braydenoneal.blang.parser.expression.ExpressionTypes;
 import com.braydenoneal.blang.parser.expression.value.FloatValue;
 import com.braydenoneal.blang.parser.expression.value.IntegerValue;
 import com.braydenoneal.blang.parser.expression.value.Value;
-import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
-import java.util.List;
-
-public record MaximumBuiltin(List<Expression> arguments) implements Expression {
+public record MaximumBuiltin(Arguments arguments) implements Expression {
     @Override
     public Value<?> evaluate(Program program) {
-        Value<?> a = arguments.getFirst().evaluate(program);
-        Value<?> b = arguments.get(1).evaluate(program);
+        Value<?> a = arguments.anyValue(program, "a");
+        Value<?> b = arguments.anyValue(program, "b");
 
         if (a instanceof IntegerValue a1 && b instanceof FloatValue) {
             a = new FloatValue((float) a1.value());
@@ -36,7 +34,7 @@ public record MaximumBuiltin(List<Expression> arguments) implements Expression {
     }
 
     public static final MapCodec<MaximumBuiltin> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
-            Codec.list(Expression.CODEC).fieldOf("arguments").forGetter(MaximumBuiltin::arguments)
+            Arguments.CODEC.fieldOf("arguments").forGetter(MaximumBuiltin::arguments)
     ).apply(instance, MaximumBuiltin::new));
 
     @Override

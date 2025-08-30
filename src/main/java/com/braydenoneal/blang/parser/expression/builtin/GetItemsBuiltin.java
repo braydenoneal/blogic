@@ -1,13 +1,13 @@
 package com.braydenoneal.blang.parser.expression.builtin;
 
 import com.braydenoneal.blang.parser.Program;
+import com.braydenoneal.blang.parser.expression.Arguments;
 import com.braydenoneal.blang.parser.expression.Expression;
 import com.braydenoneal.blang.parser.expression.ExpressionType;
 import com.braydenoneal.blang.parser.expression.ExpressionTypes;
 import com.braydenoneal.blang.parser.expression.value.ItemValue;
 import com.braydenoneal.blang.parser.expression.value.ListValue;
 import com.braydenoneal.blang.parser.expression.value.Value;
-import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.block.entity.LockableContainerBlockEntity;
@@ -16,7 +16,7 @@ import net.minecraft.item.Items;
 import java.util.ArrayList;
 import java.util.List;
 
-public record GetItemsBuiltin(List<Expression> arguments) implements Expression {
+public record GetItemsBuiltin(Arguments arguments) implements Expression {
     @Override
     public Value<?> evaluate(Program program) {
         List<LockableContainerBlockEntity> containers = program.context().entity().getConnectedContainers();
@@ -34,7 +34,7 @@ public record GetItemsBuiltin(List<Expression> arguments) implements Expression 
     }
 
     public static final MapCodec<GetItemsBuiltin> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
-            Codec.list(Expression.CODEC).fieldOf("arguments").forGetter(GetItemsBuiltin::arguments)
+            Arguments.CODEC.fieldOf("arguments").forGetter(GetItemsBuiltin::arguments)
     ).apply(instance, GetItemsBuiltin::new));
 
     @Override
