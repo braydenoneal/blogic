@@ -8,16 +8,24 @@ import com.braydenoneal.blang.tokenizer.Type;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Stack;
 
-public record Arguments(List<Expression> arguments) {
+public record Arguments(List<Expression> arguments, Map<String, Expression> namedArguments) {
     public Value<?> anyValue(Program program, String name, int index) {
-        if (index >= arguments.size()) {
-            throw new RunException("Missing argument " + name);
+        Expression expression = namedArguments.get(name);
+
+        if (expression == null) {
+            if (index >= arguments.size()) {
+                throw new RunException("Missing argument " + name);
+            }
+
+            expression = arguments.get(index);
         }
 
-        return arguments.get(index).evaluate(program);
+        return expression.evaluate(program);
     }
 
     public BlockValue blockValue(Program program, String name, int index) {
@@ -102,10 +110,36 @@ public record Arguments(List<Expression> arguments) {
 
     public static Arguments parse(Program program) throws ParseException {
         List<Expression> arguments = new Stack<>();
+        Map<String, Expression> namedArguments = new HashMap<>();
+        boolean parseDefaults = false;
+
         program.expect(Type.PARENTHESIS, "(");
 
         while (!program.peekIs(Type.PARENTHESIS, ")")) {
-            arguments.add(Expression.parse(program));
+            Expression expression = Expression.parse(program);
+
+            if (expression instanceof AssignmentExpression) {
+                parseDefaults = true;
+            }
+
+            if (parseDefaults) {
+                try {
+                    AssignmentExpression assignmentExpression = (AssignmentExpression) expression;
+                    Expression variableExpression = assignmentExpression.variableExpression();
+
+                    if (variableExpression instanceof VariableExpression(String name) &&
+                            assignmentExpression.type().equals("=")
+                    ) {
+                        namedArguments.put(name, assignmentExpression.expression());
+                    } else {
+                        throw new ParseException("");
+                    }
+                } catch (ParseException e) {
+                    throw new ParseException("Function cannot have parameter with default after parameter without default");
+                }
+            } else {
+                arguments.add(expression);
+            }
 
             if (!program.peekIs(Type.PARENTHESIS, ")")) {
                 program.expect(Type.COMMA);
@@ -114,10 +148,13 @@ public record Arguments(List<Expression> arguments) {
 
         program.expect(Type.PARENTHESIS, ")");
 
-        return new Arguments(arguments);
+        return new Arguments(arguments, namedArguments);
     }
 
+    public static final Arguments EMPTY = new Arguments(List.of(), Map.of());
+
     public static final Codec<Arguments> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-            Codec.list(Expression.CODEC).fieldOf("arguments").forGetter(Arguments::arguments)
+            Codec.list(Expression.CODEC).fieldOf("arguments").forGetter(Arguments::arguments),
+            Codec.unboundedMap(Codec.STRING, Expression.CODEC).fieldOf("namedArguments").forGetter(Arguments::namedArguments)
     ).apply(instance, Arguments::new));
 }

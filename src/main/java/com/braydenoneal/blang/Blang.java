@@ -152,6 +152,23 @@ public class Blang {
                 l = fn v: print("Hello, " + v);
                 print(l);
                 l("world!");
+                
+                a = 0;
+                fn f(a) {
+                    print(a);
+                }
+                f(1);
+                print(a);
+                
+                fn d(a, b, c=0) {
+                    print(a);
+                    print(b);
+                    print(c);
+                }
+                
+                d(1, b=2);
+                
+                print(c);
                 """,
                 new Context(null, null));
 
@@ -160,10 +177,9 @@ public class Blang {
 }
 
 /*
-keyword arguments (python kwargs)
-++, --?
-better arguments length and type checking
 move these tests into a testing system
+better error context (source location, etc)
+unify some of the logic between custom and builtin functions (parsing and arguments)
 add block for import?, access modifiers
 structs
 better builtin functions logic

@@ -17,6 +17,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
 import java.util.List;
+import java.util.Map;
 
 public record ExportAllItemsBuiltin(Arguments arguments) implements Expression {
     @Override
@@ -45,10 +46,8 @@ public record ExportAllItemsBuiltin(Arguments arguments) implements Expression {
             for (int slot = 0; slot < container.size(); slot++) {
                 ItemStack stack = container.getStack(slot);
 
-                program.newScope();
-                program.getScope().set(itemPredicate.value().arguments().getFirst(), new ItemValue(stack.getItem()));
-                Value<?> predicateResult = itemPredicate.call(program);
-                program.endScope();
+                Arguments predicateArguments = new Arguments(List.of(new ItemValue(stack.getItem())), Map.of());
+                Value<?> predicateResult = itemPredicate.call(program, predicateArguments);
 
                 if (!(predicateResult instanceof BooleanValue)) {
                     throw new RunException("itemPredicate is not a predicate");

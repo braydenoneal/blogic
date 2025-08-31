@@ -2,6 +2,7 @@ package com.braydenoneal.blang.parser.expression.value;
 
 import com.braydenoneal.blang.parser.ParseException;
 import com.braydenoneal.blang.parser.Program;
+import com.braydenoneal.blang.parser.expression.Arguments;
 import com.braydenoneal.blang.parser.expression.Expression;
 import com.braydenoneal.blang.parser.statement.ReturnStatement;
 import com.braydenoneal.blang.parser.statement.Statement;
@@ -10,7 +11,9 @@ import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class FunctionValue extends Value<Function> {
     public static final MapCodec<FunctionValue> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
@@ -21,25 +24,34 @@ public class FunctionValue extends Value<Function> {
         super(value);
     }
 
-    public Value<?> call(Program program) {
-        Value<?> returnValue = Null.value();
-        Statement statement = Statement.runStatements(program, value().statements());
-
-        if (statement instanceof ReturnStatement returnStatement) {
-            returnValue = returnStatement.returnValue(program);
-        }
-
-        return returnValue;
+    public Value<?> call(Program program, Arguments arguments) {
+        return value().call(program, arguments);
     }
 
     public static Expression parse(Program program) throws ParseException {
-        List<String> arguments = new ArrayList<>();
-        List<Statement> statements = new ArrayList<>();
+        List<String> parameters = new ArrayList<>();
+        Map<String, Expression> defaultParameters = new HashMap<>();
+        boolean parseDefaults = false;
 
         program.expect(Type.KEYWORD, "fn");
 
         while (program.peek().type() != Type.COLON) {
-            arguments.add(program.expect(Type.IDENTIFIER));
+            String parameterName = program.expect(Type.IDENTIFIER);
+
+            if (program.peekIs(Type.ASSIGN, "=")) {
+                parseDefaults = true;
+            }
+
+            if (parseDefaults) {
+                try {
+                    program.expect(Type.ASSIGN, "=");
+                    defaultParameters.put(parameterName, Expression.parse(program));
+                } catch (ParseException e) {
+                    throw new ParseException("Function cannot have parameter with default after parameter without default");
+                }
+            } else {
+                parameters.add(parameterName);
+            }
 
             if (program.peek().type() != Type.COLON) {
                 program.expect(Type.COMMA);
@@ -47,6 +59,7 @@ public class FunctionValue extends Value<Function> {
         }
 
         program.expect(Type.COLON);
+        List<Statement> statements = new ArrayList<>();
 
         if (program.peekIs(Type.CURLY_BRACE, "{")) {
             program.next();
@@ -60,7 +73,7 @@ public class FunctionValue extends Value<Function> {
             statements.add(new ReturnStatement(Expression.parse(program)));
         }
 
-        return new FunctionValue(new Function(arguments, statements));
+        return new FunctionValue(new Function(parameters, defaultParameters, statements));
     }
 
     @Override
@@ -70,6 +83,6 @@ public class FunctionValue extends Value<Function> {
 
     @Override
     public String toString() {
-        return "fn" + value().arguments().toString() + ": " + value().statements().toString();
+        return "fn" + value().parameters().toString() + ": " + value().statements().toString();
     }
 }

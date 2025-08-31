@@ -55,10 +55,8 @@ public record PlaceBlockBuiltin(Arguments arguments) implements Expression {
                     continue;
                 }
 
-                program.newScope();
-                program.getScope().set(itemPredicate.value().arguments().getFirst(), new ItemValue(stack.getItem()));
-                Value<?> predicateResult = itemPredicate.call(program);
-                program.endScope();
+                Arguments predicateArguments = new Arguments(List.of(new ItemValue(stack.getItem())), Map.of());
+                Value<?> predicateResult = itemPredicate.call(program, predicateArguments);
 
                 if (!(predicateResult instanceof BooleanValue)) {
                     throw new RunException("itemPredicate is not a predicate");

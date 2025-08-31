@@ -28,6 +28,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
 import java.util.List;
+import java.util.Map;
 
 public record BreakBlockBuiltin(Arguments arguments) implements Expression {
     @Override
@@ -36,7 +37,9 @@ public record BreakBlockBuiltin(Arguments arguments) implements Expression {
         int y = arguments.integerValue(program, "y", 1).value();
         int z = arguments.integerValue(program, "z", 2).value();
         FunctionValue blockPredicate = arguments.functionValue(program, "blockPredicate", 3);
-        boolean silkTouch = arguments.arguments().size() > 4 ? arguments.booleanValue(program, "silkTouch", 4).value() : false;
+        boolean silkTouch = arguments.arguments().size() > 4 ||
+                arguments.namedArguments().containsKey("silkTouch") ?
+                arguments.booleanValue(program, "silkTouch", 4).value() : false;
 
         BlockPos entityPos = program.context().pos();
         BlockPos pos = new BlockPos(entityPos.getX() + x, entityPos.getY() + y, entityPos.getZ() + z);
@@ -48,10 +51,8 @@ public record BreakBlockBuiltin(Arguments arguments) implements Expression {
 
         Block block = world.getBlockState(pos).getBlock();
 
-        program.newScope();
-        program.getScope().set(blockPredicate.value().arguments().getFirst(), new BlockValue(block));
-        Value<?> predicateResult = blockPredicate.call(program);
-        program.endScope();
+        Arguments predicateArguments = new Arguments(List.of(new BlockValue(block)), Map.of());
+        Value<?> predicateResult = blockPredicate.call(program, predicateArguments);
 
         if (!(predicateResult instanceof BooleanValue)) {
             throw new RunException("blockPredicate is not a predicate");

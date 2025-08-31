@@ -53,4 +53,12 @@ public class Scope {
 
         return variables.put(name, value);
     }
+
+    public void setLocal(String name, Value<?> value) {
+        variables.put(name, value);
+    }
+
+    public Value<?> getLocal(String name) {
+        return variables.get(name);
+    }
 }

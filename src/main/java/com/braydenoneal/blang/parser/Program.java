@@ -1,6 +1,7 @@
 package com.braydenoneal.blang.parser;
 
 import com.braydenoneal.blang.Context;
+import com.braydenoneal.blang.parser.expression.Arguments;
 import com.braydenoneal.blang.parser.statement.FunctionDeclaration;
 import com.braydenoneal.blang.parser.statement.ImportStatement;
 import com.braydenoneal.blang.parser.statement.Statement;
@@ -78,9 +79,7 @@ public class Program {
             FunctionDeclaration main = functions.get("main");
 
             if (main != null) {
-                newScope();
-                main.call(this);
-                endScope();
+                main.call(this, Arguments.EMPTY);
             }
         } catch (Exception e) {
             log.error("Run main error", e);

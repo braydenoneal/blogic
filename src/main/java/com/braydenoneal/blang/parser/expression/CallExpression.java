@@ -19,29 +19,13 @@ public record CallExpression(String name, Arguments arguments) implements Expres
         FunctionDeclaration function = functionProgram.getFunction(name);
 
         if (function != null) {
-            program.newScope();
-
-            for (int i = 0; i < arguments.arguments().size(); i++) {
-                program.getScope().set(function.arguments().get(i), arguments.arguments().get(i).evaluate(program));
-            }
-
-            Value<?> returnValue = function.call(program);
-            program.endScope();
-            return returnValue;
+            return function.call(program, arguments);
         }
 
         Value<?> variable = program.getScope().get(name);
 
         if (variable instanceof FunctionValue functionValue) {
-            program.newScope();
-
-            for (int i = 0; i < Math.min(arguments.arguments().size(), functionValue.value().arguments().size()); i++) {
-                program.getScope().set(functionValue.value().arguments().get(i), arguments.arguments().get(i).evaluate(program));
-            }
-
-            Value<?> returnValue = functionValue.call(program);
-            program.endScope();
-            return returnValue;
+            return functionValue.call(program, arguments);
         }
 
         throw new RunException("'" + name + "' does not refer to a function");
