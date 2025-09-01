@@ -177,10 +177,11 @@ public class Blang {
 }
 
 /*
-move these tests into a testing system
 better error context (source location, etc)
 unify some of the logic between custom and builtin functions (parsing and arguments)
 add block for import?, access modifiers
+address while loop max iterations issue
+separate language from the game, allowing it to run on its own
 structs
 better builtin functions logic
 struct implementations
