@@ -4,13 +4,13 @@ Minecraft mod that adds a survival-friendly programming language that can intera
 
 ## Todo
 
+- tab autocomplete
 - better error context (source location, etc)
 - unify some of the logic between custom and builtin functions (parsing and arguments)
 - add block for import?, access modifiers
 - address while loop max iterations issue
 - separate language from the game, allowing it to run on its own
 - structs
-- better builtin functions logic
 - struct implementations
 - static types
 - dictionaries?
@@ -23,7 +23,7 @@ Minecraft mod that adds a survival-friendly programming language that can intera
 ## Ideas
 
 - portable controller that executes from player
-- wait/sleep function to control tick time
+- wait/sleep function to control tick time (prob requires multithreading)
 - reader, importer, and exporter blocks instead of available everywhere?
 - time/amount/too easy balancing
 - maybe action functions (read, import, export) each take 1 tick to execute

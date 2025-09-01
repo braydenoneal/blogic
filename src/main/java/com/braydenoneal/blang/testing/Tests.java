@@ -8,7 +8,6 @@ import java.util.List;
 public class Tests {
     private static List<Test> tests() {
         return List.of(
-                new ControlStatements(),
                 new VariableAssignment(),
                 new NumberLiterals(),
                 new Strings(),
@@ -18,7 +17,8 @@ public class Tests {
                 new MathFunctions(),
                 new IfStatements(),
                 new WhileLoops(),
-                new ForLoops()
+                new ForLoops(),
+                new ControlStatements()
         );
     }
 

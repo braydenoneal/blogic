@@ -111,6 +111,8 @@ public class EditBoxWidget extends ScrollableTextFieldWidget {
         int position = 0;
 
         while (position < text.length()) {
+            boolean error = true;
+
             for (Type type : Type.values()) {
                 Matcher matcher = Pattern.compile("^" + type.regex).matcher(text.substring(position) + "\n");
 
@@ -132,8 +134,14 @@ public class EditBoxWidget extends ScrollableTextFieldWidget {
                     context.drawText(textRenderer, group, x, y, color, false);
                     position += group.length();
                     x += textRenderer.getWidth(group);
+                    error = false;
                     break;
                 }
+            }
+
+            if (error) {
+                context.drawText(textRenderer, text.substring(position), x, y, 0xFFF75464, false);
+                break;
             }
         }
     }

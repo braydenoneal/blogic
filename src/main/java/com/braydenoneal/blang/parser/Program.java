@@ -19,6 +19,7 @@ public class Program {
     private final Map<String, FunctionDeclaration> functions = new HashMap<>();
     private final Scope topScope = new Scope(null);
     private final Stack<Scope> scopes = new Stack<>();
+
     private boolean hasRuntimeError = false;
     private int position = 0;
 
