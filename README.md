@@ -192,6 +192,34 @@ fn main() {
     deleteItems(fn item: !keepItems.contains(item));
 }
 
+boneMealFarm;
+
+neededItems = [item("stone"), item("bone_meal")];
+y = -3;
+
+fn main() {
+    useItem(0, 4, 0, fn item: !neededItems.contains(item));
+
+    if !getItems().containsAll(neededItems) { return; }
+
+    for x in range(-3, 4) {
+        for z in range(-3, 4) {
+            placeBlock(x, y, z, fn item: item == item("stone"));
+        }
+    }
+
+    useItem(0, y, 0, fn item: item == item("bone_meal"));
+
+    for x in range(-3, 4) {
+        for z in range(-3, 4) {
+            breakBlock(x, y + 1, z, fn block: true);
+            breakBlock(x, y, z, fn block: block == block("moss_block"));
+        }
+    }
+
+    placeBlock(0, y, 0, fn item: item == item("moss_block"));
+}
+
 ```
 
 ## Credit

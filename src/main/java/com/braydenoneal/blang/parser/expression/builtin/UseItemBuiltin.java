@@ -18,6 +18,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUsageContext;
 import net.minecraft.item.Items;
 import net.minecraft.server.world.ServerWorld;
+import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
@@ -68,7 +69,11 @@ public record UseItemBuiltin(Arguments arguments) implements Expression {
                 BlockHitResult hit = new BlockHitResult(pos.toCenterPos(), facing, pos, false);
                 FakePlayer player = FakePlayer.get((ServerWorld) world);
 
-                stack.useOnBlock(new ItemUsageContext(world, player, Hand.MAIN_HAND, stack, hit));
+                ActionResult result = world.getBlockState(pos).onUseWithItem(stack, world, player, Hand.MAIN_HAND, hit);
+
+                if (result instanceof ActionResult.PassToDefaultBlockAction) {
+                    stack.useOnBlock(new ItemUsageContext(world, player, Hand.MAIN_HAND, stack, hit));
+                }
 
                 container.setStack(slot, stack);
                 return new BooleanValue(true);
