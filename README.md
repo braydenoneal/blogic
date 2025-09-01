@@ -4,6 +4,7 @@ Minecraft mod that adds a survival-friendly programming language that can intera
 
 ## Todo
 
+- tab, shift-tab, auto-indent, auto open and close
 - tab autocomplete
 - better error context (source location, etc)
 - unify some of the logic between custom and builtin functions (parsing and arguments)

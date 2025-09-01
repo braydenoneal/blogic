@@ -32,6 +32,7 @@ public class Functions extends Test {
                 
                 d = withDefaults(1, 2);
                 e = withDefaults(1, b=2, c=3);
+                f = withDefaults(1, 2, 3);
                 """;
     }
 
@@ -42,7 +43,8 @@ public class Functions extends Test {
                 new Expect("b", new IntegerValue(2)),
                 new Expect("c", new IntegerValue(0)),
                 new Expect("d", new IntegerValue(0)),
-                new Expect("e", new IntegerValue(3))
+                new Expect("e", new IntegerValue(3)),
+                new Expect("f", new IntegerValue(3))
         );
     }
 }

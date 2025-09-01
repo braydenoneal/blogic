@@ -7,14 +7,13 @@ import com.braydenoneal.blang.parser.expression.Expression;
 import com.braydenoneal.blang.parser.expression.value.Function;
 import com.braydenoneal.blang.parser.expression.value.Value;
 import com.braydenoneal.blang.tokenizer.Type;
+import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 public record FunctionDeclaration(
         String name,
@@ -31,7 +30,7 @@ public record FunctionDeclaration(
 
     public static Statement parse(Program program) throws ParseException {
         List<String> parameters = new ArrayList<>();
-        Map<String, Expression> defaultParameters = new HashMap<>();
+        List<Pair<String, Expression>> defaultParameters = new ArrayList<>();
         boolean parseDefaults = false;
 
         program.expect(Type.KEYWORD, "fn");
@@ -49,7 +48,7 @@ public record FunctionDeclaration(
             if (parseDefaults) {
                 try {
                     program.expect(Type.ASSIGN, "=");
-                    defaultParameters.put(parameterName, Expression.parse(program));
+                    defaultParameters.add(Pair.of(parameterName, Expression.parse(program)));
                 } catch (ParseException e) {
                     throw new ParseException("Function cannot have parameter with default after parameter without default");
                 }
