@@ -192,3 +192,7 @@ fn main() {
 }
 
 ```
+
+## Credit
+
+Language tokenizing based on [Alexander Makeev's toy language](https://github.com/alexandermakeev/toy-language)
