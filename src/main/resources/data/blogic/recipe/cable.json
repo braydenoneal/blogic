@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "   ",
+    "#A#",
+    "   "
+  ],
+  "key": {
+    "#": "minecraft:smooth_stone",
+    "A": "minecraft:amethyst_shard"
+  },
+  "result": {
+    "id": "blogic:cable",
+    "count": 1
+  }
+}

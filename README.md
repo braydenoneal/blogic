@@ -2,6 +2,8 @@
 
 Minecraft mod that adds a survival-friendly programming language that can interact with the world.
 
+![demonstration](demonstration.gif)
+
 ## Todo
 
 - tab, shift-tab, auto-indent, auto open and close
