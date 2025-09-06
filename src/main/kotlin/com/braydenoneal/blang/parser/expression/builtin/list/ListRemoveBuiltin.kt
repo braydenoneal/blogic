@@ -8,7 +8,6 @@ import com.braydenoneal.blang.parser.expression.ExpressionTypes
 import com.braydenoneal.blang.parser.expression.value.IntegerValue
 import com.braydenoneal.blang.parser.expression.value.ListValue
 import com.braydenoneal.blang.parser.expression.value.Value
-import com.mojang.datafixers.util.Function3
 import com.mojang.serialization.Codec
 import com.mojang.serialization.MapCodec
 import com.mojang.serialization.codecs.RecordCodecBuilder

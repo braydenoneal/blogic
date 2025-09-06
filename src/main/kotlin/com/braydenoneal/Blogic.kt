@@ -11,7 +11,10 @@ import net.fabricmc.api.ModInitializer
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 
-class Blogic : ModInitializer {
+object Blogic : ModInitializer {
+    const val MOD_ID = "blogic"
+    val LOGGER: Logger = LoggerFactory.getLogger(MOD_ID)
+
     override fun onInitialize() {
         ModBlocks.initialize()
         ModBlockEntities.initialize()
@@ -20,10 +23,5 @@ class Blogic : ModInitializer {
         ValueTypes.initialize()
         ExpressionTypes.initialize()
         StatementTypes.initialize()
-    }
-
-    companion object {
-        const val MOD_ID = "blogic"
-        val LOGGER: Logger = LoggerFactory.getLogger(MOD_ID)
     }
 }

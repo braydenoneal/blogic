@@ -1,41 +1,41 @@
 {
-  "schemaVersion": 1,
-  "id": "blogic",
-  "version": "${version}",
-  "name": "Blogic",
-  "description": "Minecraft automation and storage mod",
-  "authors": [
-    "Brayden O'Neal"
-  ],
-  "license": "GPL-3.0",
-  "icon": "assets/blogic/icon.png",
-  "environment": "*",
-  "entrypoints": {
-    "main": [
-      {
-        "adapter": "kotlin",
-        "value": "com.braydenoneal.Blogic"
-      }
-    ],
-    "client": [
-      "com.braydenoneal.BlogicClient"
-    ]
-  },
-  "mixins": [
-    "blogic.mixins.json",
-    {
-      "config": "blogic.client.mixins.json",
-      "environment": "client"
-    }
-  ],
-  "depends": {
-    "fabricloader": ">=0.16.14",
-    "minecraft": "~1.21.7",
-    "java": ">=21",
-    "fabric-api": "*",
-    "fabric-language-kotlin": ">=1.13.5+kotlin.2.2.10"
-  },
-  "suggests": {
-    "another-mod": "*"
-  }
+	"schemaVersion": 1,
+	"id": "blogic",
+	"version": "${version}",
+	"name": "Blogic",
+	"description": "Minecraft automation and storage mod",
+	"authors": [
+		"Brayden O'Neal"
+	],
+	"license": "GPL-3.0",
+	"icon": "assets/blogic/icon.png",
+	"environment": "*",
+	"entrypoints": {
+		"main": [
+			{
+				"adapter": "kotlin",
+				"value": "com.braydenoneal.Blogic"
+			}
+		],
+		"client": [
+			{
+				"adapter": "kotlin",
+				"value": "com.braydenoneal.BlogicClient"
+			}
+		],
+		"fabric-datagen": [
+			{
+				"adapter": "kotlin",
+				"value": "com.braydenoneal.BlogicDataGenerator"
+			}
+		]
+	},
+	"mixins": [],
+	"depends": {
+		"fabricloader": ">=0.17.2",
+		"minecraft": "~1.21.8",
+		"java": ">=21",
+		"fabric-api": "*",
+		"fabric-language-kotlin": "*"
+	}
 }
