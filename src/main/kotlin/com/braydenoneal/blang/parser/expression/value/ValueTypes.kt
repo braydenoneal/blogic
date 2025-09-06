@@ -15,6 +15,7 @@ object ValueTypes {
     val ITEM_STACK: ValueType<ItemStackValue> = register("item_stack", ValueType(ItemStackValue.CODEC))
     val NULL: ValueType<NullValue> = register("null", ValueType(NullValue.CODEC))
     val FUNCTION: ValueType<FunctionValue> = register("function", ValueType(FunctionValue.CODEC))
+    val STRUCT: ValueType<StructValue> = register("struct", ValueType(StructValue.CODEC))
 
     fun <T : Value<*>> register(id: String, valueType: ValueType<T>): ValueType<T> {
         return Registry.register(ValueType.REGISTRY, Identifier.of("blogic", id), valueType)

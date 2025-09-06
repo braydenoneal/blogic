@@ -28,17 +28,20 @@ interface Expression {
             val outputs: Deque<Output> = ArrayDeque<Output>()
             val operators = Stack<Operator>()
             var openedParenthesis = false
+            var operand = true
 
             while (!(program.peekIs(Type.PARENTHESIS, ")") ||
                         program.peekIs(Type.SEMICOLON, ";") ||
                         program.peekIs(Type.CURLY_BRACE, "{") ||
+                        program.peekIs(Type.CURLY_BRACE, "}") ||
                         program.peekIs(Type.SQUARE_BRACE, "]") ||
                         program.peekIs(Type.COMMA, ",") ||
                         program.peekIs(Type.KEYWORD, "else")
-                        ) || openedParenthesis
+                        ) || openedParenthesis || operand
             ) {
                 when (program.peek().type) {
                     Type.BOOLEAN_OPERATOR, Type.COMPARISON_OPERATOR, Type.ARITHMETIC_OPERATOR -> {
+                        operand = true
                         val operator = program.next().value
 
                         if (!operators.empty() && operatorPrecedence[operator]!! <= operatorPrecedence[operators.peek().operator]!!) {
@@ -49,6 +52,7 @@ interface Expression {
                     }
 
                     Type.PARENTHESIS -> if (program.next().value == "(") {
+                        operand = true
                         openedParenthesis = true
                         operators.push(Operator("("))
                     } else {
@@ -62,6 +66,7 @@ interface Expression {
                     }
 
                     else -> {
+                        operand = false
                         val token = program.peek()
 
                         if (program.peekIs(Type.KEYWORD, "fn")) {
@@ -74,6 +79,7 @@ interface Expression {
                             Type.FLOAT -> FloatValue(program.next().value.toFloat())
                             Type.INTEGER -> IntegerValue(program.next().value.toInt())
                             Type.SQUARE_BRACE -> ListExpression.parse(program)
+                            Type.CURLY_BRACE -> StructExpression.parse(program)
                             Type.UNARY_OPERATOR -> UnaryOperator.parse(program)
                             Type.NULL -> Null.parse(program)
                             else -> VariableExpression.parse(program)
