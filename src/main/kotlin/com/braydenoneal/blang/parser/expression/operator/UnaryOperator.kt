@@ -32,7 +32,7 @@ data class UnaryOperator(val operand: Expression) : Operator, Expression {
 
         fun parse(program: Program): Expression {
             program.next()
-            return Expression.parse(program)
+            return UnaryOperator(Expression.parse(program))
         }
     }
 }
