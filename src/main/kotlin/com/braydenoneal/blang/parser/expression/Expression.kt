@@ -79,10 +79,6 @@ interface Expression {
                             else -> VariableExpression.parse(program)
                         }
 
-                        if (program.peek().type == Type.DOT) {
-                            expression = MemberCallExpression.parse(program, expression)
-                        }
-
                         val indices: MutableList<Expression> = ArrayList<Expression>()
 
                         while (program.peekIs(Type.SQUARE_BRACE, "[")) {
@@ -97,6 +93,10 @@ interface Expression {
                             } else if (expression is ListExpression) {
                                 expression = ListAccessExpression(expression, indices)
                             }
+                        }
+
+                        if (program.peek().type == Type.DOT) {
+                            expression = MemberCallExpression.parse(program, expression)
                         }
 
                         if (program.peekIs(Type.KEYWORD, "if")) {

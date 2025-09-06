@@ -25,6 +25,11 @@ class Lists : Test() {
                 nested = listOfList[1][1];
                 nameless = [[[0]]][0][0][0];
                 length = len([0, 1, 2]);
+                nestedCall = [0, [0]];
+                nestedCall[1].append(2);
+                nestedCall[1].insert(1, 1);
+                nestedCall[1].pop();
+                nestedCall[1].remove(1);
                 """.trimIndent()
     }
 
@@ -39,7 +44,8 @@ class Lists : Test() {
             Expect("list3", ListValue(mutableListOf(IntegerValue(0), IntegerValue(1)))),
             Expect("nested", IntegerValue(1)),
             Expect("nameless", IntegerValue(0)),
-            Expect("length", IntegerValue(3))
+            Expect("length", IntegerValue(3)),
+            Expect("nestedCall", ListValue(mutableListOf(IntegerValue(0), ListValue(mutableListOf(IntegerValue(0)))))),
         )
     }
 }

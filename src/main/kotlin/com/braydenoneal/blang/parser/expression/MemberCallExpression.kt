@@ -16,6 +16,8 @@ data class MemberCallExpression(
     val arguments: Arguments
 ) : Expression {
     override fun evaluate(program: Program): Value<*> {
+        var value: Value<*>?
+
         if (member is VariableExpression) {
             for (importStatement in program.imports()) {
                 if (importStatement.identifiers.last() == member.name) {
@@ -34,26 +36,19 @@ data class MemberCallExpression(
                 }
             }
 
-            val item = program.scope.get(member.name)
-
-            if (item is ListValue) {
-                when (functionName) {
-                    "append" -> return ListAppendBuiltin(member.name, item, arguments).evaluate(program)
-                    "insert" -> return ListInsertBuiltin(member.name, item, arguments).evaluate(program)
-                    "remove" -> return ListRemoveBuiltin(member.name, item, arguments).evaluate(program)
-                    "pop" -> return ListPopBuiltin(member.name, item, arguments).evaluate(program)
-                    "contains" -> return ListContainsBuiltin(item, arguments).evaluate(program)
-                    "containsAll" -> return ListContainsAllBuiltin(item, arguments).evaluate(program)
-                }
-            }
+            value = program.scope.get(member.name)
         } else {
-            val value = member.evaluate(program)
+            value = member.evaluate(program)
+        }
 
-            if (value is ListValue) {
-                when (functionName) {
-                    "contains" -> return ListContainsBuiltin(value, arguments).evaluate(program)
-                    "containsAll" -> return ListContainsAllBuiltin(value, arguments).evaluate(program)
-                }
+        if (value is ListValue) {
+            when (functionName) {
+                "append" -> return ListAppendBuiltin(value, arguments).evaluate(program)
+                "insert" -> return ListInsertBuiltin(value, arguments).evaluate(program)
+                "remove" -> return ListRemoveBuiltin(value, arguments).evaluate(program)
+                "pop" -> return ListPopBuiltin(value, arguments).evaluate(program)
+                "contains" -> return ListContainsBuiltin(value, arguments).evaluate(program)
+                "containsAll" -> return ListContainsAllBuiltin(value, arguments).evaluate(program)
             }
         }
 
