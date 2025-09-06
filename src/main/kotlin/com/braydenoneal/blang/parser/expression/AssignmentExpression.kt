@@ -26,17 +26,17 @@ data class AssignmentExpression(
             val prev = program.scope.get(variableExpression.name) ?: throw RunException("Variable '" + variableExpression.name + "' does not exist")
             return program.scope.set(variableExpression.name, ArithmeticOperator(if (operator == "+=") "+" else "-", prev, value).evaluate(program))
         } else if (variableExpression is NamedListAccessExpression) {
-            val listValue: Value<*> = variableExpression.listExpression.evaluate(program)
+            val listValue: Value<*> = variableExpression.variableExpression.evaluate(program)
 
             if (listValue is ListValue) {
                 val indexValues = ListValue.toIndexValues(program, variableExpression.indices)
 
                 if (operator == "=") {
-                    return program.scope.set(variableExpression.name, ListValue.setNested(listValue, indexValues, value))
+                    return listValue.set(indexValues, value)
                 }
 
-                val prev = ListValue.getNested(listValue, indexValues)
-                return program.scope.set(variableExpression.name, ListValue.setNested(listValue, indexValues, ArithmeticOperator(if (operator == "+=") "+" else "-", prev, value).evaluate(program)))
+                val prev = listValue.get(indexValues)
+                return listValue.set(indexValues, ArithmeticOperator(if (operator == "+=") "+" else "-", prev, value).evaluate(program))
             }
         }
 

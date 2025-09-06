@@ -10,18 +10,17 @@ import com.mojang.serialization.codecs.RecordCodecBuilder
 import java.util.function.Function
 
 data class NamedListAccessExpression(
-    val name: String,
-    val listExpression: Expression,
+    val variableExpression: Expression,
     val indices: MutableList<Expression>
 ) : Expression {
     override fun evaluate(program: Program): Value<*> {
-        val listValue = listExpression.evaluate(program)
+        val listValue = variableExpression.evaluate(program)
 
         if (listValue is ListValue) {
-            return ListValue.getNested(listValue, ListValue.toIndexValues(program, indices))
+            return listValue.get(ListValue.toIndexValues(program, indices))
         }
 
-        throw RunException("Expression is not a list")
+        throw RunException("Variable is not a list")
     }
 
     override val type: ExpressionType<*> get() = ExpressionTypes.NAMED_LIST_ACCESS_EXPRESSION
@@ -29,8 +28,7 @@ data class NamedListAccessExpression(
     companion object {
         val CODEC: MapCodec<NamedListAccessExpression> = RecordCodecBuilder.mapCodec(Function { instance ->
             instance.group(
-                Codec.STRING.fieldOf("name").forGetter(NamedListAccessExpression::name),
-                Expression.CODEC.fieldOf("listExpression").forGetter(NamedListAccessExpression::listExpression),
+                Expression.CODEC.fieldOf("variableExpression").forGetter(NamedListAccessExpression::variableExpression),
                 Codec.list(Expression.CODEC).fieldOf("indices").forGetter(NamedListAccessExpression::indices)
             ).apply(instance, ::NamedListAccessExpression)
         })

@@ -11,7 +11,7 @@ class ItemStackValue(value: ItemStack) : Value<ItemStack>(value) {
     override fun equals(other: Any?): Boolean {
         try {
             if (other is ItemStackValue) {
-                return value() == other.value()
+                return value == other.value
             }
         } catch (_: Error) {
             throw RunException("Cannot equate item stack values outside of the game")

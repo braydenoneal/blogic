@@ -30,17 +30,17 @@ data class ComparisonOperator(
 
         if (a is IntegerValue && b is IntegerValue) {
             return when (operator) {
-                "<=" -> BooleanValue(a.value() <= b.value())
-                ">=" -> BooleanValue(a.value() >= b.value())
-                "<" -> BooleanValue(a.value() < b.value())
-                else -> BooleanValue(a.value() > b.value())
+                "<=" -> BooleanValue(a.value <= b.value)
+                ">=" -> BooleanValue(a.value >= b.value)
+                "<" -> BooleanValue(a.value < b.value)
+                else -> BooleanValue(a.value > b.value)
             }
         } else if (a is FloatValue && b is FloatValue) {
             return when (operator) {
-                "<=" -> BooleanValue(a.value() <= b.value())
-                ">=" -> BooleanValue(a.value() >= b.value())
-                "<" -> BooleanValue(a.value() < b.value())
-                else -> BooleanValue(a.value() > b.value())
+                "<=" -> BooleanValue(a.value <= b.value)
+                ">=" -> BooleanValue(a.value >= b.value)
+                "<" -> BooleanValue(a.value < b.value)
+                else -> BooleanValue(a.value > b.value)
             }
         }
 

@@ -14,7 +14,7 @@ data class WhileStatement(val condition: Expression, val statements: MutableList
         val start = System.currentTimeMillis()
         var value = condition.evaluate(program)
 
-        while (value is BooleanValue && value.value()) {
+        while (value is BooleanValue && value.value) {
             val statement: Statement? = Statement.runStatements(program, statements)
 
             if (statement is ReturnStatement) {

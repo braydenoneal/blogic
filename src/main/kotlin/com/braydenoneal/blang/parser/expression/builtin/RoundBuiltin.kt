@@ -21,7 +21,7 @@ data class RoundBuiltin(val arguments: Arguments) : Expression {
         if (value is IntegerValue) {
             return value
         } else if (value is FloatValue) {
-            return IntegerValue(value.value().roundToInt())
+            return IntegerValue(value.value.roundToInt())
         }
 
         throw RunException("Expression is not a number")

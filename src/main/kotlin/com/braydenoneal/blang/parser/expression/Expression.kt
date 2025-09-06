@@ -93,7 +93,7 @@ interface Expression {
 
                         if (!indices.isEmpty()) {
                             if (expression is VariableExpression) {
-                                expression = NamedListAccessExpression(expression.name, expression, indices)
+                                expression = NamedListAccessExpression(expression, indices)
                             } else if (expression is ListExpression) {
                                 expression = ListAccessExpression(expression, indices)
                             }

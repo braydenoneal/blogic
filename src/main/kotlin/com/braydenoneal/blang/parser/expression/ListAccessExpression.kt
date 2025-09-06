@@ -13,7 +13,7 @@ data class ListAccessExpression(val listExpression: Expression, val indices: Mut
         val listValue = listExpression.evaluate(program)
 
         if (listValue is ListValue) {
-            return ListValue.getNested(listValue, ListValue.toIndexValues(program, indices))
+            return listValue.get(ListValue.toIndexValues(program, indices))
         }
 
         throw RunException("Expression is not a list")

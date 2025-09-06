@@ -13,15 +13,56 @@ class ListValue(value: MutableList<Value<*>>) : Value<MutableList<Value<*>>>(val
     override fun toString(): String {
         val print = StringBuilder("[")
 
-        for (i in value().indices) {
-            print.append(value()[i].toString())
+        for (i in value.indices) {
+            print.append(value[i].toString())
 
-            if (i < value().size - 1) {
+            if (i < value.size - 1) {
                 print.append(", ")
             }
         }
 
         return "$print]"
+    }
+
+    fun get(indexValues: List<Value<*>>): Value<*> {
+        if (indexValues.isEmpty()) {
+            throw RunException("No indices provided")
+        }
+
+        var currentValue: Value<*> = this
+
+        for (index in indexValues) {
+            if (index !is IntegerValue) {
+                throw RunException("Index is not an integer")
+            }
+
+            if (currentValue !is ListValue) {
+                throw RunException("Object is not a list")
+            }
+
+            if (index.value >= currentValue.value.size) {
+                throw RunException("Index " + index.value + " out of range for list of size " + currentValue.value.size)
+            }
+
+            currentValue = currentValue.value[index.value]
+        }
+
+        return currentValue
+    }
+
+    fun set(indexValues: List<Value<*>>, value: Value<*>): Value<*> {
+        val list = get(indexValues.subList(0, indexValues.size - 1))
+        val lastIndex = indexValues.last()
+
+        if (lastIndex !is IntegerValue) {
+            throw RunException("Index is not an integer")
+        }
+        if (list !is ListValue) {
+            throw RunException("Object is not a list")
+        }
+
+        list.value[lastIndex.value] = value
+        return value
     }
 
     companion object {
@@ -31,57 +72,8 @@ class ListValue(value: MutableList<Value<*>>) : Value<MutableList<Value<*>>>(val
             ).apply(instance, ::ListValue)
         }
 
-        fun toIndexValues(program: Program, expressions: MutableList<Expression>): MutableList<Value<*>> {
-            val indices: MutableList<Value<*>> = ArrayList()
-
-            for (expression in expressions) {
-                indices.add(expression.evaluate(program))
-            }
-
-            return indices
-        }
-
-        fun setNested(list: ListValue, indexValues: MutableList<out Value<*>>, value: Value<*>): ListValue {
-            val newList: MutableList<Value<*>> = ArrayList(list.value())
-            val indexValue: Value<*> = indexValues.first()
-
-            for (i in newList.indices) {
-                if (indexValue is IntegerValue && indexValue.value() != i) {
-                    continue
-                }
-
-                val nestedList = newList[i]
-
-                if (indexValues.size > 1 && nestedList is ListValue) {
-                    newList[i] = setNested(nestedList, indexValues.subList(1, indexValues.size), value)
-                } else {
-                    newList[i] = value
-                }
-
-                break
-            }
-
-            return ListValue(newList)
-        }
-
-        fun getNested(list: ListValue, indexValues: MutableList<out Value<*>>): Value<*> {
-            val indexValue: Value<*> = indexValues.first()
-
-            for (i in list.value().indices) {
-                if (indexValue is IntegerValue && indexValue.value() != i) {
-                    continue
-                }
-
-                val nestedList = list.value()[i]
-
-                return if (indexValues.size > 1 && nestedList is ListValue) {
-                    getNested(nestedList, indexValues.subList(1, indexValues.size))
-                } else {
-                    list.value()[i]
-                }
-            }
-
-            throw RunException("Nested value does not exist")
+        fun toIndexValues(program: Program, expressions: MutableList<Expression>): List<Value<*>> {
+            return expressions.map { expression -> expression.evaluate(program) }
         }
     }
 }

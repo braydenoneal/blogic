@@ -21,7 +21,7 @@ data class ListContainsAllBuiltin(
         val nextListValue = arguments.anyValue(program, "value", 0)
 
         if (nextListValue is ListValue) {
-            return BooleanValue(listValue.value().containsAll(nextListValue.value()))
+            return BooleanValue(listValue.value.containsAll(nextListValue.value))
         }
 
         throw RunException("Expression is not a list")

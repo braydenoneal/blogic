@@ -17,14 +17,14 @@ data class IfStatement(
     override fun execute(program: Program): Statement? {
         val value = condition.evaluate(program)
 
-        if (value is BooleanValue && value.value()) {
+        if (value is BooleanValue && value.value) {
             return Statement.runStatements(program, statements)
         }
 
         for (elseIfStatement in elseIfStatements) {
             val elseIfValue = elseIfStatement.condition.evaluate(program)
 
-            if (elseIfValue is BooleanValue && elseIfValue.value()) {
+            if (elseIfValue is BooleanValue && elseIfValue.value) {
                 return Statement.runStatements(program, elseIfStatement.statements)
             }
         }

@@ -13,7 +13,7 @@ import com.mojang.serialization.codecs.RecordCodecBuilder
 
 data class LengthBuiltin(val arguments: Arguments) : Expression {
     override fun evaluate(program: Program): Value<*> {
-        return IntegerValue(arguments.listValue(program, "value", 0).value().size)
+        return IntegerValue(arguments.listValue(program, "value", 0).value.size)
     }
 
     override val type: ExpressionType<*> get() = ExpressionTypes.LENGTH_BUILTIN

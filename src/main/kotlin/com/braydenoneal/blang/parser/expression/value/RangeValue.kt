@@ -7,7 +7,7 @@ class RangeValue(value: Range) : Value<Range>(value) {
     override val valueType: ValueType<*> get() = ValueTypes.RANGE
 
     override fun toString(): String {
-        return "range(" + value().start + ", " + value().end + ", " + value().step + ")"
+        return "range(" + value.start + ", " + value.end + ", " + value.step + ")"
     }
 
     companion object {

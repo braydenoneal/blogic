@@ -26,11 +26,11 @@ import kotlin.math.min
 
 data class BreakBlockBuiltin(val arguments: Arguments) : Expression {
     override fun evaluate(program: Program): Value<*> {
-        val x = arguments.integerValue(program, "x", 0).value()
-        val y = arguments.integerValue(program, "y", 1).value()
-        val z = arguments.integerValue(program, "z", 2).value()
+        val x = arguments.integerValue(program, "x", 0).value
+        val y = arguments.integerValue(program, "y", 1).value
+        val z = arguments.integerValue(program, "z", 2).value
         val blockPredicate = arguments.functionValue(program, "blockPredicate", 3)
-        val silkTouch = if (arguments.arguments.size > 4 || arguments.namedArguments.containsKey("silkTouch")) arguments.booleanValue(program, "silkTouch", 4).value() else false
+        val silkTouch = if (arguments.arguments.size > 4 || arguments.namedArguments.containsKey("silkTouch")) arguments.booleanValue(program, "silkTouch", 4).value else false
 
         val entityPos = program.context().pos
         val pos = BlockPos(entityPos.x + x, entityPos.y + y, entityPos.z + z)
@@ -49,7 +49,7 @@ data class BreakBlockBuiltin(val arguments: Arguments) : Expression {
             throw RunException("blockPredicate is not a predicate")
         }
 
-        if (!predicateResult.value()) {
+        if (!predicateResult.value) {
             return BooleanValue(false)
         }
 

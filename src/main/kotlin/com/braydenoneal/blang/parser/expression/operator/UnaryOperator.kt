@@ -15,7 +15,7 @@ data class UnaryOperator(val operand: Expression) : Operator, Expression {
         val value = operand.evaluate(program)
 
         if (value is BooleanValue) {
-            return BooleanValue(!value.value())
+            return BooleanValue(!value.value)
         }
 
         throw RunException("Operand is not a boolean")

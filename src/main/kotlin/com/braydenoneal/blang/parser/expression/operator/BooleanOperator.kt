@@ -22,10 +22,10 @@ data class BooleanOperator(
 
         if (a is BooleanValue && b is BooleanValue) {
             if (operator == "and") {
-                return BooleanValue(a.value() && b.value())
+                return BooleanValue(a.value && b.value)
             }
 
-            return BooleanValue(a.value() || b.value())
+            return BooleanValue(a.value || b.value)
         }
 
         throw RunException("Operands are not booleans")

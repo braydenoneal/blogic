@@ -15,7 +15,7 @@ import net.minecraft.util.Identifier
 
 data class ItemBuiltin(val arguments: Arguments) : Expression {
     override fun evaluate(program: Program): Value<*> {
-        return ItemValue(Registries.ITEM.get(Identifier.of(arguments.stringValue(program, "value", 0).value())))
+        return ItemValue(Registries.ITEM.get(Identifier.of(arguments.stringValue(program, "value", 0).value)))
     }
 
     override val type: ExpressionType<*> get() = ExpressionTypes.ITEM_BUILTIN

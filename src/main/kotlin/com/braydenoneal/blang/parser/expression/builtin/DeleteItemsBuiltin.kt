@@ -38,7 +38,7 @@ data class DeleteItemsBuiltin(val arguments: Arguments) : Expression {
                     throw RunException("itemPredicate is not a predicate")
                 }
 
-                if (!predicateResult.value()) {
+                if (!predicateResult.value) {
                     continue
                 }
 

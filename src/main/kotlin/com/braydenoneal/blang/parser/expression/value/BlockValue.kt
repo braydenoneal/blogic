@@ -12,7 +12,7 @@ class BlockValue(value: Block) : Value<Block>(value) {
     override fun equals(other: Any?): Boolean {
         try {
             if (other is BlockValue) {
-                return value() == other.value()
+                return value == other.value
             }
         } catch (_: Error) {
             throw RunException("Cannot equate block values outside of the game")

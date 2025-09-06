@@ -13,7 +13,7 @@ import com.mojang.serialization.codecs.RecordCodecBuilder
 
 data class IntegerCastBuiltin(val arguments: Arguments) : Expression {
     override fun evaluate(program: Program): Value<*> {
-        return IntegerValue(this.arguments.floatValue(program, "value", 0).value().toInt())
+        return IntegerValue(this.arguments.floatValue(program, "value", 0).value.toInt())
     }
 
     override val type: ExpressionType<*> get() = ExpressionTypes.INTEGER_CAST_BUILTIN

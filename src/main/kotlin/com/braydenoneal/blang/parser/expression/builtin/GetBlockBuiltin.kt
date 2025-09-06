@@ -20,7 +20,7 @@ data class GetBlockBuiltin(val arguments: Arguments) : Expression {
         val z = arguments.integerValue(program, "z", 2)
 
         val entityPos = program.context().pos
-        val pos = BlockPos(entityPos.x + x.value(), entityPos.y + y.value(), entityPos.z + z.value())
+        val pos = BlockPos(entityPos.x + x.value, entityPos.y + y.value, entityPos.z + z.value)
         val world = program.context().entity!!.getWorld()
 
         if (world == null) {

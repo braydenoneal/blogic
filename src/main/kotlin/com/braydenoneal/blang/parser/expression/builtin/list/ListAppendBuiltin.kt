@@ -20,7 +20,7 @@ data class ListAppendBuiltin(
     override fun evaluate(program: Program): Value<*> {
         val appendValue = arguments.anyValue(program, "value", 0)
 
-        val localList: MutableList<Value<*>> = listValue.value()
+        val localList: MutableList<Value<*>> = listValue.value
         localList.add(appendValue)
 
         return program.scope.set(name, ListValue(localList))

@@ -8,7 +8,7 @@ class StringValue(value: String) : Value<String>(value) {
     override val valueType: ValueType<*> get() = ValueTypes.STRING
 
     override fun toString(): String {
-        return "\"" + value() + "\""
+        return "\"" + value + "\""
     }
 
     companion object {

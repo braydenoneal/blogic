@@ -25,7 +25,6 @@ class Lists : Test() {
                 nested = listOfList[1][1];
                 nameless = [[[0]]][0][0][0];
                 length = len([0, 1, 2]);
-                
                 """.trimIndent()
     }
 

@@ -19,9 +19,9 @@ data class AbsoluteValueBuiltin(val arguments: Arguments) : Expression {
         val value = arguments.anyValue(program, "value", 0)
 
         if (value is IntegerValue) {
-            return IntegerValue(abs(value.value()))
+            return IntegerValue(abs(value.value))
         } else if (value is FloatValue) {
-            return FloatValue(abs(value.value()))
+            return FloatValue(abs(value.value))
         }
 
         throw RunException("Expression is not a number")

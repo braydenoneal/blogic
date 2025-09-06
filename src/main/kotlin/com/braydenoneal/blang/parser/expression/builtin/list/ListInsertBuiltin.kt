@@ -18,10 +18,10 @@ data class ListInsertBuiltin(
     val arguments: Arguments
 ) : Expression {
     override fun evaluate(program: Program): Value<*> {
-        val index = arguments.integerValue(program, "index", 0).value()
+        val index = arguments.integerValue(program, "index", 0).value
         val insertValue = arguments.anyValue(program, "value", 1)
 
-        val localList: MutableList<Value<*>> = listValue.value()
+        val localList: MutableList<Value<*>> = listValue.value
         localList.add(index, insertValue)
         return program.scope.set(name, ListValue(localList))
     }

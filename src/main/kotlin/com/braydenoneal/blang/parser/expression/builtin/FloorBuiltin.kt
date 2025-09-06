@@ -14,7 +14,7 @@ import kotlin.math.floor
 
 data class FloorBuiltin(val arguments: Arguments) : Expression {
     override fun evaluate(program: Program): Value<*> {
-        return FloatValue(floor(arguments.floatValue(program, "value", 0).value().toDouble()).toFloat())
+        return FloatValue(floor(arguments.floatValue(program, "value", 0).value.toDouble()).toFloat())
     }
 
     override val type: ExpressionType<*> get() = ExpressionTypes.ABSOLUTE_VALUE_BUILTIN

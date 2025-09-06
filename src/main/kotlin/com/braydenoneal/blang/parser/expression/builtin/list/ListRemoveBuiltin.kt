@@ -20,10 +20,10 @@ data class ListRemoveBuiltin(
 ) : Expression {
     override fun evaluate(program: Program): Value<*> {
         val removeValue = arguments.anyValue(program, "value", 0)
-        val localList: MutableList<Value<*>> = listValue.value()
+        val localList: MutableList<Value<*>> = listValue.value
 
         if (removeValue is IntegerValue) {
-            localList.removeAt(removeValue.value())
+            localList.removeAt(removeValue.value)
         } else {
             localList.remove(removeValue)
         }

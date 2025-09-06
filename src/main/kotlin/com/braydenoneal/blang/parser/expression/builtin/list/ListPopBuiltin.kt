@@ -18,7 +18,7 @@ data class ListPopBuiltin(
     val arguments: Arguments
 ) : Expression {
     override fun evaluate(program: Program): Value<*> {
-        val localList: MutableList<Value<*>> = listValue.value()
+        val localList: MutableList<Value<*>> = listValue.value
         localList.removeLast()
 
         return program.scope.set(name, ListValue(localList))

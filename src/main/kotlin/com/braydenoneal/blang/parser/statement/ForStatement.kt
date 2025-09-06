@@ -19,7 +19,7 @@ data class ForStatement(
         val value = listExpression.evaluate(program)
 
         if (value is ListValue) {
-            for (item in value.value()) {
+            for (item in value.value) {
                 program.scope.set(itemName, item)
                 val statement = Statement.runStatements(program, statements)
 
@@ -30,7 +30,7 @@ data class ForStatement(
                 }
             }
         } else if (value is RangeValue) {
-            for (i in value.value().start..<value.value().end step value.value().step) {
+            for (i in value.value.start..<value.value.end step value.value.step) {
                 program.scope.set(itemName, IntegerValue(i))
                 val statement = Statement.runStatements(program, statements)
 

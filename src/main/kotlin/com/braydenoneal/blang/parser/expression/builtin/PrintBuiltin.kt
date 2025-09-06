@@ -22,6 +22,11 @@ data class PrintBuiltin(val arguments: Arguments) : Expression {
             string = string.substring(1, string.length - 1)
         }
 
+        if (program.context().entity == null) {
+            println(string)
+            return Null.VALUE
+        }
+
         val world = program.context().entity!!.getWorld()
 
         if (world != null && world.server != null) {

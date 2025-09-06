@@ -13,13 +13,13 @@ import com.mojang.serialization.codecs.RecordCodecBuilder
 
 class FunctionValue(value: Funct) : Value<Funct>(value) {
     fun call(program: Program, arguments: Arguments): Value<*> {
-        return value().call(program, arguments)
+        return value.call(program, arguments)
     }
 
     override val valueType: ValueType<*> get() = ValueTypes.FUNCTION
 
     override fun toString(): String {
-        return "fn" + value().parameters.toString() + ": " + value().statements.toString()
+        return "fn" + value.parameters.toString() + ": " + value.statements.toString()
     }
 
     companion object {

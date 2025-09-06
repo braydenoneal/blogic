@@ -6,7 +6,6 @@ Minecraft mod that adds a survival-friendly programming language that can intera
 
 ## Todo
 
-- list to string
 - nested list functions (`list[0].append(1)`)
 - dictionaries
 - tab, shift-tab, auto-indent, auto open and close

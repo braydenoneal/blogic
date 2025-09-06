@@ -21,9 +21,9 @@ import java.util.Map
 
 data class PlaceBlockBuiltin(val arguments: Arguments) : Expression {
     override fun evaluate(program: Program): Value<*> {
-        val x = arguments.integerValue(program, "x", 0).value()
-        val y = arguments.integerValue(program, "y", 1).value()
-        val z = arguments.integerValue(program, "z", 2).value()
+        val x = arguments.integerValue(program, "x", 0).value
+        val y = arguments.integerValue(program, "y", 1).value
+        val z = arguments.integerValue(program, "z", 2).value
         val itemPredicate = arguments.functionValue(program, "itemPredicate", 3)
 
         val entityPos = program.context().pos
@@ -55,7 +55,7 @@ data class PlaceBlockBuiltin(val arguments: Arguments) : Expression {
                     throw RunException("itemPredicate is not a predicate")
                 }
 
-                if (!predicateResult.value()) {
+                if (!predicateResult.value) {
                     continue
                 }
 

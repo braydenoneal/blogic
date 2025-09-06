@@ -17,7 +17,7 @@ data class IfElseExpression(
         val conditionValue = condition.evaluate(program)
 
         if (conditionValue is BooleanValue) {
-            return if (conditionValue.value()) expressionA.evaluate(program) else expressionB.evaluate(program)
+            return if (conditionValue.value) expressionA.evaluate(program) else expressionB.evaluate(program)
         }
 
         throw RunException("Condition is not a boolean")

@@ -15,7 +15,7 @@ import net.minecraft.util.Identifier
 
 data class BlockBuiltin(val arguments: Arguments) : Expression {
     override fun evaluate(program: Program): Value<*> {
-        return BlockValue(Registries.BLOCK.get(Identifier.of(arguments.stringValue(program, "value", 0).value())))
+        return BlockValue(Registries.BLOCK.get(Identifier.of(arguments.stringValue(program, "value", 0).value)))
     }
 
     override val type: ExpressionType<*> get() = ExpressionTypes.BLOCK_BUILTIN

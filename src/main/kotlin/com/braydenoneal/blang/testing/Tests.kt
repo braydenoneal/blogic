@@ -22,6 +22,14 @@ object Tests {
 
     @JvmStatic
     fun main(args: Array<String>) {
+//        val ls = ListValue(mutableListOf(IntegerValue(1), ListValue(mutableListOf(IntegerValue(2)))))
+//        println(ls.get(mutableListOf(IntegerValue(1), IntegerValue(0))))
+//        println(ls)
+//        ls.set(mutableListOf(IntegerValue(1), IntegerValue(0)), IntegerValue(3))
+////        ls.value[0] = IntegerValue(2)
+//        println(ls)
+//        return
+
         val results: MutableList<Test.Result> = ArrayList()
         tests().forEach(Consumer { test: Test? -> results.add(test!!.run()) })
 

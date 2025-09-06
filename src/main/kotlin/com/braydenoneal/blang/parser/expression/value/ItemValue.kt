@@ -12,7 +12,7 @@ class ItemValue(value: Item) : Value<Item>(value) {
     override fun equals(other: Any?): Boolean {
         try {
             if (other is ItemValue) {
-                return value() == other.value()
+                return value == other.value
             }
         } catch (_: Error) {
             throw RunException("Cannot equate item values outside of the game")

@@ -7,22 +7,18 @@ import com.braydenoneal.blang.parser.expression.ExpressionTypes
 import com.mojang.serialization.Codec
 import com.mojang.serialization.MapCodec
 
-abstract class Value<T>(private val value: T) : Expression {
-    fun value(): T {
-        return value
-    }
-
+abstract class Value<T>(val value: T) : Expression {
     override fun evaluate(program: Program): Value<*> {
         return this
     }
 
     override fun toString(): String {
-        return value().toString()
+        return value.toString()
     }
 
     override fun equals(other: Any?): Boolean {
         if (other is Value<*>) {
-            return value == other.value()
+            return value == other.value
         }
 
         return super.equals(other)
