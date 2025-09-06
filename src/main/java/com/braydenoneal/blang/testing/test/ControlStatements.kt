@@ -1,14 +1,11 @@
-package com.braydenoneal.blang.testing.test;
+package com.braydenoneal.blang.testing.test
 
-import com.braydenoneal.blang.parser.expression.value.BooleanValue;
-import com.braydenoneal.blang.parser.expression.value.IntegerValue;
-import com.braydenoneal.blang.parser.expression.value.Null;
+import com.braydenoneal.blang.parser.expression.value.BooleanValue
+import com.braydenoneal.blang.parser.expression.value.IntegerValue
+import com.braydenoneal.blang.parser.expression.value.Null.Companion.VALUE
 
-import java.util.List;
-
-public class ControlStatements extends Test {
-    @Override
-    public String body() {
+class ControlStatements : Test() {
+    override fun body(): String {
         return """
                 list = [];
                 
@@ -29,15 +26,15 @@ public class ControlStatements extends Test {
                 fn emptyReturn() { return; }
                 
                 c = emptyReturn();
-                """;
+                
+                """.trimIndent()
     }
 
-    @Override
-    public List<Expect> expects() {
-        return List.of(
-                new Expect("a", new BooleanValue(false)),
-                new Expect("b", new IntegerValue(5)),
-                new Expect("c", Null.value())
-        );
+    override fun expects(): List<Expect> {
+        return listOf(
+            Expect("a", BooleanValue(false)),
+            Expect("b", IntegerValue(5)),
+            Expect("c", VALUE)
+        )
     }
 }

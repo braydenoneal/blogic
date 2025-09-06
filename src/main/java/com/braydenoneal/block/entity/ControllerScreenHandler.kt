@@ -1,42 +1,31 @@
-package com.braydenoneal.block.entity;
+package com.braydenoneal.block.entity
 
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.item.ItemStack;
-import net.minecraft.screen.ScreenHandler;
-import net.minecraft.util.math.BlockPos;
+import net.minecraft.entity.player.PlayerEntity
+import net.minecraft.entity.player.PlayerInventory
+import net.minecraft.item.ItemStack
+import net.minecraft.screen.ScreenHandler
+import net.minecraft.util.math.BlockPos
 
-public class ControllerScreenHandler extends ScreenHandler {
-    private final ControllerBlockEntity entity;
+class ControllerScreenHandler(syncId: Int, ignoredPlayerInventory: PlayerInventory, private val entity: ControllerBlockEntity) : ScreenHandler(ModBlockEntities.CONTROLLER_SCREEN_HANDLER, syncId) {
+    constructor(syncId: Int, playerInventory: PlayerInventory, pos: BlockPos) : this(syncId, playerInventory, (playerInventory.player.world.getBlockEntity(pos) as ControllerBlockEntity))
 
-    public ControllerScreenHandler(int syncId, PlayerInventory playerInventory, BlockPos pos) {
-        this(syncId, playerInventory, (ControllerBlockEntity) playerInventory.player.getWorld().getBlockEntity(pos));
+    fun source(): String {
+        return entity.source()
     }
 
-    public ControllerScreenHandler(int syncId, PlayerInventory ignoredPlayerInventory, ControllerBlockEntity entity) {
-        super(ModBlockEntities.CONTROLLER_SCREEN_HANDLER, syncId);
-        this.entity = entity;
+    fun pos(): BlockPos {
+        return entity.getPos()
     }
 
-    public String source() {
-        return entity.source();
+    fun setSource(source: String) {
+        entity.setSource(source)
     }
 
-    public BlockPos pos() {
-        return entity.getPos();
+    override fun quickMove(player: PlayerEntity, slot: Int): ItemStack? {
+        return null
     }
 
-    public void setSource(String source) {
-        entity.setSource(source);
-    }
-
-    @Override
-    public ItemStack quickMove(PlayerEntity player, int slot) {
-        return null;
-    }
-
-    @Override
-    public boolean canUse(PlayerEntity player) {
-        return true;
+    override fun canUse(player: PlayerEntity): Boolean {
+        return true
     }
 }

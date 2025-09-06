@@ -12,7 +12,10 @@
   "environment": "*",
   "entrypoints": {
     "main": [
-      "com.braydenoneal.Blogic"
+      {
+        "adapter": "kotlin",
+        "value": "com.braydenoneal.Blogic"
+      }
     ],
     "client": [
       "com.braydenoneal.BlogicClient"
@@ -29,7 +32,8 @@
     "fabricloader": ">=0.16.14",
     "minecraft": "~1.21.7",
     "java": ">=21",
-    "fabric-api": "*"
+    "fabric-api": "*",
+    "fabric-language-kotlin": ">=1.13.5+kotlin.2.2.10"
   },
   "suggests": {
     "another-mod": "*"

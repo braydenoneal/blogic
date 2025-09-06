@@ -6,6 +6,9 @@ Minecraft mod that adds a survival-friendly programming language that can intera
 
 ## Todo
 
+- list to string
+- nested list functions (`list[0].append(1)`)
+- dictionaries
 - tab, shift-tab, auto-indent, auto open and close
 - tab autocomplete
 - better error context (source location, etc)
@@ -13,10 +16,9 @@ Minecraft mod that adds a survival-friendly programming language that can intera
 - add block for import?, access modifiers
 - address while loop max iterations issue
 - separate language from the game, allowing it to run on its own
-- structs
-- struct implementations
-- static types
-- dictionaries?
+- structs?
+- struct implementations?
+- static types?
 - enums?
 - list comprehension?
 - in-language errors, exceptions?

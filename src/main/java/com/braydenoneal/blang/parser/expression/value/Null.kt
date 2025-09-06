@@ -1,11 +1,17 @@
-package com.braydenoneal.blang.parser.expression.value;
+package com.braydenoneal.blang.parser.expression.value
 
-import com.mojang.serialization.Codec;
+import com.braydenoneal.blang.parser.Program
+import com.braydenoneal.blang.parser.expression.Expression
+import com.mojang.serialization.Codec
 
-public record Null() {
-    public static final Codec<Null> CODEC = Codec.unit(new Null());
+class Null {
+    companion object {
+        val CODEC: Codec<Null> = Codec.unit<Null>(Null())
+        val VALUE = NullValue(Null())
 
-    public static NullValue value() {
-        return new NullValue(new Null());
+        fun parse(program: Program): Expression {
+            program.next()
+            return VALUE
+        }
     }
 }

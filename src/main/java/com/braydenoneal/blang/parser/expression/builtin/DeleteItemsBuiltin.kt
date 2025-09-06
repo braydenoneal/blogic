@@ -1,62 +1,61 @@
-package com.braydenoneal.blang.parser.expression.builtin;
+package com.braydenoneal.blang.parser.expression.builtin
 
-import com.braydenoneal.blang.parser.Program;
-import com.braydenoneal.blang.parser.RunException;
-import com.braydenoneal.blang.parser.expression.Arguments;
-import com.braydenoneal.blang.parser.expression.Expression;
-import com.braydenoneal.blang.parser.expression.ExpressionType;
-import com.braydenoneal.blang.parser.expression.ExpressionTypes;
-import com.braydenoneal.blang.parser.expression.value.*;
-import com.mojang.serialization.MapCodec;
-import com.mojang.serialization.codecs.RecordCodecBuilder;
-import net.minecraft.block.entity.LockableContainerBlockEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.world.World;
+import com.braydenoneal.blang.parser.Program
+import com.braydenoneal.blang.parser.RunException
+import com.braydenoneal.blang.parser.expression.Arguments
+import com.braydenoneal.blang.parser.expression.Expression
+import com.braydenoneal.blang.parser.expression.ExpressionType
+import com.braydenoneal.blang.parser.expression.ExpressionTypes
+import com.braydenoneal.blang.parser.expression.value.BooleanValue
+import com.braydenoneal.blang.parser.expression.value.ItemValue
+import com.braydenoneal.blang.parser.expression.value.Null
+import com.braydenoneal.blang.parser.expression.value.Value
+import com.mojang.serialization.MapCodec
+import com.mojang.serialization.codecs.RecordCodecBuilder
+import java.util.Map
 
-import java.util.List;
-import java.util.Map;
 
-public record DeleteItemsBuiltin(Arguments arguments) implements Expression {
-    @Override
-    public Value<?> evaluate(Program program) {
-        FunctionValue itemPredicate = arguments.functionValue(program, "itemPredicate", 0);
+data class DeleteItemsBuiltin(val arguments: Arguments) : Expression {
+    override fun evaluate(program: Program): Value<*> {
+        val itemPredicate = arguments.functionValue(program, "itemPredicate", 0)
 
-        World world = program.context().entity().getWorld();
+        val world = program.context().entity!!.getWorld()
 
         if (world == null) {
-            throw new RunException("World is null");
+            throw RunException("World is null")
         }
 
-        List<LockableContainerBlockEntity> containers = program.context().entity().getConnectedContainers();
+        val containers = program.context().entity!!.getConnectedContainers()
 
-        for (LockableContainerBlockEntity container : containers) {
-            for (int slot = 0; slot < container.size(); slot++) {
-                ItemStack stack = container.getStack(slot);
+        for (container in containers) {
+            for (slot in 0..<container.size()) {
+                val stack = container.getStack(slot)
 
-                Arguments predicateArguments = new Arguments(List.of(new ItemValue(stack.getItem())), Map.of());
-                Value<?> predicateResult = itemPredicate.call(program, predicateArguments);
+                val predicateArguments = Arguments(mutableListOf(ItemValue(stack.item)), Map.of())
+                val predicateResult = itemPredicate.call(program, predicateArguments)
 
-                if (!(predicateResult instanceof BooleanValue)) {
-                    throw new RunException("itemPredicate is not a predicate");
+                if (predicateResult !is BooleanValue) {
+                    throw RunException("itemPredicate is not a predicate")
                 }
 
-                if (!((BooleanValue) predicateResult).value()) {
-                    continue;
+                if (!predicateResult.value()) {
+                    continue
                 }
 
-                container.removeStack(slot);
+                container.removeStack(slot)
             }
         }
 
-        return Null.value();
+        return Null.VALUE
     }
 
-    public static final MapCodec<DeleteItemsBuiltin> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
-            Arguments.CODEC.fieldOf("arguments").forGetter(DeleteItemsBuiltin::arguments)
-    ).apply(instance, DeleteItemsBuiltin::new));
+    override val type: ExpressionType<*> get() = ExpressionTypes.DELETE_ITEMS_BUILTIN
 
-    @Override
-    public ExpressionType<?> getType() {
-        return ExpressionTypes.DELETE_ITEMS_BUILTIN;
+    companion object {
+        val CODEC: MapCodec<DeleteItemsBuiltin> = RecordCodecBuilder.mapCodec { instance ->
+            instance.group(
+                Arguments.CODEC.fieldOf("arguments").forGetter(DeleteItemsBuiltin::arguments)
+            ).apply(instance, ::DeleteItemsBuiltin)
+        }
     }
 }

@@ -1,160 +1,118 @@
-package com.braydenoneal.blang.parser.expression;
+package com.braydenoneal.blang.parser.expression
 
-import com.braydenoneal.blang.parser.ParseException;
-import com.braydenoneal.blang.parser.Program;
-import com.braydenoneal.blang.parser.RunException;
-import com.braydenoneal.blang.parser.expression.value.*;
-import com.braydenoneal.blang.tokenizer.Type;
-import com.mojang.serialization.Codec;
-import com.mojang.serialization.codecs.RecordCodecBuilder;
+import com.braydenoneal.blang.parser.ParseException
+import com.braydenoneal.blang.parser.Program
+import com.braydenoneal.blang.parser.RunException
+import com.braydenoneal.blang.parser.expression.value.*
+import com.braydenoneal.blang.tokenizer.Type
+import com.mojang.serialization.Codec
+import com.mojang.serialization.codecs.RecordCodecBuilder
+import java.util.*
+import java.util.Map
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Stack;
-
-public record Arguments(List<Expression> arguments, Map<String, Expression> namedArguments) {
-    public Value<?> anyValue(Program program, String name, int index) {
-        Expression expression = namedArguments.get(name);
+data class Arguments(val arguments: MutableList<Expression>, val namedArguments: MutableMap<String, Expression>) {
+    fun anyValue(program: Program, name: String, index: Int): Value<*> {
+        var expression = namedArguments[name]
 
         if (expression == null) {
-            if (index >= arguments.size()) {
-                throw new RunException("Missing argument " + name);
+            if (index >= arguments.size) {
+                throw RunException("Missing argument $name")
             }
 
-            expression = arguments.get(index);
+            expression = arguments[index]
         }
 
-        return expression.evaluate(program);
+        return expression.evaluate(program)
     }
 
-    public BlockValue blockValue(Program program, String name, int index) {
-        if (anyValue(program, name, index) instanceof BlockValue value) {
-            return value;
-        }
-
-        throw new RunException(name + " is not a block");
+    fun blockValue(program: Program, name: String, index: Int): BlockValue {
+        return anyValue(program, name, index) as? BlockValue ?: throw RunException("$name is not a block")
     }
 
-    public BooleanValue booleanValue(Program program, String name, int index) {
-        if (anyValue(program, name, index) instanceof BooleanValue value) {
-            return value;
-        }
-
-        throw new RunException(name + " is not a boolean");
+    fun booleanValue(program: Program, name: String, index: Int): BooleanValue {
+        return anyValue(program, name, index) as? BooleanValue ?: throw RunException("$name is not a boolean")
     }
 
-    public FloatValue floatValue(Program program, String name, int index) {
-        if (anyValue(program, name, index) instanceof FloatValue value) {
-            return value;
-        }
-
-        throw new RunException(name + " is not a float");
+    fun floatValue(program: Program, name: String, index: Int): FloatValue {
+        return anyValue(program, name, index) as? FloatValue ?: throw RunException("$name is not a float")
     }
 
-    public FunctionValue functionValue(Program program, String name, int index) {
-        if (anyValue(program, name, index) instanceof FunctionValue value) {
-            return value;
-        }
-
-        throw new RunException(name + " is not a function");
+    fun functionValue(program: Program, name: String, index: Int): FunctionValue {
+        return anyValue(program, name, index) as? FunctionValue ?: throw RunException("$name is not a function")
     }
 
-    public IntegerValue integerValue(Program program, String name, int index) {
-        if (anyValue(program, name, index) instanceof IntegerValue value) {
-            return value;
-        }
-
-        throw new RunException(name + " is not an integer");
+    fun integerValue(program: Program, name: String, index: Int): IntegerValue {
+        return anyValue(program, name, index) as? IntegerValue ?: throw RunException("$name is not a integer")
     }
 
-    public ItemStackValue itemStackValue(Program program, String name, int index) {
-        if (anyValue(program, name, index) instanceof ItemStackValue value) {
-            return value;
-        }
-
-        throw new RunException(name + " is not an item stack");
+    fun itemStackValue(program: Program, name: String, index: Int): ItemStackValue {
+        return anyValue(program, name, index) as? ItemStackValue ?: throw RunException("$name is not a stack")
     }
 
-    public ItemValue itemValue(Program program, String name, int index) {
-        if (anyValue(program, name, index) instanceof ItemValue value) {
-            return value;
-        }
-
-        throw new RunException(name + " is not an item");
+    fun itemValue(program: Program, name: String, index: Int): ItemValue {
+        return anyValue(program, name, index) as? ItemValue ?: throw RunException("$name is not a item")
     }
 
-    public ListValue listValue(Program program, String name, int index) {
-        if (anyValue(program, name, index) instanceof ListValue value) {
-            return value;
-        }
-
-        throw new RunException(name + " is not a list");
+    fun listValue(program: Program, name: String, index: Int): ListValue {
+        return anyValue(program, name, index) as? ListValue ?: throw RunException("$name is not a list")
     }
 
-    public RangeValue rangeValue(Program program, String name, int index) {
-        if (anyValue(program, name, index) instanceof RangeValue value) {
-            return value;
-        }
-
-        throw new RunException(name + " is not a range");
+    fun rangeValue(program: Program, name: String, index: Int): RangeValue {
+        return anyValue(program, name, index) as? RangeValue ?: throw RunException("$name is not a range")
     }
 
-    public StringValue stringValue(Program program, String name, int index) {
-        if (anyValue(program, name, index) instanceof StringValue value) {
-            return value;
-        }
-
-        throw new RunException(name + " is not a string");
+    fun stringValue(program: Program, name: String, index: Int): StringValue {
+        return anyValue(program, name, index) as? StringValue ?: throw RunException("$name is not a string")
     }
 
-    public static Arguments parse(Program program) throws ParseException {
-        List<Expression> arguments = new Stack<>();
-        Map<String, Expression> namedArguments = new HashMap<>();
-        boolean parseDefaults = false;
+    companion object {
+        fun parse(program: Program): Arguments {
+            val arguments: MutableList<Expression> = Stack()
+            val namedArguments: MutableMap<String, Expression> = HashMap()
+            var parseDefaults = false
 
-        program.expect(Type.PARENTHESIS, "(");
+            program.expect(Type.PARENTHESIS, "(")
 
-        while (!program.peekIs(Type.PARENTHESIS, ")")) {
-            Expression expression = Expression.parse(program);
+            while (!program.peekIs(Type.PARENTHESIS, ")")) {
+                val expression: Expression = Expression.parse(program)
 
-            if (expression instanceof AssignmentExpression) {
-                parseDefaults = true;
-            }
-
-            if (parseDefaults) {
-                try {
-                    AssignmentExpression assignmentExpression = (AssignmentExpression) expression;
-                    Expression variableExpression = assignmentExpression.variableExpression();
-
-                    if (variableExpression instanceof VariableExpression(String name) &&
-                            assignmentExpression.type().equals("=")
-                    ) {
-                        namedArguments.put(name, assignmentExpression.expression());
-                    } else {
-                        throw new ParseException("");
-                    }
-                } catch (ParseException e) {
-                    throw new ParseException("Function cannot have parameter with default after parameter without default");
+                if (expression is AssignmentExpression) {
+                    parseDefaults = true
                 }
-            } else {
-                arguments.add(expression);
+
+                if (parseDefaults) {
+                    try {
+                        val assignmentExpression = expression as AssignmentExpression
+                        val variableExpression = assignmentExpression.variableExpression
+
+                        if (variableExpression is VariableExpression && assignmentExpression.operator == "=") {
+                            namedArguments.put(variableExpression.name, assignmentExpression.expression)
+                        } else {
+                            throw ParseException("")
+                        }
+                    } catch (_: ParseException) {
+                        throw ParseException("Function cannot have parameter with default after parameter without default")
+                    }
+                } else {
+                    arguments.add(expression)
+                }
+
+                if (!program.peekIs(Type.PARENTHESIS, ")")) {
+                    program.expect(Type.COMMA)
+                }
             }
 
-            if (!program.peekIs(Type.PARENTHESIS, ")")) {
-                program.expect(Type.COMMA);
-            }
+            program.expect(Type.PARENTHESIS, ")")
+            return Arguments(arguments, namedArguments)
         }
 
-        program.expect(Type.PARENTHESIS, ")");
+        val EMPTY: Arguments = Arguments(mutableListOf(), Map.of())
 
-        return new Arguments(arguments, namedArguments);
+        val CODEC: Codec<Arguments> = RecordCodecBuilder.create { instance ->
+            instance.group(
+                Codec.list(Expression.CODEC).fieldOf("arguments").forGetter(Arguments::arguments),
+                Codec.unboundedMap(Codec.STRING, Expression.CODEC).fieldOf("namedArguments").forGetter(Arguments::namedArguments)
+            ).apply(instance, ::Arguments)
+        }
     }
-
-    public static final Arguments EMPTY = new Arguments(List.of(), Map.of());
-
-    public static final Codec<Arguments> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-            Codec.list(Expression.CODEC).fieldOf("arguments").forGetter(Arguments::arguments),
-            Codec.unboundedMap(Codec.STRING, Expression.CODEC).fieldOf("namedArguments").forGetter(Arguments::namedArguments)
-    ).apply(instance, Arguments::new));
 }

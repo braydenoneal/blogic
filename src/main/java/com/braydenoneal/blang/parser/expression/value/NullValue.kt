@@ -1,24 +1,20 @@
-package com.braydenoneal.blang.parser.expression.value;
+package com.braydenoneal.blang.parser.expression.value
 
-import com.mojang.serialization.MapCodec;
-import com.mojang.serialization.codecs.RecordCodecBuilder;
+import com.mojang.serialization.MapCodec
+import com.mojang.serialization.codecs.RecordCodecBuilder
 
-public class NullValue extends Value<Null> {
-    public static final MapCodec<NullValue> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
-            Null.CODEC.fieldOf("null").forGetter(NullValue::value)
-    ).apply(instance, NullValue::new));
+class NullValue(value: Null) : Value<Null>(value) {
+    override val valueType: ValueType<*> get() = ValueTypes.NULL
 
-    public NullValue(Null value) {
-        super(value);
+    override fun toString(): String {
+        return "null"
     }
 
-    @Override
-    public ValueType<?> getValueType() {
-        return ValueTypes.NULL;
-    }
-
-    @Override
-    public String toString() {
-        return "null";
+    companion object {
+        val CODEC: MapCodec<NullValue> = RecordCodecBuilder.mapCodec { instance ->
+            instance.group(
+                Null.CODEC.fieldOf("null").forGetter(NullValue::value)
+            ).apply(instance, ::NullValue)
+        }
     }
 }

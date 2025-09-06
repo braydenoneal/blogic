@@ -1,14 +1,11 @@
-package com.braydenoneal.blang.testing.test;
+package com.braydenoneal.blang.testing.test
 
-import com.braydenoneal.blang.parser.expression.value.FloatValue;
-import com.braydenoneal.blang.parser.expression.value.IntegerValue;
-import com.braydenoneal.blang.parser.expression.value.StringValue;
+import com.braydenoneal.blang.parser.expression.value.FloatValue
+import com.braydenoneal.blang.parser.expression.value.IntegerValue
+import com.braydenoneal.blang.parser.expression.value.StringValue
 
-import java.util.List;
-
-public class MathFunctions extends Test {
-    @Override
-    public String body() {
+class MathFunctions : Test() {
+    override fun body(): String {
         return """
                 abs = abs(-1);
                 int = int(2.0);
@@ -17,19 +14,19 @@ public class MathFunctions extends Test {
                 round = round(5.4);
                 min = min(6, 7);
                 max = max(6, 7);
-                """;
+                
+                """.trimIndent()
     }
 
-    @Override
-    public List<Expect> expects() {
-        return List.of(
-                new Expect("abs", new IntegerValue(1)),
-                new Expect("int", new IntegerValue(2)),
-                new Expect("float", new FloatValue(3.0f)),
-                new Expect("str", new StringValue("4")),
-                new Expect("round", new IntegerValue(5)),
-                new Expect("min", new IntegerValue(6)),
-                new Expect("max", new IntegerValue(7))
-        );
+    override fun expects(): List<Expect> {
+        return listOf(
+            Expect("abs", IntegerValue(1)),
+            Expect("int", IntegerValue(2)),
+            Expect("float", FloatValue(3.0f)),
+            Expect("str", StringValue("4")),
+            Expect("round", IntegerValue(5)),
+            Expect("min", IntegerValue(6)),
+            Expect("max", IntegerValue(7))
+        )
     }
 }

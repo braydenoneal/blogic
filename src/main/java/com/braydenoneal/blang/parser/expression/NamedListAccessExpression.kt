@@ -1,39 +1,38 @@
-package com.braydenoneal.blang.parser.expression;
+package com.braydenoneal.blang.parser.expression
 
-import com.braydenoneal.blang.parser.Program;
-import com.braydenoneal.blang.parser.RunException;
-import com.braydenoneal.blang.parser.expression.value.ListValue;
-import com.braydenoneal.blang.parser.expression.value.Value;
-import com.mojang.serialization.Codec;
-import com.mojang.serialization.MapCodec;
-import com.mojang.serialization.codecs.RecordCodecBuilder;
+import com.braydenoneal.blang.parser.Program
+import com.braydenoneal.blang.parser.RunException
+import com.braydenoneal.blang.parser.expression.value.ListValue
+import com.braydenoneal.blang.parser.expression.value.Value
+import com.mojang.serialization.Codec
+import com.mojang.serialization.MapCodec
+import com.mojang.serialization.codecs.RecordCodecBuilder
+import java.util.function.Function
 
-import java.util.List;
+data class NamedListAccessExpression(
+    val name: String,
+    val listExpression: Expression,
+    val indices: MutableList<Expression>
+) : Expression {
+    override fun evaluate(program: Program): Value<*> {
+        val listValue = listExpression.evaluate(program)
 
-public record NamedListAccessExpression(
-        String name,
-        Expression listExpression,
-        List<Expression> indices
-) implements Expression {
-    @Override
-    public Value<?> evaluate(Program program) {
-        Value<?> listValue = listExpression.evaluate(program);
-
-        if (listValue instanceof ListValue list) {
-            return ListValue.getNested(list, ListValue.toIndexValues(program, indices));
+        if (listValue is ListValue) {
+            return ListValue.getNested(listValue, ListValue.toIndexValues(program, indices))
         }
 
-        throw new RunException("Expression is not a list");
+        throw RunException("Expression is not a list")
     }
 
-    public static final MapCodec<NamedListAccessExpression> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
-            Codec.STRING.fieldOf("name").forGetter(NamedListAccessExpression::name),
-            Expression.CODEC.fieldOf("listExpression").forGetter(NamedListAccessExpression::listExpression),
-            Codec.list(Expression.CODEC).fieldOf("indices").forGetter(NamedListAccessExpression::indices)
-    ).apply(instance, NamedListAccessExpression::new));
+    override val type: ExpressionType<*> get() = ExpressionTypes.NAMED_LIST_ACCESS_EXPRESSION
 
-    @Override
-    public ExpressionType<?> getType() {
-        return ExpressionTypes.NAMED_LIST_ACCESS_EXPRESSION;
+    companion object {
+        val CODEC: MapCodec<NamedListAccessExpression> = RecordCodecBuilder.mapCodec(Function { instance ->
+            instance.group(
+                Codec.STRING.fieldOf("name").forGetter(NamedListAccessExpression::name),
+                Expression.CODEC.fieldOf("listExpression").forGetter(NamedListAccessExpression::listExpression),
+                Codec.list(Expression.CODEC).fieldOf("indices").forGetter(NamedListAccessExpression::indices)
+            ).apply(instance, ::NamedListAccessExpression)
+        })
     }
 }

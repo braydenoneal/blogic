@@ -1,63 +1,62 @@
-package com.braydenoneal.blang.parser.statement;
+package com.braydenoneal.blang.parser.statement
 
-import com.braydenoneal.blang.parser.ParseException;
-import com.braydenoneal.blang.parser.Program;
-import com.braydenoneal.blang.parser.RunException;
-import com.braydenoneal.blang.parser.expression.Expression;
-import com.braydenoneal.blang.parser.expression.value.BooleanValue;
-import com.braydenoneal.blang.tokenizer.Type;
-import com.mojang.serialization.Codec;
-import com.mojang.serialization.MapCodec;
-import com.mojang.serialization.codecs.RecordCodecBuilder;
+import com.braydenoneal.blang.parser.Program
+import com.braydenoneal.blang.parser.RunException
+import com.braydenoneal.blang.parser.expression.Expression
+import com.braydenoneal.blang.parser.expression.value.BooleanValue
+import com.braydenoneal.blang.tokenizer.Type
+import com.mojang.serialization.Codec
+import com.mojang.serialization.MapCodec
+import com.mojang.serialization.codecs.RecordCodecBuilder
 
-import java.util.ArrayList;
-import java.util.List;
+data class WhileStatement(val condition: Expression, val statements: MutableList<Statement>) : Statement {
+    override fun execute(program: Program): Statement {
+        val start = System.currentTimeMillis()
+        var value = condition.evaluate(program)
 
-public record WhileStatement(Expression condition, List<Statement> statements) implements Statement {
-    @Override
-    public Statement execute(Program program) {
-        long start = System.currentTimeMillis();
+        while (value is BooleanValue && value.value()) {
+            val statement: Statement? = Statement.runStatements(program, statements)
 
-        while (condition.evaluate(program) instanceof BooleanValue booleanValue && booleanValue.value()) {
-            Statement statement = Statement.runStatements(program, statements);
-
-            if (statement instanceof ReturnStatement) {
-                return statement;
-            } else if (statement instanceof BreakStatement) {
-                break;
+            if (statement is ReturnStatement) {
+                return statement
+            } else if (statement is BreakStatement) {
+                break
             }
 
             if (System.currentTimeMillis() - start > 20) {
-                throw new RunException("Maximum while statement iterations exceeded");
+                throw RunException("Maximum while statement iterations exceeded")
             }
+
+            value = condition.evaluate(program)
         }
 
-        return this;
+        return this
     }
 
-    public static Statement parse(Program program) throws ParseException {
-        List<Statement> statements = new ArrayList<>();
+    override val type: StatementType<*> get() = StatementTypes.WHILE_STATEMENT
 
-        program.expect(Type.KEYWORD, "while");
-        Expression condition = Expression.parse(program);
-        program.expect(Type.CURLY_BRACE, "{");
+    companion object {
+        fun parse(program: Program): Statement {
+            val statements: MutableList<Statement> = ArrayList()
 
-        while (!program.peekIs(Type.CURLY_BRACE, "}")) {
-            statements.add(Statement.parse(program));
+            program.expect(Type.KEYWORD, "while")
+            val condition = Expression.parse(program)
+            program.expect(Type.CURLY_BRACE, "{")
+
+            while (!program.peekIs(Type.CURLY_BRACE, "}")) {
+                statements.add(Statement.parse(program))
+            }
+
+            program.expect(Type.CURLY_BRACE, "}")
+
+            return WhileStatement(condition, statements)
         }
 
-        program.expect(Type.CURLY_BRACE, "}");
-
-        return new WhileStatement(condition, statements);
-    }
-
-    public static final MapCodec<WhileStatement> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
-            Expression.CODEC.fieldOf("condition").forGetter(WhileStatement::condition),
-            Codec.list(Statement.CODEC).fieldOf("statements").forGetter(WhileStatement::statements)
-    ).apply(instance, WhileStatement::new));
-
-    @Override
-    public StatementType<?> getType() {
-        return StatementTypes.WHILE_STATEMENT;
+        val CODEC: MapCodec<WhileStatement> = RecordCodecBuilder.mapCodec { instance ->
+            instance.group(
+                Expression.CODEC.fieldOf("condition").forGetter(WhileStatement::condition),
+                Codec.list(Statement.CODEC).fieldOf("statements").forGetter(WhileStatement::statements)
+            ).apply(instance, ::WhileStatement)
+        }
     }
 }

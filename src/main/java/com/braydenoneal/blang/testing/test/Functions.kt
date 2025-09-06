@@ -1,12 +1,9 @@
-package com.braydenoneal.blang.testing.test;
+package com.braydenoneal.blang.testing.test
 
-import com.braydenoneal.blang.parser.expression.value.IntegerValue;
+import com.braydenoneal.blang.parser.expression.value.IntegerValue
 
-import java.util.List;
-
-public class Functions extends Test {
-    @Override
-    public String body() {
+class Functions : Test() {
+    override fun body(): String {
         return """
                 fn add(a, b) {
                     return a + b;
@@ -33,18 +30,18 @@ public class Functions extends Test {
                 d = withDefaults(1, 2);
                 e = withDefaults(1, b=2, c=3);
                 f = withDefaults(1, 2, 3);
-                """;
+                
+                """.trimIndent()
     }
 
-    @Override
-    public List<Expect> expects() {
-        return List.of(
-                new Expect("a", new IntegerValue(16)),
-                new Expect("b", new IntegerValue(2)),
-                new Expect("c", new IntegerValue(0)),
-                new Expect("d", new IntegerValue(0)),
-                new Expect("e", new IntegerValue(3)),
-                new Expect("f", new IntegerValue(3))
-        );
+    override fun expects(): List<Expect> {
+        return listOf(
+            Expect("a", IntegerValue(16)),
+            Expect("b", IntegerValue(2)),
+            Expect("c", IntegerValue(0)),
+            Expect("d", IntegerValue(0)),
+            Expect("e", IntegerValue(3)),
+            Expect("f", IntegerValue(3))
+        )
     }
 }

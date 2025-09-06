@@ -1,80 +1,62 @@
-package com.braydenoneal.block;
+package com.braydenoneal.block
 
-import com.braydenoneal.block.entity.ControllerBlockEntity;
-import com.braydenoneal.block.entity.ModBlockEntities;
-import com.mojang.serialization.MapCodec;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.BlockWithEntity;
-import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.block.entity.BlockEntityTicker;
-import net.minecraft.block.entity.BlockEntityType;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemPlacementContext;
-import net.minecraft.item.ItemStack;
-import net.minecraft.screen.NamedScreenHandlerFactory;
-import net.minecraft.state.StateManager;
-import net.minecraft.state.property.Properties;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.hit.BlockHitResult;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Direction;
-import net.minecraft.world.World;
-import org.jetbrains.annotations.Nullable;
+import com.braydenoneal.block.entity.ControllerBlockEntity
+import com.braydenoneal.block.entity.ModBlockEntities
+import com.mojang.serialization.MapCodec
+import net.minecraft.block.Block
+import net.minecraft.block.BlockState
+import net.minecraft.block.BlockWithEntity
+import net.minecraft.block.entity.BlockEntity
+import net.minecraft.block.entity.BlockEntityTicker
+import net.minecraft.block.entity.BlockEntityType
+import net.minecraft.entity.player.PlayerEntity
+import net.minecraft.item.ItemPlacementContext
+import net.minecraft.state.StateManager
+import net.minecraft.state.property.Properties
+import net.minecraft.util.ActionResult
+import net.minecraft.util.hit.BlockHitResult
+import net.minecraft.util.math.BlockPos
+import net.minecraft.util.math.Direction
+import net.minecraft.world.World
 
-public class ControllerBlock extends BlockWithEntity {
-    public ControllerBlock(Settings settings) {
-        super(settings);
-        setDefaultState(getStateManager().getDefaultState().with(Properties.FACING, Direction.UP));
+class ControllerBlock(settings: Settings) : BlockWithEntity(settings) {
+    init {
+        defaultState = getStateManager().getDefaultState().with<Direction, Direction>(Properties.FACING, Direction.UP)
     }
 
-    @Override
-    protected void appendProperties(StateManager.Builder<Block, BlockState> builder) {
-        builder.add(Properties.FACING);
+    override fun appendProperties(builder: StateManager.Builder<Block, BlockState>) {
+        builder.add(Properties.FACING)
     }
 
-    @Override
-    public @Nullable BlockState getPlacementState(ItemPlacementContext ctx) {
-        return this.getDefaultState().with(Properties.FACING, ctx.getPlayerLookDirection().getOpposite());
+    override fun getPlacementState(ctx: ItemPlacementContext): BlockState {
+        return defaultState.with(Properties.FACING, ctx.playerLookDirection.opposite)
     }
 
-    @Override
-    protected MapCodec<? extends BlockWithEntity> getCodec() {
-        return createCodec(ControllerBlock::new);
+    override fun getCodec(): MapCodec<out BlockWithEntity> {
+        return createCodec<ControllerBlock> { settings: Settings -> ControllerBlock(settings) }
     }
 
-    @Nullable
-    @Override
-    public BlockEntity createBlockEntity(BlockPos pos, BlockState state) {
-        return new ControllerBlockEntity(pos, state);
+    override fun createBlockEntity(pos: BlockPos, state: BlockState): BlockEntity {
+        return ControllerBlockEntity(pos, state)
     }
 
-    @Override
-    public void onPlaced(World world, BlockPos pos, BlockState state, @Nullable LivingEntity placer, ItemStack itemStack) {
-        super.onPlaced(world, pos, state, placer, itemStack);
-    }
-
-    @Override
-    protected ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, BlockHitResult hit) {
+    override fun onUse(state: BlockState, world: World, pos: BlockPos, player: PlayerEntity, hit: BlockHitResult): ActionResult {
         if (!world.isClient) {
-            NamedScreenHandlerFactory screenHandlerFactory = state.createScreenHandlerFactory(world, pos);
+            val screenHandlerFactory = state.createScreenHandlerFactory(world, pos)
 
             if (screenHandlerFactory != null) {
-                player.openHandledScreen(screenHandlerFactory);
+                player.openHandledScreen(screenHandlerFactory)
             }
         }
 
-        return ActionResult.SUCCESS;
+        return ActionResult.SUCCESS
     }
 
-    @Nullable
-    @Override
-    public <T extends BlockEntity> BlockEntityTicker<T> getTicker(World world, BlockState state, BlockEntityType<T> type) {
+    override fun <T : BlockEntity> getTicker(world: World, state: BlockState, type: BlockEntityType<T>): BlockEntityTicker<T>? {
         if (!world.isClient) {
-            return validateTicker(type, ModBlockEntities.CONTROLLER_BLOCK_ENTITY, ControllerBlockEntity::tick);
+            return validateTicker(type, ModBlockEntities.CONTROLLER_BLOCK_ENTITY, ControllerBlockEntity::tick)
         }
 
-        return null;
+        return null
     }
 }

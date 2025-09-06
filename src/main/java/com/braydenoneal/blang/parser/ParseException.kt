@@ -1,7 +1,3 @@
-package com.braydenoneal.blang.parser;
+package com.braydenoneal.blang.parser
 
-public class ParseException extends RuntimeException {
-    public ParseException(String message) {
-        super(message);
-    }
-}
+class ParseException(message: String) : RuntimeException(message)

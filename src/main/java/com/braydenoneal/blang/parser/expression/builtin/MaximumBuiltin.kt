@@ -1,44 +1,46 @@
-package com.braydenoneal.blang.parser.expression.builtin;
+package com.braydenoneal.blang.parser.expression.builtin
 
-import com.braydenoneal.blang.parser.Program;
-import com.braydenoneal.blang.parser.RunException;
-import com.braydenoneal.blang.parser.expression.Arguments;
-import com.braydenoneal.blang.parser.expression.Expression;
-import com.braydenoneal.blang.parser.expression.ExpressionType;
-import com.braydenoneal.blang.parser.expression.ExpressionTypes;
-import com.braydenoneal.blang.parser.expression.value.FloatValue;
-import com.braydenoneal.blang.parser.expression.value.IntegerValue;
-import com.braydenoneal.blang.parser.expression.value.Value;
-import com.mojang.serialization.MapCodec;
-import com.mojang.serialization.codecs.RecordCodecBuilder;
+import com.braydenoneal.blang.parser.Program
+import com.braydenoneal.blang.parser.RunException
+import com.braydenoneal.blang.parser.expression.Arguments
+import com.braydenoneal.blang.parser.expression.Expression
+import com.braydenoneal.blang.parser.expression.ExpressionType
+import com.braydenoneal.blang.parser.expression.ExpressionTypes
+import com.braydenoneal.blang.parser.expression.value.FloatValue
+import com.braydenoneal.blang.parser.expression.value.IntegerValue
+import com.braydenoneal.blang.parser.expression.value.Value
+import com.mojang.serialization.MapCodec
+import com.mojang.serialization.codecs.RecordCodecBuilder
+import kotlin.math.max
 
-public record MaximumBuiltin(Arguments arguments) implements Expression {
-    @Override
-    public Value<?> evaluate(Program program) {
-        Value<?> a = arguments.anyValue(program, "a", 0);
-        Value<?> b = arguments.anyValue(program, "b", 1);
 
-        if (a instanceof IntegerValue a1 && b instanceof FloatValue) {
-            a = new FloatValue((float) a1.value());
-        } else if (a instanceof FloatValue && b instanceof IntegerValue b1) {
-            b = new FloatValue((float) b1.value());
+data class MaximumBuiltin(val arguments: Arguments) : Expression {
+    override fun evaluate(program: Program): Value<*> {
+        var a = arguments.anyValue(program, "a", 0)
+        var b = arguments.anyValue(program, "b", 1)
+
+        if (a is IntegerValue && b is FloatValue) {
+            a = FloatValue(a.value().toFloat())
+        } else if (a is FloatValue && b is IntegerValue) {
+            b = FloatValue(b.value().toFloat())
         }
 
-        if (a instanceof IntegerValue a1 && b instanceof IntegerValue b1) {
-            return new IntegerValue(Math.max(a1.value(), b1.value()));
-        } else if (a instanceof FloatValue a1 && b instanceof FloatValue b1) {
-            return new FloatValue(Math.max(a1.value(), b1.value()));
+        if (a is IntegerValue && b is IntegerValue) {
+            return IntegerValue(max(a.value(), b.value()))
+        } else if (a is FloatValue && b is FloatValue) {
+            return FloatValue(max(a.value(), b.value()))
         }
 
-        throw new RunException("Arguments are not numbers");
+        throw RunException("Arguments are not numbers")
     }
 
-    public static final MapCodec<MaximumBuiltin> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
-            Arguments.CODEC.fieldOf("arguments").forGetter(MaximumBuiltin::arguments)
-    ).apply(instance, MaximumBuiltin::new));
+    override val type: ExpressionType<*> get() = ExpressionTypes.MAXIMUM_BUILTIN
 
-    @Override
-    public ExpressionType<?> getType() {
-        return ExpressionTypes.MAXIMUM_BUILTIN;
+    companion object {
+        val CODEC: MapCodec<MaximumBuiltin> = RecordCodecBuilder.mapCodec { instance ->
+            instance.group(
+                Arguments.CODEC.fieldOf("arguments").forGetter(MaximumBuiltin::arguments)
+            ).apply(instance, ::MaximumBuiltin)
+        }
     }
 }

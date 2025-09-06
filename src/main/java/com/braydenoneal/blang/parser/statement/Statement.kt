@@ -1,69 +1,75 @@
-package com.braydenoneal.blang.parser.statement;
+package com.braydenoneal.blang.parser.statement
 
-import com.braydenoneal.blang.parser.ParseException;
-import com.braydenoneal.blang.parser.Program;
-import com.braydenoneal.blang.tokenizer.Token;
-import com.braydenoneal.blang.tokenizer.Type;
-import com.mojang.serialization.Codec;
+import com.braydenoneal.blang.parser.ParseException
+import com.braydenoneal.blang.parser.Program
+import com.braydenoneal.blang.tokenizer.Type
+import com.mojang.serialization.Codec
 
-import java.util.List;
+interface Statement {
+    fun execute(program: Program): Statement?
 
-public interface Statement {
-    Statement execute(Program program);
+    val type: StatementType<*>
 
-    static Statement parse(Program program) throws ParseException {
-        Token token = program.peek();
+    companion object {
+        fun parse(program: Program): Statement {
+            val token = program.peek()
 
-        if (token.type() == Type.KEYWORD) {
-            switch (token.value()) {
-                case "import" -> {
-                    return ImportStatement.parse(program);
+            if (token.type == Type.KEYWORD) {
+                when (token.value) {
+                    "import" -> {
+                        return ImportStatement.parse(program)
+                    }
+
+                    "fn" -> {
+                        return FunctionDeclaration.parse(program)
+                    }
+
+                    "if" -> {
+                        return IfStatement.parse(program)
+                    }
+
+                    "while" -> {
+                        return WhileStatement.parse(program)
+                    }
+
+                    "for" -> {
+                        return ForStatement.parse(program)
+                    }
+
+                    "break" -> {
+                        return BreakStatement.parse(program)
+                    }
+
+                    "continue" -> {
+                        return ContinueStatement.parse(program)
+                    }
+
+                    "return" -> {
+                        return ReturnStatement.parse(program)
+                    }
                 }
-                case "fn" -> {
-                    return FunctionDeclaration.parse(program);
-                }
-                case "if" -> {
-                    return IfStatement.parse(program);
-                }
-                case "while" -> {
-                    return WhileStatement.parse(program);
-                }
-                case "for" -> {
-                    return ForStatement.parse(program);
-                }
-                case "break" -> {
-                    return BreakStatement.parse(program);
-                }
-                case "continue" -> {
-                    return ContinueStatement.parse(program);
-                }
-                case "return" -> {
-                    return ReturnStatement.parse(program);
-                }
+            } else {
+                return ExpressionStatement.parse(program)
             }
-        } else {
-            return ExpressionStatement.parse(program);
+
+            throw ParseException("Unrecognized statement at $token")
         }
 
-        throw new ParseException("Unrecognized statement at " + token);
-    }
+        fun runStatements(program: Program, statements: MutableList<Statement>): Statement? {
+            for (statement in statements) {
+                val statementResult = statement.execute(program)
 
-    static Statement runStatements(Program program, List<Statement> statements) {
-        for (Statement statement : statements) {
-            Statement statementResult = statement.execute(program);
-
-            if (statementResult instanceof ReturnStatement ||
-                    statementResult instanceof BreakStatement ||
-                    statementResult instanceof ContinueStatement
-            ) {
-                return statementResult;
+                if (statementResult is ReturnStatement ||
+                    statementResult is BreakStatement ||
+                    statementResult is ContinueStatement
+                ) {
+                    return statementResult
+                }
             }
+
+            return null
         }
 
-        return null;
+        val CODEC: Codec<Statement> = StatementType.REGISTRY.getCodec().dispatch("type", Statement::type, StatementType<*>::codec)
     }
-
-    StatementType<?> getType();
-
-    Codec<Statement> CODEC = StatementType.REGISTRY.getCodec().dispatch("type", Statement::getType, StatementType::codec);
 }

@@ -1,40 +1,41 @@
-package com.braydenoneal.block;
+package com.braydenoneal.block
 
-import com.braydenoneal.Blogic;
-import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
-import net.minecraft.block.AbstractBlock;
-import net.minecraft.block.Block;
-import net.minecraft.item.BlockItem;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemGroups;
-import net.minecraft.item.Items;
-import net.minecraft.registry.Registries;
-import net.minecraft.registry.Registry;
-import net.minecraft.registry.RegistryKey;
-import net.minecraft.registry.RegistryKeys;
-import net.minecraft.util.Identifier;
+import com.braydenoneal.Blogic
+import net.fabricmc.fabric.api.itemgroup.v1.FabricItemGroupEntries
+import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents
+import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents.ModifyEntries
+import net.minecraft.block.AbstractBlock
+import net.minecraft.block.Block
+import net.minecraft.item.BlockItem
+import net.minecraft.item.Item
+import net.minecraft.item.ItemGroups
+import net.minecraft.item.Items
+import net.minecraft.registry.Registries
+import net.minecraft.registry.Registry
+import net.minecraft.registry.RegistryKey
+import net.minecraft.registry.RegistryKeys
+import net.minecraft.util.Identifier
+import java.util.function.Function
 
-import java.util.function.Function;
+object ModBlocks {
+    val CABLE: Block = register("cable", { settings: AbstractBlock.Settings -> CableBlock(settings) }, CableBlock.settings())
+    val CONTROLLER: Block = register("controller", { settings: AbstractBlock.Settings -> ControllerBlock(settings) }, AbstractBlock.Settings.create())
 
-public class ModBlocks {
-    public static final Block CABLE = register("cable", CableBlock::new, CableBlock.settings());
-    public static final Block CONTROLLER = register("controller", ControllerBlock::new, AbstractBlock.Settings.create());
-
-    private static Block register(String name, Function<AbstractBlock.Settings, Block> blockFactory, AbstractBlock.Settings settings) {
-        RegistryKey<Block> blockKey = RegistryKey.of(RegistryKeys.BLOCK, Identifier.of(Blogic.MOD_ID, name));
-        Block block = blockFactory.apply(settings.registryKey(blockKey));
-
-        RegistryKey<Item> itemKey = RegistryKey.of(RegistryKeys.ITEM, Identifier.of(Blogic.MOD_ID, name));
-        BlockItem blockItem = new BlockItem(block, new Item.Settings().registryKey(itemKey));
-        Registry.register(Registries.ITEM, itemKey, blockItem);
-
-        return Registry.register(Registries.BLOCK, blockKey, block);
+    private fun register(name: String, blockFactory: Function<AbstractBlock.Settings, Block>, settings: AbstractBlock.Settings): Block {
+        val blockKey = RegistryKey.of(RegistryKeys.BLOCK, Identifier.of(Blogic.MOD_ID, name))
+        val block = blockFactory.apply(settings.registryKey(blockKey))
+        val itemKey = RegistryKey.of(RegistryKeys.ITEM, Identifier.of(Blogic.MOD_ID, name))
+        val blockItem = BlockItem(block, Item.Settings().registryKey(itemKey))
+        Registry.register(Registries.ITEM, itemKey, blockItem)
+        return Registry.register(Registries.BLOCK, blockKey, block)
     }
 
-    public static void initialize() {
-        ItemGroupEvents.modifyEntriesEvent(ItemGroups.REDSTONE).register((itemGroup) -> {
-            itemGroup.addBefore(Items.REDSTONE, ModBlocks.CABLE.asItem());
-            itemGroup.addBefore(Items.REDSTONE, ModBlocks.CONTROLLER.asItem());
-        });
+    fun initialize() {
+        ItemGroupEvents.modifyEntriesEvent(ItemGroups.REDSTONE).register(
+            ModifyEntries { itemGroup: FabricItemGroupEntries ->
+                itemGroup.addBefore(Items.REDSTONE, CABLE.asItem())
+                itemGroup.addBefore(Items.REDSTONE, CONTROLLER.asItem())
+            }
+        )
     }
 }

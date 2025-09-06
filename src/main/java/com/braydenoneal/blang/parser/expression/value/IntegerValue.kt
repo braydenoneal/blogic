@@ -1,20 +1,17 @@
-package com.braydenoneal.blang.parser.expression.value;
+package com.braydenoneal.blang.parser.expression.value
 
-import com.mojang.serialization.Codec;
-import com.mojang.serialization.MapCodec;
-import com.mojang.serialization.codecs.RecordCodecBuilder;
+import com.mojang.serialization.Codec
+import com.mojang.serialization.MapCodec
+import com.mojang.serialization.codecs.RecordCodecBuilder
 
-public class IntegerValue extends Value<Integer> {
-    public static final MapCodec<IntegerValue> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
-            Codec.INT.fieldOf("value").forGetter(IntegerValue::value)
-    ).apply(instance, IntegerValue::new));
+class IntegerValue(value: Int) : Value<Int>(value) {
+    override val valueType: ValueType<*> get() = ValueTypes.INTEGER
 
-    public IntegerValue(Integer value) {
-        super(value);
-    }
-
-    @Override
-    public ValueType<?> getValueType() {
-        return ValueTypes.INTEGER;
+    companion object {
+        val CODEC: MapCodec<IntegerValue> = RecordCodecBuilder.mapCodec { instance ->
+            instance.group(
+                Codec.INT.fieldOf("value").forGetter(IntegerValue::value)
+            ).apply(instance, ::IntegerValue)
+        }
     }
 }

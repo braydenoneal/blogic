@@ -1,18 +1,17 @@
-package com.braydenoneal.networking;
+package com.braydenoneal.networking
 
-import com.braydenoneal.block.entity.ControllerBlockEntity;
-import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
-import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
+import com.braydenoneal.block.entity.ControllerBlockEntity
+import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry
+import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking
 
-import java.util.Objects;
-
-public class ModNetworking {
-    public static void initialize() {
-        PayloadTypeRegistry.playC2S().register(StringPayload.ID, StringPayload.CODEC);
-        ServerPlayNetworking.registerGlobalReceiver(StringPayload.ID,
-                (stringPayload, context) -> context.server().execute(() -> (
-                        (ControllerBlockEntity) Objects.requireNonNull(
-                                context.player().getWorld().getBlockEntity(stringPayload.pos())
-                        )).setSource(stringPayload.string())));
+object ModNetworking {
+    fun initialize() {
+        PayloadTypeRegistry.playC2S().register(StringPayload.ID, StringPayload.CODEC)
+        ServerPlayNetworking.registerGlobalReceiver(StringPayload.ID)
+        { stringPayload: StringPayload, context: ServerPlayNetworking.Context ->
+            context.server().execute {
+                (context.player().world.getBlockEntity(stringPayload.pos) as ControllerBlockEntity).setSource(stringPayload.string)
+            }
+        }
     }
 }

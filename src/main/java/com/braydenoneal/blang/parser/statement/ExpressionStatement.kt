@@ -1,31 +1,30 @@
-package com.braydenoneal.blang.parser.statement;
+package com.braydenoneal.blang.parser.statement
 
-import com.braydenoneal.blang.parser.ParseException;
-import com.braydenoneal.blang.parser.Program;
-import com.braydenoneal.blang.parser.expression.Expression;
-import com.braydenoneal.blang.tokenizer.Type;
-import com.mojang.serialization.MapCodec;
-import com.mojang.serialization.codecs.RecordCodecBuilder;
+import com.braydenoneal.blang.parser.Program
+import com.braydenoneal.blang.parser.expression.Expression
+import com.braydenoneal.blang.tokenizer.Type
+import com.mojang.serialization.MapCodec
+import com.mojang.serialization.codecs.RecordCodecBuilder
 
-public record ExpressionStatement(Expression expression) implements Statement {
-    @Override
-    public Statement execute(Program program) {
-        expression.evaluate(program);
-        return this;
+data class ExpressionStatement(val expression: Expression) : Statement {
+    override fun execute(program: Program): Statement {
+        expression.evaluate(program)
+        return this
     }
 
-    public static Statement parse(Program program) throws ParseException {
-        Expression expression = Expression.parse(program);
-        program.expect(Type.SEMICOLON);
-        return new ExpressionStatement(expression);
-    }
+    override val type: StatementType<*> get() = StatementTypes.EXPRESSION_STATEMENT
 
-    public static final MapCodec<ExpressionStatement> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
-            Expression.CODEC.fieldOf("expression").forGetter(ExpressionStatement::expression)
-    ).apply(instance, ExpressionStatement::new));
+    companion object {
+        fun parse(program: Program): Statement {
+            val expression = Expression.parse(program)
+            program.expect(Type.SEMICOLON)
+            return ExpressionStatement(expression)
+        }
 
-    @Override
-    public StatementType<?> getType() {
-        return StatementTypes.EXPRESSION_STATEMENT;
+        val CODEC: MapCodec<ExpressionStatement> = RecordCodecBuilder.mapCodec { instance ->
+            instance.group(
+                Expression.CODEC.fieldOf("expression").forGetter(ExpressionStatement::expression)
+            ).apply(instance, ::ExpressionStatement)
+        }
     }
 }

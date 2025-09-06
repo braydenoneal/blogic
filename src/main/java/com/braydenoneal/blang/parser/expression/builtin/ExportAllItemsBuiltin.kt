@@ -1,101 +1,101 @@
-package com.braydenoneal.blang.parser.expression.builtin;
+package com.braydenoneal.blang.parser.expression.builtin
 
-import com.braydenoneal.blang.parser.Program;
-import com.braydenoneal.blang.parser.RunException;
-import com.braydenoneal.blang.parser.expression.Arguments;
-import com.braydenoneal.blang.parser.expression.Expression;
-import com.braydenoneal.blang.parser.expression.ExpressionType;
-import com.braydenoneal.blang.parser.expression.ExpressionTypes;
-import com.braydenoneal.blang.parser.expression.value.*;
-import com.mojang.serialization.MapCodec;
-import com.mojang.serialization.codecs.RecordCodecBuilder;
-import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.block.entity.LockableContainerBlockEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
+import com.braydenoneal.blang.parser.Program
+import com.braydenoneal.blang.parser.RunException
+import com.braydenoneal.blang.parser.expression.Arguments
+import com.braydenoneal.blang.parser.expression.Expression
+import com.braydenoneal.blang.parser.expression.ExpressionType
+import com.braydenoneal.blang.parser.expression.ExpressionTypes
+import com.braydenoneal.blang.parser.expression.value.BooleanValue
+import com.braydenoneal.blang.parser.expression.value.ItemValue
+import com.braydenoneal.blang.parser.expression.value.Null
+import com.braydenoneal.blang.parser.expression.value.Value
+import com.mojang.serialization.MapCodec
+import com.mojang.serialization.codecs.RecordCodecBuilder
+import net.minecraft.block.entity.LockableContainerBlockEntity
+import net.minecraft.item.Items
+import net.minecraft.util.math.BlockPos
+import java.util.Map
+import kotlin.math.min
 
-import java.util.List;
-import java.util.Map;
 
-public record ExportAllItemsBuiltin(Arguments arguments) implements Expression {
-    @Override
-    public Value<?> evaluate(Program program) {
-        int x = arguments.integerValue(program, "x", 0).value();
-        int y = arguments.integerValue(program, "y", 1).value();
-        int z = arguments.integerValue(program, "z", 2).value();
-        FunctionValue itemPredicate = arguments.functionValue(program, "itemPredicate", 3);
+data class ExportAllItemsBuiltin(val arguments: Arguments) : Expression {
+    override fun evaluate(program: Program): Value<*> {
+        val x = arguments.integerValue(program, "x", 0).value()
+        val y = arguments.integerValue(program, "y", 1).value()
+        val z = arguments.integerValue(program, "z", 2).value()
+        val itemPredicate = arguments.functionValue(program, "itemPredicate", 3)
 
-        World world = program.context().entity().getWorld();
+        val world = program.context().entity!!.getWorld()
 
         if (world == null) {
-            throw new RunException("World is null");
+            throw RunException("World is null")
         }
 
-        BlockPos entityPos = program.context().pos();
-        BlockEntity exportEntity = world.getBlockEntity(new BlockPos(entityPos.getX() + x, entityPos.getY() + y, entityPos.getZ() + z));
+        val entityPos = program.context().pos
+        val exportEntity = world.getBlockEntity(BlockPos(entityPos.x + x, entityPos.y + y, entityPos.z + z))
 
-        if (!(exportEntity instanceof LockableContainerBlockEntity exportContainer)) {
-            throw new RunException("Block at position is not a container");
+        if (exportEntity !is LockableContainerBlockEntity) {
+            throw RunException("Block at position is not a container")
         }
 
-        List<LockableContainerBlockEntity> containers = program.context().entity().getConnectedContainers();
+        val containers = program.context().entity!!.getConnectedContainers()
 
-        for (LockableContainerBlockEntity container : containers) {
-            for (int slot = 0; slot < container.size(); slot++) {
-                ItemStack stack = container.getStack(slot);
+        for (container in containers) {
+            for (slot in 0..<container.size()) {
+                val stack = container.getStack(slot)
 
-                Arguments predicateArguments = new Arguments(List.of(new ItemValue(stack.getItem())), Map.of());
-                Value<?> predicateResult = itemPredicate.call(program, predicateArguments);
+                val predicateArguments = Arguments(mutableListOf(ItemValue(stack.item)), Map.of())
+                val predicateResult = itemPredicate.call(program, predicateArguments)
 
-                if (!(predicateResult instanceof BooleanValue)) {
-                    throw new RunException("itemPredicate is not a predicate");
+                if (predicateResult !is BooleanValue) {
+                    throw RunException("itemPredicate is not a predicate")
                 }
 
-                if (!((BooleanValue) predicateResult).value()) {
-                    continue;
+                if (!predicateResult.value()) {
+                    continue
                 }
 
-                for (int exportSlot = 0; exportSlot < exportContainer.size(); exportSlot++) {
-                    ItemStack exportStack = exportContainer.getStack(exportSlot);
+                for (exportSlot in 0..<exportEntity.size()) {
+                    val exportStack = exportEntity.getStack(exportSlot)
 
                     if (exportStack.isOf(Items.AIR)) {
-                        container.removeStack(slot);
-                        exportContainer.setStack(exportSlot, stack);
-                        break;
+                        container.removeStack(slot)
+                        exportEntity.setStack(exportSlot, stack)
+                        break
                     }
 
-                    if (!exportStack.isOf(stack.getItem())) {
-                        continue;
+                    if (!exportStack.isOf(stack.item)) {
+                        continue
                     }
 
-                    int move = Math.min(stack.getCount(), exportStack.getMaxCount() - exportStack.getCount());
+                    val move = min(stack.count, exportStack.maxCount - exportStack.count)
 
-                    stack.decrement(move);
-                    exportStack.increment(move);
+                    stack.decrement(move)
+                    exportStack.increment(move)
 
-                    if (stack.isEmpty()) {
-                        container.removeStack(slot);
-                        exportContainer.setStack(exportSlot, exportStack);
-                        break;
+                    if (stack.isEmpty) {
+                        container.removeStack(slot)
+                        exportEntity.setStack(exportSlot, exportStack)
+                        break
                     }
 
-                    container.setStack(slot, stack);
-                    exportContainer.setStack(exportSlot, exportStack);
+                    container.setStack(slot, stack)
+                    exportEntity.setStack(exportSlot, exportStack)
                 }
             }
         }
 
-        return Null.value();
+        return Null.VALUE
     }
 
-    public static final MapCodec<ExportAllItemsBuiltin> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
-            Arguments.CODEC.fieldOf("arguments").forGetter(ExportAllItemsBuiltin::arguments)
-    ).apply(instance, ExportAllItemsBuiltin::new));
+    override val type: ExpressionType<*> get() = ExpressionTypes.EXPORT_ALL_ITEMS_BUILTIN
 
-    @Override
-    public ExpressionType<?> getType() {
-        return ExpressionTypes.EXPORT_ALL_ITEMS_BUILTIN;
+    companion object {
+        val CODEC: MapCodec<ExportAllItemsBuiltin> = RecordCodecBuilder.mapCodec { instance ->
+            instance.group(
+                Arguments.CODEC.fieldOf("arguments").forGetter(ExportAllItemsBuiltin::arguments)
+            ).apply(instance, ::ExportAllItemsBuiltin)
+        }
     }
 }

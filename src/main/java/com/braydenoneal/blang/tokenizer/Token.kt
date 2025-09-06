@@ -1,41 +1,40 @@
-package com.braydenoneal.blang.tokenizer;
+package com.braydenoneal.blang.tokenizer
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import java.util.regex.Pattern
 
-public record Token(String value, Type type) {
-    public static List<Token> tokenize(String source) throws TokenException {
-        List<Token> tokens = new ArrayList<>();
-        int position = 0;
+data class Token(val value: String, val type: Type) {
+    companion object {
+        fun tokenize(source: String): MutableList<Token> {
+            val tokens: MutableList<Token> = ArrayList()
+            var position = 0
 
-        while (position < source.length()) {
-            boolean error = true;
+            while (position < source.length) {
+                var error = true
 
-            for (Type type : Type.values()) {
-                Matcher matcher = Pattern.compile("^" + type.regex).matcher(source.substring(position));
+                for (type in Type.entries) {
+                    val matcher = Pattern.compile("^" + type.regex).matcher(source.substring(position))
 
-                if (matcher.find()) {
-                    String group = type == Type.QUOTE ? matcher.group(0) : matcher.group(1);
+                    if (matcher.find()) {
+                        val group = if (type == Type.QUOTE) matcher.group(0) else matcher.group(1)
 
-                    if (type == Type.QUOTE) {
-                        tokens.add(new Token(group.substring(1, group.length() - 1), type));
-                    } else if (type != Type.WHITESPACE && type != Type.COMMENT) {
-                        tokens.add(new Token(group, type));
+                        if (type == Type.QUOTE) {
+                            tokens.add(Token(group.substring(1, group.length - 1), type))
+                        } else if (type != Type.WHITESPACE && type != Type.COMMENT) {
+                            tokens.add(Token(group, type))
+                        }
+
+                        position += group.length
+                        error = false
+                        break
                     }
+                }
 
-                    position += group.length();
-                    error = false;
-                    break;
+                if (error) {
+                    throw TokenException("Unrecognized character '" + source.get(position) + "' at position " + position)
                 }
             }
 
-            if (error) {
-                throw new TokenException("Unrecognized character '" + source.charAt(position) + "' at position " + position);
-            }
+            return tokens
         }
-
-        return tokens;
     }
 }

@@ -1,27 +1,28 @@
-package com.braydenoneal.blang.parser.expression.builtin;
+package com.braydenoneal.blang.parser.expression.builtin
 
-import com.braydenoneal.blang.parser.Program;
-import com.braydenoneal.blang.parser.expression.Arguments;
-import com.braydenoneal.blang.parser.expression.Expression;
-import com.braydenoneal.blang.parser.expression.ExpressionType;
-import com.braydenoneal.blang.parser.expression.ExpressionTypes;
-import com.braydenoneal.blang.parser.expression.value.IntegerValue;
-import com.braydenoneal.blang.parser.expression.value.Value;
-import com.mojang.serialization.MapCodec;
-import com.mojang.serialization.codecs.RecordCodecBuilder;
+import com.braydenoneal.blang.parser.Program
+import com.braydenoneal.blang.parser.expression.Arguments
+import com.braydenoneal.blang.parser.expression.Expression
+import com.braydenoneal.blang.parser.expression.ExpressionType
+import com.braydenoneal.blang.parser.expression.ExpressionTypes
+import com.braydenoneal.blang.parser.expression.value.IntegerValue
+import com.braydenoneal.blang.parser.expression.value.Value
+import com.mojang.serialization.MapCodec
+import com.mojang.serialization.codecs.RecordCodecBuilder
 
-public record IntegerCastBuiltin(Arguments arguments) implements Expression {
-    @Override
-    public Value<?> evaluate(Program program) {
-        return new IntegerValue(arguments().floatValue(program, "value", 0).value().intValue());
+
+data class IntegerCastBuiltin(val arguments: Arguments) : Expression {
+    override fun evaluate(program: Program): Value<*> {
+        return IntegerValue(this.arguments.floatValue(program, "value", 0).value().toInt())
     }
 
-    public static final MapCodec<IntegerCastBuiltin> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
-            Arguments.CODEC.fieldOf("arguments").forGetter(IntegerCastBuiltin::arguments)
-    ).apply(instance, IntegerCastBuiltin::new));
+    override val type: ExpressionType<*> get() = ExpressionTypes.INTEGER_CAST_BUILTIN
 
-    @Override
-    public ExpressionType<?> getType() {
-        return ExpressionTypes.INTEGER_CAST_BUILTIN;
+    companion object {
+        val CODEC: MapCodec<IntegerCastBuiltin> = RecordCodecBuilder.mapCodec { instance ->
+            instance.group(
+                Arguments.CODEC.fieldOf("arguments").forGetter(IntegerCastBuiltin::arguments)
+            ).apply(instance, ::IntegerCastBuiltin)
+        }
     }
 }

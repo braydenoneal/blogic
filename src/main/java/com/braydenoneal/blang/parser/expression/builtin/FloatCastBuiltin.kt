@@ -1,27 +1,28 @@
-package com.braydenoneal.blang.parser.expression.builtin;
+package com.braydenoneal.blang.parser.expression.builtin
 
-import com.braydenoneal.blang.parser.Program;
-import com.braydenoneal.blang.parser.expression.Arguments;
-import com.braydenoneal.blang.parser.expression.Expression;
-import com.braydenoneal.blang.parser.expression.ExpressionType;
-import com.braydenoneal.blang.parser.expression.ExpressionTypes;
-import com.braydenoneal.blang.parser.expression.value.FloatValue;
-import com.braydenoneal.blang.parser.expression.value.Value;
-import com.mojang.serialization.MapCodec;
-import com.mojang.serialization.codecs.RecordCodecBuilder;
+import com.braydenoneal.blang.parser.Program
+import com.braydenoneal.blang.parser.expression.Arguments
+import com.braydenoneal.blang.parser.expression.Expression
+import com.braydenoneal.blang.parser.expression.ExpressionType
+import com.braydenoneal.blang.parser.expression.ExpressionTypes
+import com.braydenoneal.blang.parser.expression.value.FloatValue
+import com.braydenoneal.blang.parser.expression.value.Value
+import com.mojang.serialization.MapCodec
+import com.mojang.serialization.codecs.RecordCodecBuilder
 
-public record FloatCastBuiltin(Arguments arguments) implements Expression {
-    @Override
-    public Value<?> evaluate(Program program) {
-        return new FloatValue((float) arguments.integerValue(program, "value", 0).value());
+
+data class FloatCastBuiltin(val arguments: Arguments) : Expression {
+    override fun evaluate(program: Program): Value<*> {
+        return FloatValue(arguments.integerValue(program, "value", 0).value().toFloat())
     }
 
-    public static final MapCodec<FloatCastBuiltin> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
-            Arguments.CODEC.fieldOf("arguments").forGetter(FloatCastBuiltin::arguments)
-    ).apply(instance, FloatCastBuiltin::new));
+    override val type: ExpressionType<*> get() = ExpressionTypes.FLOAT_CAST_BUILTIN
 
-    @Override
-    public ExpressionType<?> getType() {
-        return ExpressionTypes.FLOAT_CAST_BUILTIN;
+    companion object {
+        val CODEC: MapCodec<FloatCastBuiltin> = RecordCodecBuilder.mapCodec { instance ->
+            instance.group(
+                Arguments.CODEC.fieldOf("arguments").forGetter(FloatCastBuiltin::arguments)
+            ).apply(instance, ::FloatCastBuiltin)
+        }
     }
 }

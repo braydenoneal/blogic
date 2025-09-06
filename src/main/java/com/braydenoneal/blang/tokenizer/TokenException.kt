@@ -1,7 +1,3 @@
-package com.braydenoneal.blang.tokenizer;
+package com.braydenoneal.blang.tokenizer
 
-public class TokenException extends RuntimeException {
-    public TokenException(String message) {
-        super(message);
-    }
-}
+class TokenException(message: String) : RuntimeException(message)

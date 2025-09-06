@@ -1,35 +1,37 @@
-package com.braydenoneal.blang.parser.expression.value;
+package com.braydenoneal.blang.parser.expression.value
 
-import com.braydenoneal.blang.parser.RunException;
-import com.mojang.serialization.MapCodec;
-import com.mojang.serialization.codecs.RecordCodecBuilder;
-import net.minecraft.block.Block;
-import net.minecraft.registry.Registries;
+import com.braydenoneal.blang.parser.RunException
+import com.mojang.serialization.MapCodec
+import com.mojang.serialization.codecs.RecordCodecBuilder
+import net.minecraft.block.Block
+import net.minecraft.registry.Registries
 
-public class BlockValue extends Value<Block> {
-    public static final MapCodec<BlockValue> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
-            Registries.BLOCK.getCodec().fieldOf("value").forGetter(BlockValue::value)
-    ).apply(instance, BlockValue::new));
+class BlockValue(value: Block) : Value<Block>(value) {
+    override val valueType: ValueType<*> get() = ValueTypes.BLOCK
 
-    public BlockValue(Block value) {
-        super(value);
-    }
-
-    @Override
-    public ValueType<?> getValueType() {
-        return ValueTypes.BLOCK;
-    }
-
-    @Override
-    public boolean equals(Object obj) {
+    override fun equals(other: Any?): Boolean {
         try {
-            if (obj instanceof BlockValue blockValue) {
-                return value().equals(blockValue.value());
+            if (other is BlockValue) {
+                return value() == other.value()
             }
-        } catch (Error e) {
-            throw new RunException("Cannot equate block values outside of the game");
+        } catch (_: Error) {
+            throw RunException("Cannot equate block values outside of the game")
         }
 
-        return false;
+        return false
+    }
+
+    companion object {
+        val CODEC: MapCodec<BlockValue> = RecordCodecBuilder.mapCodec { instance ->
+            instance.group(
+                Registries.BLOCK.getCodec().fieldOf("value").forGetter<BlockValue>(BlockValue::value)
+            ).apply(instance, ::BlockValue)
+        }
+    }
+
+    override fun hashCode(): Int {
+        var result = super.hashCode()
+        result = 31 * result + valueType.hashCode()
+        return result
     }
 }

@@ -1,20 +1,17 @@
-package com.braydenoneal.blang.parser.expression.value;
+package com.braydenoneal.blang.parser.expression.value
 
-import com.mojang.serialization.Codec;
-import com.mojang.serialization.MapCodec;
-import com.mojang.serialization.codecs.RecordCodecBuilder;
+import com.mojang.serialization.Codec
+import com.mojang.serialization.MapCodec
+import com.mojang.serialization.codecs.RecordCodecBuilder
 
-public class BooleanValue extends Value<Boolean> {
-    public static final MapCodec<BooleanValue> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
-            Codec.BOOL.fieldOf("value").forGetter(BooleanValue::value)
-    ).apply(instance, BooleanValue::new));
+class BooleanValue(value: Boolean) : Value<Boolean>(value) {
+    override val valueType: ValueType<*> get() = ValueTypes.BOOLEAN
 
-    public BooleanValue(Boolean value) {
-        super(value);
-    }
-
-    @Override
-    public ValueType<?> getValueType() {
-        return ValueTypes.BOOLEAN;
+    companion object {
+        val CODEC: MapCodec<BooleanValue> = RecordCodecBuilder.mapCodec { instance ->
+            instance.group(
+                Codec.BOOL.fieldOf("value").forGetter(BooleanValue::value)
+            ).apply(instance, ::BooleanValue)
+        }
     }
 }

@@ -1,45 +1,45 @@
-package com.braydenoneal.blang.parser.expression.operator;
+package com.braydenoneal.blang.parser.expression.operator
 
-import com.braydenoneal.blang.parser.Program;
-import com.braydenoneal.blang.parser.RunException;
-import com.braydenoneal.blang.parser.expression.Expression;
-import com.braydenoneal.blang.parser.expression.ExpressionType;
-import com.braydenoneal.blang.parser.expression.ExpressionTypes;
-import com.braydenoneal.blang.parser.expression.value.BooleanValue;
-import com.braydenoneal.blang.parser.expression.value.Value;
-import com.mojang.serialization.Codec;
-import com.mojang.serialization.MapCodec;
-import com.mojang.serialization.codecs.RecordCodecBuilder;
+import com.braydenoneal.blang.parser.Program
+import com.braydenoneal.blang.parser.RunException
+import com.braydenoneal.blang.parser.expression.Expression
+import com.braydenoneal.blang.parser.expression.ExpressionType
+import com.braydenoneal.blang.parser.expression.ExpressionTypes
+import com.braydenoneal.blang.parser.expression.value.BooleanValue
+import com.braydenoneal.blang.parser.expression.value.Value
+import com.mojang.serialization.Codec
+import com.mojang.serialization.MapCodec
+import com.mojang.serialization.codecs.RecordCodecBuilder
 
-public record BooleanOperator(
-        String operator,
-        Expression operand_a,
-        Expression operand_b
-) implements Operator, Expression {
-    @Override
-    public Value<?> evaluate(Program program) {
-        Value<?> a = operand_a.evaluate(program);
-        Value<?> b = operand_b.evaluate(program);
+data class BooleanOperator(
+    val operator: String,
+    val operandA: Expression,
+    val operandB: Expression
+) : Operator, Expression {
+    override fun evaluate(program: Program): Value<*> {
+        val a = operandA.evaluate(program)
+        val b = operandB.evaluate(program)
 
-        if (a instanceof BooleanValue a1 && b instanceof BooleanValue b1) {
-            if (operator.equals("and")) {
-                return new BooleanValue(a1.value() && b1.value());
+        if (a is BooleanValue && b is BooleanValue) {
+            if (operator == "and") {
+                return BooleanValue(a.value() && b.value())
             }
 
-            return new BooleanValue(a1.value() || b1.value());
+            return BooleanValue(a.value() || b.value())
         }
 
-        throw new RunException("Operands are not booleans");
+        throw RunException("Operands are not booleans")
     }
 
-    public static final MapCodec<BooleanOperator> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
-            Codec.STRING.fieldOf("operator").forGetter(BooleanOperator::operator),
-            Expression.CODEC.fieldOf("operand_a").forGetter(BooleanOperator::operand_a),
-            Expression.CODEC.fieldOf("operand_b").forGetter(BooleanOperator::operand_b)
-    ).apply(instance, BooleanOperator::new));
+    override val type: ExpressionType<*> get() = ExpressionTypes.BOOLEAN_OPERATOR
 
-    @Override
-    public ExpressionType<?> getType() {
-        return ExpressionTypes.BOOLEAN_OPERATOR;
+    companion object {
+        val CODEC: MapCodec<BooleanOperator> = RecordCodecBuilder.mapCodec { instance ->
+            instance.group(
+                Codec.STRING.fieldOf("operator").forGetter(BooleanOperator::operator),
+                Expression.CODEC.fieldOf("operand_a").forGetter(BooleanOperator::operandA),
+                Expression.CODEC.fieldOf("operand_b").forGetter(BooleanOperator::operandB)
+            ).apply(instance, ::BooleanOperator)
+        }
     }
 }

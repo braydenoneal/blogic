@@ -1,88 +1,82 @@
-package com.braydenoneal.blang.parser.statement;
+package com.braydenoneal.blang.parser.statement
 
-import com.braydenoneal.blang.parser.ParseException;
-import com.braydenoneal.blang.parser.Program;
-import com.braydenoneal.blang.parser.expression.Arguments;
-import com.braydenoneal.blang.parser.expression.Expression;
-import com.braydenoneal.blang.parser.expression.value.Function;
-import com.braydenoneal.blang.parser.expression.value.Value;
-import com.braydenoneal.blang.tokenizer.Type;
-import com.mojang.datafixers.util.Pair;
-import com.mojang.serialization.Codec;
-import com.mojang.serialization.MapCodec;
-import com.mojang.serialization.codecs.RecordCodecBuilder;
+import com.braydenoneal.blang.parser.ParseException
+import com.braydenoneal.blang.parser.Program
+import com.braydenoneal.blang.parser.expression.Arguments
+import com.braydenoneal.blang.parser.expression.Expression
+import com.braydenoneal.blang.parser.expression.value.Funct
+import com.braydenoneal.blang.parser.expression.value.Value
+import com.braydenoneal.blang.tokenizer.Type
+import com.mojang.datafixers.util.Pair
+import com.mojang.serialization.Codec
+import com.mojang.serialization.MapCodec
+import com.mojang.serialization.codecs.RecordCodecBuilder
 
-import java.util.ArrayList;
-import java.util.List;
-
-public record FunctionDeclaration(
-        String name,
-        Function function
-) implements Statement {
-    @Override
-    public Statement execute(Program program) {
-        return this;
+data class FunctionDeclaration(val name: String, val function: Funct) : Statement {
+    override fun execute(program: Program): Statement {
+        return this
     }
 
-    public Value<?> call(Program program, Arguments arguments) {
-        return function().call(program, arguments);
+    fun call(program: Program, arguments: Arguments): Value<*> {
+        return this.function.call(program, arguments)
     }
 
-    public static Statement parse(Program program) throws ParseException {
-        List<String> parameters = new ArrayList<>();
-        List<Pair<String, Expression>> defaultParameters = new ArrayList<>();
-        boolean parseDefaults = false;
+    override val type: StatementType<*> get() = StatementTypes.FUNCTION_DECLARATION
 
-        program.expect(Type.KEYWORD, "fn");
-        String name = program.expect(Type.IDENTIFIER);
-        program.expect(Type.PARENTHESIS, "(");
+    companion object {
+        fun parse(program: Program): Statement {
+            val parameters: MutableList<String> = ArrayList()
+            val defaultParameters: MutableList<Pair<String, Expression>> = ArrayList()
+            var parseDefaults = false
+
+            program.expect(Type.KEYWORD, "fn")
+            val name = program.expect(Type.IDENTIFIER)
+            program.expect(Type.PARENTHESIS, "(")
 
 
-        while (!program.peekIs(Type.PARENTHESIS, ")")) {
-            String parameterName = program.expect(Type.IDENTIFIER);
+            while (!program.peekIs(Type.PARENTHESIS, ")")) {
+                val parameterName = program.expect(Type.IDENTIFIER)
 
-            if (program.peekIs(Type.ASSIGN, "=")) {
-                parseDefaults = true;
-            }
-
-            if (parseDefaults) {
-                try {
-                    program.expect(Type.ASSIGN, "=");
-                    defaultParameters.add(Pair.of(parameterName, Expression.parse(program)));
-                } catch (ParseException e) {
-                    throw new ParseException("Function cannot have parameter with default after parameter without default");
+                if (program.peekIs(Type.ASSIGN, "=")) {
+                    parseDefaults = true
                 }
-            } else {
-                parameters.add(parameterName);
+
+                if (parseDefaults) {
+                    try {
+                        program.expect(Type.ASSIGN, "=")
+                        defaultParameters.add(Pair.of<String, Expression>(parameterName, Expression.parse(program)))
+                    } catch (_: ParseException) {
+                        throw ParseException("Function cannot have parameter with default after parameter without default")
+                    }
+                } else {
+                    parameters.add(parameterName)
+                }
+
+                if (!program.peekIs(Type.PARENTHESIS, ")")) {
+                    program.expect(Type.COMMA)
+                }
             }
 
-            if (!program.peekIs(Type.PARENTHESIS, ")")) {
-                program.expect(Type.COMMA);
+            program.expect(Type.PARENTHESIS, ")")
+            program.expect(Type.CURLY_BRACE, "{")
+            val statements: MutableList<Statement> = ArrayList()
+
+            while (!program.peekIs(Type.CURLY_BRACE, "}")) {
+                statements.add(Statement.parse(program))
             }
+
+            program.expect(Type.CURLY_BRACE, "}")
+
+            val functionDeclaration = FunctionDeclaration(name, Funct(parameters, defaultParameters, statements))
+            program.addFunction(name, functionDeclaration)
+            return functionDeclaration
         }
 
-        program.expect(Type.PARENTHESIS, ")");
-        program.expect(Type.CURLY_BRACE, "{");
-        List<Statement> statements = new ArrayList<>();
-
-        while (!program.peekIs(Type.CURLY_BRACE, "}")) {
-            statements.add(Statement.parse(program));
+        val CODEC: MapCodec<FunctionDeclaration> = RecordCodecBuilder.mapCodec { instance ->
+            instance.group(
+                Codec.STRING.fieldOf("name").forGetter(FunctionDeclaration::name),
+                Funct.CODEC.fieldOf("function").forGetter(FunctionDeclaration::function)
+            ).apply(instance, ::FunctionDeclaration)
         }
-
-        program.expect(Type.CURLY_BRACE, "}");
-
-        FunctionDeclaration functionDeclaration = new FunctionDeclaration(name, new Function(parameters, defaultParameters, statements));
-        program.addFunction(name, functionDeclaration);
-        return functionDeclaration;
-    }
-
-    public static final MapCodec<FunctionDeclaration> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
-            Codec.STRING.fieldOf("name").forGetter(FunctionDeclaration::name),
-            Function.CODEC.fieldOf("function").forGetter(FunctionDeclaration::function)
-    ).apply(instance, FunctionDeclaration::new));
-
-    @Override
-    public StatementType<?> getType() {
-        return StatementTypes.FUNCTION_DECLARATION;
     }
 }

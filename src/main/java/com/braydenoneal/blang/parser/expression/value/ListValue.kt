@@ -1,90 +1,87 @@
-package com.braydenoneal.blang.parser.expression.value;
+package com.braydenoneal.blang.parser.expression.value
 
-import com.braydenoneal.blang.parser.Program;
-import com.braydenoneal.blang.parser.RunException;
-import com.braydenoneal.blang.parser.expression.Expression;
-import com.mojang.serialization.Codec;
-import com.mojang.serialization.MapCodec;
-import com.mojang.serialization.codecs.RecordCodecBuilder;
+import com.braydenoneal.blang.parser.Program
+import com.braydenoneal.blang.parser.RunException
+import com.braydenoneal.blang.parser.expression.Expression
+import com.mojang.serialization.Codec
+import com.mojang.serialization.MapCodec
+import com.mojang.serialization.codecs.RecordCodecBuilder
 
-import java.util.ArrayList;
-import java.util.List;
+class ListValue(value: MutableList<Value<*>>) : Value<MutableList<Value<*>>>(value) {
+    override val valueType: ValueType<*> get() = ValueTypes.LIST
 
-public class ListValue extends Value<List<Value<?>>> {
-    public static final MapCodec<ListValue> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
-            Codec.list(Value.CODEC).fieldOf("value").forGetter(ListValue::value)
-    ).apply(instance, ListValue::new));
+    override fun toString(): String {
+        val print = StringBuilder("[")
 
-    public ListValue(List<Value<?>> value) {
-        super(value);
-    }
+        for (i in value().indices) {
+            print.append(value()[i].toString())
 
-    @Override
-    public ValueType<?> getValueType() {
-        return ValueTypes.LIST;
-    }
-
-    @Override
-    public String toString() {
-        StringBuilder print = new StringBuilder("[");
-
-        for (int i = 0; i < value().size(); i++) {
-            print.append(value().get(i).toString());
-
-            if (i < value().size() - 1) {
-                print.append(", ");
+            if (i < value().size - 1) {
+                print.append(", ")
             }
         }
 
-        return print + "]";
+        return "$print]"
     }
 
-    public static List<Value<?>> toIndexValues(Program program, List<Expression> expressions) {
-        List<Value<?>> indices = new ArrayList<>();
-
-        for (Expression expression : expressions) {
-            indices.add(expression.evaluate(program));
+    companion object {
+        val CODEC: MapCodec<ListValue> = RecordCodecBuilder.mapCodec { instance ->
+            instance.group(
+                Codec.list(Value.CODEC).fieldOf("value").forGetter(ListValue::value)
+            ).apply(instance, ::ListValue)
         }
 
-        return indices;
-    }
+        fun toIndexValues(program: Program, expressions: MutableList<Expression>): MutableList<Value<*>> {
+            val indices: MutableList<Value<*>> = ArrayList()
 
-    public static ListValue setNested(ListValue list, List<? extends Value<?>> indexValues, Value<?> value) {
-        List<Value<?>> newList = new ArrayList<>(list.value());
-        Value<?> indexValue = indexValues.getFirst();
-
-        for (int i = 0; i < newList.size(); i++) {
-            if (indexValue instanceof IntegerValue index && index.value() != i) {
-                continue;
+            for (expression in expressions) {
+                indices.add(expression.evaluate(program))
             }
 
-            if (indexValues.size() > 1 && newList.get(i) instanceof ListValue nestedList) {
-                newList.set(i, setNested(nestedList, indexValues.subList(1, indexValues.size()), value));
-            } else {
-                newList.set(i, value);
-            }
-
-            break;
+            return indices
         }
 
-        return new ListValue(newList);
-    }
+        fun setNested(list: ListValue, indexValues: MutableList<out Value<*>>, value: Value<*>): ListValue {
+            val newList: MutableList<Value<*>> = ArrayList(list.value())
+            val indexValue: Value<*> = indexValues.first()
 
-    public static Value<?> getNested(ListValue list, List<? extends Value<?>> indexValues) {
-        Value<?> indexValue = indexValues.getFirst();
+            for (i in newList.indices) {
+                if (indexValue is IntegerValue && indexValue.value() != i) {
+                    continue
+                }
 
-        for (int i = 0; i < list.value().size(); i++) {
-            if (indexValue instanceof IntegerValue index && index.value() != i) {
-                continue;
+                val nestedList = newList[i]
+
+                if (indexValues.size > 1 && nestedList is ListValue) {
+                    newList[i] = setNested(nestedList, indexValues.subList(1, indexValues.size), value)
+                } else {
+                    newList[i] = value
+                }
+
+                break
             }
 
-            if (indexValues.size() > 1 && list.value().get(i) instanceof ListValue nestedList) {
-                return getNested(nestedList, indexValues.subList(1, indexValues.size()));
-            } else {
-                return list.value().get(i);
-            }
+            return ListValue(newList)
         }
 
-        throw new RunException("Nested value does not exist");
+        fun getNested(list: ListValue, indexValues: MutableList<out Value<*>>): Value<*> {
+            val indexValue: Value<*> = indexValues.first()
+
+            for (i in list.value().indices) {
+                if (indexValue is IntegerValue && indexValue.value() != i) {
+                    continue
+                }
+
+                val nestedList = list.value()[i]
+
+                return if (indexValues.size > 1 && nestedList is ListValue) {
+                    getNested(nestedList, indexValues.subList(1, indexValues.size))
+                } else {
+                    list.value()[i]
+                }
+            }
+
+            throw RunException("Nested value does not exist")
+        }
     }
 }

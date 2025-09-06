@@ -1,37 +1,36 @@
-package com.braydenoneal.blang.parser.statement;
+package com.braydenoneal.blang.parser.statement
 
-import com.braydenoneal.blang.parser.ParseException;
-import com.braydenoneal.blang.parser.Program;
-import com.braydenoneal.blang.parser.expression.Expression;
-import com.braydenoneal.blang.parser.expression.value.Null;
-import com.braydenoneal.blang.parser.expression.value.Value;
-import com.braydenoneal.blang.tokenizer.Type;
-import com.mojang.serialization.MapCodec;
-import com.mojang.serialization.codecs.RecordCodecBuilder;
+import com.braydenoneal.blang.parser.Program
+import com.braydenoneal.blang.parser.expression.Expression
+import com.braydenoneal.blang.parser.expression.value.Null
+import com.braydenoneal.blang.parser.expression.value.Value
+import com.braydenoneal.blang.tokenizer.Type
+import com.mojang.serialization.MapCodec
+import com.mojang.serialization.codecs.RecordCodecBuilder
 
-public record ReturnStatement(Expression expression) implements Statement {
-    @Override
-    public Statement execute(Program program) {
-        return this;
+data class ReturnStatement(val expression: Expression) : Statement {
+    override fun execute(program: Program): Statement {
+        return this
     }
 
-    public Value<?> returnValue(Program program) {
-        return expression.evaluate(program);
+    fun returnValue(program: Program): Value<*> {
+        return expression.evaluate(program)
     }
 
-    public static Statement parse(Program program) throws ParseException {
-        program.expect(Type.KEYWORD, "return");
-        Expression expression = program.peek().type() == Type.SEMICOLON ? Null.value() : Expression.parse(program);
-        program.expect(Type.SEMICOLON);
-        return new ReturnStatement(expression);
-    }
+    override val type: StatementType<*> get() = StatementTypes.RETURN_STATEMENT
 
-    public static final MapCodec<ReturnStatement> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
-            Expression.CODEC.fieldOf("expression").forGetter(ReturnStatement::expression)
-    ).apply(instance, ReturnStatement::new));
+    companion object {
+        fun parse(program: Program): Statement {
+            program.expect(Type.KEYWORD, "return")
+            val expression = if (program.peek().type == Type.SEMICOLON) Null.VALUE else Expression.parse(program)
+            program.expect(Type.SEMICOLON)
+            return ReturnStatement(expression)
+        }
 
-    @Override
-    public StatementType<?> getType() {
-        return StatementTypes.RETURN_STATEMENT;
+        val CODEC: MapCodec<ReturnStatement> = RecordCodecBuilder.mapCodec { instance ->
+            instance.group(
+                Expression.CODEC.fieldOf("expression").forGetter(ReturnStatement::expression)
+            ).apply(instance, ::ReturnStatement)
+        }
     }
 }

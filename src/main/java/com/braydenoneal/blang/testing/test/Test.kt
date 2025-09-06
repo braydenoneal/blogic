@@ -1,48 +1,45 @@
-package com.braydenoneal.blang.testing.test;
+package com.braydenoneal.blang.testing.test
 
-import com.braydenoneal.blang.Context;
-import com.braydenoneal.blang.parser.Program;
-import com.braydenoneal.blang.parser.expression.value.Value;
+import com.braydenoneal.blang.Context
+import com.braydenoneal.blang.parser.Program
+import com.braydenoneal.blang.parser.expression.value.Value
+import net.minecraft.util.math.BlockPos
 
-import java.util.List;
+abstract class Test {
+    private val program = Program("fileName;\n\n" + body(), Context(BlockPos.ORIGIN, null))
 
-public abstract class Test {
-    private final Program program = new Program("fileName;\n\n" + body(), new Context(null, null));
+    abstract fun body(): String
 
-    public abstract String body();
+    abstract fun expects(): List<Expect>
 
-    public abstract List<Expect> expects();
+    fun run(): Result {
+        val expects = expects()
+        var passed = 0
+        program.run()
 
-    public Result run() {
-        List<Expect> expects = expects();
-        int passed = 0;
+        for (expect in expects) {
 
-        for (Expect expect : expects) {
-            program.run();
+            val value = program.topScope().get(expect.name)
 
-            Value<?> value = program.topScope().get(expect.name);
-
-            if (expect.value.equals(value)) {
-                passed++;
-                System.out.println("\u001B[32mPassed: " + expect.name + " is " + expect.value + "\u001B[0m");
+            if (expect.value == value) {
+                passed++
+                println("\u001B[32mPassed: " + expect.name + " is " + expect.value + "\u001B[0m")
             } else {
-                System.out.println("\u001B[31mFailed: " + expect.name + " is " + value + ", expected " + expect.value + "\u001B[0m");
+                println("\u001B[31mFailed: " + expect.name + " is " + value + ", expected " + expect.value + "\u001B[0m")
             }
         }
 
-        System.out.print("\u001B[31m");
+        print("\u001B[31m")
 
-        if (passed == expects.size()) {
-            System.out.print("\u001B[32m");
+        if (passed == expects.size) {
+            print("\u001B[32m")
         }
 
-        System.out.println("Passed " + passed + " of " + expects.size() + ": " + this.getClass().getSimpleName() + "\u001B[0m");
-        return new Result(passed, expects.size());
+        println("Passed " + passed + " of " + expects.size + ": " + this.javaClass.getSimpleName() + "\u001B[0m")
+        return Result(passed, expects.size)
     }
 
-    public record Expect(String name, Value<?> value) {
-    }
+    data class Expect(val name: String, val value: Value<*>)
 
-    public record Result(int passed, int total) {
-    }
+    data class Result(val passed: Int, val total: Int)
 }

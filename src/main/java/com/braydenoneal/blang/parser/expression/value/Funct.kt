@@ -1,76 +1,82 @@
-package com.braydenoneal.blang.parser.expression.value;
+package com.braydenoneal.blang.parser.expression.value
 
-import com.braydenoneal.blang.parser.Program;
-import com.braydenoneal.blang.parser.RunException;
-import com.braydenoneal.blang.parser.expression.Arguments;
-import com.braydenoneal.blang.parser.expression.Expression;
-import com.braydenoneal.blang.parser.statement.ReturnStatement;
-import com.braydenoneal.blang.parser.statement.Statement;
-import com.mojang.datafixers.util.Pair;
-import com.mojang.serialization.Codec;
-import com.mojang.serialization.codecs.RecordCodecBuilder;
+import com.braydenoneal.blang.parser.Program
+import com.braydenoneal.blang.parser.RunException
+import com.braydenoneal.blang.parser.expression.Arguments
+import com.braydenoneal.blang.parser.expression.Expression
+import com.braydenoneal.blang.parser.statement.ReturnStatement
+import com.braydenoneal.blang.parser.statement.Statement
+import com.mojang.datafixers.util.Pair
+import com.mojang.serialization.Codec
+import com.mojang.serialization.codecs.RecordCodecBuilder
+import java.util.function.Consumer
 
-import java.util.List;
-
-public record Function(
-        List<String> parameters,
-        List<Pair<String, Expression>> defaultParameters,
-        List<Statement> statements
+data class Funct(
+    val parameters: MutableList<String>,
+    val defaultParameters: MutableList<Pair<String, Expression>>,
+    val statements: MutableList<Statement>
 ) {
-    public static final Codec<Function> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-            Codec.list(Codec.STRING).fieldOf("parameters").forGetter(Function::parameters),
-            Codec.list(Codec.pair(Codec.STRING, Expression.CODEC)).fieldOf("defaultParameters").forGetter(Function::defaultParameters),
-            Codec.list(Statement.CODEC).fieldOf("statements").forGetter(Function::statements)
-    ).apply(instance, Function::new));
+    fun call(program: Program, arguments: Arguments): Value<*> {
+        program.newScope()
 
-    public Value<?> call(Program program, Arguments arguments) {
-        program.newScope();
-
-        arguments.namedArguments().forEach((String name, Expression expression) -> {
-            boolean hasDefault = defaultParameters().stream()
-                    .anyMatch((var entry) -> entry.getFirst().equals(name));
-
+        arguments.namedArguments.forEach({ name: String, expression: Expression ->
+            val hasDefault = this.defaultParameters.stream()
+                .anyMatch { entry: Pair<String, Expression> -> entry.getFirst() == name }
             if (parameters.contains(name) || hasDefault) {
-                program.getScope().setLocal(name, expression.evaluate(program));
+                program.scope.setLocal(name, expression.evaluate(program))
             } else {
-                throw new RunException("Provided extra argument '" + name + "'");
+                throw RunException("Provided extra argument '$name'")
             }
-        });
+        })
 
-        for (int i = 0; i < parameters.size(); i++) {
-            if (program.getScope().getLocal(parameters.get(i)) == null) {
-                if (arguments.arguments().size() > i) {
-                    program.getScope().setLocal(parameters.get(i),
-                            arguments.arguments().get(i).evaluate(program));
+        for (i in parameters.indices) {
+            if (program.scope.getLocal(parameters[i]) == null) {
+                if (arguments.arguments.size > i) {
+                    program.scope.setLocal(
+                        parameters[i],
+                        arguments.arguments[i].evaluate(program)
+                    )
                 } else {
-                    throw new RunException("Missing argument '" + parameters.get(i) + "'");
+                    throw RunException("Missing argument '" + parameters[i] + "'")
                 }
             }
         }
 
-        for (int i = parameters.size(); i < arguments.arguments().size(); i++) {
-            if (defaultParameters.size() > i - parameters.size()) {
-                program.getScope().setLocal(defaultParameters.get(i - parameters.size()).getFirst(),
-                        arguments.arguments().get(i).evaluate(program));
+        for (i in parameters.size..<arguments.arguments.size) {
+            if (defaultParameters.size > i - parameters.size) {
+                program.scope.setLocal(
+                    defaultParameters[i - parameters.size].getFirst(),
+                    arguments.arguments[i].evaluate(program)
+                )
             } else {
-                throw new RunException("Provided extra argument");
+                throw RunException("Provided extra argument")
             }
         }
 
-        defaultParameters.forEach((Pair<String, Expression> entry) -> {
-            if (program.getScope().getLocal(entry.getFirst()) == null) {
-                program.getScope().setLocal(entry.getFirst(), entry.getSecond().evaluate(program));
+        defaultParameters.forEach(Consumer { entry ->
+            if (program.scope.getLocal(entry.getFirst()) == null) {
+                program.scope.setLocal(entry.getFirst(), entry.getSecond().evaluate(program))
             }
-        });
+        })
 
-        Value<?> returnValue = Null.value();
-        Statement statement = Statement.runStatements(program, statements);
+        var returnValue: Value<*> = Null.VALUE
+        val statement = Statement.runStatements(program, statements)
 
-        if (statement instanceof ReturnStatement returnStatement) {
-            returnValue = returnStatement.returnValue(program);
+        if (statement is ReturnStatement) {
+            returnValue = statement.returnValue(program)
         }
 
-        program.endScope();
-        return returnValue;
+        program.endScope()
+        return returnValue
+    }
+
+    companion object {
+        val CODEC: Codec<Funct> = RecordCodecBuilder.create { instance ->
+            instance.group(
+                Codec.list(Codec.STRING).fieldOf("parameters").forGetter(Funct::parameters),
+                Codec.list(Codec.pair(Codec.STRING, Expression.CODEC)).fieldOf("defaultParameters").forGetter(Funct::defaultParameters),
+                Codec.list(Statement.CODEC).fieldOf("statements").forGetter(Funct::statements)
+            ).apply(instance, ::Funct)
+        }
     }
 }

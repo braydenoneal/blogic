@@ -1,22 +1,22 @@
-package com.braydenoneal.networking;
+package com.braydenoneal.networking
 
-import net.minecraft.network.RegistryByteBuf;
-import net.minecraft.network.codec.PacketCodec;
-import net.minecraft.network.codec.PacketCodecs;
-import net.minecraft.network.packet.CustomPayload;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.math.BlockPos;
+import net.minecraft.network.RegistryByteBuf
+import net.minecraft.network.codec.PacketCodec
+import net.minecraft.network.codec.PacketCodecs
+import net.minecraft.network.packet.CustomPayload
+import net.minecraft.util.Identifier
+import net.minecraft.util.math.BlockPos
 
-public record StringPayload(BlockPos pos, String string) implements CustomPayload {
-    public static final CustomPayload.Id<StringPayload> ID = new CustomPayload.Id<>(Identifier.of("blogic", "string"));
-    public static final PacketCodec<RegistryByteBuf, StringPayload> CODEC = PacketCodec.tuple(
+data class StringPayload(val pos: BlockPos, val string: String) : CustomPayload {
+    override fun getId(): CustomPayload.Id<out CustomPayload> {
+        return ID
+    }
+
+    companion object {
+        val ID: CustomPayload.Id<StringPayload> = CustomPayload.Id(Identifier.of("blogic", "string"))
+        val CODEC: PacketCodec<RegistryByteBuf, StringPayload> = PacketCodec.tuple(
             BlockPos.PACKET_CODEC, StringPayload::pos,
             PacketCodecs.STRING, StringPayload::string,
-            StringPayload::new
-    );
-
-    @Override
-    public Id<? extends CustomPayload> getId() {
-        return ID;
+        ) { pos: BlockPos, string: String -> StringPayload(pos, string) }
     }
 }

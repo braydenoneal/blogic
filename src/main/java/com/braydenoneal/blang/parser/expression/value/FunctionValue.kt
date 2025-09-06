@@ -1,87 +1,80 @@
-package com.braydenoneal.blang.parser.expression.value;
+package com.braydenoneal.blang.parser.expression.value
 
-import com.braydenoneal.blang.parser.ParseException;
-import com.braydenoneal.blang.parser.Program;
-import com.braydenoneal.blang.parser.expression.Arguments;
-import com.braydenoneal.blang.parser.expression.Expression;
-import com.braydenoneal.blang.parser.statement.ReturnStatement;
-import com.braydenoneal.blang.parser.statement.Statement;
-import com.braydenoneal.blang.tokenizer.Type;
-import com.mojang.datafixers.util.Pair;
-import com.mojang.serialization.MapCodec;
-import com.mojang.serialization.codecs.RecordCodecBuilder;
+import com.braydenoneal.blang.parser.ParseException
+import com.braydenoneal.blang.parser.Program
+import com.braydenoneal.blang.parser.expression.Arguments
+import com.braydenoneal.blang.parser.expression.Expression
+import com.braydenoneal.blang.parser.statement.ReturnStatement
+import com.braydenoneal.blang.parser.statement.Statement
+import com.braydenoneal.blang.tokenizer.Type
+import com.mojang.datafixers.util.Pair
+import com.mojang.serialization.MapCodec
+import com.mojang.serialization.codecs.RecordCodecBuilder
 
-import java.util.ArrayList;
-import java.util.List;
-
-public class FunctionValue extends Value<Function> {
-    public static final MapCodec<FunctionValue> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
-            Function.CODEC.fieldOf("value").forGetter(FunctionValue::value)
-    ).apply(instance, FunctionValue::new));
-
-    public FunctionValue(Function value) {
-        super(value);
+class FunctionValue(value: Funct) : Value<Funct>(value) {
+    fun call(program: Program, arguments: Arguments): Value<*> {
+        return value().call(program, arguments)
     }
 
-    public Value<?> call(Program program, Arguments arguments) {
-        return value().call(program, arguments);
+    override val valueType: ValueType<*> get() = ValueTypes.FUNCTION
+
+    override fun toString(): String {
+        return "fn" + value().parameters.toString() + ": " + value().statements.toString()
     }
 
-    public static Expression parse(Program program) throws ParseException {
-        List<String> parameters = new ArrayList<>();
-        List<Pair<String, Expression>> defaultParameters = new ArrayList<>();
-        boolean parseDefaults = false;
+    companion object {
+        val CODEC: MapCodec<FunctionValue> = RecordCodecBuilder.mapCodec { instance ->
+            instance.group(
+                Funct.CODEC.fieldOf("value").forGetter(FunctionValue::value)
+            ).apply(instance, ::FunctionValue)
+        }
 
-        program.expect(Type.KEYWORD, "fn");
+        fun parse(program: Program): Expression {
+            val parameters: MutableList<String> = ArrayList()
+            val defaultParameters: MutableList<Pair<String, Expression>> = ArrayList()
+            var parseDefaults = false
 
-        while (program.peek().type() != Type.COLON) {
-            String parameterName = program.expect(Type.IDENTIFIER);
+            program.expect(Type.KEYWORD, "fn")
 
-            if (program.peekIs(Type.ASSIGN, "=")) {
-                parseDefaults = true;
-            }
+            while (program.peek().type !== Type.COLON) {
+                val parameterName = program.expect(Type.IDENTIFIER)
 
-            if (parseDefaults) {
-                try {
-                    program.expect(Type.ASSIGN, "=");
-                    defaultParameters.add(Pair.of(parameterName, Expression.parse(program)));
-                } catch (ParseException e) {
-                    throw new ParseException("Function cannot have parameter with default after parameter without default");
+                if (program.peekIs(Type.ASSIGN, "=")) {
+                    parseDefaults = true
                 }
+
+                if (parseDefaults) {
+                    try {
+                        program.expect(Type.ASSIGN, "=")
+                        defaultParameters.add(Pair.of(parameterName, Expression.parse(program)))
+                    } catch (_: ParseException) {
+                        throw ParseException("Function cannot have parameter with default after parameter without default")
+                    }
+                } else {
+                    parameters.add(parameterName)
+                }
+
+                if (program.peek().type !== Type.COLON) {
+                    program.expect(Type.COMMA)
+                }
+            }
+
+            program.expect(Type.COLON)
+            val statements: MutableList<Statement> = ArrayList()
+
+            if (program.peekIs(Type.CURLY_BRACE, "{")) {
+                program.next()
+
+                while (!program.peekIs(Type.CURLY_BRACE, "}")) {
+                    statements.add(Statement.parse(program))
+                }
+
+                program.expect(Type.CURLY_BRACE, "}")
             } else {
-                parameters.add(parameterName);
+                statements.add(ReturnStatement(Expression.parse(program)))
             }
 
-            if (program.peek().type() != Type.COLON) {
-                program.expect(Type.COMMA);
-            }
+            return FunctionValue(Funct(parameters, defaultParameters, statements))
         }
-
-        program.expect(Type.COLON);
-        List<Statement> statements = new ArrayList<>();
-
-        if (program.peekIs(Type.CURLY_BRACE, "{")) {
-            program.next();
-
-            while (!program.peekIs(Type.CURLY_BRACE, "}")) {
-                statements.add(Statement.parse(program));
-            }
-
-            program.expect(Type.CURLY_BRACE, "}");
-        } else {
-            statements.add(new ReturnStatement(Expression.parse(program)));
-        }
-
-        return new FunctionValue(new Function(parameters, defaultParameters, statements));
-    }
-
-    @Override
-    public ValueType<?> getValueType() {
-        return ValueTypes.FUNCTION;
-    }
-
-    @Override
-    public String toString() {
-        return "fn" + value().parameters().toString() + ": " + value().statements().toString();
     }
 }

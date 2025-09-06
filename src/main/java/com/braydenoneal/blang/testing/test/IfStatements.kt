@@ -1,12 +1,9 @@
-package com.braydenoneal.blang.testing.test;
+package com.braydenoneal.blang.testing.test
 
-import com.braydenoneal.blang.parser.expression.value.IntegerValue;
+import com.braydenoneal.blang.parser.expression.value.IntegerValue
 
-import java.util.List;
-
-public class IfStatements extends Test {
-    @Override
-    public String body() {
+class IfStatements : Test() {
+    override fun body(): String {
         return """
                 a = 0;
                 
@@ -33,16 +30,16 @@ public class IfStatements extends Test {
                 }
                 
                 d = 4 if true else 0;
-                """;
+                
+                """.trimIndent()
     }
 
-    @Override
-    public List<Expect> expects() {
-        return List.of(
-                new Expect("a", new IntegerValue(1)),
-                new Expect("b", new IntegerValue(2)),
-                new Expect("c", new IntegerValue(3)),
-                new Expect("d", new IntegerValue(4))
-        );
+    override fun expects(): List<Expect> {
+        return listOf(
+            Expect("a", IntegerValue(1)),
+            Expect("b", IntegerValue(2)),
+            Expect("c", IntegerValue(3)),
+            Expect("d", IntegerValue(4))
+        )
     }
 }

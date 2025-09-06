@@ -1,30 +1,42 @@
-package com.braydenoneal.blang.parser.expression;
+package com.braydenoneal.blang.parser.expression
 
-import com.braydenoneal.blang.parser.Program;
-import com.braydenoneal.blang.parser.RunException;
-import com.braydenoneal.blang.parser.expression.value.Value;
-import com.mojang.serialization.Codec;
-import com.mojang.serialization.MapCodec;
-import com.mojang.serialization.codecs.RecordCodecBuilder;
+import com.braydenoneal.blang.parser.Program
+import com.braydenoneal.blang.parser.RunException
+import com.braydenoneal.blang.parser.expression.builtin.BuiltinExpression
+import com.braydenoneal.blang.parser.expression.value.Value
+import com.braydenoneal.blang.tokenizer.Type
+import com.mojang.serialization.Codec
+import com.mojang.serialization.MapCodec
+import com.mojang.serialization.codecs.RecordCodecBuilder
 
-public record VariableExpression(String name) implements Expression {
-    @Override
-    public Value<?> evaluate(Program program) {
-        Value<?> value = program.getScope().get(name);
+data class VariableExpression(val name: String) : Expression {
+    override fun evaluate(program: Program): Value<*> {
+        val value: Value<*>? = program.scope.get(name)
 
         if (value == null) {
-            throw new RunException("Variable with name '" + name + "' does not exist");
+            throw RunException("Variable with name '$name' does not exist")
         }
 
-        return value;
+        return value
     }
 
-    public static final MapCodec<VariableExpression> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
-            Codec.STRING.fieldOf("name").forGetter(VariableExpression::name)
-    ).apply(instance, VariableExpression::new));
+    override val type: ExpressionType<*> get() = ExpressionTypes.VARIABLE_EXPRESSION
 
-    @Override
-    public ExpressionType<?> getType() {
-        return ExpressionTypes.VARIABLE_EXPRESSION;
+    companion object {
+        val CODEC: MapCodec<VariableExpression> = RecordCodecBuilder.mapCodec { instance ->
+            instance.group(
+                Codec.STRING.fieldOf("name").forGetter(VariableExpression::name)
+            ).apply(instance, ::VariableExpression)
+        }
+
+        fun parse(program: Program): Expression {
+            val token = program.next()
+
+            if (program.peekIs(Type.PARENTHESIS, "(")) {
+                return BuiltinExpression.parse(program, token.value)
+            }
+
+            return VariableExpression(token.value)
+        }
     }
 }

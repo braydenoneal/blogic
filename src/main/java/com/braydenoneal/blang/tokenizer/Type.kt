@@ -1,6 +1,6 @@
-package com.braydenoneal.blang.tokenizer;
+package com.braydenoneal.blang.tokenizer
 
-public enum Type {
+enum class Type(val regex: String) {
     WHITESPACE("([ \\n\\t\\r])"),
     COMMENT("(#([^\\n]*))"),
     KEYWORD("(import|fn|return|if|else|elif|while|for|in|break|continue)([^A-Za-z0-9_]{1})"),
@@ -23,10 +23,4 @@ public enum Type {
     UNARY_OPERATOR("(!)"),
     ARITHMETIC_OPERATOR("(\\+|\\-|\\*|\\/\\/|\\/|%|\\^)"),
     ;
-
-    public final String regex;
-
-    Type(String regex) {
-        this.regex = regex;
-    }
 }

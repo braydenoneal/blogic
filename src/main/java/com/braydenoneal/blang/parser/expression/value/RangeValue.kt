@@ -1,24 +1,20 @@
-package com.braydenoneal.blang.parser.expression.value;
+package com.braydenoneal.blang.parser.expression.value
 
-import com.mojang.serialization.MapCodec;
-import com.mojang.serialization.codecs.RecordCodecBuilder;
+import com.mojang.serialization.MapCodec
+import com.mojang.serialization.codecs.RecordCodecBuilder
 
-public class RangeValue extends Value<Range> {
-    public static final MapCodec<RangeValue> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
-            Range.CODEC.fieldOf("value").forGetter(RangeValue::value)
-    ).apply(instance, RangeValue::new));
+class RangeValue(value: Range) : Value<Range>(value) {
+    override val valueType: ValueType<*> get() = ValueTypes.RANGE
 
-    public RangeValue(Range value) {
-        super(value);
+    override fun toString(): String {
+        return "range(" + value().start + ", " + value().end + ", " + value().step + ")"
     }
 
-    @Override
-    public ValueType<?> getValueType() {
-        return ValueTypes.RANGE;
-    }
-
-    @Override
-    public String toString() {
-        return "range(" + value().start() + ", " + value().end() + ", " + value().step() + ")";
+    companion object {
+        val CODEC: MapCodec<RangeValue> = RecordCodecBuilder.mapCodec { instance ->
+            instance.group(
+                Range.CODEC.fieldOf("value").forGetter(RangeValue::value)
+            ).apply(instance, ::RangeValue)
+        }
     }
 }

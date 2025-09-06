@@ -1,12 +1,9 @@
-package com.braydenoneal.blang.testing.test;
+package com.braydenoneal.blang.testing.test
 
-import com.braydenoneal.blang.parser.expression.value.IntegerValue;
+import com.braydenoneal.blang.parser.expression.value.IntegerValue
 
-import java.util.List;
-
-public class VariableAssignment extends Test {
-    @Override
-    public String body() {
+class VariableAssignment : Test() {
+    override fun body(): String {
         return """
                 a = 1;
                 a = 0;
@@ -16,16 +13,16 @@ public class VariableAssignment extends Test {
                 d = 0;
                 d += 1;
                 d -= 2;
-                """;
+                
+                """.trimIndent()
     }
 
-    @Override
-    public List<Expect> expects() {
-        return List.of(
-                new Expect("a", new IntegerValue(0)),
-                new Expect("b", new IntegerValue(1)),
-                new Expect("c", new IntegerValue(1)),
-                new Expect("d", new IntegerValue(-1))
-        );
+    override fun expects(): List<Expect> {
+        return listOf(
+            Expect("a", IntegerValue(0)),
+            Expect("b", IntegerValue(1)),
+            Expect("c", IntegerValue(1)),
+            Expect("d", IntegerValue(-1))
+        )
     }
 }

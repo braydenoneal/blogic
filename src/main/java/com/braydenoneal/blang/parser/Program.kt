@@ -1,165 +1,161 @@
-package com.braydenoneal.blang.parser;
+package com.braydenoneal.blang.parser
 
-import com.braydenoneal.blang.Context;
-import com.braydenoneal.blang.parser.expression.Arguments;
-import com.braydenoneal.blang.parser.statement.FunctionDeclaration;
-import com.braydenoneal.blang.parser.statement.ImportStatement;
-import com.braydenoneal.blang.parser.statement.Statement;
-import com.braydenoneal.blang.tokenizer.Token;
-import com.braydenoneal.blang.tokenizer.Type;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import com.braydenoneal.blang.Context
+import com.braydenoneal.blang.parser.expression.Arguments
+import com.braydenoneal.blang.parser.statement.FunctionDeclaration
+import com.braydenoneal.blang.parser.statement.ImportStatement
+import com.braydenoneal.blang.parser.statement.Statement
+import com.braydenoneal.blang.tokenizer.Token
+import com.braydenoneal.blang.tokenizer.Token.Companion.tokenize
+import com.braydenoneal.blang.tokenizer.Type
+import org.apache.logging.log4j.LogManager
+import org.apache.logging.log4j.Logger
+import java.util.*
 
-import java.util.*;
+class Program(source: String, private val context: Context) {
+    private val imports: MutableList<ImportStatement> = ArrayList()
+    private val statements: MutableList<Statement> = ArrayList()
+    private val functions: MutableMap<String, FunctionDeclaration> = HashMap()
+    private val topScope = Scope(null)
+    private val scopes = Stack<Scope>()
 
-public class Program {
-    private static final Logger log = LogManager.getLogger(Program.class);
-    private final List<ImportStatement> imports = new ArrayList<>();
-    private final List<Statement> statements = new ArrayList<>();
-    private final Map<String, FunctionDeclaration> functions = new HashMap<>();
-    private final Scope topScope = new Scope(null);
-    private final Stack<Scope> scopes = new Stack<>();
+    private var hasRuntimeError = false
+    private var position = 0
 
-    private boolean hasRuntimeError = false;
-    private int position = 0;
+    private val tokens: MutableList<Token>
+    private val name: String
 
-    private final List<Token> tokens;
-    private final String name;
-    private final Context context;
-
-    public Program(String source, Context context) {
-        this.context = context;
-        List<Token> tokens;
+    init {
+        var tokens: MutableList<Token>
 
         try {
-            tokens = Token.tokenize(source);
-        } catch (Exception e) {
-            log.error("Tokenize error", e);
-            tokens = new ArrayList<>();
+            tokens = tokenize(source)
+        } catch (e: Exception) {
+            log.error("Tokenize error", e)
+            tokens = ArrayList<Token>()
         }
 
-        this.tokens = tokens;
-        scopes.push(topScope);
-        String name = "";
+        this.tokens = tokens
+        scopes.push(topScope)
+        var name = ""
 
         try {
             if (!tokens.isEmpty()) {
-                name = expect(Type.IDENTIFIER);
-                expect(Type.SEMICOLON);
-                parse();
+                name = expect(Type.IDENTIFIER)
+                expect(Type.SEMICOLON)
+                parse()
             }
-        } catch (Exception e) {
-            log.error("Parse error", e);
-            statements.clear();
-            functions.clear();
+        } catch (e: Exception) {
+            log.error("Parse error", e)
+            statements.clear()
+            functions.clear()
         }
 
-        this.name = name;
+        this.name = name
     }
 
-    public Context context() {
-        return context;
+    fun context(): Context {
+        return context
     }
 
-    public void run() {
+    fun run() {
         try {
-            for (Statement statement : statements) {
-                statement.execute(this);
+            for (statement in statements) {
+                statement.execute(this)
             }
-        } catch (Exception e) {
-            log.error("Run error", e);
+        } catch (e: Exception) {
+            log.error("Run error", e)
         }
     }
 
-    public void runMain() {
+    fun runMain() {
         if (hasRuntimeError) {
-            return;
+            return
         }
 
         try {
-            FunctionDeclaration main = functions.get("main");
-
-            if (main != null) {
-                main.call(this, Arguments.EMPTY);
-            }
-        } catch (Exception e) {
-            log.error("Run main error", e);
-            hasRuntimeError = true;
+            val main = functions["main"]
+            main?.call(this, Arguments.EMPTY)
+        } catch (e: Exception) {
+            log.error("Run main error", e)
+            hasRuntimeError = true
         }
     }
 
-    public String name() {
-        return name;
+    fun name(): String {
+        return name
     }
 
-    public List<ImportStatement> imports() {
-        return imports;
+    fun imports(): MutableList<ImportStatement> {
+        return imports
     }
 
-    public void addImport(ImportStatement importStatement) {
-        imports.add(importStatement);
+    fun addImport(importStatement: ImportStatement) {
+        imports.add(importStatement)
     }
 
-    public void parse() throws ParseException {
-        while (position < tokens.size()) {
-            statements.add(Statement.parse(this));
+    fun parse() {
+        while (position < tokens.size) {
+            statements.add(Statement.parse(this))
         }
     }
 
-    public Token peek() {
-        return tokens.get(position);
+    fun peek(): Token {
+        return tokens[position]
     }
 
-    public boolean peekIs(Type type, String value) {
-        Token token = peek();
-        return token.type() == type && token.value().equals(value);
+    fun peekIs(type: Type, value: String): Boolean {
+        val token = peek()
+        return token.type == type && token.value == value
     }
 
-    public Token next() {
-        return tokens.get(position++);
+    fun next(): Token {
+        return tokens[position++]
     }
 
-    public void expect(Type type, String value) throws ParseException {
-        Token token = next();
+    fun expect(type: Type, value: String) {
+        val token = next()
 
-        if (token.type() == type && token.value().equals(value)) {
-            return;
+        if (token.type == type && token.value == value) {
+            return
         }
 
-        throw new ParseException("Expected token of type " + type + " and value " + value);
+        throw ParseException("Expected token of type $type and value $value")
     }
 
-    public String expect(Type type) throws ParseException {
-        Token token = next();
+    fun expect(type: Type): String {
+        val token = next()
 
-        if (token.type() == type) {
-            return token.value();
+        if (token.type == type) {
+            return token.value
         }
 
-        throw new ParseException("Expected token of type " + type);
+        throw ParseException("Expected token of type $type")
     }
 
-    public void addFunction(String name, FunctionDeclaration function) {
-        functions.put(name, function);
+    fun addFunction(name: String, function: FunctionDeclaration) {
+        functions.put(name, function)
     }
 
-    public FunctionDeclaration getFunction(String name) {
-        return functions.get(name);
+    fun getFunction(name: String): FunctionDeclaration? {
+        return functions[name]
     }
 
-    public void newScope() {
-        scopes.add(new Scope(scopes.peek()));
+    fun newScope() {
+        scopes.add(Scope(scopes.peek()))
     }
 
-    public void endScope() {
-        scopes.pop();
+    fun endScope() {
+        scopes.pop()
     }
 
-    public Scope topScope() {
-        return topScope;
+    fun topScope(): Scope {
+        return topScope
     }
 
-    public Scope getScope() {
-        return scopes.peek();
+    val scope: Scope get() = scopes.peek()
+
+    companion object {
+        private val log: Logger = LogManager.getLogger(Program::class.java)
     }
 }

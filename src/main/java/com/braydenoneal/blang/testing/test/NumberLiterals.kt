@@ -1,13 +1,10 @@
-package com.braydenoneal.blang.testing.test;
+package com.braydenoneal.blang.testing.test
 
-import com.braydenoneal.blang.parser.expression.value.FloatValue;
-import com.braydenoneal.blang.parser.expression.value.IntegerValue;
+import com.braydenoneal.blang.parser.expression.value.FloatValue
+import com.braydenoneal.blang.parser.expression.value.IntegerValue
 
-import java.util.List;
-
-public class NumberLiterals extends Test {
-    @Override
-    public String body() {
+class NumberLiterals : Test() {
+    override fun body(): String {
         return """
                 a = 1;
                 b = -1;
@@ -17,20 +14,20 @@ public class NumberLiterals extends Test {
                 f = -1.0123;
                 g = -1.;
                 h = -.1;
-                """;
+                
+                """.trimIndent()
     }
 
-    @Override
-    public List<Expect> expects() {
-        return List.of(
-                new Expect("a", new IntegerValue(1)),
-                new Expect("b", new IntegerValue(-1)),
-                new Expect("c", new FloatValue(1.0123f)),
-                new Expect("d", new FloatValue(1.f)),
-                new Expect("e", new FloatValue(.1f)),
-                new Expect("f", new FloatValue(-1.0123f)),
-                new Expect("g", new FloatValue(-1.f)),
-                new Expect("h", new FloatValue(-.1f))
-        );
+    override fun expects(): List<Expect> {
+        return listOf(
+            Expect("a", IntegerValue(1)),
+            Expect("b", IntegerValue(-1)),
+            Expect("c", FloatValue(1.0123f)),
+            Expect("d", FloatValue(1f)),
+            Expect("e", FloatValue(.1f)),
+            Expect("f", FloatValue(-1.0123f)),
+            Expect("g", FloatValue(-1f)),
+            Expect("h", FloatValue(-.1f))
+        )
     }
 }

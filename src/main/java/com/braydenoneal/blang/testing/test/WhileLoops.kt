@@ -1,25 +1,22 @@
-package com.braydenoneal.blang.testing.test;
+package com.braydenoneal.blang.testing.test
 
-import com.braydenoneal.blang.parser.expression.value.IntegerValue;
+import com.braydenoneal.blang.parser.expression.value.IntegerValue
 
-import java.util.List;
-
-public class WhileLoops extends Test {
-    @Override
-    public String body() {
+class WhileLoops : Test() {
+    override fun body(): String {
         return """
                 i = 0;
                 
                 while i < 10 {
                     i += 1;
                 }
-                """;
+                
+                """.trimIndent()
     }
 
-    @Override
-    public List<Expect> expects() {
-        return List.of(
-                new Expect("i", new IntegerValue(10))
-        );
+    override fun expects(): List<Expect> {
+        return listOf(
+            Expect("i", IntegerValue(10))
+        )
     }
 }

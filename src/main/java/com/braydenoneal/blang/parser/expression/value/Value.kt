@@ -1,49 +1,46 @@
-package com.braydenoneal.blang.parser.expression.value;
+package com.braydenoneal.blang.parser.expression.value
 
-import com.braydenoneal.blang.parser.Program;
-import com.braydenoneal.blang.parser.expression.Expression;
-import com.braydenoneal.blang.parser.expression.ExpressionType;
-import com.braydenoneal.blang.parser.expression.ExpressionTypes;
-import com.mojang.serialization.Codec;
-import com.mojang.serialization.MapCodec;
+import com.braydenoneal.blang.parser.Program
+import com.braydenoneal.blang.parser.expression.Expression
+import com.braydenoneal.blang.parser.expression.ExpressionType
+import com.braydenoneal.blang.parser.expression.ExpressionTypes
+import com.mojang.serialization.Codec
+import com.mojang.serialization.MapCodec
 
-public abstract class Value<T> implements Expression {
-    private final T value;
-
-    public Value(T value) {
-        this.value = value;
+abstract class Value<T>(private val value: T) : Expression {
+    fun value(): T {
+        return value
     }
 
-    public T value() {
-        return value;
+    override fun evaluate(program: Program): Value<*> {
+        return this
     }
 
-    @Override
-    public Value<?> evaluate(Program program) {
-        return this;
+    override fun toString(): String {
+        return value().toString()
     }
 
-    @Override
-    public String toString() {
-        return value().toString();
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (obj instanceof Value<?> value1) {
-            return value.equals(value1.value());
+    override fun equals(other: Any?): Boolean {
+        if (other is Value<*>) {
+            return value == other.value()
         }
 
-        return super.equals(obj);
+        return super.equals(other)
     }
 
-    @Override
-    public ExpressionType<?> getType() {
-        return ExpressionTypes.VALUE;
+    override val type: ExpressionType<*> get() = ExpressionTypes.VALUE
+
+    abstract val valueType: ValueType<*>
+
+    companion object {
+        val CODEC: Codec<Value<*>> = ValueType.REGISTRY.getCodec().dispatch("type", Value<*>::valueType, ValueType<*>::codec)
+        val MAP_CODEC: MapCodec<Value<*>> = CODEC.fieldOf("value")
     }
 
-    public abstract ValueType<?> getValueType();
-
-    public static final Codec<Value<?>> CODEC = ValueType.REGISTRY.getCodec().dispatch("type", Value::getValueType, ValueType::codec);
-    public static final MapCodec<Value<?>> MAP_CODEC = CODEC.fieldOf("value");
+    override fun hashCode(): Int {
+        var result = value?.hashCode() ?: 0
+        result = 31 * result + type.hashCode()
+        result = 31 * result + valueType.hashCode()
+        return result
+    }
 }

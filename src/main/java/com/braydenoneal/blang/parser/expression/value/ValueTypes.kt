@@ -1,25 +1,25 @@
-package com.braydenoneal.blang.parser.expression.value;
+package com.braydenoneal.blang.parser.expression.value
 
-import net.minecraft.registry.Registry;
-import net.minecraft.util.Identifier;
+import net.minecraft.registry.Registry
+import net.minecraft.util.Identifier
 
-public class ValueTypes {
-    public static final ValueType<IntegerValue> INTEGER = register("integer", new ValueType<>(IntegerValue.CODEC));
-    public static final ValueType<BooleanValue> BOOLEAN = register("boolean", new ValueType<>(BooleanValue.CODEC));
-    public static final ValueType<FloatValue> FLOAT = register("float", new ValueType<>(FloatValue.CODEC));
-    public static final ValueType<ListValue> LIST = register("list", new ValueType<>(ListValue.CODEC));
-    public static final ValueType<RangeValue> RANGE = register("range", new ValueType<>(RangeValue.CODEC));
-    public static final ValueType<StringValue> STRING = register("string", new ValueType<>(StringValue.CODEC));
-    public static final ValueType<BlockValue> BLOCK = register("block", new ValueType<>(BlockValue.CODEC));
-    public static final ValueType<ItemValue> ITEM = register("item", new ValueType<>(ItemValue.CODEC));
-    public static final ValueType<ItemStackValue> ITEM_STACK = register("item_stack", new ValueType<>(ItemStackValue.CODEC));
-    public static final ValueType<NullValue> NULL = register("null", new ValueType<>(NullValue.CODEC));
-    public static final ValueType<FunctionValue> FUNCTION = register("function", new ValueType<>(FunctionValue.CODEC));
+object ValueTypes {
+    val INTEGER: ValueType<IntegerValue> = register("integer", ValueType(IntegerValue.CODEC))
+    val BOOLEAN: ValueType<BooleanValue> = register("boolean", ValueType(BooleanValue.CODEC))
+    val FLOAT: ValueType<FloatValue> = register("float", ValueType(FloatValue.CODEC))
+    val LIST: ValueType<ListValue> = register("list", ValueType(ListValue.CODEC))
+    val RANGE: ValueType<RangeValue> = register("range", ValueType(RangeValue.CODEC))
+    val STRING: ValueType<StringValue> = register("string", ValueType(StringValue.CODEC))
+    val BLOCK: ValueType<BlockValue> = register("block", ValueType(BlockValue.CODEC))
+    val ITEM: ValueType<ItemValue> = register("item", ValueType(ItemValue.CODEC))
+    val ITEM_STACK: ValueType<ItemStackValue> = register("item_stack", ValueType(ItemStackValue.CODEC))
+    val NULL: ValueType<NullValue> = register("null", ValueType(NullValue.CODEC))
+    val FUNCTION: ValueType<FunctionValue> = register("function", ValueType(FunctionValue.CODEC))
 
-    public static <T extends Value<?>> ValueType<T> register(String id, ValueType<T> valueType) {
-        return Registry.register(ValueType.REGISTRY, Identifier.of("blogic", id), valueType);
+    fun <T : Value<*>> register(id: String, valueType: ValueType<T>): ValueType<T> {
+        return Registry.register(ValueType.REGISTRY, Identifier.of("blogic", id), valueType)
     }
 
-    public static void initialize() {
+    fun initialize() {
     }
 }

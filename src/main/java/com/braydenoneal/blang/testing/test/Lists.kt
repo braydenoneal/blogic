@@ -1,15 +1,12 @@
-package com.braydenoneal.blang.testing.test;
+package com.braydenoneal.blang.testing.test
 
-import com.braydenoneal.blang.parser.expression.value.BooleanValue;
-import com.braydenoneal.blang.parser.expression.value.IntegerValue;
-import com.braydenoneal.blang.parser.expression.value.ListValue;
-import com.braydenoneal.blang.parser.expression.value.StringValue;
+import com.braydenoneal.blang.parser.expression.value.BooleanValue
+import com.braydenoneal.blang.parser.expression.value.IntegerValue
+import com.braydenoneal.blang.parser.expression.value.ListValue
+import com.braydenoneal.blang.parser.expression.value.StringValue
 
-import java.util.List;
-
-public class Lists extends Test {
-    @Override
-    public String body() {
+class Lists : Test() {
+    override fun body(): String {
         return """
                 list = [false, 0, ""];
                 list2 = [0];
@@ -28,22 +25,22 @@ public class Lists extends Test {
                 nested = listOfList[1][1];
                 nameless = [[[0]]][0][0][0];
                 length = len([0, 1, 2]);
-                """;
+                
+                """.trimIndent()
     }
 
-    @Override
-    public List<Expect> expects() {
-        return List.of(
-                new Expect("list", new ListValue(List.of(new BooleanValue(false), new IntegerValue(0), new StringValue("")))),
-                new Expect("list2", new ListValue(List.of(new IntegerValue(0)))),
-                new Expect("contains", new BooleanValue(true)),
-                new Expect("notContains", new BooleanValue(false)),
-                new Expect("containsAll", new BooleanValue(true)),
-                new Expect("notContainsAll", new BooleanValue(false)),
-                new Expect("list3", new ListValue(List.of(new IntegerValue(0), new IntegerValue(1)))),
-                new Expect("nested", new IntegerValue(1)),
-                new Expect("nameless", new IntegerValue(0)),
-                new Expect("length", new IntegerValue(3))
-        );
+    override fun expects(): List<Expect> {
+        return listOf(
+            Expect("list", ListValue(mutableListOf(BooleanValue(false), IntegerValue(0), StringValue("")))),
+            Expect("list2", ListValue(mutableListOf(IntegerValue(0)))),
+            Expect("contains", BooleanValue(true)),
+            Expect("notContains", BooleanValue(false)),
+            Expect("containsAll", BooleanValue(true)),
+            Expect("notContainsAll", BooleanValue(false)),
+            Expect("list3", ListValue(mutableListOf(IntegerValue(0), IntegerValue(1)))),
+            Expect("nested", IntegerValue(1)),
+            Expect("nameless", IntegerValue(0)),
+            Expect("length", IntegerValue(3))
+        )
     }
 }

@@ -1,46 +1,46 @@
-package com.braydenoneal.blang.parser.expression.builtin.list;
+package com.braydenoneal.blang.parser.expression.builtin.list
 
-import com.braydenoneal.blang.parser.Program;
-import com.braydenoneal.blang.parser.expression.Arguments;
-import com.braydenoneal.blang.parser.expression.Expression;
-import com.braydenoneal.blang.parser.expression.ExpressionType;
-import com.braydenoneal.blang.parser.expression.ExpressionTypes;
-import com.braydenoneal.blang.parser.expression.value.IntegerValue;
-import com.braydenoneal.blang.parser.expression.value.ListValue;
-import com.braydenoneal.blang.parser.expression.value.Value;
-import com.mojang.serialization.Codec;
-import com.mojang.serialization.MapCodec;
-import com.mojang.serialization.codecs.RecordCodecBuilder;
+import com.braydenoneal.blang.parser.Program
+import com.braydenoneal.blang.parser.expression.Arguments
+import com.braydenoneal.blang.parser.expression.Expression
+import com.braydenoneal.blang.parser.expression.ExpressionType
+import com.braydenoneal.blang.parser.expression.ExpressionTypes
+import com.braydenoneal.blang.parser.expression.value.IntegerValue
+import com.braydenoneal.blang.parser.expression.value.ListValue
+import com.braydenoneal.blang.parser.expression.value.Value
+import com.mojang.datafixers.util.Function3
+import com.mojang.serialization.Codec
+import com.mojang.serialization.MapCodec
+import com.mojang.serialization.codecs.RecordCodecBuilder
 
-import java.util.List;
 
-public record ListRemoveBuiltin(
-        String name,
-        ListValue listValue,
-        Arguments arguments
-) implements Expression {
-    @Override
-    public Value<?> evaluate(Program program) {
-        Value<?> removeValue = arguments.anyValue(program, "value", 0);
-        List<Value<?>> localList = listValue.value();
+data class ListRemoveBuiltin(
+    val name: String,
+    val listValue: ListValue,
+    val arguments: Arguments
+) : Expression {
+    override fun evaluate(program: Program): Value<*> {
+        val removeValue = arguments.anyValue(program, "value", 0)
+        val localList: MutableList<Value<*>> = listValue.value()
 
-        if (removeValue instanceof IntegerValue integerValue) {
-            localList.remove((int) integerValue.value());
+        if (removeValue is IntegerValue) {
+            localList.removeAt(removeValue.value())
         } else {
-            localList.remove(removeValue);
+            localList.remove(removeValue)
         }
 
-        return program.getScope().set(name, new ListValue(localList));
+        return program.scope.set(name, ListValue(localList))
     }
 
-    public static final MapCodec<ListRemoveBuiltin> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
-            Codec.STRING.fieldOf("name").forGetter(ListRemoveBuiltin::name),
-            ListValue.CODEC.fieldOf("listValue").forGetter(ListRemoveBuiltin::listValue),
-            Arguments.CODEC.fieldOf("arguments").forGetter(ListRemoveBuiltin::arguments)
-    ).apply(instance, ListRemoveBuiltin::new));
+    override val type: ExpressionType<*> get() = ExpressionTypes.LIST_REMOVE_BUILTIN
 
-    @Override
-    public ExpressionType<?> getType() {
-        return ExpressionTypes.LIST_REMOVE_BUILTIN;
+    companion object {
+        val CODEC: MapCodec<ListRemoveBuiltin> = RecordCodecBuilder.mapCodec { instance ->
+            instance.group(
+                Codec.STRING.fieldOf("name").forGetter(ListRemoveBuiltin::name),
+                ListValue.CODEC.fieldOf("listValue").forGetter(ListRemoveBuiltin::listValue),
+                Arguments.CODEC.fieldOf("arguments").forGetter(ListRemoveBuiltin::arguments)
+            ).apply(instance, ::ListRemoveBuiltin)
+        }
     }
 }
