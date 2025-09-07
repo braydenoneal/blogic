@@ -5,11 +5,11 @@ import com.mojang.serialization.Codec
 import com.mojang.serialization.MapCodec
 import com.mojang.serialization.codecs.RecordCodecBuilder
 
-class StructValue(value: List<Pair<String, Value<*>>>) : Value<List<Pair<String, Value<*>>>>(value) {
+class StructValue(value: MutableList<Pair<String, Value<*>>>) : Value<MutableList<Pair<String, Value<*>>>>(value) {
     override val valueType: ValueType<*> get() = ValueTypes.STRUCT
 
     override fun toString(): String {
-        val print = StringBuilder("{ ")
+        val print = StringBuilder("{")
 
         for (i in value.indices) {
             print.append(value[i].first + ": " + value[i].second)
@@ -19,7 +19,7 @@ class StructValue(value: List<Pair<String, Value<*>>>) : Value<List<Pair<String,
             }
         }
 
-        return "$print }"
+        return "$print}"
     }
 
     fun get(property: String): Value<*> {

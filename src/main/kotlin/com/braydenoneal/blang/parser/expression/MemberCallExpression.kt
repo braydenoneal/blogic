@@ -3,7 +3,12 @@ package com.braydenoneal.blang.parser.expression
 import com.braydenoneal.blang.parser.Program
 import com.braydenoneal.blang.parser.RunException
 import com.braydenoneal.blang.parser.expression.builtin.list.*
+import com.braydenoneal.blang.parser.expression.builtin.struct.StructEntriesBuiltin
+import com.braydenoneal.blang.parser.expression.builtin.struct.StructKeysBuiltin
+import com.braydenoneal.blang.parser.expression.builtin.struct.StructRemoveBuiltin
+import com.braydenoneal.blang.parser.expression.builtin.struct.StructValuesBuiltin
 import com.braydenoneal.blang.parser.expression.value.ListValue
+import com.braydenoneal.blang.parser.expression.value.StructValue
 import com.braydenoneal.blang.parser.expression.value.Value
 import com.mojang.serialization.Codec
 import com.mojang.serialization.MapCodec
@@ -48,6 +53,15 @@ data class MemberCallExpression(
                 "pop" -> return ListPopBuiltin(value, arguments).evaluate(program)
                 "contains" -> return ListContainsBuiltin(value, arguments).evaluate(program)
                 "containsAll" -> return ListContainsAllBuiltin(value, arguments).evaluate(program)
+            }
+        }
+
+        if (value is StructValue) {
+            when (functionName) {
+                "remove" -> return StructRemoveBuiltin(value, arguments).evaluate(program)
+                "keys" -> return StructKeysBuiltin(value, arguments).evaluate(program)
+                "values" -> return StructValuesBuiltin(value, arguments).evaluate(program)
+                "entries" -> return StructEntriesBuiltin(value, arguments).evaluate(program)
             }
         }
 

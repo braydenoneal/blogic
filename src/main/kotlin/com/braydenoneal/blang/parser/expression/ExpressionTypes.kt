@@ -2,6 +2,10 @@ package com.braydenoneal.blang.parser.expression
 
 import com.braydenoneal.blang.parser.expression.builtin.*
 import com.braydenoneal.blang.parser.expression.builtin.list.*
+import com.braydenoneal.blang.parser.expression.builtin.struct.StructEntriesBuiltin
+import com.braydenoneal.blang.parser.expression.builtin.struct.StructKeysBuiltin
+import com.braydenoneal.blang.parser.expression.builtin.struct.StructRemoveBuiltin
+import com.braydenoneal.blang.parser.expression.builtin.struct.StructValuesBuiltin
 import com.braydenoneal.blang.parser.expression.operator.ArithmeticOperator
 import com.braydenoneal.blang.parser.expression.operator.BooleanOperator
 import com.braydenoneal.blang.parser.expression.operator.ComparisonOperator
@@ -16,6 +20,7 @@ object ExpressionTypes {
     val CALL_EXPRESSION: ExpressionType<CallExpression> = register("call_expression", ExpressionType(CallExpression.CODEC))
     val IF_ELSE_EXPRESSION: ExpressionType<IfElseExpression> = register("if_else_expression", ExpressionType(IfElseExpression.CODEC))
     val LIST_EXPRESSION: ExpressionType<ListExpression> = register("list_expression", ExpressionType(ListExpression.CODEC))
+    val STRUCT_EXPRESSION: ExpressionType<StructExpression> = register("struct_expression", ExpressionType(StructExpression.CODEC))
     val LIST_ACCESS_EXPRESSION: ExpressionType<ListAccessExpression> = register("list_access_expression", ExpressionType(ListAccessExpression.CODEC))
     val MEMBER_EXPRESSION: ExpressionType<MemberExpression> = register("member_expression", ExpressionType(MemberExpression.CODEC))
     val MEMBER_CALL_EXPRESSION: ExpressionType<MemberCallExpression> = register("member_call_expression", ExpressionType(MemberCallExpression.CODEC))
@@ -50,6 +55,10 @@ object ExpressionTypes {
     val LIST_POP_BUILTIN: ExpressionType<ListPopBuiltin> = register("list_pop_builtin", ExpressionType(ListPopBuiltin.CODEC))
     val LIST_CONTAINS_BUILTIN: ExpressionType<ListContainsBuiltin> = register("list_contains_builtin", ExpressionType(ListContainsBuiltin.CODEC))
     val LIST_CONTAINS_ALL_BUILTIN: ExpressionType<ListContainsAllBuiltin> = register("list_contains_all_builtin", ExpressionType(ListContainsAllBuiltin.CODEC))
+    val STRUCT_REMOVE_BUILTIN: ExpressionType<StructRemoveBuiltin> = register("struct_remove_builtin", ExpressionType(StructRemoveBuiltin.CODEC))
+    val STRUCT_KEYS_BUILTIN: ExpressionType<StructKeysBuiltin> = register("struct_keys_builtin", ExpressionType(StructKeysBuiltin.CODEC))
+    val STRUCT_VALUES_BUILTIN: ExpressionType<StructValuesBuiltin> = register("struct_values_builtin", ExpressionType(StructValuesBuiltin.CODEC))
+    val STRUCT_ENTRIES_BUILTIN: ExpressionType<StructEntriesBuiltin> = register("struct_entries_builtin", ExpressionType(StructEntriesBuiltin.CODEC))
 
     fun <T : Expression> register(id: String, expressionType: ExpressionType<T>): ExpressionType<T> {
         return Registry.register(ExpressionType.REGISTRY, Identifier.of("blogic", id), expressionType)

@@ -6,19 +6,13 @@ Minecraft mod that adds a survival-friendly programming language that can intera
 
 ## Todo
 
-- structs
-    - identifier keys
-    - accessed by .id or ["id"]
-    - functions can use this keyword
-    - can use variable name shorthand (id instead of id: id)
-    - functions
-        - remove
-        - entries
-        - keys
-        - values
+- struct reassignment
 - del keyword to remove variables (only from current scope?)
 - list copy function
-- struct destructuring, get methods?
+- struct access by ["id"]
+- struct destructuring?
+- struct get function? (key: get { return this.a + 1; })
+- struct variable name shorthand (id instead of id: id)
 - type checking (is keyword)
 - rewrite expression parsing
 - tab, shift-tab, auto-indent, auto open and close
