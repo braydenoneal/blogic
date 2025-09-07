@@ -32,6 +32,17 @@ class StructValue(value: MutableList<Pair<String, Value<*>>>) : Value<MutableLis
         return Null.VALUE
     }
 
+    fun set(property: String, setValue: Value<*>): Value<*> {
+        for (i in value.indices) {
+            if (value[i].first == property) {
+                value[i] = Pair.of(value[i].first, setValue)
+                return setValue
+            }
+        }
+
+        return Null.VALUE
+    }
+
     companion object {
         val CODEC: MapCodec<StructValue> = RecordCodecBuilder.mapCodec { instance ->
             instance.group(

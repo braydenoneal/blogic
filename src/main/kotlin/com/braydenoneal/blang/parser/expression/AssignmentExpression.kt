@@ -4,6 +4,7 @@ import com.braydenoneal.blang.parser.Program
 import com.braydenoneal.blang.parser.RunException
 import com.braydenoneal.blang.parser.expression.operator.ArithmeticOperator
 import com.braydenoneal.blang.parser.expression.value.ListValue
+import com.braydenoneal.blang.parser.expression.value.StructValue
 import com.braydenoneal.blang.parser.expression.value.Value
 import com.braydenoneal.blang.tokenizer.Type
 import com.mojang.serialization.Codec
@@ -38,9 +39,21 @@ data class AssignmentExpression(
                 val prev = listValue.get(indexValues)
                 return listValue.set(indexValues, ArithmeticOperator(if (operator == "+=") "+" else "-", prev, value).evaluate(program))
             }
+        } else if (variableExpression is MemberExpression) {
+            val struct = variableExpression.member.evaluate(program)
+
+            if (struct is StructValue) {
+                if (operator == "=") {
+                    return struct.set(variableExpression.property, value)
+                }
+
+                val prev = struct.get(variableExpression.property)
+                struct.set(variableExpression.property, ArithmeticOperator(if (operator == "+=") "+" else "-", prev, value).evaluate(program))
+            }
+
         }
 
-        throw RunException("Expression is not a variable nor named list access")
+        throw RunException("Expression is not assignable")
     }
 
     override val type: ExpressionType<*> get() = ExpressionTypes.ASSIGNMENT_EXPRESSION

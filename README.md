@@ -6,7 +6,6 @@ Minecraft mod that adds a survival-friendly programming language that can intera
 
 ## Todo
 
-- struct reassignment
 - del keyword to remove variables (only from current scope?)
 - list copy function
 - struct access by ["id"]
