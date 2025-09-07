@@ -10,7 +10,6 @@ class WhileLoops : Test() {
                 while i < 10 {
                     i += 1;
                 }
-                
                 """.trimIndent()
     }
 

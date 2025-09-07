@@ -18,7 +18,6 @@ class Operations : Test() {
                 div2 = 12 // 5;
                 div3 = 12.0 / 5;
                 div4 = 12.0 // 5;
-                
                 """.trimIndent()
     }
 

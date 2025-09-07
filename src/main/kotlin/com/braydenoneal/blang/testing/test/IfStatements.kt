@@ -30,7 +30,6 @@ class IfStatements : Test() {
                 }
                 
                 d = 4 if true else 0;
-                
                 """.trimIndent()
     }
 

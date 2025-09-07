@@ -18,6 +18,7 @@ object Tests {
             ForLoops(),
             ControlStatements(),
             Structs(),
+            TypeFunction(),
         )
     }
 

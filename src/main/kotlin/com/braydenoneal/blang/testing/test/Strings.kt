@@ -9,7 +9,6 @@ class Strings : Test() {
                 b = 'b';
                 c = a + b;
                 d = "1" + 6;
-                
                 """.trimIndent()
     }
 

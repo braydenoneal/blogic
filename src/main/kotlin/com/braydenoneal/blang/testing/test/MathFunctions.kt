@@ -14,7 +14,6 @@ class MathFunctions : Test() {
                 round = round(5.4);
                 min = min(6, 7);
                 max = max(6, 7);
-                
                 """.trimIndent()
     }
 

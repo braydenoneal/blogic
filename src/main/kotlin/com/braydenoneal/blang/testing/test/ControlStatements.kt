@@ -26,7 +26,6 @@ class ControlStatements : Test() {
                 fn emptyReturn() { return; }
                 
                 c = emptyReturn();
-                
                 """.trimIndent()
     }
 

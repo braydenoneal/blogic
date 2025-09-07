@@ -14,7 +14,6 @@ class NumberLiterals : Test() {
                 f = -1.0123;
                 g = -1.;
                 h = -.1;
-                
                 """.trimIndent()
     }
 

@@ -59,6 +59,7 @@ object ExpressionTypes {
     val STRUCT_KEYS_BUILTIN: ExpressionType<StructKeysBuiltin> = register("struct_keys_builtin", ExpressionType(StructKeysBuiltin.CODEC))
     val STRUCT_VALUES_BUILTIN: ExpressionType<StructValuesBuiltin> = register("struct_values_builtin", ExpressionType(StructValuesBuiltin.CODEC))
     val STRUCT_ENTRIES_BUILTIN: ExpressionType<StructEntriesBuiltin> = register("struct_entries_builtin", ExpressionType(StructEntriesBuiltin.CODEC))
+    val TYPE_BUILTIN: ExpressionType<TypeBuiltin> = register("type_builtin", ExpressionType(TypeBuiltin.CODEC))
 
     fun <T : Expression> register(id: String, expressionType: ExpressionType<T>): ExpressionType<T> {
         return Registry.register(ExpressionType.REGISTRY, Identifier.of("blogic", id), expressionType)

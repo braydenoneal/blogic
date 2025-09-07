@@ -6,13 +6,12 @@ Minecraft mod that adds a survival-friendly programming language that can intera
 
 ## Todo
 
+- rewrite expression parsing
 - struct this keyword in functions
 - struct access by ["id"]
 - struct destructuring?
 - struct get function? (key: get { return this.a + 1; })
 - struct variable name shorthand (id instead of id: id)
-- type checking (is keyword)
-- rewrite expression parsing
 - allow del as an alternative to remove functions
 - tab, shift-tab, auto-indent, auto open and close
 - tab autocomplete

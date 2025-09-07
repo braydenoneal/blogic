@@ -30,7 +30,6 @@ class Functions : Test() {
                 d = withDefaults(1, 2);
                 e = withDefaults(1, b=2, c=3);
                 f = withDefaults(1, 2, 3);
-                
                 """.trimIndent()
     }
 
