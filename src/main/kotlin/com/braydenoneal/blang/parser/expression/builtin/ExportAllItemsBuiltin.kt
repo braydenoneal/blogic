@@ -92,10 +92,10 @@ data class ExportAllItemsBuiltin(val arguments: Arguments) : Expression {
     override val type: ExpressionType<*> get() = ExpressionTypes.EXPORT_ALL_ITEMS_BUILTIN
 
     companion object {
-        val CODEC: MapCodec<ExportAllItemsBuiltin> = RecordCodecBuilder.mapCodec { instance ->
-            instance.group(
+        val CODEC: MapCodec<ExportAllItemsBuiltin> = RecordCodecBuilder.mapCodec {
+            it.group(
                 Arguments.CODEC.fieldOf("arguments").forGetter(ExportAllItemsBuiltin::arguments)
-            ).apply(instance, ::ExportAllItemsBuiltin)
+            ).apply(it, ::ExportAllItemsBuiltin)
         }
     }
 }

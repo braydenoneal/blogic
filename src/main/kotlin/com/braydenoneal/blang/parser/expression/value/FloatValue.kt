@@ -8,10 +8,10 @@ class FloatValue(value: Float) : Value<Float>(value) {
     override val valueType: ValueType<*> get() = ValueTypes.FLOAT
 
     companion object {
-        val CODEC: MapCodec<FloatValue> = RecordCodecBuilder.mapCodec { instance ->
-            instance.group(
+        val CODEC: MapCodec<FloatValue> = RecordCodecBuilder.mapCodec {
+            it.group(
                 Codec.FLOAT.fieldOf("value").forGetter(FloatValue::value)
-            ).apply(instance, ::FloatValue)
+            ).apply(it, ::FloatValue)
         }
     }
 }

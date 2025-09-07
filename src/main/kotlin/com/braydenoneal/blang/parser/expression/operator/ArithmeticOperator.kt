@@ -63,12 +63,12 @@ data class ArithmeticOperator(
     override val type: ExpressionType<*> get() = ExpressionTypes.ARITHMETIC_OPERATOR
 
     companion object {
-        val CODEC: MapCodec<ArithmeticOperator> = RecordCodecBuilder.mapCodec { instance ->
-            instance.group(
+        val CODEC: MapCodec<ArithmeticOperator> = RecordCodecBuilder.mapCodec {
+            it.group(
                 Codec.STRING.fieldOf("operator").forGetter(ArithmeticOperator::operator),
                 Expression.CODEC.fieldOf("operand_a").forGetter(ArithmeticOperator::operandA),
                 Expression.CODEC.fieldOf("operand_b").forGetter(ArithmeticOperator::operandB)
-            ).apply(instance, ::ArithmeticOperator)
+            ).apply(it, ::ArithmeticOperator)
         }
     }
 }

@@ -1,7 +1,6 @@
 package com.braydenoneal.block
 
 import com.braydenoneal.Blogic
-import net.fabricmc.fabric.api.itemgroup.v1.FabricItemGroupEntries
 import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents
 import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents.ModifyEntries
 import net.minecraft.block.AbstractBlock
@@ -18,8 +17,8 @@ import net.minecraft.util.Identifier
 import java.util.function.Function
 
 object ModBlocks {
-    val CABLE: Block = register("cable", { settings: AbstractBlock.Settings -> CableBlock(settings) }, CableBlock.settings())
-    val CONTROLLER: Block = register("controller", { settings: AbstractBlock.Settings -> ControllerBlock(settings) }, AbstractBlock.Settings.create())
+    val CABLE: Block = register("cable", { CableBlock(it) }, CableBlock.settings())
+    val CONTROLLER: Block = register("controller", { ControllerBlock(it) }, AbstractBlock.Settings.create())
 
     private fun register(name: String, blockFactory: Function<AbstractBlock.Settings, Block>, settings: AbstractBlock.Settings): Block {
         val blockKey = RegistryKey.of(RegistryKeys.BLOCK, Identifier.of(Blogic.MOD_ID, name))
@@ -32,9 +31,9 @@ object ModBlocks {
 
     fun initialize() {
         ItemGroupEvents.modifyEntriesEvent(ItemGroups.REDSTONE).register(
-            ModifyEntries { itemGroup: FabricItemGroupEntries ->
-                itemGroup.addBefore(Items.REDSTONE, CABLE.asItem())
-                itemGroup.addBefore(Items.REDSTONE, CONTROLLER.asItem())
+            ModifyEntries {
+                it.addBefore(Items.REDSTONE, CABLE.asItem())
+                it.addBefore(Items.REDSTONE, CONTROLLER.asItem())
             }
         )
     }

@@ -66,14 +66,14 @@ class ListValue(value: MutableList<Value<*>>) : Value<MutableList<Value<*>>>(val
     }
 
     companion object {
-        val CODEC: MapCodec<ListValue> = RecordCodecBuilder.mapCodec { instance ->
-            instance.group(
+        val CODEC: MapCodec<ListValue> = RecordCodecBuilder.mapCodec {
+            it.group(
                 Codec.list(Value.CODEC).fieldOf("value").forGetter(ListValue::value)
-            ).apply(instance, ::ListValue)
+            ).apply(it, ::ListValue)
         }
 
         fun toIndexValues(program: Program, expressions: MutableList<Expression>): List<Value<*>> {
-            return expressions.map { expression -> expression.evaluate(program) }
+            return expressions.map { it.evaluate(program) }
         }
     }
 }

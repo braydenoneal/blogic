@@ -20,10 +20,10 @@ data class FloorBuiltin(val arguments: Arguments) : Expression {
     override val type: ExpressionType<*> get() = ExpressionTypes.ABSOLUTE_VALUE_BUILTIN
 
     companion object {
-        val CODEC: MapCodec<FloorBuiltin> = RecordCodecBuilder.mapCodec { instance ->
-            instance.group(
+        val CODEC: MapCodec<FloorBuiltin> = RecordCodecBuilder.mapCodec {
+            it.group(
                 Arguments.CODEC.fieldOf("arguments").forGetter(FloorBuiltin::arguments)
-            ).apply(instance, ::FloorBuiltin)
+            ).apply(it, ::FloorBuiltin)
         }
     }
 }

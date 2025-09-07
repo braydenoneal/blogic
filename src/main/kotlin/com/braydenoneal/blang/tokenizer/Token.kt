@@ -30,7 +30,7 @@ data class Token(val value: String, val type: Type) {
                 }
 
                 if (error) {
-                    throw TokenException("Unrecognized character '" + source.get(position) + "' at position " + position)
+                    throw TokenException("Unrecognized character '" + source[position] + "' at position " + position)
                 }
             }
 

@@ -24,10 +24,10 @@ data class RangeBuiltin(val arguments: Arguments) : Expression {
     override val type: ExpressionType<*> get() = ExpressionTypes.RANGE_BUILTIN
 
     companion object {
-        val CODEC: MapCodec<RangeBuiltin> = RecordCodecBuilder.mapCodec { instance ->
-            instance.group(
+        val CODEC: MapCodec<RangeBuiltin> = RecordCodecBuilder.mapCodec {
+            it.group(
                 Arguments.CODEC.fieldOf("arguments").forGetter(RangeBuiltin::arguments)
-            ).apply(instance, ::RangeBuiltin)
+            ).apply(it, ::RangeBuiltin)
         }
     }
 }

@@ -79,10 +79,10 @@ data class UseItemBuiltin(val arguments: Arguments) : Expression {
     override val type: ExpressionType<*> get() = ExpressionTypes.USE_ITEM_BUILTIN
 
     companion object {
-        val CODEC: MapCodec<UseItemBuiltin> = RecordCodecBuilder.mapCodec { instance ->
-            instance.group(
+        val CODEC: MapCodec<UseItemBuiltin> = RecordCodecBuilder.mapCodec {
+            it.group(
                 Arguments.CODEC.fieldOf("arguments").forGetter(UseItemBuiltin::arguments)
-            ).apply(instance, ::UseItemBuiltin)
+            ).apply(it, ::UseItemBuiltin)
         }
     }
 }

@@ -24,10 +24,10 @@ data class UnaryOperator(val operand: Expression) : Operator, Expression {
     override val type: ExpressionType<*> get() = ExpressionTypes.UNARY_OPERATOR
 
     companion object {
-        val CODEC: MapCodec<UnaryOperator> = RecordCodecBuilder.mapCodec { instance ->
-            instance.group(
+        val CODEC: MapCodec<UnaryOperator> = RecordCodecBuilder.mapCodec {
+            it.group(
                 Expression.CODEC.fieldOf("operand").forGetter(UnaryOperator::operand)
-            ).apply(instance, ::UnaryOperator)
+            ).apply(it, ::UnaryOperator)
         }
 
         fun parse(program: Program): Expression {

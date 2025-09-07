@@ -20,10 +20,10 @@ data class CeilBuiltin(val arguments: Arguments) : Expression {
     override val type: ExpressionType<*> get() = ExpressionTypes.ABSOLUTE_VALUE_BUILTIN
 
     companion object {
-        val CODEC: MapCodec<CeilBuiltin> = RecordCodecBuilder.mapCodec { instance ->
-            instance.group(
+        val CODEC: MapCodec<CeilBuiltin> = RecordCodecBuilder.mapCodec {
+            it.group(
                 Arguments.CODEC.fieldOf("arguments").forGetter(CeilBuiltin::arguments)
-            ).apply(instance, ::CeilBuiltin)
+            ).apply(it, ::CeilBuiltin)
         }
     }
 }

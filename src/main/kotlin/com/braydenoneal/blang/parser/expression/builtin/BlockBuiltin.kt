@@ -21,10 +21,10 @@ data class BlockBuiltin(val arguments: Arguments) : Expression {
     override val type: ExpressionType<*> get() = ExpressionTypes.BLOCK_BUILTIN
 
     companion object {
-        val CODEC: MapCodec<BlockBuiltin> = RecordCodecBuilder.mapCodec { instance ->
-            instance.group(
+        val CODEC: MapCodec<BlockBuiltin> = RecordCodecBuilder.mapCodec {
+            it.group(
                 Arguments.CODEC.fieldOf("arguments").forGetter(BlockBuiltin::arguments)
-            ).apply(instance, ::BlockBuiltin)
+            ).apply(it, ::BlockBuiltin)
         }
     }
 }

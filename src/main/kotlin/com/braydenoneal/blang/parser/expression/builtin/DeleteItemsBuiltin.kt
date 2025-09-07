@@ -52,10 +52,10 @@ data class DeleteItemsBuiltin(val arguments: Arguments) : Expression {
     override val type: ExpressionType<*> get() = ExpressionTypes.DELETE_ITEMS_BUILTIN
 
     companion object {
-        val CODEC: MapCodec<DeleteItemsBuiltin> = RecordCodecBuilder.mapCodec { instance ->
-            instance.group(
+        val CODEC: MapCodec<DeleteItemsBuiltin> = RecordCodecBuilder.mapCodec {
+            it.group(
                 Arguments.CODEC.fieldOf("arguments").forGetter(DeleteItemsBuiltin::arguments)
-            ).apply(instance, ::DeleteItemsBuiltin)
+            ).apply(it, ::DeleteItemsBuiltin)
         }
     }
 }

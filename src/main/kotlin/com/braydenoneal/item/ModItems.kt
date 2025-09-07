@@ -1,7 +1,6 @@
 package com.braydenoneal.item
 
 import com.braydenoneal.Blogic
-import net.fabricmc.fabric.api.itemgroup.v1.FabricItemGroupEntries
 import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents
 import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents.ModifyEntries
 import net.minecraft.item.Item
@@ -23,7 +22,7 @@ object ModItems {
 
     fun initialize() {
         ItemGroupEvents.modifyEntriesEvent(ItemGroups.REDSTONE).register(
-            ModifyEntries { itemGroup: FabricItemGroupEntries -> }
+            ModifyEntries {}
         )
     }
 }

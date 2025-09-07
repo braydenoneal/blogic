@@ -30,10 +30,10 @@ data class AbsoluteValueBuiltin(val arguments: Arguments) : Expression {
     override val type: ExpressionType<*> get() = ExpressionTypes.ABSOLUTE_VALUE_BUILTIN
 
     companion object {
-        val CODEC: MapCodec<AbsoluteValueBuiltin> = RecordCodecBuilder.mapCodec { instance ->
-            instance.group(
+        val CODEC: MapCodec<AbsoluteValueBuiltin> = RecordCodecBuilder.mapCodec {
+            it.group(
                 Arguments.CODEC.fieldOf("arguments").forGetter(AbsoluteValueBuiltin::arguments)
-            ).apply(instance, ::AbsoluteValueBuiltin)
+            ).apply(it, ::AbsoluteValueBuiltin)
         }
     }
 }

@@ -22,10 +22,10 @@ class BlockValue(value: Block) : Value<Block>(value) {
     }
 
     companion object {
-        val CODEC: MapCodec<BlockValue> = RecordCodecBuilder.mapCodec { instance ->
-            instance.group(
+        val CODEC: MapCodec<BlockValue> = RecordCodecBuilder.mapCodec {
+            it.group(
                 Registries.BLOCK.getCodec().fieldOf("value").forGetter<BlockValue>(BlockValue::value)
-            ).apply(instance, ::BlockValue)
+            ).apply(it, ::BlockValue)
         }
     }
 

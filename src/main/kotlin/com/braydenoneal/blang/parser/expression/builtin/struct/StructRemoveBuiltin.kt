@@ -33,11 +33,11 @@ data class StructRemoveBuiltin(
     override val type: ExpressionType<*> get() = ExpressionTypes.STRUCT_REMOVE_BUILTIN
 
     companion object {
-        val CODEC: MapCodec<StructRemoveBuiltin> = RecordCodecBuilder.mapCodec { instance ->
-            instance.group(
+        val CODEC: MapCodec<StructRemoveBuiltin> = RecordCodecBuilder.mapCodec {
+            it.group(
                 StructValue.CODEC.fieldOf("struct").forGetter(StructRemoveBuiltin::struct),
                 Arguments.CODEC.fieldOf("arguments").forGetter(StructRemoveBuiltin::arguments)
-            ).apply(instance, ::StructRemoveBuiltin)
+            ).apply(it, ::StructRemoveBuiltin)
         }
     }
 }

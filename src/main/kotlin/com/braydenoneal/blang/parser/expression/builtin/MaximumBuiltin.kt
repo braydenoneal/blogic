@@ -37,10 +37,10 @@ data class MaximumBuiltin(val arguments: Arguments) : Expression {
     override val type: ExpressionType<*> get() = ExpressionTypes.MAXIMUM_BUILTIN
 
     companion object {
-        val CODEC: MapCodec<MaximumBuiltin> = RecordCodecBuilder.mapCodec { instance ->
-            instance.group(
+        val CODEC: MapCodec<MaximumBuiltin> = RecordCodecBuilder.mapCodec {
+            it.group(
                 Arguments.CODEC.fieldOf("arguments").forGetter(MaximumBuiltin::arguments)
-            ).apply(instance, ::MaximumBuiltin)
+            ).apply(it, ::MaximumBuiltin)
         }
     }
 }

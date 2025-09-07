@@ -30,10 +30,10 @@ data class RoundBuiltin(val arguments: Arguments) : Expression {
     override val type: ExpressionType<*> get() = ExpressionTypes.ROUND_BUILTIN
 
     companion object {
-        val CODEC: MapCodec<RoundBuiltin> = RecordCodecBuilder.mapCodec { instance ->
-            instance.group(
+        val CODEC: MapCodec<RoundBuiltin> = RecordCodecBuilder.mapCodec {
+            it.group(
                 Arguments.CODEC.fieldOf("arguments").forGetter(RoundBuiltin::arguments)
-            ).apply(instance, ::RoundBuiltin)
+            ).apply(it, ::RoundBuiltin)
         }
     }
 }

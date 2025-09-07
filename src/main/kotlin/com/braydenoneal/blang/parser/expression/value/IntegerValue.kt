@@ -8,10 +8,10 @@ class IntegerValue(value: Int) : Value<Int>(value) {
     override val valueType: ValueType<*> get() = ValueTypes.INTEGER
 
     companion object {
-        val CODEC: MapCodec<IntegerValue> = RecordCodecBuilder.mapCodec { instance ->
-            instance.group(
+        val CODEC: MapCodec<IntegerValue> = RecordCodecBuilder.mapCodec {
+            it.group(
                 Codec.INT.fieldOf("value").forGetter(IntegerValue::value)
-            ).apply(instance, ::IntegerValue)
+            ).apply(it, ::IntegerValue)
         }
     }
 }

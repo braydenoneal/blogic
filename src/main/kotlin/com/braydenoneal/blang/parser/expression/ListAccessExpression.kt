@@ -22,11 +22,11 @@ data class ListAccessExpression(val listExpression: Expression, val indices: Mut
     override val type: ExpressionType<*> get() = ExpressionTypes.LIST_ACCESS_EXPRESSION
 
     companion object {
-        val CODEC: MapCodec<ListAccessExpression> = RecordCodecBuilder.mapCodec { instance ->
-            instance.group(
+        val CODEC: MapCodec<ListAccessExpression> = RecordCodecBuilder.mapCodec {
+            it.group(
                 Expression.CODEC.fieldOf("listExpression").forGetter(ListAccessExpression::listExpression),
                 Codec.list(Expression.CODEC).fieldOf("indices").forGetter(ListAccessExpression::indices)
-            ).apply(instance, ::ListAccessExpression)
+            ).apply(it, ::ListAccessExpression)
         }
     }
 }

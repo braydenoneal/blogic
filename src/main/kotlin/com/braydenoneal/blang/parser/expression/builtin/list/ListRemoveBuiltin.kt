@@ -31,11 +31,11 @@ data class ListRemoveBuiltin(
     override val type: ExpressionType<*> get() = ExpressionTypes.LIST_REMOVE_BUILTIN
 
     companion object {
-        val CODEC: MapCodec<ListRemoveBuiltin> = RecordCodecBuilder.mapCodec { instance ->
-            instance.group(
+        val CODEC: MapCodec<ListRemoveBuiltin> = RecordCodecBuilder.mapCodec {
+            it.group(
                 ListValue.CODEC.fieldOf("listValue").forGetter(ListRemoveBuiltin::listValue),
                 Arguments.CODEC.fieldOf("arguments").forGetter(ListRemoveBuiltin::arguments)
-            ).apply(instance, ::ListRemoveBuiltin)
+            ).apply(it, ::ListRemoveBuiltin)
         }
     }
 }

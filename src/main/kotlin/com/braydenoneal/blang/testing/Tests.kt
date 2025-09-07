@@ -24,7 +24,7 @@ object Tests {
     @JvmStatic
     fun main(args: Array<String>) {
         val results: MutableList<Test.Result> = ArrayList()
-        tests().forEach(Consumer { test: Test -> results.add(test.run()) })
+        tests().forEach(Consumer { results.add(it.run()) })
 
         val result = results.stream().reduce(
             Test.Result(0, 0)

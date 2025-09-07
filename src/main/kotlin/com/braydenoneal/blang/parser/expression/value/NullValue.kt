@@ -11,10 +11,10 @@ class NullValue(value: Null) : Value<Null>(value) {
     }
 
     companion object {
-        val CODEC: MapCodec<NullValue> = RecordCodecBuilder.mapCodec { instance ->
-            instance.group(
+        val CODEC: MapCodec<NullValue> = RecordCodecBuilder.mapCodec {
+            it.group(
                 Null.CODEC.fieldOf("null").forGetter(NullValue::value)
-            ).apply(instance, ::NullValue)
+            ).apply(it, ::NullValue)
         }
     }
 }

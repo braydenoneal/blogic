@@ -108,11 +108,11 @@ data class Arguments(val arguments: MutableList<Expression>, val namedArguments:
 
         val EMPTY: Arguments = Arguments(mutableListOf(), Map.of())
 
-        val CODEC: Codec<Arguments> = RecordCodecBuilder.create { instance ->
-            instance.group(
+        val CODEC: Codec<Arguments> = RecordCodecBuilder.create {
+            it.group(
                 Codec.list(Expression.CODEC).fieldOf("arguments").forGetter(Arguments::arguments),
                 Codec.unboundedMap(Codec.STRING, Expression.CODEC).fieldOf("namedArguments").forGetter(Arguments::namedArguments)
-            ).apply(instance, ::Arguments)
+            ).apply(it, ::Arguments)
         }
     }
 }

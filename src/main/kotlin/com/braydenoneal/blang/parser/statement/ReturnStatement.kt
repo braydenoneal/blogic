@@ -27,10 +27,10 @@ data class ReturnStatement(val expression: Expression) : Statement {
             return ReturnStatement(expression)
         }
 
-        val CODEC: MapCodec<ReturnStatement> = RecordCodecBuilder.mapCodec { instance ->
-            instance.group(
+        val CODEC: MapCodec<ReturnStatement> = RecordCodecBuilder.mapCodec {
+            it.group(
                 Expression.CODEC.fieldOf("expression").forGetter(ReturnStatement::expression)
-            ).apply(instance, ::ReturnStatement)
+            ).apply(it, ::ReturnStatement)
         }
     }
 }

@@ -24,11 +24,11 @@ data class ListAppendBuiltin(
     override val type: ExpressionType<*> get() = ExpressionTypes.LIST_APPEND_BUILTIN
 
     companion object {
-        val CODEC: MapCodec<ListAppendBuiltin> = RecordCodecBuilder.mapCodec { instance ->
-            instance.group(
+        val CODEC: MapCodec<ListAppendBuiltin> = RecordCodecBuilder.mapCodec {
+            it.group(
                 ListValue.CODEC.fieldOf("listValue").forGetter(ListAppendBuiltin::listValue),
                 Arguments.CODEC.fieldOf("arguments").forGetter(ListAppendBuiltin::arguments)
-            ).apply(instance, ::ListAppendBuiltin)
+            ).apply(it, ::ListAppendBuiltin)
         }
     }
 }

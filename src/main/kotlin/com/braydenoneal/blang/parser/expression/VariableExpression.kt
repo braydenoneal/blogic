@@ -17,10 +17,10 @@ data class VariableExpression(val name: String) : Expression {
     override val type: ExpressionType<*> get() = ExpressionTypes.VARIABLE_EXPRESSION
 
     companion object {
-        val CODEC: MapCodec<VariableExpression> = RecordCodecBuilder.mapCodec { instance ->
-            instance.group(
+        val CODEC: MapCodec<VariableExpression> = RecordCodecBuilder.mapCodec {
+            it.group(
                 Codec.STRING.fieldOf("name").forGetter(VariableExpression::name)
-            ).apply(instance, ::VariableExpression)
+            ).apply(it, ::VariableExpression)
         }
 
         fun parse(program: Program): Expression {

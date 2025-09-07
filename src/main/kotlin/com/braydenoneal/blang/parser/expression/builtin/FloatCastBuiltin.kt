@@ -19,10 +19,10 @@ data class FloatCastBuiltin(val arguments: Arguments) : Expression {
     override val type: ExpressionType<*> get() = ExpressionTypes.FLOAT_CAST_BUILTIN
 
     companion object {
-        val CODEC: MapCodec<FloatCastBuiltin> = RecordCodecBuilder.mapCodec { instance ->
-            instance.group(
+        val CODEC: MapCodec<FloatCastBuiltin> = RecordCodecBuilder.mapCodec {
+            it.group(
                 Arguments.CODEC.fieldOf("arguments").forGetter(FloatCastBuiltin::arguments)
-            ).apply(instance, ::FloatCastBuiltin)
+            ).apply(it, ::FloatCastBuiltin)
         }
     }
 }

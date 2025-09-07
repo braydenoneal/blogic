@@ -76,12 +76,12 @@ data class MemberCallExpression(
             return MemberCallExpression(member, functionName, arguments)
         }
 
-        val CODEC: MapCodec<MemberCallExpression> = RecordCodecBuilder.mapCodec { instance ->
-            instance.group(
+        val CODEC: MapCodec<MemberCallExpression> = RecordCodecBuilder.mapCodec {
+            it.group(
                 Expression.CODEC.fieldOf("member").forGetter(MemberCallExpression::member),
                 Codec.STRING.fieldOf("functionName").forGetter(MemberCallExpression::functionName),
                 Arguments.CODEC.fieldOf("arguments").forGetter(MemberCallExpression::arguments)
-            ).apply(instance, ::MemberCallExpression)
+            ).apply(it, ::MemberCallExpression)
         }
     }
 }

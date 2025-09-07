@@ -19,10 +19,10 @@ data class LengthBuiltin(val arguments: Arguments) : Expression {
     override val type: ExpressionType<*> get() = ExpressionTypes.LENGTH_BUILTIN
 
     companion object {
-        val CODEC: MapCodec<LengthBuiltin> = RecordCodecBuilder.mapCodec { instance ->
-            instance.group(
+        val CODEC: MapCodec<LengthBuiltin> = RecordCodecBuilder.mapCodec {
+            it.group(
                 Arguments.CODEC.fieldOf("arguments").forGetter(LengthBuiltin::arguments)
-            ).apply(instance, ::LengthBuiltin)
+            ).apply(it, ::LengthBuiltin)
         }
     }
 }

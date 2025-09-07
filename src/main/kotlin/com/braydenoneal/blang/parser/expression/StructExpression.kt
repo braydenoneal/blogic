@@ -12,7 +12,7 @@ import com.mojang.serialization.codecs.RecordCodecBuilder
 
 data class StructExpression(val expressions: List<Pair<String, Expression>>) : Expression {
     override fun evaluate(program: Program): Value<*> {
-        return StructValue(expressions.map { expression -> Pair.of(expression.first, expression.second.evaluate(program)) } as MutableList<Pair<String, Value<*>>>)
+        return StructValue(expressions.map { Pair.of(it.first, it.second.evaluate(program)) } as MutableList<Pair<String, Value<*>>>)
     }
 
     override val type: ExpressionType<*> get() = ExpressionTypes.STRUCT_EXPRESSION
@@ -41,10 +41,10 @@ data class StructExpression(val expressions: List<Pair<String, Expression>>) : E
             return StructExpression(expressions)
         }
 
-        val CODEC: MapCodec<StructExpression> = RecordCodecBuilder.mapCodec { instance ->
-            instance.group(
+        val CODEC: MapCodec<StructExpression> = RecordCodecBuilder.mapCodec {
+            it.group(
                 Codec.list(Codec.pair(Codec.STRING, Expression.CODEC)).fieldOf("expressions").forGetter(StructExpression::expressions)
-            ).apply(instance, ::StructExpression)
+            ).apply(it, ::StructExpression)
         }
     }
 }

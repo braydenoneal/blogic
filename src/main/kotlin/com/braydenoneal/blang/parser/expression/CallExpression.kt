@@ -32,11 +32,11 @@ data class CallExpression(val name: String, val arguments: Arguments) : Expressi
     override val type: ExpressionType<*> get() = ExpressionTypes.CALL_EXPRESSION
 
     companion object {
-        val CODEC: MapCodec<CallExpression> = RecordCodecBuilder.mapCodec { instance ->
-            instance.group(
+        val CODEC: MapCodec<CallExpression> = RecordCodecBuilder.mapCodec {
+            it.group(
                 Codec.STRING.fieldOf("name").forGetter(CallExpression::name),
                 Arguments.CODEC.fieldOf("arguments").forGetter(CallExpression::arguments)
-            ).apply(instance, ::CallExpression)
+            ).apply(it, ::CallExpression)
         }
     }
 }

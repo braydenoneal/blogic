@@ -21,10 +21,10 @@ class ItemStackValue(value: ItemStack) : Value<ItemStack>(value) {
     }
 
     companion object {
-        val CODEC: MapCodec<ItemStackValue> = RecordCodecBuilder.mapCodec { instance ->
-            instance.group(
+        val CODEC: MapCodec<ItemStackValue> = RecordCodecBuilder.mapCodec {
+            it.group(
                 ItemStack.CODEC.fieldOf("value").forGetter(ItemStackValue::value)
-            ).apply(instance, ::ItemStackValue)
+            ).apply(it, ::ItemStackValue)
         }
     }
 

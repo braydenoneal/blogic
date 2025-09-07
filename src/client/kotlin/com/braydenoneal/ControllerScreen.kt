@@ -20,12 +20,12 @@ class ControllerScreen(handler: ControllerScreenHandler, inventory: PlayerInvent
         val editBoxWidget = EditBoxWidget.builder().x(20).y(20).build(MinecraftClient.getInstance().textRenderer, width - 40, height - 80, Text.of(""))
         editBoxWidget.text = handler.source()
         addDrawableChild<EditBoxWidget>(editBoxWidget)
-        addDrawableChild<ButtonWidget>(ButtonWidget.builder(ScreenTexts.DONE) { button: ButtonWidget ->
+        addDrawableChild<ButtonWidget>(ButtonWidget.builder(ScreenTexts.DONE) {
             handler.setSource(editBoxWidget.text)
             ClientPlayNetworking.send(StringPayload(handler.pos(), handler.source()))
             close()
         }.dimensions(width / 2 - 4 - 150, height - 40, 150, 20).build())
-        addDrawableChild<ButtonWidget>(ButtonWidget.builder(ScreenTexts.CANCEL) { button: ButtonWidget -> close() }.dimensions(width / 2 + 4, height - 40, 150, 20).build())
+        addDrawableChild<ButtonWidget>(ButtonWidget.builder(ScreenTexts.CANCEL) { close() }.dimensions(width / 2 + 4, height - 40, 150, 20).build())
         focused = editBoxWidget
     }
 

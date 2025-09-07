@@ -12,10 +12,10 @@ class StringValue(value: String) : Value<String>(value) {
     }
 
     companion object {
-        val CODEC: MapCodec<StringValue> = RecordCodecBuilder.mapCodec { instance ->
-            instance.group(
+        val CODEC: MapCodec<StringValue> = RecordCodecBuilder.mapCodec {
+            it.group(
                 Codec.STRING.fieldOf("value").forGetter(StringValue::value)
-            ).apply(instance, ::StringValue)
+            ).apply(it, ::StringValue)
         }
     }
 }

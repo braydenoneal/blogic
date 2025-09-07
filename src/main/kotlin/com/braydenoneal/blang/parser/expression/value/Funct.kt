@@ -19,15 +19,14 @@ data class Funct(
     fun call(program: Program, arguments: Arguments): Value<*> {
         program.newScope()
 
-        arguments.namedArguments.forEach({ name: String, expression: Expression ->
-            val hasDefault = this.defaultParameters.stream()
-                .anyMatch { entry: Pair<String, Expression> -> entry.getFirst() == name }
+        arguments.namedArguments.forEach { name: String, expression: Expression ->
+            val hasDefault = this.defaultParameters.stream().anyMatch { it.first == name }
             if (parameters.contains(name) || hasDefault) {
                 program.scope.setLocal(name, expression.evaluate(program))
             } else {
                 throw RunException("Provided extra argument '$name'")
             }
-        })
+        }
 
         for (i in parameters.indices) {
             if (program.scope.getLocal(parameters[i]) == null) {
@@ -45,7 +44,7 @@ data class Funct(
         for (i in parameters.size..<arguments.arguments.size) {
             if (defaultParameters.size > i - parameters.size) {
                 program.scope.setLocal(
-                    defaultParameters[i - parameters.size].getFirst(),
+                    defaultParameters[i - parameters.size].first,
                     arguments.arguments[i].evaluate(program)
                 )
             } else {
@@ -53,9 +52,9 @@ data class Funct(
             }
         }
 
-        defaultParameters.forEach(Consumer { entry ->
-            if (program.scope.getLocal(entry.getFirst()) == null) {
-                program.scope.setLocal(entry.getFirst(), entry.getSecond().evaluate(program))
+        defaultParameters.forEach(Consumer {
+            if (program.scope.getLocal(it.getFirst()) == null) {
+                program.scope.setLocal(it.getFirst(), it.getSecond().evaluate(program))
             }
         })
 
@@ -71,12 +70,12 @@ data class Funct(
     }
 
     companion object {
-        val CODEC: Codec<Funct> = RecordCodecBuilder.create { instance ->
-            instance.group(
+        val CODEC: Codec<Funct> = RecordCodecBuilder.create {
+            it.group(
                 Codec.list(Codec.STRING).fieldOf("parameters").forGetter(Funct::parameters),
                 Codec.list(Codec.pair(Codec.STRING, Expression.CODEC)).fieldOf("defaultParameters").forGetter(Funct::defaultParameters),
                 Codec.list(Statement.CODEC).fieldOf("statements").forGetter(Funct::statements)
-            ).apply(instance, ::Funct)
+            ).apply(it, ::Funct)
         }
     }
 }

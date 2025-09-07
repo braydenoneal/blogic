@@ -19,10 +19,10 @@ data class StringCastBuiltin(val arguments: Arguments) : Expression {
     override val type: ExpressionType<*> get() = ExpressionTypes.STRING_CAST_BUILTIN
 
     companion object {
-        val CODEC: MapCodec<StringCastBuiltin> = RecordCodecBuilder.mapCodec { instance ->
-            instance.group(
+        val CODEC: MapCodec<StringCastBuiltin> = RecordCodecBuilder.mapCodec {
+            it.group(
                 Arguments.CODEC.fieldOf("arguments").forGetter(StringCastBuiltin::arguments)
-            ).apply(instance, ::StringCastBuiltin)
+            ).apply(it, ::StringCastBuiltin)
         }
     }
 }

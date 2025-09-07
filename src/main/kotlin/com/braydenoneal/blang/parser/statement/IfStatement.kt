@@ -65,13 +65,13 @@ data class IfStatement(
             return IfStatement(condition, statements, elseIfStatements, elseStatement)
         }
 
-        val CODEC: MapCodec<IfStatement> = RecordCodecBuilder.mapCodec { instance ->
-            instance.group(
+        val CODEC: MapCodec<IfStatement> = RecordCodecBuilder.mapCodec {
+            it.group(
                 Expression.CODEC.fieldOf("condition").forGetter(IfStatement::condition),
                 Codec.list(Statement.CODEC).fieldOf("statements").forGetter(IfStatement::statements),
                 Codec.list(ElseIfStatement.CODEC).fieldOf("elseIfStatements").forGetter(IfStatement::elseIfStatements),
                 ElseStatement.CODEC.fieldOf("ElseStatement").forGetter(IfStatement::elseStatement)
-            ).apply(instance, ::IfStatement)
+            ).apply(it, ::IfStatement)
         }
     }
 }

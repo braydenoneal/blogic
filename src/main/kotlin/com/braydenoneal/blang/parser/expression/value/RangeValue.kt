@@ -11,10 +11,10 @@ class RangeValue(value: Range) : Value<Range>(value) {
     }
 
     companion object {
-        val CODEC: MapCodec<RangeValue> = RecordCodecBuilder.mapCodec { instance ->
-            instance.group(
+        val CODEC: MapCodec<RangeValue> = RecordCodecBuilder.mapCodec {
+            it.group(
                 Range.CODEC.fieldOf("value").forGetter(RangeValue::value)
-            ).apply(instance, ::RangeValue)
+            ).apply(it, ::RangeValue)
         }
     }
 }

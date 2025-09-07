@@ -34,12 +34,12 @@ data class IfElseExpression(
             return IfElseExpression(condition, expressionA, expressionB)
         }
 
-        val CODEC: MapCodec<IfElseExpression> = RecordCodecBuilder.mapCodec { instance ->
-            instance.group(
+        val CODEC: MapCodec<IfElseExpression> = RecordCodecBuilder.mapCodec {
+            it.group(
                 Expression.CODEC.fieldOf("condition").forGetter(IfElseExpression::condition),
                 Expression.CODEC.fieldOf("expression_a").forGetter(IfElseExpression::expressionA),
                 Expression.CODEC.fieldOf("expression_b").forGetter(IfElseExpression::expressionB)
-            ).apply(instance, ::IfElseExpression)
+            ).apply(it, ::IfElseExpression)
         }
     }
 }

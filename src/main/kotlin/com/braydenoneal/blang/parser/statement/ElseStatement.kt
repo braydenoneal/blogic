@@ -23,10 +23,10 @@ data class ElseStatement(val statements: MutableList<Statement>) {
             return ElseStatement(statements)
         }
 
-        val CODEC: MapCodec<ElseStatement> = RecordCodecBuilder.mapCodec { instance ->
-            instance.group(
+        val CODEC: MapCodec<ElseStatement> = RecordCodecBuilder.mapCodec {
+            it.group(
                 Codec.list(Statement.CODEC).fieldOf("statements").forGetter(ElseStatement::statements)
-            ).apply(instance, ::ElseStatement)
+            ).apply(it, ::ElseStatement)
         }
     }
 }

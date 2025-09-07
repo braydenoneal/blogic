@@ -10,7 +10,6 @@ import com.braydenoneal.blang.parser.expression.value.ListValue
 import com.braydenoneal.blang.parser.expression.value.Value
 import com.mojang.serialization.MapCodec
 import com.mojang.serialization.codecs.RecordCodecBuilder
-import net.minecraft.item.ItemStack
 import net.minecraft.item.Items
 import java.util.function.Consumer
 
@@ -21,7 +20,7 @@ data class GetItemsBuiltin(val arguments: Arguments) : Expression {
         val items: MutableList<Value<*>> = ArrayList()
 
         for (container in containers) {
-            container.iterator().forEachRemaining(Consumer { stack: ItemStack ->
+            container.iterator().forEachRemaining(Consumer { stack ->
                 if (!stack.isOf(Items.AIR)) {
                     items.add(ItemValue(stack.item))
                 }
@@ -34,10 +33,10 @@ data class GetItemsBuiltin(val arguments: Arguments) : Expression {
     override val type: ExpressionType<*> get() = ExpressionTypes.GET_ITEMS_BUILTIN
 
     companion object {
-        val CODEC: MapCodec<GetItemsBuiltin> = RecordCodecBuilder.mapCodec { instance ->
-            instance.group(
+        val CODEC: MapCodec<GetItemsBuiltin> = RecordCodecBuilder.mapCodec {
+            it.group(
                 Arguments.CODEC.fieldOf("arguments").forGetter(GetItemsBuiltin::arguments)
-            ).apply(instance, ::GetItemsBuiltin)
+            ).apply(it, ::GetItemsBuiltin)
         }
     }
 }

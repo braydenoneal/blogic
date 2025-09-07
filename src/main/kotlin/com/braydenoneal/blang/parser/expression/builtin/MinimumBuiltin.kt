@@ -37,10 +37,10 @@ data class MinimumBuiltin(val arguments: Arguments) : Expression {
     override val type: ExpressionType<*> get() = ExpressionTypes.MINIMUM_BUILTIN
 
     companion object {
-        val CODEC: MapCodec<MinimumBuiltin> = RecordCodecBuilder.mapCodec { instance ->
-            instance.group(
+        val CODEC: MapCodec<MinimumBuiltin> = RecordCodecBuilder.mapCodec {
+            it.group(
                 Arguments.CODEC.fieldOf("arguments").forGetter(MinimumBuiltin::arguments)
-            ).apply(instance, ::MinimumBuiltin)
+            ).apply(it, ::MinimumBuiltin)
         }
     }
 }

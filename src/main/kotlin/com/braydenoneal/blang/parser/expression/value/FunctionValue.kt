@@ -23,10 +23,10 @@ class FunctionValue(value: Funct) : Value<Funct>(value) {
     }
 
     companion object {
-        val CODEC: MapCodec<FunctionValue> = RecordCodecBuilder.mapCodec { instance ->
-            instance.group(
+        val CODEC: MapCodec<FunctionValue> = RecordCodecBuilder.mapCodec {
+            it.group(
                 Funct.CODEC.fieldOf("value").forGetter(FunctionValue::value)
-            ).apply(instance, ::FunctionValue)
+            ).apply(it, ::FunctionValue)
         }
 
         fun parse(program: Program): Expression {

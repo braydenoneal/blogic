@@ -6,7 +6,6 @@ Minecraft mod that adds a survival-friendly programming language that can intera
 
 ## Todo
 
-- list copy function
 - struct this keyword in functions
 - struct access by ["id"]
 - struct destructuring?
@@ -14,6 +13,7 @@ Minecraft mod that adds a survival-friendly programming language that can intera
 - struct variable name shorthand (id instead of id: id)
 - type checking (is keyword)
 - rewrite expression parsing
+- allow del as an alternative to remove functions
 - tab, shift-tab, auto-indent, auto open and close
 - tab autocomplete
 - better error context (source location, etc)

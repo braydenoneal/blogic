@@ -65,12 +65,12 @@ data class ForStatement(
             return ForStatement(itemName, expression, statements)
         }
 
-        val CODEC: MapCodec<ForStatement> = RecordCodecBuilder.mapCodec { instance ->
-            instance.group(
+        val CODEC: MapCodec<ForStatement> = RecordCodecBuilder.mapCodec {
+            it.group(
                 Codec.STRING.fieldOf("itemName").forGetter(ForStatement::itemName),
                 Expression.CODEC.fieldOf("listExpression").forGetter(ForStatement::listExpression),
                 Codec.list(Statement.CODEC).fieldOf("statements").forGetter(ForStatement::statements)
-            ).apply(instance, ::ForStatement)
+            ).apply(it, ::ForStatement)
         }
     }
 }

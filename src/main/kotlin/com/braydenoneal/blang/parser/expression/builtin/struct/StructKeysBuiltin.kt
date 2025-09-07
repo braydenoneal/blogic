@@ -30,11 +30,11 @@ data class StructKeysBuiltin(
     override val type: ExpressionType<*> get() = ExpressionTypes.STRUCT_KEYS_BUILTIN
 
     companion object {
-        val CODEC: MapCodec<StructKeysBuiltin> = RecordCodecBuilder.mapCodec { instance ->
-            instance.group(
+        val CODEC: MapCodec<StructKeysBuiltin> = RecordCodecBuilder.mapCodec {
+            it.group(
                 StructValue.CODEC.fieldOf("struct").forGetter(StructKeysBuiltin::struct),
                 Arguments.CODEC.fieldOf("arguments").forGetter(StructKeysBuiltin::arguments)
-            ).apply(instance, ::StructKeysBuiltin)
+            ).apply(it, ::StructKeysBuiltin)
         }
     }
 }

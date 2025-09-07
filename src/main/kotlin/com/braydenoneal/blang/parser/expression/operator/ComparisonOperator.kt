@@ -50,12 +50,12 @@ data class ComparisonOperator(
     override val type: ExpressionType<*> get() = ExpressionTypes.COMPARISON_OPERATOR
 
     companion object {
-        val CODEC: MapCodec<ComparisonOperator> = RecordCodecBuilder.mapCodec { instance ->
-            instance.group(
+        val CODEC: MapCodec<ComparisonOperator> = RecordCodecBuilder.mapCodec {
+            it.group(
                 Codec.STRING.fieldOf("operator").forGetter(ComparisonOperator::operator),
                 Expression.CODEC.fieldOf("operand_a").forGetter(ComparisonOperator::operandA),
                 Expression.CODEC.fieldOf("operand_b").forGetter(ComparisonOperator::operandB)
-            ).apply(instance, ::ComparisonOperator)
+            ).apply(it, ::ComparisonOperator)
         }
     }
 }

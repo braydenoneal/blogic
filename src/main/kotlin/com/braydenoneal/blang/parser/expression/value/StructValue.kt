@@ -44,10 +44,10 @@ class StructValue(value: MutableList<Pair<String, Value<*>>>) : Value<MutableLis
     }
 
     companion object {
-        val CODEC: MapCodec<StructValue> = RecordCodecBuilder.mapCodec { instance ->
-            instance.group(
+        val CODEC: MapCodec<StructValue> = RecordCodecBuilder.mapCodec {
+            it.group(
                 Codec.list(Codec.pair(Codec.STRING, Value.CODEC)).fieldOf("value").forGetter(StructValue::value)
-            ).apply(instance, ::StructValue)
+            ).apply(it, ::StructValue)
         }
     }
 }

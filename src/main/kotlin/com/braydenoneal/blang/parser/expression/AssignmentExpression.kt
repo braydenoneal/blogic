@@ -65,12 +65,12 @@ data class AssignmentExpression(
             return AssignmentExpression(type, variableExpression, expression)
         }
 
-        val CODEC: MapCodec<AssignmentExpression> = RecordCodecBuilder.mapCodec { instance ->
-            instance.group(
+        val CODEC: MapCodec<AssignmentExpression> = RecordCodecBuilder.mapCodec {
+            it.group(
                 Codec.STRING.fieldOf("type").forGetter(AssignmentExpression::operator),
                 Expression.CODEC.fieldOf("variable_expression").forGetter(AssignmentExpression::variableExpression),
                 Expression.CODEC.fieldOf("expression").forGetter(AssignmentExpression::variableExpression)
-            ).apply(instance, ::AssignmentExpression)
+            ).apply(it, ::AssignmentExpression)
         }
     }
 }

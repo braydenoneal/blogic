@@ -24,11 +24,11 @@ data class ElseIfStatement(val condition: Expression, val statements: MutableLis
             return ElseIfStatement(condition, statements)
         }
 
-        val CODEC: Codec<ElseIfStatement> = RecordCodecBuilder.create { instance ->
-            instance.group(
+        val CODEC: Codec<ElseIfStatement> = RecordCodecBuilder.create {
+            it.group(
                 Expression.CODEC.fieldOf("condition").forGetter(ElseIfStatement::condition),
                 Codec.list(Statement.CODEC).fieldOf("statements").forGetter(ElseIfStatement::statements)
-            ).apply(instance, ::ElseIfStatement)
+            ).apply(it, ::ElseIfStatement)
         }
     }
 }

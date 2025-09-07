@@ -33,10 +33,10 @@ data class GetBlockBuiltin(val arguments: Arguments) : Expression {
     override val type: ExpressionType<*> get() = ExpressionTypes.GET_BLOCK_BUILTIN
 
     companion object {
-        val CODEC: MapCodec<GetBlockBuiltin> = RecordCodecBuilder.mapCodec { instance ->
-            instance.group(
+        val CODEC: MapCodec<GetBlockBuiltin> = RecordCodecBuilder.mapCodec {
+            it.group(
                 Arguments.CODEC.fieldOf("arguments").forGetter(GetBlockBuiltin::arguments)
-            ).apply(instance, ::GetBlockBuiltin)
+            ).apply(it, ::GetBlockBuiltin)
         }
     }
 }

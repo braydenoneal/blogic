@@ -33,7 +33,7 @@ class ControllerBlock(settings: Settings) : BlockWithEntity(settings) {
     }
 
     override fun getCodec(): MapCodec<out BlockWithEntity> {
-        return createCodec<ControllerBlock> { settings: Settings -> ControllerBlock(settings) }
+        return createCodec<ControllerBlock> { ControllerBlock(it) }
     }
 
     override fun createBlockEntity(pos: BlockPos, state: BlockState): BlockEntity {

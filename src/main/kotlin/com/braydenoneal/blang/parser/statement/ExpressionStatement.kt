@@ -21,10 +21,10 @@ data class ExpressionStatement(val expression: Expression) : Statement {
             return ExpressionStatement(expression)
         }
 
-        val CODEC: MapCodec<ExpressionStatement> = RecordCodecBuilder.mapCodec { instance ->
-            instance.group(
+        val CODEC: MapCodec<ExpressionStatement> = RecordCodecBuilder.mapCodec {
+            it.group(
                 Expression.CODEC.fieldOf("expression").forGetter(ExpressionStatement::expression)
-            ).apply(instance, ::ExpressionStatement)
+            ).apply(it, ::ExpressionStatement)
         }
     }
 }

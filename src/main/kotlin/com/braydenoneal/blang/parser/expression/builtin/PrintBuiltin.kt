@@ -41,10 +41,10 @@ data class PrintBuiltin(val arguments: Arguments) : Expression {
     override val type: ExpressionType<*> get() = ExpressionTypes.PRINT_BUILTIN
 
     companion object {
-        val CODEC: MapCodec<PrintBuiltin> = RecordCodecBuilder.mapCodec { instance ->
-            instance.group(
+        val CODEC: MapCodec<PrintBuiltin> = RecordCodecBuilder.mapCodec {
+            it.group(
                 Arguments.CODEC.fieldOf("arguments").forGetter(PrintBuiltin::arguments)
-            ).apply(instance, ::PrintBuiltin)
+            ).apply(it, ::PrintBuiltin)
         }
     }
 }

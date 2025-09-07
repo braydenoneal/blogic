@@ -72,11 +72,11 @@ data class FunctionDeclaration(val name: String, val function: Funct) : Statemen
             return functionDeclaration
         }
 
-        val CODEC: MapCodec<FunctionDeclaration> = RecordCodecBuilder.mapCodec { instance ->
-            instance.group(
+        val CODEC: MapCodec<FunctionDeclaration> = RecordCodecBuilder.mapCodec {
+            it.group(
                 Codec.STRING.fieldOf("name").forGetter(FunctionDeclaration::name),
                 Funct.CODEC.fieldOf("function").forGetter(FunctionDeclaration::function)
-            ).apply(instance, ::FunctionDeclaration)
+            ).apply(it, ::FunctionDeclaration)
         }
     }
 }

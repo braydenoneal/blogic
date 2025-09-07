@@ -32,10 +32,10 @@ data class ListExpression(val expressions: MutableList<Expression>) : Expression
             return ListExpression(expressions)
         }
 
-        val CODEC: MapCodec<ListExpression> = RecordCodecBuilder.mapCodec { instance ->
-            instance.group(
+        val CODEC: MapCodec<ListExpression> = RecordCodecBuilder.mapCodec {
+            it.group(
                 Codec.list(Expression.CODEC).fieldOf("expressions").forGetter(ListExpression::expressions)
-            ).apply(instance, ::ListExpression)
+            ).apply(it, ::ListExpression)
         }
     }
 }

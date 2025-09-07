@@ -23,11 +23,11 @@ data class ListPopBuiltin(
     override val type: ExpressionType<*> get() = ExpressionTypes.LIST_POP_BUILTIN
 
     companion object {
-        val CODEC: MapCodec<ListPopBuiltin> = RecordCodecBuilder.mapCodec { instance ->
-            instance.group(
+        val CODEC: MapCodec<ListPopBuiltin> = RecordCodecBuilder.mapCodec {
+            it.group(
                 ListValue.CODEC.fieldOf("listValue").forGetter(ListPopBuiltin::listValue),
                 Arguments.CODEC.fieldOf("arguments").forGetter(ListPopBuiltin::arguments)
-            ).apply(instance, ::ListPopBuiltin)
+            ).apply(it, ::ListPopBuiltin)
         }
     }
 }

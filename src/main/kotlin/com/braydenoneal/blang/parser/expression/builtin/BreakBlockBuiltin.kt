@@ -108,10 +108,10 @@ data class BreakBlockBuiltin(val arguments: Arguments) : Expression {
     override val type: ExpressionType<*> get() = ExpressionTypes.BREAK_BLOCK_BUILTIN
 
     companion object {
-        val CODEC: MapCodec<BreakBlockBuiltin> = RecordCodecBuilder.mapCodec { instance ->
-            instance.group(
+        val CODEC: MapCodec<BreakBlockBuiltin> = RecordCodecBuilder.mapCodec {
+            it.group(
                 Arguments.CODEC.fieldOf("arguments").forGetter(BreakBlockBuiltin::arguments)
-            ).apply(instance, ::BreakBlockBuiltin)
+            ).apply(it, ::BreakBlockBuiltin)
         }
     }
 }

@@ -32,10 +32,10 @@ data class ImportStatement(val identifiers: MutableList<String>) : Statement {
         }
 
         val CODEC: MapCodec<ImportStatement> =
-            RecordCodecBuilder.mapCodec { instance ->
-                instance.group(
+            RecordCodecBuilder.mapCodec {
+                it.group(
                     Codec.list(Codec.STRING).fieldOf("identifiers").forGetter(ImportStatement::identifiers)
-                ).apply(instance, ::ImportStatement)
+                ).apply(it, ::ImportStatement)
             }
     }
 }

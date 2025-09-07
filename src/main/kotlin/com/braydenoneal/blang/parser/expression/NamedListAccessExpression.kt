@@ -26,11 +26,11 @@ data class NamedListAccessExpression(
     override val type: ExpressionType<*> get() = ExpressionTypes.NAMED_LIST_ACCESS_EXPRESSION
 
     companion object {
-        val CODEC: MapCodec<NamedListAccessExpression> = RecordCodecBuilder.mapCodec(Function { instance ->
-            instance.group(
+        val CODEC: MapCodec<NamedListAccessExpression> = RecordCodecBuilder.mapCodec(Function {
+            it.group(
                 Expression.CODEC.fieldOf("variableExpression").forGetter(NamedListAccessExpression::variableExpression),
                 Codec.list(Expression.CODEC).fieldOf("indices").forGetter(NamedListAccessExpression::indices)
-            ).apply(instance, ::NamedListAccessExpression)
+            ).apply(it, ::NamedListAccessExpression)
         })
     }
 }

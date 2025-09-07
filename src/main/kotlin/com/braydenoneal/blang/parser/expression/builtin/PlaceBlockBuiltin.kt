@@ -84,10 +84,10 @@ data class PlaceBlockBuiltin(val arguments: Arguments) : Expression {
     override val type: ExpressionType<*> get() = ExpressionTypes.PLACE_BLOCK_BUILTIN
 
     companion object {
-        val CODEC: MapCodec<PlaceBlockBuiltin> = RecordCodecBuilder.mapCodec { instance ->
-            instance.group(
+        val CODEC: MapCodec<PlaceBlockBuiltin> = RecordCodecBuilder.mapCodec {
+            it.group(
                 Arguments.CODEC.fieldOf("arguments").forGetter(PlaceBlockBuiltin::arguments)
-            ).apply(instance, ::PlaceBlockBuiltin)
+            ).apply(it, ::PlaceBlockBuiltin)
         }
     }
 }

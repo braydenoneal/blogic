@@ -34,12 +34,12 @@ data class BooleanOperator(
     override val type: ExpressionType<*> get() = ExpressionTypes.BOOLEAN_OPERATOR
 
     companion object {
-        val CODEC: MapCodec<BooleanOperator> = RecordCodecBuilder.mapCodec { instance ->
-            instance.group(
+        val CODEC: MapCodec<BooleanOperator> = RecordCodecBuilder.mapCodec {
+            it.group(
                 Codec.STRING.fieldOf("operator").forGetter(BooleanOperator::operator),
                 Expression.CODEC.fieldOf("operand_a").forGetter(BooleanOperator::operandA),
                 Expression.CODEC.fieldOf("operand_b").forGetter(BooleanOperator::operandB)
-            ).apply(instance, ::BooleanOperator)
+            ).apply(it, ::BooleanOperator)
         }
     }
 }

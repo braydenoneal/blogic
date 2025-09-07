@@ -23,11 +23,11 @@ data class ListContainsBuiltin(
     override val type: ExpressionType<*> get() = ExpressionTypes.LIST_CONTAINS_BUILTIN
 
     companion object {
-        val CODEC: MapCodec<ListContainsBuiltin> = RecordCodecBuilder.mapCodec { instance ->
-            instance.group(
+        val CODEC: MapCodec<ListContainsBuiltin> = RecordCodecBuilder.mapCodec {
+            it.group(
                 ListValue.CODEC.fieldOf("listValue").forGetter(ListContainsBuiltin::listValue),
                 Arguments.CODEC.fieldOf("arguments").forGetter(ListContainsBuiltin::arguments)
-            ).apply(instance, ::ListContainsBuiltin)
+            ).apply(it, ::ListContainsBuiltin)
         }
     }
 }

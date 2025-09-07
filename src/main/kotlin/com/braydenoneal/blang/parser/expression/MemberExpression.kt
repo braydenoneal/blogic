@@ -22,11 +22,11 @@ data class MemberExpression(val member: Expression, val property: String) : Expr
     override val type: ExpressionType<*> get() = ExpressionTypes.MEMBER_EXPRESSION
 
     companion object {
-        val CODEC: MapCodec<MemberExpression> = RecordCodecBuilder.mapCodec { instance ->
-            instance.group(
+        val CODEC: MapCodec<MemberExpression> = RecordCodecBuilder.mapCodec {
+            it.group(
                 Expression.CODEC.fieldOf("member").forGetter(MemberExpression::member),
                 Codec.STRING.fieldOf("property").forGetter(MemberExpression::property)
-            ).apply(instance, ::MemberExpression)
+            ).apply(it, ::MemberExpression)
         }
     }
 }

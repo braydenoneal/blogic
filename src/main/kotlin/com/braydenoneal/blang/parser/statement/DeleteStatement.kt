@@ -17,10 +17,10 @@ data class DeleteStatement(val name: String) : Statement {
     override val type: StatementType<*> get() = StatementTypes.DELETE_STATEMENT
 
     companion object {
-        val CODEC: MapCodec<DeleteStatement> = RecordCodecBuilder.mapCodec { instance ->
-            instance.group(
+        val CODEC: MapCodec<DeleteStatement> = RecordCodecBuilder.mapCodec {
+            it.group(
                 Codec.STRING.fieldOf("name").forGetter(DeleteStatement::name)
-            ).apply(instance, ::DeleteStatement)
+            ).apply(it, ::DeleteStatement)
         }
 
         fun parse(program: Program): Statement {

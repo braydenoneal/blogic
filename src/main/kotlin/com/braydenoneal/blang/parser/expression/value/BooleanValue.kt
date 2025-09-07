@@ -8,10 +8,10 @@ class BooleanValue(value: Boolean) : Value<Boolean>(value) {
     override val valueType: ValueType<*> get() = ValueTypes.BOOLEAN
 
     companion object {
-        val CODEC: MapCodec<BooleanValue> = RecordCodecBuilder.mapCodec { instance ->
-            instance.group(
+        val CODEC: MapCodec<BooleanValue> = RecordCodecBuilder.mapCodec {
+            it.group(
                 Codec.BOOL.fieldOf("value").forGetter(BooleanValue::value)
-            ).apply(instance, ::BooleanValue)
+            ).apply(it, ::BooleanValue)
         }
     }
 }

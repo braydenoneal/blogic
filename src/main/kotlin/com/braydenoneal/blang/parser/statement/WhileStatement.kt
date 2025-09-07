@@ -52,11 +52,11 @@ data class WhileStatement(val condition: Expression, val statements: MutableList
             return WhileStatement(condition, statements)
         }
 
-        val CODEC: MapCodec<WhileStatement> = RecordCodecBuilder.mapCodec { instance ->
-            instance.group(
+        val CODEC: MapCodec<WhileStatement> = RecordCodecBuilder.mapCodec {
+            it.group(
                 Expression.CODEC.fieldOf("condition").forGetter(WhileStatement::condition),
                 Codec.list(Statement.CODEC).fieldOf("statements").forGetter(WhileStatement::statements)
-            ).apply(instance, ::WhileStatement)
+            ).apply(it, ::WhileStatement)
         }
     }
 }
