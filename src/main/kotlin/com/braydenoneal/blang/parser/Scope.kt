@@ -44,6 +44,16 @@ class Scope(private val parent: Scope?) {
         return value
     }
 
+    fun delete(name: String): Value<*>? {
+        val value = variables.remove(name)
+
+        if (value == null && parent != null) {
+            return parent.delete(name)
+        }
+
+        return value
+    }
+
     fun setLocal(name: String, value: Value<*>) {
         variables.put(name, value)
     }

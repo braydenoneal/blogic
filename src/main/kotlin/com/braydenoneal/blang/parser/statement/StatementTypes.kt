@@ -13,6 +13,7 @@ object StatementTypes {
     val IMPORT_STATEMENT = register("import_statement", StatementType(ImportStatement.CODEC))
     val RETURN_STATEMENT = register("return_statement", StatementType(ReturnStatement.CODEC))
     val WHILE_STATEMENT = register("while_statement", StatementType(WhileStatement.CODEC))
+    val DELETE_STATEMENT = register("delete_statement", StatementType(DeleteStatement.CODEC))
 
     fun <T : Statement> register(id: String, statementType: StatementType<T>): StatementType<T> {
         return Registry.register(

@@ -6,8 +6,8 @@ Minecraft mod that adds a survival-friendly programming language that can intera
 
 ## Todo
 
-- del keyword to remove variables (only from current scope?)
 - list copy function
+- struct this keyword in functions
 - struct access by ["id"]
 - struct destructuring?
 - struct get function? (key: get { return this.a + 1; })

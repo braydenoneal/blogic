@@ -11,13 +11,7 @@ import com.mojang.serialization.codecs.RecordCodecBuilder
 
 data class VariableExpression(val name: String) : Expression {
     override fun evaluate(program: Program): Value<*> {
-        val value: Value<*>? = program.scope.get(name)
-
-        if (value == null) {
-            throw RunException("Variable with name '$name' does not exist")
-        }
-
-        return value
+        return program.scope.get(name) ?: run { throw RunException("Variable with name '$name' does not exist") }
     }
 
     override val type: ExpressionType<*> get() = ExpressionTypes.VARIABLE_EXPRESSION

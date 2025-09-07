@@ -36,6 +36,10 @@ interface Statement {
                         return ForStatement.parse(program)
                     }
 
+                    "del" -> {
+                        return DeleteStatement.parse(program)
+                    }
+
                     "break" -> {
                         return BreakStatement.parse(program)
                     }
