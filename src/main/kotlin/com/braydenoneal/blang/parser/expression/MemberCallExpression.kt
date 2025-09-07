@@ -5,7 +5,6 @@ import com.braydenoneal.blang.parser.RunException
 import com.braydenoneal.blang.parser.expression.builtin.list.*
 import com.braydenoneal.blang.parser.expression.value.ListValue
 import com.braydenoneal.blang.parser.expression.value.Value
-import com.braydenoneal.blang.tokenizer.Type
 import com.mojang.serialization.Codec
 import com.mojang.serialization.MapCodec
 import com.mojang.serialization.codecs.RecordCodecBuilder
@@ -58,9 +57,7 @@ data class MemberCallExpression(
     override val type: ExpressionType<*> get() = ExpressionTypes.MEMBER_CALL_EXPRESSION
 
     companion object {
-        fun parse(program: Program, member: Expression): Expression {
-            program.expect(Type.DOT)
-            val functionName = program.expect(Type.IDENTIFIER)
+        fun parse(program: Program, member: Expression, functionName: String): Expression {
             val arguments: Arguments = Arguments.parse(program)
             return MemberCallExpression(member, functionName, arguments)
         }

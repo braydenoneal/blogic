@@ -16,21 +16,20 @@ object Tests {
             IfStatements(),
             WhileLoops(),
             ForLoops(),
-            ControlStatements()
+            ControlStatements(),
+            Structs(),
         )
     }
 
     @JvmStatic
     fun main(args: Array<String>) {
         val results: MutableList<Test.Result> = ArrayList()
-        tests().forEach(Consumer { test: Test? -> results.add(test!!.run()) })
+        tests().forEach(Consumer { test: Test -> results.add(test.run()) })
 
         val result = results.stream().reduce(
             Test.Result(0, 0)
-        ) { total: Test.Result?, current: Test.Result? ->
-            Test.Result(
-                total!!.passed + current!!.passed, total.total + current.total
-            )
+        ) { total: Test.Result, current: Test.Result ->
+            Test.Result(total.passed + current.passed, total.total + current.total)
         }
 
 

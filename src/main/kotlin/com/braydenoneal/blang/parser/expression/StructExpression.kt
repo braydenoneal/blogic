@@ -29,6 +29,7 @@ data class StructExpression(val expressions: List<Pair<String, Expression>>) : E
                     throw ParseException("Struct key is not an identifier")
                 }
 
+                program.expect(Type.COLON)
                 expressions.add(Pair.of(name.value, Expression.parse(program)))
 
                 if (!program.peekIs(Type.CURLY_BRACE, "}")) {

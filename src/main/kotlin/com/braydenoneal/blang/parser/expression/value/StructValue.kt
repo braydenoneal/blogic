@@ -9,17 +9,27 @@ class StructValue(value: List<Pair<String, Value<*>>>) : Value<List<Pair<String,
     override val valueType: ValueType<*> get() = ValueTypes.STRUCT
 
     override fun toString(): String {
-        val print = StringBuilder("{\n")
+        val print = StringBuilder("{ ")
 
         for (i in value.indices) {
             print.append(value[i].first + ": " + value[i].second)
 
             if (i < value.size - 1) {
-                print.append(",\n")
+                print.append(", ")
             }
         }
 
-        return "$print\n}"
+        return "$print }"
+    }
+
+    fun get(property: String): Value<*> {
+        for (entry in value) {
+            if (entry.first == property) {
+                return entry.second
+            }
+        }
+
+        return Null.VALUE
     }
 
     companion object {

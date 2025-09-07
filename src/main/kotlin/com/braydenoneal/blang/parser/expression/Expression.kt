@@ -101,8 +101,15 @@ interface Expression {
                             }
                         }
 
-                        if (program.peek().type == Type.DOT) {
-                            expression = MemberCallExpression.parse(program, expression)
+                        while (program.peek().type == Type.DOT) {
+                            program.expect(Type.DOT)
+                            val name = program.expect(Type.IDENTIFIER)
+
+                            expression = if (program.peekIs(Type.PARENTHESIS, "(")) {
+                                MemberCallExpression.parse(program, expression, name)
+                            } else {
+                                MemberExpression(expression, name)
+                            }
                         }
 
                         if (program.peekIs(Type.KEYWORD, "if")) {
