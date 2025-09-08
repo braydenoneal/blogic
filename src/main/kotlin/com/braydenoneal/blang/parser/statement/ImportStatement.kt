@@ -19,7 +19,7 @@ data class ImportStatement(val identifiers: MutableList<String>) : Statement {
             val identifiers: MutableList<String> = ArrayList()
             program.expect(Type.KEYWORD, "import")
 
-            while (program.peek().type == Type.IDENTIFIER) {
+            while (program.peekIs(Type.IDENTIFIER)) {
                 identifiers.add(program.next().value)
 
                 if (program.peek().type != Type.SEMICOLON) {

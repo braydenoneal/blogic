@@ -11,20 +11,18 @@ import com.braydenoneal.blang.parser.expression.value.Value
 import com.mojang.serialization.MapCodec
 import com.mojang.serialization.codecs.RecordCodecBuilder
 import net.minecraft.item.Items
-import java.util.function.Consumer
 
 
 data class GetItemsBuiltin(val arguments: Arguments) : Expression {
     override fun evaluate(program: Program): Value<*> {
-        val containers = program.context().entity!!.getConnectedContainers()
         val items: MutableList<Value<*>> = ArrayList()
 
-        for (container in containers) {
-            container.iterator().forEachRemaining(Consumer { stack ->
+        for (container in program.context().entity!!.getConnectedContainers()) {
+            container.iterator().forEachRemaining { stack ->
                 if (!stack.isOf(Items.AIR)) {
                     items.add(ItemValue(stack.item))
                 }
-            })
+            }
         }
 
         return ListValue(items)

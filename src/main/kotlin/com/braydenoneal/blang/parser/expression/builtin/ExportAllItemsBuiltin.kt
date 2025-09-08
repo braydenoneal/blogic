@@ -25,6 +25,8 @@ data class ExportAllItemsBuiltin(val arguments: Arguments) : Expression {
         val y = arguments.integerValue(program, "y", 1).value
         val z = arguments.integerValue(program, "z", 2).value
         val itemPredicate = arguments.functionValue(program, "itemPredicate", 3)
+        val initialCount = if (arguments.arguments.size > 4 || arguments.namedArguments.containsKey("count")) arguments.integerValue(program, "count", 4).value else null
+        var count = initialCount
 
         val world = program.context().entity!!.getWorld()
 
@@ -57,9 +59,27 @@ data class ExportAllItemsBuiltin(val arguments: Arguments) : Expression {
                 }
 
                 for (exportSlot in 0..<exportEntity.size()) {
+                    if (count != null && count <= 0) {
+                        return Null.VALUE
+                    }
+
                     val exportStack = exportEntity.getStack(exportSlot)
 
                     if (exportStack.isOf(Items.AIR)) {
+                        if (count != null) {
+                            if (count - stack.count >= 0) {
+                                count -= stack.count
+                            } else {
+                                stack.decrement(count)
+
+                                val newStack = stack.copy()
+                                newStack.count = count
+                                exportEntity.setStack(exportSlot, newStack)
+
+                                return Null.VALUE
+                            }
+                        }
+
                         container.removeStack(slot)
                         exportEntity.setStack(exportSlot, stack)
                         break
@@ -69,7 +89,20 @@ data class ExportAllItemsBuiltin(val arguments: Arguments) : Expression {
                         continue
                     }
 
-                    val move = min(stack.count, exportStack.maxCount - exportStack.count)
+                    var move = min(stack.count, exportStack.maxCount - exportStack.count)
+
+                    if (move <= 0) {
+                        continue
+                    }
+
+                    if (count != null) {
+                        if (count - move >= 0) {
+                            count -= move
+                        } else {
+                            move = count
+                            count = 0
+                        }
+                    }
 
                     stack.decrement(move)
                     exportStack.increment(move)
@@ -79,9 +112,6 @@ data class ExportAllItemsBuiltin(val arguments: Arguments) : Expression {
                         exportEntity.setStack(exportSlot, exportStack)
                         break
                     }
-
-                    container.setStack(slot, stack)
-                    exportEntity.setStack(exportSlot, exportStack)
                 }
             }
         }

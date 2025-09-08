@@ -3,6 +3,7 @@ package com.braydenoneal.block
 import com.braydenoneal.block.entity.ControllerBlockEntity
 import net.minecraft.block.Block
 import net.minecraft.block.BlockState
+import net.minecraft.block.Blocks
 import net.minecraft.block.ShapeContext
 import net.minecraft.block.entity.LockableContainerBlockEntity
 import net.minecraft.entity.LivingEntity
@@ -107,7 +108,7 @@ class CableBlock(settings: Settings) : Block(settings) {
             )
 
         fun settings(): Settings {
-            return Settings.create().nonOpaque()
+            return Settings.copy(Blocks.STONE).nonOpaque()
         }
     }
 }

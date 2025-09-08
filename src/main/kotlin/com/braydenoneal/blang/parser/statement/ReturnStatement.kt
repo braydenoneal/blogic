@@ -22,7 +22,7 @@ data class ReturnStatement(val expression: Expression) : Statement {
     companion object {
         fun parse(program: Program): Statement {
             program.expect(Type.KEYWORD, "return")
-            val expression = if (program.peek().type == Type.SEMICOLON) Null.VALUE else Expression.parse(program)
+            val expression = if (program.peekIs(Type.SEMICOLON)) Null.VALUE else Expression.parse(program)
             program.expect(Type.SEMICOLON)
             return ReturnStatement(expression)
         }

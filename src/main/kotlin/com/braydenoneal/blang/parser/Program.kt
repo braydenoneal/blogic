@@ -109,6 +109,11 @@ class Program(source: String, private val context: Context) {
         return token.type == type && token.value == value
     }
 
+    fun peekIs(type: Type): Boolean {
+        val token = peek()
+        return token.type == type
+    }
+
     fun next(): Token {
         return tokens[position++]
     }

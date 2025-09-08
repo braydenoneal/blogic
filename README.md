@@ -6,6 +6,8 @@ Minecraft mod that adds a survival-friendly programming language that can intera
 
 ## Todo
 
+- getItemCount function
+- exportAllItems optional count argument
 - rewrite expression parsing
 - struct this keyword in functions
 - struct access by ["id"]
@@ -204,9 +206,14 @@ neededItems = [item("stone"), item("bone_meal")];
 y = -3;
 
 fn main() {
+    # Use composter
     useItem(0, 4, 0, fn item: !neededItems.contains(item));
 
-    if !getItems().containsAll(neededItems) { return; }
+    boneMealCount = getItemCount(fn item: item == item("bone_meal"));
+    if boneMealCount <= 0 { return; }
+    exportAllItems(0, 6, 0, fn item: item == item("bone_meal"), count=boneMealCount - 1);
+
+    if getItemCount(fn item: item == item("stone")) < 44 { return; }
 
     for x in range(-3, 4) {
         for z in range(-3, 4) {
@@ -219,11 +226,12 @@ fn main() {
     for x in range(-3, 4) {
         for z in range(-3, 4) {
             breakBlock(x, y + 1, z, fn block: true);
-            breakBlock(x, y, z, fn block: block == block("moss_block"));
+
+            if x != 0 or z != 0 {
+                breakBlock(x, y, z, fn block: block == block("moss_block"));
+            }
         }
     }
-
-    placeBlock(0, y, 0, fn item: item == item("moss_block"));
 }
 
 ```

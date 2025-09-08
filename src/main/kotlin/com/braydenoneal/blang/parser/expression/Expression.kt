@@ -10,34 +10,51 @@ import com.braydenoneal.blang.parser.expression.value.*
 import com.braydenoneal.blang.tokenizer.Type
 import com.mojang.serialization.Codec
 import java.util.*
-import java.util.Map
 
 interface Expression {
+    fun evaluate(program: Program): Value<*>
+
+    val type: ExpressionType<*>
+
     interface Output
 
     data class Operand(val expression: Expression) : Output
 
     data class Operator(val operator: String) : Output
 
-    fun evaluate(program: Program): Value<*>
-
-    val type: ExpressionType<*>
-
     companion object {
+        val operatorPrecedence: MutableMap<String, Int> = mutableMapOf(
+            Pair("(", -3),
+            Pair(")", -3),
+            Pair("and", -2),
+            Pair("or", -2),
+            Pair("==", -1),
+            Pair("!=", -1),
+            Pair("<=", -1),
+            Pair(">=", -1),
+            Pair("<", -1),
+            Pair(">", -1),
+            Pair("+", 0),
+            Pair("-", 0),
+            Pair("*", 1),
+            Pair("//", 1),
+            Pair("/", 1),
+            Pair("%", 1),
+            Pair("^", 2),
+        )
+
         fun parse(program: Program): Expression {
-            val outputs: Deque<Output> = ArrayDeque<Output>()
-            val operators = Stack<Operator>()
+            val outputs: Deque<Output> = ArrayDeque()
+            val operators: Stack<Operator> = Stack()
             var openedParenthesis = false
             var operand = true
 
             while (!(program.peekIs(Type.PARENTHESIS, ")") ||
-                        program.peekIs(Type.SEMICOLON, ";") ||
-                        program.peekIs(Type.CURLY_BRACE, "{") ||
-                        program.peekIs(Type.CURLY_BRACE, "}") ||
+                        program.peekIs(Type.SEMICOLON) ||
+                        program.peekIs(Type.CURLY_BRACE) ||
                         program.peekIs(Type.SQUARE_BRACE, "]") ||
-                        program.peekIs(Type.COMMA, ",") ||
-                        program.peekIs(Type.KEYWORD, "else")
-                        ) || openedParenthesis || operand
+                        program.peekIs(Type.COMMA) ||
+                        program.peekIs(Type.KEYWORD, "else")) || openedParenthesis || operand
             ) {
                 when (program.peek().type) {
                     Type.BOOLEAN_OPERATOR, Type.COMPARISON_OPERATOR, Type.ARITHMETIC_OPERATOR -> {
@@ -101,7 +118,7 @@ interface Expression {
                             }
                         }
 
-                        while (program.peek().type == Type.DOT) {
+                        while (program.peekIs(Type.DOT)) {
                             program.expect(Type.DOT)
                             val name = program.expect(Type.IDENTIFIER)
 
@@ -114,7 +131,7 @@ interface Expression {
 
                         if (program.peekIs(Type.KEYWORD, "if")) {
                             expression = IfElseExpression.parse(program, expression)
-                        } else if (program.peek().type == Type.ASSIGN) {
+                        } else if (program.peekIs(Type.ASSIGN)) {
                             expression = AssignmentExpression.parse(program, expression)
                         }
 
@@ -155,26 +172,6 @@ interface Expression {
 
             return expressions.peek()
         }
-
-        val operatorPrecedence: MutableMap<String, Int> = Map.ofEntries(
-            Map.entry("(", -3),
-            Map.entry(")", -3),
-            Map.entry("and", -2),
-            Map.entry("or", -2),
-            Map.entry("==", -1),
-            Map.entry("!=", -1),
-            Map.entry("<=", -1),
-            Map.entry(">=", -1),
-            Map.entry("<", -1),
-            Map.entry(">", -1),
-            Map.entry("+", 0),
-            Map.entry("-", 0),
-            Map.entry("*", 1),
-            Map.entry("//", 1),
-            Map.entry("/", 1),
-            Map.entry("%", 1),
-            Map.entry("^", 2)
-        )
 
         val CODEC: Codec<Expression> = ExpressionType.REGISTRY.getCodec().dispatch("type", Expression::type, ExpressionType<*>::codec)
     }
