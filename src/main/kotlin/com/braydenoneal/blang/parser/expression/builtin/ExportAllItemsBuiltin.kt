@@ -27,6 +27,7 @@ data class ExportAllItemsBuiltin(val arguments: Arguments) : Expression {
         val itemPredicate = arguments.functionValue(program, "itemPredicate", 3)
         val initialCount = if (arguments.arguments.size > 4 || arguments.namedArguments.containsKey("count")) arguments.integerValue(program, "count", 4).value else null
         var count = initialCount
+        val deleteOverflow = if (arguments.arguments.size > 5 || arguments.namedArguments.containsKey("deleteOverflow")) arguments.booleanValue(program, "deleteOverflow", 5).value else false
 
         val world = program.context().entity!!.getWorld()
 
@@ -112,6 +113,10 @@ data class ExportAllItemsBuiltin(val arguments: Arguments) : Expression {
                         exportEntity.setStack(exportSlot, exportStack)
                         break
                     }
+                }
+
+                if (deleteOverflow) {
+                    container.removeStack(slot)
                 }
             }
         }
