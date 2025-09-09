@@ -47,6 +47,7 @@ object ExpressionTypes {
     val DELETE_ITEMS_BUILTIN: ExpressionType<DeleteItemsBuiltin> = register("delete_items_builtin", ExpressionType(DeleteItemsBuiltin.CODEC))
     val GET_ITEMS_BUILTIN: ExpressionType<GetItemsBuiltin> = register("get_items_builtin", ExpressionType(GetItemsBuiltin.CODEC))
     val GET_ITEM_COUNT_BUILTIN: ExpressionType<GetItemCountBuiltin> = register("get_item_count_builtin", ExpressionType(GetItemCountBuiltin.CODEC))
+    val READ_ITEM_COUNT_BUILTIN: ExpressionType<ReadItemCountBuiltin> = register("read_item_count_builtin", ExpressionType(ReadItemCountBuiltin.CODEC))
     val MINIMUM_BUILTIN: ExpressionType<MinimumBuiltin> = register("minimum_builtin", ExpressionType(MinimumBuiltin.CODEC))
     val MAXIMUM_BUILTIN: ExpressionType<MaximumBuiltin> = register("maximum_builtin", ExpressionType(MaximumBuiltin.CODEC))
     val RANGE_BUILTIN: ExpressionType<RangeBuiltin> = register("range_builtin", ExpressionType(RangeBuiltin.CODEC))

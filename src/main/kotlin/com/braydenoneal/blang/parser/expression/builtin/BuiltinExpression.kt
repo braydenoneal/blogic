@@ -27,6 +27,7 @@ object BuiltinExpression {
             "deleteItems" -> DeleteItemsBuiltin(Arguments.parse(program))
             "getItems" -> GetItemsBuiltin(Arguments.parse(program))
             "getItemCount" -> GetItemCountBuiltin(Arguments.parse(program))
+            "readItemCount" -> ReadItemCountBuiltin(Arguments.parse(program))
             "min" -> MinimumBuiltin(Arguments.parse(program))
             "max" -> MaximumBuiltin(Arguments.parse(program))
             "range" -> RangeBuiltin(Arguments.parse(program))

@@ -6,7 +6,6 @@ Minecraft mod that adds a survival-friendly programming language that can intera
 
 ## Todo
 
-- readItemCount(x, y, z, fn)
 - rewrite expression parsing
 - struct this keyword in functions
 - struct access by ["id"]
