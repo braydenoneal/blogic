@@ -6,8 +6,8 @@ Minecraft mod that adds a survival-friendly programming language that can intera
 
 ## Todo
 
-- getItemCount function
-- exportAllItems optional count argument
+- readItemCount(x, y, z, fn)
+- exportItems optional deleteOverflow argument
 - rewrite expression parsing
 - struct this keyword in functions
 - struct access by ["id"]
@@ -15,6 +15,9 @@ Minecraft mod that adds a survival-friendly programming language that can intera
 - struct get function? (key: get { return this.a + 1; })
 - struct variable name shorthand (id instead of id: id)
 - allow del as an alternative to remove functions
+- option to run imports from either context/location
+- isChunkLoaded function
+- if switch to read, import, export block for functions, then have network priority option to control order
 - tab, shift-tab, auto-indent, auto open and close
 - tab autocomplete
 - better error context (source location, etc)

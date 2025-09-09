@@ -18,6 +18,8 @@ import java.util.Map
 data class DeleteItemsBuiltin(val arguments: Arguments) : Expression {
     override fun evaluate(program: Program): Value<*> {
         val itemPredicate = arguments.functionValue(program, "itemPredicate", 0)
+        val initialCount = if (arguments.arguments.size > 1 || arguments.namedArguments.containsKey("count")) arguments.integerValue(program, "count", 1).value else null
+        var count = initialCount
 
         val world = program.context().entity!!.getWorld()
 
@@ -29,6 +31,10 @@ data class DeleteItemsBuiltin(val arguments: Arguments) : Expression {
 
         for (container in containers) {
             for (slot in 0..<container.size()) {
+                if (count != null && count <= 0) {
+                    return Null.VALUE
+                }
+
                 val stack = container.getStack(slot)
 
                 val predicateArguments = Arguments(mutableListOf(ItemValue(stack.item)), Map.of())
@@ -40,6 +46,15 @@ data class DeleteItemsBuiltin(val arguments: Arguments) : Expression {
 
                 if (!predicateResult.value) {
                     continue
+                }
+
+                if (count != null) {
+                    if (count - stack.count >= 0) {
+                        count -= stack.count
+                    } else {
+                        stack.decrement(count)
+                        return Null.VALUE
+                    }
                 }
 
                 container.removeStack(slot)

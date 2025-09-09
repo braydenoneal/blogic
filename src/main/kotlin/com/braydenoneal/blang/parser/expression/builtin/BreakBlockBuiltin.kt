@@ -96,11 +96,11 @@ data class BreakBlockBuiltin(val arguments: Arguments) : Expression {
         }
 
         // TODO: Only break if there is enough room for the drops
-        for (drop in drops) {
-            if (!drop.isEmpty) {
-                Block.dropStack(world, pos, drop)
-            }
-        }
+//        for (drop in drops) {
+//            if (!drop.isEmpty) {
+//                Block.dropStack(world, pos, drop)
+//            }
+//        }
 
         return BooleanValue(true)
     }
