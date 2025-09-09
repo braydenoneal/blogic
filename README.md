@@ -7,7 +7,6 @@ Minecraft mod that adds a survival-friendly programming language that can intera
 ## Todo
 
 - readItemCount(x, y, z, fn)
-- exportItems optional deleteOverflow argument
 - rewrite expression parsing
 - struct this keyword in functions
 - struct access by ["id"]
@@ -188,6 +187,13 @@ neededItems = [item("oak_sapling"), item("bone_meal")];
 keepItems = [item("oak_sapling"), item("bone_meal"), item("oak_log")];
 
 fn main() {
+    exportAllItems(-1, -2, 0, fn item: item == item("oak_log"), deleteOverflow=true);
+
+    saplingCount = getItemCount(fn item: item == item("oak_sapling"));
+    if saplingCount > 64 * 9 {
+        deleteItems(fn item: item == item("oak_sapling"), count=saplingCount - 64 * 9);
+    }
+
     if !getItems().containsAll(neededItems) { return; }
 
     placeBlock(0, 2, 0, fn item: item == item("oak_sapling"));
@@ -195,6 +201,8 @@ fn main() {
     while getBlock(0, 2, 0) == block("oak_sapling") and getItems().contains(item("bone_meal")) {
         useItem(0, 2, 0, fn item: item == item("bone_meal"));
     }
+
+    if getBlock(0, 2, 0) != block("oak_log") { return; }
 
     for x in range(-2, 3) { for z in range(-2, 3) { for y in range(2, 8) {
         breakBlock(x, y, z, fn block: true);
