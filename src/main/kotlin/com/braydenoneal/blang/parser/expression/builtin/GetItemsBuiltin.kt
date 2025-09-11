@@ -19,7 +19,7 @@ data class GetItemsBuiltin(val arguments: Arguments) : Expression {
 
         for (container in program.context().entity!!.getConnectedContainers()) {
             container.iterator().forEachRemaining { stack ->
-                if (!stack.isOf(Items.AIR)) {
+                if (!stack.isOf(Items.AIR) && !items.contains(ItemValue(stack.item))) {
                     items.add(ItemValue(stack.item))
                 }
             }

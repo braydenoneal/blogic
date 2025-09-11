@@ -6,6 +6,9 @@ Minecraft mod that adds a survival-friendly programming language that can intera
 
 ## Todo
 
+- fix array access after call: someFunc()[0]
+- random function
+- add properties to many values to replace some functions (item.tag instead of tag(item), etc)
 - rewrite expression parsing
 - struct this keyword in functions
 - struct access by ["id"]
@@ -66,6 +69,7 @@ Minecraft mod that adds a survival-friendly programming language that can intera
 - basic item flow control
 - overflow
 - advanced filtering with nbt, tags, etc
+- easy item storage sorting
 
 ## Read
 

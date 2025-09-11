@@ -13,6 +13,7 @@ object ValueTypes {
     val BLOCK: ValueType<BlockValue> = register("block", ValueType(BlockValue.CODEC))
     val ITEM: ValueType<ItemValue> = register("item", ValueType(ItemValue.CODEC))
     val ITEM_STACK: ValueType<ItemStackValue> = register("item_stack", ValueType(ItemStackValue.CODEC))
+    val TAG: ValueType<TagValue> = register("tag", ValueType(TagValue.CODEC))
     val NULL: ValueType<NullValue> = register("null", ValueType(NullValue.CODEC))
     val FUNCTION: ValueType<FunctionValue> = register("function", ValueType(FunctionValue.CODEC))
     val STRUCT: ValueType<StructValue> = register("struct", ValueType(StructValue.CODEC))
