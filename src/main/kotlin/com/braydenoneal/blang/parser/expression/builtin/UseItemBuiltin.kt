@@ -15,12 +15,12 @@ import net.fabricmc.fabric.api.entity.FakePlayer
 import net.minecraft.item.ItemUsageContext
 import net.minecraft.item.Items
 import net.minecraft.server.world.ServerWorld
-import net.minecraft.util.ActionResult.PassToDefaultBlockAction
+import net.minecraft.util.ActionResult
 import net.minecraft.util.Hand
 import net.minecraft.util.hit.BlockHitResult
 import net.minecraft.util.math.BlockPos
 import java.util.Map
-
+import kotlin.math.min
 
 data class UseItemBuiltin(val arguments: Arguments) : Expression {
     override fun evaluate(program: Program): Value<*> {
@@ -62,13 +62,67 @@ data class UseItemBuiltin(val arguments: Arguments) : Expression {
                 val hit = BlockHitResult(pos.toCenterPos(), facing, pos, false)
                 val player = FakePlayer.get(world as ServerWorld)
 
-                val result = world.getBlockState(pos).onUseWithItem(stack, world, player, Hand.MAIN_HAND, hit)
+                var result = world.getBlockState(pos).onUseWithItem(stack, world, player, Hand.MAIN_HAND, hit)
 
-                if (result is PassToDefaultBlockAction) {
-                    stack.useOnBlock(ItemUsageContext(world, player, Hand.MAIN_HAND, stack, hit))
+                if (result is ActionResult.PassToDefaultBlockAction) {
+                    if (stack.useOnBlock(ItemUsageContext(world, player, Hand.MAIN_HAND, stack, hit)) !is ActionResult.Pass) {
+                        return BooleanValue(true)
+                    }
                 }
 
-                container.setStack(slot, stack)
+                player.setPosition(pos.toCenterPos().add(0.0, -1.5, 0.0))
+                player.inventory.clear()
+                val newStack = stack.split(1)
+
+                if (stack.isEmpty) {
+                    container.removeStack(slot)
+                }
+
+                player.giveItemStack(newStack)
+                result = player.mainHandStack.item.use(world, player, Hand.MAIN_HAND)
+
+                if (result is ActionResult.Success) {
+                    player.giveItemStack(result.newHandStack)
+
+                    for (playerSlot in 0..<player.inventory.size()) {
+                        val playerStack = player.inventory.getStack(playerSlot)
+
+                        if (playerStack.isOf(Items.AIR)) {
+                            continue
+                        }
+
+                        for (container in program.context().entity!!.getConnectedContainers()) {
+                            for (slot in 0..<container.size()) {
+                                val stack = container.getStack(slot)
+
+                                if (stack.isOf(Items.AIR)) {
+                                    container.setStack(slot, playerStack)
+                                    player.inventory.removeStack(playerSlot)
+                                    break
+                                }
+
+                                if (!playerStack.isOf(stack.item)) {
+                                    continue
+                                }
+
+                                val move = min(playerStack.count, stack.maxCount - stack.count)
+
+                                if (move <= 0) {
+                                    continue
+                                }
+
+                                playerStack.decrement(move)
+                                stack.increment(move)
+
+                                if (playerStack.isEmpty) {
+                                    player.inventory.removeStack(playerSlot)
+                                    break
+                                }
+                            }
+                        }
+                    }
+                }
+
                 return BooleanValue(true)
             }
         }
