@@ -6,6 +6,19 @@ Minecraft mod that adds a survival-friendly programming language that can intera
 
 ## Todo
 
+- fix array access after call: someFunc()[0]
+- random function
+- add properties to many values to replace some functions (item.tag instead of tag(item), etc)
+- rewrite expression parsing
+- struct this keyword in functions
+- struct access by ["id"]
+- struct destructuring?
+- struct get function? (key: get { return this.a + 1; })
+- struct variable name shorthand (id instead of id: id)
+- allow del as an alternative to remove functions
+- option to run imports from either context/location
+- isChunkLoaded function
+- if switch to read, import, export block for functions, then have network priority option to control order
 - tab, shift-tab, auto-indent, auto open and close
 - tab autocomplete
 - better error context (source location, etc)
@@ -13,10 +26,7 @@ Minecraft mod that adds a survival-friendly programming language that can intera
 - add block for import?, access modifiers
 - address while loop max iterations issue
 - separate language from the game, allowing it to run on its own
-- structs
-- struct implementations
-- static types
-- dictionaries?
+- static types?
 - enums?
 - list comprehension?
 - in-language errors, exceptions?
@@ -59,6 +69,7 @@ Minecraft mod that adds a survival-friendly programming language that can intera
 - basic item flow control
 - overflow
 - advanced filtering with nbt, tags, etc
+- easy item storage sorting
 
 ## Read
 
@@ -179,6 +190,13 @@ neededItems = [item("oak_sapling"), item("bone_meal")];
 keepItems = [item("oak_sapling"), item("bone_meal"), item("oak_log")];
 
 fn main() {
+    exportAllItems(-1, -2, 0, fn item: item == item("oak_log"), deleteOverflow=true);
+
+    saplingCount = getItemCount(fn item: item == item("oak_sapling"));
+    if saplingCount > 64 * 9 {
+        deleteItems(fn item: item == item("oak_sapling"), count=saplingCount - 64 * 9);
+    }
+
     if !getItems().containsAll(neededItems) { return; }
 
     placeBlock(0, 2, 0, fn item: item == item("oak_sapling"));
@@ -186,6 +204,8 @@ fn main() {
     while getBlock(0, 2, 0) == block("oak_sapling") and getItems().contains(item("bone_meal")) {
         useItem(0, 2, 0, fn item: item == item("bone_meal"));
     }
+
+    if getBlock(0, 2, 0) != block("oak_log") { return; }
 
     for x in range(-2, 3) { for z in range(-2, 3) { for y in range(2, 8) {
         breakBlock(x, y, z, fn block: true);
@@ -200,9 +220,14 @@ neededItems = [item("stone"), item("bone_meal")];
 y = -3;
 
 fn main() {
+    # Use composter
     useItem(0, 4, 0, fn item: !neededItems.contains(item));
 
-    if !getItems().containsAll(neededItems) { return; }
+    boneMealCount = getItemCount(fn item: item == item("bone_meal"));
+    if boneMealCount <= 0 { return; }
+    exportAllItems(0, 6, 0, fn item: item == item("bone_meal"), count=boneMealCount - 1);
+
+    if getItemCount(fn item: item == item("stone")) < 44 { return; }
 
     for x in range(-3, 4) {
         for z in range(-3, 4) {
@@ -215,11 +240,12 @@ fn main() {
     for x in range(-3, 4) {
         for z in range(-3, 4) {
             breakBlock(x, y + 1, z, fn block: true);
-            breakBlock(x, y, z, fn block: block == block("moss_block"));
+
+            if x != 0 or z != 0 {
+                breakBlock(x, y, z, fn block: block == block("moss_block"));
+            }
         }
     }
-
-    placeBlock(0, y, 0, fn item: item == item("moss_block"));
 }
 
 ```

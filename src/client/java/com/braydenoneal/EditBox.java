@@ -32,7 +32,7 @@ public class EditBox {
     public static final int UNLIMITED_LENGTH = Integer.MAX_VALUE;
     private static final int CURSOR_WIDTH = 2;
     private final TextRenderer textRenderer;
-    private final List<EditBox.Substring> lines = Lists.<EditBox.Substring>newArrayList();
+    private final List<Substring> lines = Lists.newArrayList();
     private String text;
     private int cursor;
     private int selectionEnd;
@@ -161,7 +161,7 @@ public class EditBox {
     public void replaceSelection(String string) {
         if (!string.isEmpty() || this.hasSelection()) {
             String string2 = this.truncate(StringHelper.stripInvalidChars(string, true));
-            EditBox.Substring substring = this.getSelection();
+            Substring substring = this.getSelection();
             String string3 = new StringBuilder(this.text).replace(substring.beginIndex, substring.endIndex, string2).toString();
             if (!this.exceedsMaxLines(string3)) {
                 this.text = string3;
@@ -204,8 +204,8 @@ public class EditBox {
     /**
      * {@return the current selection}
      */
-    public EditBox.Substring getSelection() {
-        return new EditBox.Substring(Math.min(this.selectionEnd, this.cursor), Math.max(this.selectionEnd, this.cursor));
+    public Substring getSelection() {
+        return new Substring(Math.min(this.selectionEnd, this.cursor), Math.max(this.selectionEnd, this.cursor));
     }
 
     /**
@@ -220,7 +220,7 @@ public class EditBox {
      */
     public int getCurrentLineIndex() {
         for (int i = 0; i < this.lines.size(); i++) {
-            EditBox.Substring substring = (EditBox.Substring) this.lines.get(i);
+            Substring substring = this.lines.get(i);
             if (this.cursor >= substring.beginIndex && this.cursor <= substring.endIndex) {
                 return i;
             }
@@ -232,8 +232,8 @@ public class EditBox {
     /**
      * {@return the line with index {@code index}}
      */
-    public EditBox.Substring getLine(int index) {
-        return (EditBox.Substring) this.lines.get(MathHelper.clamp(index, 0, this.lines.size() - 1));
+    public Substring getLine(int index) {
+        return this.lines.get(MathHelper.clamp(index, 0, this.lines.size() - 1));
     }
 
     /**
@@ -267,7 +267,7 @@ public class EditBox {
     public void moveCursorLine(int offset) {
         if (offset != 0) {
             int i = this.textRenderer.getWidth(this.text.substring(this.getCurrentLine().beginIndex, this.cursor)) + 2;
-            EditBox.Substring substring = this.getOffsetLine(offset);
+            Substring substring = this.getOffsetLine(offset);
             int j = this.textRenderer.trimToWidth(this.text.substring(substring.beginIndex, substring.endIndex), i).length();
             this.moveCursor(CursorMovement.ABSOLUTE, substring.beginIndex + j);
         }
@@ -279,7 +279,7 @@ public class EditBox {
     public void moveCursor(double x, double y) {
         int i = MathHelper.floor(x);
         int j = MathHelper.floor(y / lineHeight);
-        EditBox.Substring substring = this.lines.get(MathHelper.clamp(j, 0, this.lines.size() - 1));
+        Substring substring = this.lines.get(MathHelper.clamp(j, 0, this.lines.size() - 1));
         int k = this.textRenderer.trimToWidth(this.text.substring(substring.beginIndex, substring.endIndex), i).length();
         this.moveCursor(CursorMovement.ABSOLUTE, substring.beginIndex + k);
     }
@@ -397,7 +397,7 @@ public class EditBox {
     /**
      * {@return the lines of the edit box's text}
      */
-    public Iterable<EditBox.Substring> getLines() {
+    public Iterable<Substring> getLines() {
         return this.lines;
     }
 
@@ -413,27 +413,27 @@ public class EditBox {
      */
     @VisibleForTesting
     public String getSelectedText() {
-        EditBox.Substring substring = this.getSelection();
+        Substring substring = this.getSelection();
         return this.text.substring(substring.beginIndex, substring.endIndex);
     }
 
     /**
      * {@return the line that the cursor is located at}
      */
-    private EditBox.Substring getCurrentLine() {
+    private Substring getCurrentLine() {
         return this.getOffsetLine(0);
     }
 
     /**
      * {@return the line offset by {@code offsetFromCurrent} from the cursor's line}
      */
-    private EditBox.Substring getOffsetLine(int offsetFromCurrent) {
+    private Substring getOffsetLine(int offsetFromCurrent) {
         int i = this.getCurrentLineIndex();
         if (i < 0) {
             LOGGER.error("Cursor is not within text (cursor = {}, length = {})", this.cursor, this.text.length());
-            return (EditBox.Substring) this.lines.getLast();
+            return this.lines.get(this.lines.size() - 1);
         } else {
-            return (EditBox.Substring) this.lines.get(MathHelper.clamp(i + offsetFromCurrent, 0, this.lines.size() - 1));
+            return this.lines.get(MathHelper.clamp(i + offsetFromCurrent, 0, this.lines.size() - 1));
         }
     }
 
@@ -447,9 +447,9 @@ public class EditBox {
      * @see #getNextWordAtCursor
      */
     @VisibleForTesting
-    public EditBox.Substring getPreviousWordAtCursor() {
+    public Substring getPreviousWordAtCursor() {
         if (this.text.isEmpty()) {
-            return EditBox.Substring.EMPTY;
+            return Substring.EMPTY;
         } else {
             int i = MathHelper.clamp(this.cursor, 0, this.text.length() - 1);
 
@@ -461,7 +461,7 @@ public class EditBox {
                 i--;
             }
 
-            return new EditBox.Substring(i, this.getWordEndIndex(i));
+            return new Substring(i, this.getWordEndIndex(i));
         }
     }
 
@@ -475,9 +475,9 @@ public class EditBox {
      * @see #getPreviousWordAtCursor
      */
     @VisibleForTesting
-    public EditBox.Substring getNextWordAtCursor() {
+    public Substring getNextWordAtCursor() {
         if (this.text.isEmpty()) {
-            return EditBox.Substring.EMPTY;
+            return Substring.EMPTY;
         } else {
             int i = MathHelper.clamp(this.cursor, 0, this.text.length() - 1);
 
@@ -489,7 +489,7 @@ public class EditBox {
                 i++;
             }
 
-            return new EditBox.Substring(i, this.getWordEndIndex(i));
+            return new Substring(i, this.getWordEndIndex(i));
         }
     }
 
@@ -526,13 +526,11 @@ public class EditBox {
     private void rewrap() {
         this.lines.clear();
         if (this.text.isEmpty()) {
-            this.lines.add(EditBox.Substring.EMPTY);
+            this.lines.add(Substring.EMPTY);
         } else {
-            this.textRenderer
-                    .getTextHandler()
-                    .wrapLines(this.text, this.width, Style.EMPTY, false, (style, start, end) -> this.lines.add(new EditBox.Substring(start, end)));
+            this.textRenderer.getTextHandler().wrapLines(this.text, this.width, Style.EMPTY, false, (style, start, end) -> this.lines.add(new Substring(start, end)));
             if (this.text.charAt(this.text.length() - 1) == '\n') {
-                this.lines.add(new EditBox.Substring(this.text.length(), this.text.length()));
+                this.lines.add(new Substring(this.text.length(), this.text.length()));
             }
         }
     }
@@ -564,8 +562,7 @@ public class EditBox {
     }
 
     private boolean exceedsMaxLines(String text) {
-        return this.hasMaxLines()
-                && this.textRenderer.getTextHandler().wrapLines(text, this.width, Style.EMPTY).size() + (StringHelper.endsWithLineBreak(text) ? 1 : 0) > this.maxLines;
+        return this.hasMaxLines() && this.textRenderer.getTextHandler().wrapLines(text, this.width, Style.EMPTY).size() + (StringHelper.endsWithLineBreak(text) ? 1 : 0) > this.maxLines;
     }
 
     /**
@@ -578,6 +575,6 @@ public class EditBox {
         /**
          * An empty substring.
          */
-        static final EditBox.Substring EMPTY = new EditBox.Substring(0, 0);
+        static final Substring EMPTY = new Substring(0, 0);
     }
 }

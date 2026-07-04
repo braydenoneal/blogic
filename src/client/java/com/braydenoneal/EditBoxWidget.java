@@ -33,17 +33,7 @@ public class EditBoxWidget extends ScrollableTextFieldWidget {
     private final EditBox editBox;
     private long lastSwitchFocusTime = Util.getMeasuringTimeMs();
 
-    EditBoxWidget(
-            TextRenderer textRenderer,
-            int x,
-            int y,
-            int width,
-            int height,
-            Text placeholder,
-            Text message,
-            boolean hasBackground,
-            boolean hasOverlay
-    ) {
+    EditBoxWidget(TextRenderer textRenderer, int x, int y, int width, int height, Text placeholder, Text message, boolean hasBackground, boolean hasOverlay) {
         super(x, y, width, height, message, hasBackground, hasOverlay);
         this.textRenderer = textRenderer;
         this.placeholder = placeholder;
@@ -113,8 +103,8 @@ public class EditBoxWidget extends ScrollableTextFieldWidget {
         while (position < text.length()) {
             boolean error = true;
 
-            for (Type type : Type.values()) {
-                Matcher matcher = Pattern.compile("^" + type.regex).matcher(text.substring(position) + "\n");
+            for (Type type : Type.getEntries()) {
+                Matcher matcher = Pattern.compile("^" + type.getRegex()).matcher(text.substring(position) + "\n");
 
                 if (matcher.find()) {
                     String group = type == Type.QUOTE ? matcher.group(0) : matcher.group(1);
@@ -217,9 +207,7 @@ public class EditBoxWidget extends ScrollableTextFieldWidget {
         if (this.editBox.hasMaxLength()) {
             int i = this.editBox.getMaxLength();
             Text text = Text.translatable("gui.multiLineEditBox.character_limit", this.editBox.getText().length(), i).getWithStyle(Style.EMPTY.withFont(Identifier.ofVanilla("uniform"))).getFirst();
-            context.drawTextWithShadow(
-                    this.textRenderer, text, this.getX() + this.width - this.textRenderer.getWidth(text), this.getY() + this.height + 4, Colors.LIGHT_GRAY
-            );
+            context.drawTextWithShadow(this.textRenderer, text, this.getX() + this.width - this.textRenderer.getWidth(text), this.getY() + this.height + 4, Colors.LIGHT_GRAY);
         }
     }
 
@@ -262,8 +250,8 @@ public class EditBoxWidget extends ScrollableTextFieldWidget {
         }
     }
 
-    public static EditBoxWidget.Builder builder() {
-        return new EditBoxWidget.Builder();
+    public static Builder builder() {
+        return new Builder();
     }
 
     @Environment(EnvType.CLIENT)
@@ -271,12 +259,12 @@ public class EditBoxWidget extends ScrollableTextFieldWidget {
         private int x;
         private int y;
 
-        public EditBoxWidget.Builder x(int x) {
+        public Builder x(int x) {
             this.x = x;
             return this;
         }
 
-        public EditBoxWidget.Builder y(int y) {
+        public Builder y(int y) {
             this.y = y;
             return this;
         }
@@ -284,17 +272,7 @@ public class EditBoxWidget extends ScrollableTextFieldWidget {
         public EditBoxWidget build(TextRenderer textRenderer, int width, int height, Text message) {
             boolean hasBackground = true;
             boolean hasOverlay = true;
-            return new EditBoxWidget(
-                    textRenderer,
-                    this.x,
-                    this.y,
-                    width,
-                    height,
-                    ScreenTexts.EMPTY,
-                    message,
-                    hasBackground,
-                    hasOverlay
-            );
+            return new EditBoxWidget(textRenderer, this.x, this.y, width, height, ScreenTexts.EMPTY, message, hasBackground, hasOverlay);
         }
     }
 }
