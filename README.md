@@ -6,6 +6,9 @@ Minecraft mod that adds a survival-friendly programming language that can intera
 
 ## Todo
 
+- convert blang to standalone external library that can be extended
+- separate font for the text editor
+- ide extension or just mirroring files to allow editing code externally
 - fix array access after call: someFunc()[0]
 - random function
 - add properties to many values to replace some functions (item.tag instead of tag(item), etc)
