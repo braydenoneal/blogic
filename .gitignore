@@ -21,6 +21,9 @@ classes/
 !**/src/main/**/out/
 !**/src/test/**/out/
 
+### Kotlin ###
+.kotlin
+
 # vscode
 
 .settings/
