@@ -9,12 +9,17 @@ classes/
 
 *.launch
 
-# idea
-
-.idea/
+### IntelliJ IDEA ###
+.idea/modules.xml
+.idea/jarRepositories.xml
+.idea/compiler.xml
+.idea/libraries/
+.idea/runConfigurations/
+*.iws
 *.iml
 *.ipr
-*.iws
+!**/src/main/**/out/
+!**/src/test/**/out/
 
 # vscode
 
