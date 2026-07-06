@@ -61,6 +61,8 @@ data class ExpressionType<T : Expression>(val codec: MapCodec<T>) {
                 is StructEntriesBuiltin -> ExpressionTypes.STRUCT_ENTRIES_BUILTIN
                 is TypeBuiltin -> ExpressionTypes.TYPE_BUILTIN
                 is PrintBuiltin -> ExpressionTypes.PRINT_BUILTIN
+                is CeilBuiltin -> ExpressionTypes.CEIL_BUILTIN
+                is FloorBuiltin -> ExpressionTypes.FLOOR_BUILTIN
                 else -> throw Exception("Expression type not found")
             }
         }
