@@ -1,8 +1,8 @@
 package com.braydenoneal
 
-import com.braydenoneal.blang.parser.expression.ExpressionTypes
-import com.braydenoneal.blang.parser.expression.value.ValueTypes
-import com.braydenoneal.blang.parser.statement.StatementTypes
+import com.braydenoneal.blang.wrapper.codec.expression.ExpressionTypes
+import com.braydenoneal.blang.wrapper.codec.statement.StatementTypes
+import com.braydenoneal.blang.wrapper.codec.value.ValueTypes
 import com.braydenoneal.block.ModBlocks
 import com.braydenoneal.block.entity.ModBlockEntities
 import com.braydenoneal.item.ModItems

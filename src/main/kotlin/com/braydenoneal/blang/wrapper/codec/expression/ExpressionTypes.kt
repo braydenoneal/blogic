@@ -1,6 +1,8 @@
 package com.braydenoneal.blang.wrapper.codec.expression
 
 import com.braydenoneal.blang.wrapper.codec.value.ValueType
+import com.braydenoneal.blang.wrapper.expression.builtin.*
+import com.braydenoneal.blang.wrapper.expression.builtin.PrintBuiltin
 import net.minecraft.registry.Registry
 import net.minecraft.util.Identifier
 import parser.expression.*
@@ -55,21 +57,20 @@ object ExpressionTypes {
     val PRINT_BUILTIN: ExpressionType<PrintBuiltin> = register("print_builtin", ExpressionType(ExpressionCodecs.PRINT_BUILTIN_CODEC))
     val CEIL_BUILTIN: ExpressionType<CeilBuiltin> = register("ceil_builtin", ExpressionType(ExpressionCodecs.CEIL_BUILTIN_CODEC))
     val FLOOR_BUILTIN: ExpressionType<FloorBuiltin> = register("floor_builtin", ExpressionType(ExpressionCodecs.FLOOR_BUILTIN_CODEC))
-
-//    val BLOCK_BUILTIN: ExpressionType<BlockBuiltin> = register("block_builtin", ExpressionType(BlockBuiltin.CODEC))
-//    val ITEM_BUILTIN: ExpressionType<ItemBuiltin> = register("item_builtin", ExpressionType(ItemBuiltin.CODEC))
-//    val BLOCK_ITEM_BUILTIN: ExpressionType<BlockItemBuiltin> = register("block_item_builtin", ExpressionType(BlockItemBuiltin.CODEC))
-//    val TAG_BUILTIN: ExpressionType<TagBuiltin> = register("tag_builtin", ExpressionType(TagBuiltin.CODEC))
-//    val TAGS_BUILTIN: ExpressionType<TagsBuiltin> = register("tags_builtin", ExpressionType(TagsBuiltin.CODEC))
-//    val GET_BLOCK_BUILTIN: ExpressionType<GetBlockBuiltin> = register("get_block_builtin", ExpressionType(GetBlockBuiltin.CODEC))
-//    val PLACE_BLOCK_BUILTIN: ExpressionType<PlaceBlockBuiltin> = register("place_block_builtin", ExpressionType(PlaceBlockBuiltin.CODEC))
-//    val BREAK_BLOCK_BUILTIN: ExpressionType<BreakBlockBuiltin> = register("break_block_builtin", ExpressionType(BreakBlockBuiltin.CODEC))
-//    val USE_ITEM_BUILTIN: ExpressionType<UseItemBuiltin> = register("use_item_builtin", ExpressionType(UseItemBuiltin.CODEC))
-//    val EXPORT_ALL_ITEMS_BUILTIN: ExpressionType<ExportAllItemsBuiltin> = register("export_all_items_builtin", ExpressionType(ExportAllItemsBuiltin.CODEC))
-//    val DELETE_ITEMS_BUILTIN: ExpressionType<DeleteItemsBuiltin> = register("delete_items_builtin", ExpressionType(DeleteItemsBuiltin.CODEC))
-//    val GET_ITEMS_BUILTIN: ExpressionType<GetItemsBuiltin> = register("get_items_builtin", ExpressionType(GetItemsBuiltin.CODEC))
-//    val GET_ITEM_COUNT_BUILTIN: ExpressionType<GetItemCountBuiltin> = register("get_item_count_builtin", ExpressionType(GetItemCountBuiltin.CODEC))
-//    val READ_ITEM_COUNT_BUILTIN: ExpressionType<ReadItemCountBuiltin> = register("read_item_count_builtin", ExpressionType(ReadItemCountBuiltin.CODEC))
+    val BLOCK_BUILTIN: ExpressionType<BlockBuiltin> = register("block_builtin", ExpressionType(ExpressionCodecs.BLOCK_BUILTIN_CODEC))
+    val BLOCK_ITEM_BUILTIN: ExpressionType<BlockItemBuiltin> = register("block_item_builtin", ExpressionType(ExpressionCodecs.BLOCK_ITEM_BUILTIN_CODEC))
+    val BREAK_BLOCK_BUILTIN: ExpressionType<BreakBlockBuiltin> = register("break_block_builtin", ExpressionType(ExpressionCodecs.BREAK_BLOCK_BUILTIN_CODEC))
+    val DELETE_ITEMS_BUILTIN: ExpressionType<DeleteItemsBuiltin> = register("delete_items_builtin", ExpressionType(ExpressionCodecs.DELETE_ITEMS_BUILTIN_CODEC))
+    val EXPORT_ALL_ITEMS_BUILTIN: ExpressionType<ExportAllItemsBuiltin> = register("export_all_items_builtin", ExpressionType(ExpressionCodecs.EXPORT_ALL_ITEMS_BUILTIN_CODEC))
+    val GET_BLOCK_BUILTIN: ExpressionType<GetBlockBuiltin> = register("get_block_builtin", ExpressionType(ExpressionCodecs.GET_BLOCK_BUILTIN_CODEC))
+    val GET_ITEM_COUNT_BUILTIN: ExpressionType<GetItemCountBuiltin> = register("get_item_count_builtin", ExpressionType(ExpressionCodecs.GET_ITEM_COUNT_BUILTIN_CODEC))
+    val GET_ITEMS_BUILTIN: ExpressionType<GetItemsBuiltin> = register("get_items_builtin", ExpressionType(ExpressionCodecs.GET_ITEMS_BUILTIN_CODEC))
+    val ITEM_BUILTIN: ExpressionType<ItemBuiltin> = register("item_builtin", ExpressionType(ExpressionCodecs.ITEM_BUILTIN_CODEC))
+    val PLACE_BLOCK_BUILTIN: ExpressionType<PlaceBlockBuiltin> = register("place_block_builtin", ExpressionType(ExpressionCodecs.PLACE_BLOCK_BUILTIN_CODEC))
+    val READ_ITEM_COUNT_BUILTIN: ExpressionType<ReadItemCountBuiltin> = register("read_item_count_builtin", ExpressionType(ExpressionCodecs.READ_ITEM_COUNT_BUILTIN_CODEC))
+    val TAG_BUILTIN: ExpressionType<TagBuiltin> = register("tag_builtin", ExpressionType(ExpressionCodecs.TAG_BUILTIN_CODEC))
+    val TAGS_BUILTIN: ExpressionType<TagsBuiltin> = register("tags_builtin", ExpressionType(ExpressionCodecs.TAGS_BUILTIN_CODEC))
+    val USE_ITEM_BUILTIN: ExpressionType<UseItemBuiltin> = register("use_item_builtin", ExpressionType(ExpressionCodecs.USE_ITEM_BUILTIN_CODEC))
 
     fun <T : Expression> register(id: String, expressionType: ExpressionType<T>): ExpressionType<T> {
         return Registry.register(ExpressionType.REGISTRY, Identifier.of("blogic", id), expressionType)

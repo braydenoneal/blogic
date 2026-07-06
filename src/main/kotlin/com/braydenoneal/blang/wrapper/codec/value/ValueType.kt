@@ -1,5 +1,9 @@
 package com.braydenoneal.blang.wrapper.codec.value
 
+import com.braydenoneal.blang.wrapper.expression.value.BlockValue
+import com.braydenoneal.blang.wrapper.expression.value.ItemStackValue
+import com.braydenoneal.blang.wrapper.expression.value.ItemValue
+import com.braydenoneal.blang.wrapper.expression.value.TagValue
 import com.mojang.serialization.Codec
 import com.mojang.serialization.Lifecycle
 import com.mojang.serialization.MapCodec
@@ -23,6 +27,10 @@ data class ValueType<T : Value<*>>(val codec: MapCodec<T>) {
                 is RangeValue -> ValueTypes.RANGE
                 is StringValue -> ValueTypes.STRING
                 is StructValue -> ValueTypes.STRUCT
+                is BlockValue -> ValueTypes.BLOCK
+                is ItemStackValue -> ValueTypes.ITEM_STACK
+                is ItemValue -> ValueTypes.ITEM
+                is TagValue -> ValueTypes.TAG
                 else -> throw Exception("Statement type not found")
             }
         }

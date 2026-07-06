@@ -1,5 +1,7 @@
 package com.braydenoneal.blang.wrapper.codec.expression
 
+import com.braydenoneal.blang.wrapper.expression.builtin.*
+import com.braydenoneal.blang.wrapper.expression.builtin.PrintBuiltin
 import com.mojang.serialization.Codec
 import com.mojang.serialization.Lifecycle
 import com.mojang.serialization.MapCodec
@@ -63,6 +65,20 @@ data class ExpressionType<T : Expression>(val codec: MapCodec<T>) {
                 is PrintBuiltin -> ExpressionTypes.PRINT_BUILTIN
                 is CeilBuiltin -> ExpressionTypes.CEIL_BUILTIN
                 is FloorBuiltin -> ExpressionTypes.FLOOR_BUILTIN
+                is BlockBuiltin -> ExpressionTypes.BLOCK_BUILTIN
+                is BlockItemBuiltin -> ExpressionTypes.BLOCK_ITEM_BUILTIN
+                is BreakBlockBuiltin -> ExpressionTypes.BREAK_BLOCK_BUILTIN
+                is DeleteItemsBuiltin -> ExpressionTypes.DELETE_ITEMS_BUILTIN
+                is ExportAllItemsBuiltin -> ExpressionTypes.EXPORT_ALL_ITEMS_BUILTIN
+                is GetBlockBuiltin -> ExpressionTypes.GET_BLOCK_BUILTIN
+                is GetItemCountBuiltin -> ExpressionTypes.GET_ITEM_COUNT_BUILTIN
+                is GetItemsBuiltin -> ExpressionTypes.GET_ITEMS_BUILTIN
+                is ItemBuiltin -> ExpressionTypes.ITEM_BUILTIN
+                is PlaceBlockBuiltin -> ExpressionTypes.PLACE_BLOCK_BUILTIN
+                is ReadItemCountBuiltin -> ExpressionTypes.READ_ITEM_COUNT_BUILTIN
+                is TagBuiltin -> ExpressionTypes.TAG_BUILTIN
+                is TagsBuiltin -> ExpressionTypes.TAGS_BUILTIN
+                is UseItemBuiltin -> ExpressionTypes.USE_ITEM_BUILTIN
                 else -> throw Exception("Expression type not found")
             }
         }

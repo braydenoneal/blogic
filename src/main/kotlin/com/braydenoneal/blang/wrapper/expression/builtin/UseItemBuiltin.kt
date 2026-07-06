@@ -1,16 +1,7 @@
-package com.braydenoneal.blang.parser.expression.builtin
+package com.braydenoneal.blang.wrapper.expression.builtin
 
-import com.braydenoneal.blang.parser.Program
-import com.braydenoneal.blang.parser.RunException
-import com.braydenoneal.blang.parser.expression.Arguments
-import com.braydenoneal.blang.parser.expression.Expression
-import com.braydenoneal.blang.parser.expression.ExpressionType
-import com.braydenoneal.blang.parser.expression.ExpressionTypes
-import com.braydenoneal.blang.parser.expression.value.BooleanValue
-import com.braydenoneal.blang.parser.expression.value.ItemValue
-import com.braydenoneal.blang.parser.expression.value.Value
-import com.mojang.serialization.MapCodec
-import com.mojang.serialization.codecs.RecordCodecBuilder
+import com.braydenoneal.blang.wrapper.BlogicProgram
+import com.braydenoneal.blang.wrapper.expression.value.ItemValue
 import net.fabricmc.fabric.api.entity.FakePlayer
 import net.minecraft.item.ItemUsageContext
 import net.minecraft.item.Items
@@ -19,25 +10,30 @@ import net.minecraft.util.ActionResult
 import net.minecraft.util.Hand
 import net.minecraft.util.hit.BlockHitResult
 import net.minecraft.util.math.BlockPos
-import java.util.Map
+import parser.Program
+import parser.RunException
+import parser.expression.Arguments
+import parser.expression.Expression
+import parser.expression.value.BooleanValue
+import parser.expression.value.Value
 import kotlin.math.min
 
 data class UseItemBuiltin(val arguments: Arguments) : Expression {
-    override fun evaluate(program: Program): Value<*> {
-        val x = arguments.integerValue(program, "x", 0).value
-        val y = arguments.integerValue(program, "y", 1).value
-        val z = arguments.integerValue(program, "z", 2).value
-        val itemPredicate = arguments.functionValue(program, "itemPredicate", 3)
-
-        val entityPos = program.context().pos
-        val pos = BlockPos(entityPos.x + x, entityPos.y + y, entityPos.z + z)
-        val world = program.context().entity!!.getWorld()
-
-        if (world == null) {
-            throw RunException("World is null")
+    override fun evaluate(program: Program): Value<*>? {
+        if (program !is BlogicProgram) {
+            throw RunException("Program is not a BlogicProgram")
         }
 
-        val containers = program.context().entity!!.getConnectedContainers()
+        val x = (arguments.integerValue(program, "x", 0) ?: return null).value
+        val y = (arguments.integerValue(program, "y", 1) ?: return null).value
+        val z = (arguments.integerValue(program, "z", 2) ?: return null).value
+        val itemPredicate = (arguments.functionValue(program, "itemPredicate", 3) ?: return null)
+
+        val entityPos = program.context.pos
+        val pos = BlockPos(entityPos.x + x, entityPos.y + y, entityPos.z + z)
+        val world = program.context.entity.getWorld() ?: throw RunException("World is null")
+
+        val containers = program.context.entity.getConnectedContainers()
 
         for (container in containers) {
             for (slot in 0..<container.size()) {
@@ -47,7 +43,7 @@ data class UseItemBuiltin(val arguments: Arguments) : Expression {
                     continue
                 }
 
-                val predicateArguments = Arguments(mutableListOf(ItemValue(stack.item)), Map.of())
+                val predicateArguments = Arguments(mutableListOf(ItemValue(stack.item)), mutableMapOf())
                 val predicateResult = itemPredicate.call(program, predicateArguments)
 
                 if (predicateResult !is BooleanValue) {
@@ -58,7 +54,7 @@ data class UseItemBuiltin(val arguments: Arguments) : Expression {
                     continue
                 }
 
-                val facing = program.context().entity!!.facing
+                val facing = program.context.entity.facing
                 val hit = BlockHitResult(pos.toCenterPos(), facing, pos, false)
                 val player = FakePlayer.get(world as ServerWorld)
 
@@ -91,7 +87,7 @@ data class UseItemBuiltin(val arguments: Arguments) : Expression {
                             continue
                         }
 
-                        for (container in program.context().entity!!.getConnectedContainers()) {
+                        for (container in program.context.entity.getConnectedContainers()) {
                             for (slot in 0..<container.size()) {
                                 val stack = container.getStack(slot)
 
@@ -128,15 +124,5 @@ data class UseItemBuiltin(val arguments: Arguments) : Expression {
         }
 
         return BooleanValue(false)
-    }
-
-    override val type: ExpressionType<*> get() = ExpressionTypes.USE_ITEM_BUILTIN
-
-    companion object {
-        val CODEC: MapCodec<UseItemBuiltin> = RecordCodecBuilder.mapCodec {
-            it.group(
-                Arguments.CODEC.fieldOf("arguments").forGetter(UseItemBuiltin::arguments)
-            ).apply(it, ::UseItemBuiltin)
-        }
     }
 }

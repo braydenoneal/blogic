@@ -1,5 +1,9 @@
 package com.braydenoneal.blang.wrapper.codec.value
 
+import com.braydenoneal.blang.wrapper.expression.value.BlockValue
+import com.braydenoneal.blang.wrapper.expression.value.ItemStackValue
+import com.braydenoneal.blang.wrapper.expression.value.ItemValue
+import com.braydenoneal.blang.wrapper.expression.value.TagValue
 import net.minecraft.registry.Registry
 import net.minecraft.util.Identifier
 import parser.expression.value.*
@@ -14,10 +18,10 @@ object ValueTypes {
     val RANGE: ValueType<RangeValue> = register("range", ValueType(ValueCodecs.RANGE_VALUE_CODEC))
     val STRING: ValueType<StringValue> = register("string", ValueType(ValueCodecs.STRING_VALUE_CODEC))
     val STRUCT: ValueType<StructValue> = register("struct", ValueType(ValueCodecs.STRUCT_VALUE_CODEC))
-//    val BLOCK: ValueType<BlockValue> = register("block", ValueType(BlockValue.CODEC))
-//    val ITEM: ValueType<ItemValue> = register("item", ValueType(ItemValue.CODEC))
-//    val ITEM_STACK: ValueType<ItemStackValue> = register("item_stack", ValueType(ItemStackValue.CODEC))
-//    val TAG: ValueType<TagValue> = register("tag", ValueType(TagValue.CODEC))
+    val BLOCK: ValueType<BlockValue> = register("block", ValueType(ValueCodecs.BLOCK_VALUE_CODEC))
+    val ITEM_STACK: ValueType<ItemStackValue> = register("item_stack", ValueType(ValueCodecs.ITEM_STACK_CODEC))
+    val ITEM: ValueType<ItemValue> = register("item", ValueType(ValueCodecs.ITEM_CODEC))
+    val TAG: ValueType<TagValue> = register("tag", ValueType(ValueCodecs.TAG_CODEC))
 
     fun <T : Value<*>> register(id: String, valueType: ValueType<T>): ValueType<T> {
         return Registry.register(ValueType.REGISTRY, Identifier.of("blogic", id), valueType)

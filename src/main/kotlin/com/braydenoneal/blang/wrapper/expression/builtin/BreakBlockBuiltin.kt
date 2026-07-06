@@ -1,16 +1,7 @@
-package com.braydenoneal.blang.parser.expression.builtin
+package com.braydenoneal.blang.wrapper.expression.builtin
 
-import com.braydenoneal.blang.parser.Program
-import com.braydenoneal.blang.parser.RunException
-import com.braydenoneal.blang.parser.expression.Arguments
-import com.braydenoneal.blang.parser.expression.Expression
-import com.braydenoneal.blang.parser.expression.ExpressionType
-import com.braydenoneal.blang.parser.expression.ExpressionTypes
-import com.braydenoneal.blang.parser.expression.value.BlockValue
-import com.braydenoneal.blang.parser.expression.value.BooleanValue
-import com.braydenoneal.blang.parser.expression.value.Value
-import com.mojang.serialization.MapCodec
-import com.mojang.serialization.codecs.RecordCodecBuilder
+import com.braydenoneal.blang.wrapper.BlogicProgram
+import com.braydenoneal.blang.wrapper.expression.value.BlockValue
 import net.fabricmc.fabric.api.entity.FakePlayer
 import net.minecraft.block.Block
 import net.minecraft.block.Blocks
@@ -20,29 +11,33 @@ import net.minecraft.item.Items
 import net.minecraft.registry.RegistryKeys
 import net.minecraft.server.world.ServerWorld
 import net.minecraft.util.math.BlockPos
-import java.util.Map
+import parser.Program
+import parser.RunException
+import parser.expression.Arguments
+import parser.expression.Expression
+import parser.expression.value.BooleanValue
+import parser.expression.value.Value
 import kotlin.math.min
 
-
 data class BreakBlockBuiltin(val arguments: Arguments) : Expression {
-    override fun evaluate(program: Program): Value<*> {
-        val x = arguments.integerValue(program, "x", 0).value
-        val y = arguments.integerValue(program, "y", 1).value
-        val z = arguments.integerValue(program, "z", 2).value
-        val blockPredicate = arguments.functionValue(program, "blockPredicate", 3)
-        val silkTouch = if (arguments.arguments.size > 4 || arguments.namedArguments.containsKey("silkTouch")) arguments.booleanValue(program, "silkTouch", 4).value else false
-
-        val entityPos = program.context().pos
-        val pos = BlockPos(entityPos.x + x, entityPos.y + y, entityPos.z + z)
-        val world = program.context().entity!!.getWorld()
-
-        if (world == null) {
-            throw RunException("World is null")
+    override fun evaluate(program: Program): Value<*>? {
+        if (program !is BlogicProgram) {
+            throw RunException("Program is not a BlogicProgram")
         }
+
+        val x = (arguments.integerValue(program, "x", 0) ?: return null).value
+        val y = (arguments.integerValue(program, "y", 1) ?: return null).value
+        val z = (arguments.integerValue(program, "z", 2) ?: return null).value
+        val blockPredicate = (arguments.functionValue(program, "blockPredicate", 3) ?: return null)
+        val silkTouch = if (arguments.arguments.size > 4 || arguments.namedArguments.containsKey("silkTouch")) (arguments.booleanValue(program, "silkTouch", 4) ?: return null).value else false
+
+        val entityPos = program.context.pos
+        val pos = BlockPos(entityPos.x + x, entityPos.y + y, entityPos.z + z)
+        val world = program.context.entity.getWorld() ?: throw RunException("World is null")
 
         val block = world.getBlockState(pos).block
 
-        val predicateArguments = Arguments(mutableListOf(BlockValue(block)), Map.of())
+        val predicateArguments = Arguments(mutableListOf(BlockValue(block)), mutableMapOf())
         val predicateResult = blockPredicate.call(program, predicateArguments)
 
         if (predicateResult !is BooleanValue) {
@@ -53,7 +48,7 @@ data class BreakBlockBuiltin(val arguments: Arguments) : Expression {
             return BooleanValue(false)
         }
 
-        val containers = program.context().entity!!.getConnectedContainers()
+        val containers = program.context.entity.getConnectedContainers()
         val tool = ItemStack(Items.DIAMOND_PICKAXE)
 
         if (silkTouch) {
@@ -103,15 +98,5 @@ data class BreakBlockBuiltin(val arguments: Arguments) : Expression {
 //        }
 
         return BooleanValue(true)
-    }
-
-    override val type: ExpressionType<*> get() = ExpressionTypes.BREAK_BLOCK_BUILTIN
-
-    companion object {
-        val CODEC: MapCodec<BreakBlockBuiltin> = RecordCodecBuilder.mapCodec {
-            it.group(
-                Arguments.CODEC.fieldOf("arguments").forGetter(BreakBlockBuiltin::arguments)
-            ).apply(it, ::BreakBlockBuiltin)
-        }
     }
 }

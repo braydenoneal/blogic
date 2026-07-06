@@ -1,8 +1,8 @@
 package com.braydenoneal.block.entity
 
-import com.braydenoneal.blang.parser.Scope
+import com.braydenoneal.blang.wrapper.BlogicProgram
 import com.braydenoneal.blang.wrapper.Context
-import com.braydenoneal.blang.wrapper.ProgramWrapper
+import com.braydenoneal.blang.wrapper.codec.Codecs
 import com.braydenoneal.block.CableBlock
 import com.mojang.serialization.Codec
 import net.fabricmc.fabric.api.screenhandler.v1.ExtendedScreenHandlerFactory
@@ -23,30 +23,21 @@ import net.minecraft.util.math.BlockPos
 import net.minecraft.util.math.Direction
 import net.minecraft.world.RedstoneView
 import net.minecraft.world.World
-import parser.Program
 import parser.expression.value.Value
 import java.util.*
-import java.util.Map
-import kotlin.collections.ArrayList
-import kotlin.collections.HashMap
-import kotlin.collections.HashSet
-import kotlin.collections.MutableList
-import kotlin.collections.MutableMap
-import kotlin.collections.MutableSet
 import kotlin.jvm.optionals.getOrNull
 
-class ControllerBlockEntity(pos: BlockPos, state: BlockState) :
-    BlockEntity(ModBlockEntities.CONTROLLER_BLOCK_ENTITY, pos, state), ExtendedScreenHandlerFactory<BlockPos> {
+class ControllerBlockEntity(pos: BlockPos, state: BlockState) : BlockEntity(ModBlockEntities.CONTROLLER_BLOCK_ENTITY, pos, state), ExtendedScreenHandlerFactory<BlockPos> {
     private var source: String = "name;"
-    private var programWrapper: ProgramWrapper = ProgramWrapper(Program(source), Context(pos, this))
-    private var program: Program = programWrapper.program
-    private var variables: MutableMap<String, Value<*>> = Map.of()
+    private var program: BlogicProgram = BlogicProgram(source, Context(pos, this))
+    private var variables: MutableMap<String, Value<*>> = mutableMapOf()
+    private var initializing = true
 
     fun source(): String {
         return source
     }
 
-    fun program(): Program {
+    fun program(): BlogicProgram {
         return program
     }
 
@@ -54,9 +45,8 @@ class ControllerBlockEntity(pos: BlockPos, state: BlockState) :
         this.source = source
 
         if (!world!!.isClient) {
-            programWrapper = ProgramWrapper(Program(source), Context(pos, this))
-            program = programWrapper.program
-            program.run()
+            program = BlogicProgram(source, Context(pos, this))
+            initializing = true
             variables = program.topScope().variables()
         }
 
@@ -65,17 +55,16 @@ class ControllerBlockEntity(pos: BlockPos, state: BlockState) :
 
     override fun readData(view: ReadView) {
         super.readData(view)
-        variables = view.read("variables", Scope.VARIABLES_CODEC).getOrNull() ?: Map.of()
+        variables = view.read("variables", Codecs.VARIABLES_CODEC).getOrNull() ?: mutableMapOf()
         source = view.read("source", Codec.STRING).getOrNull() ?: "name;"
 
-        programWrapper = ProgramWrapper(Program(source), Context(pos, this))
-        program = programWrapper.program
+        program = BlogicProgram(source, Context(pos, this))
         program.topScope().setVariables(HashMap(variables))
     }
 
     override fun writeData(view: WriteView) {
         super.writeData(view)
-        view.put("variables", Scope.VARIABLES_CODEC, variables)
+        view.put("variables", Codecs.VARIABLES_CODEC, variables)
         view.put("source", Codec.STRING, source)
     }
 
@@ -217,6 +206,16 @@ class ControllerBlockEntity(pos: BlockPos, state: BlockState) :
 
     companion object {
         fun tick(world: World, blockPos: BlockPos, ignoredBlockState: BlockState, entity: ControllerBlockEntity) {
+            if (entity.initializing) {
+                val result = entity.program.tick()
+
+                if (result != null) {
+                    entity.initializing = false
+                }
+
+                return
+            }
+
             if (world.isReceivingRedstonePower(blockPos)) {
                 entity.program.runMain()
                 entity.variables = entity.program.topScope().variables()

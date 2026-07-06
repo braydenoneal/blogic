@@ -3,6 +3,8 @@ package com.braydenoneal.blang.wrapper.codec.expression
 import com.braydenoneal.blang.wrapper.codec.expression.PairCodec.Companion.pair
 import com.braydenoneal.blang.wrapper.codec.value.ValueCodecs.LIST_VALUE_CODEC
 import com.braydenoneal.blang.wrapper.codec.value.ValueCodecs.STRUCT_VALUE_CODEC
+import com.braydenoneal.blang.wrapper.expression.builtin.*
+import com.braydenoneal.blang.wrapper.expression.builtin.PrintBuiltin
 import com.mojang.serialization.Codec
 import com.mojang.serialization.MapCodec
 import com.mojang.serialization.codecs.RecordCodecBuilder
@@ -236,5 +238,75 @@ object ExpressionCodecs {
             STRUCT_VALUE_CODEC.fieldOf("struct").forGetter(StructValuesBuiltin::struct),
             ARGUMENTS_CODEC.fieldOf("arguments").forGetter(StructValuesBuiltin::arguments),
         ).apply(it, ::StructValuesBuiltin)
+    }
+    val BLOCK_BUILTIN_CODEC: MapCodec<BlockBuiltin> = mapCodec {
+        it.group(
+            ARGUMENTS_CODEC.fieldOf("arguments").forGetter(BlockBuiltin::arguments),
+        ).apply(it, ::BlockBuiltin)
+    }
+    val BLOCK_ITEM_BUILTIN_CODEC: MapCodec<BlockItemBuiltin> = mapCodec {
+        it.group(
+            ARGUMENTS_CODEC.fieldOf("arguments").forGetter(BlockItemBuiltin::arguments),
+        ).apply(it, ::BlockItemBuiltin)
+    }
+    val BREAK_BLOCK_BUILTIN_CODEC: MapCodec<BreakBlockBuiltin> = mapCodec {
+        it.group(
+            ARGUMENTS_CODEC.fieldOf("arguments").forGetter(BreakBlockBuiltin::arguments),
+        ).apply(it, ::BreakBlockBuiltin)
+    }
+    val DELETE_ITEMS_BUILTIN_CODEC: MapCodec<DeleteItemsBuiltin> = mapCodec {
+        it.group(
+            ARGUMENTS_CODEC.fieldOf("arguments").forGetter(DeleteItemsBuiltin::arguments),
+        ).apply(it, ::DeleteItemsBuiltin)
+    }
+    val EXPORT_ALL_ITEMS_BUILTIN_CODEC: MapCodec<ExportAllItemsBuiltin> = mapCodec {
+        it.group(
+            ARGUMENTS_CODEC.fieldOf("arguments").forGetter(ExportAllItemsBuiltin::arguments),
+        ).apply(it, ::ExportAllItemsBuiltin)
+    }
+    val GET_BLOCK_BUILTIN_CODEC: MapCodec<GetBlockBuiltin> = mapCodec {
+        it.group(
+            ARGUMENTS_CODEC.fieldOf("arguments").forGetter(GetBlockBuiltin::arguments),
+        ).apply(it, ::GetBlockBuiltin)
+    }
+    val GET_ITEM_COUNT_BUILTIN_CODEC: MapCodec<GetItemCountBuiltin> = mapCodec {
+        it.group(
+            ARGUMENTS_CODEC.fieldOf("arguments").forGetter(GetItemCountBuiltin::arguments),
+        ).apply(it, ::GetItemCountBuiltin)
+    }
+    val GET_ITEMS_BUILTIN_CODEC: MapCodec<GetItemsBuiltin> = mapCodec {
+        it.group(
+            ARGUMENTS_CODEC.fieldOf("arguments").forGetter(GetItemsBuiltin::arguments),
+        ).apply(it, ::GetItemsBuiltin)
+    }
+    val ITEM_BUILTIN_CODEC: MapCodec<ItemBuiltin> = mapCodec {
+        it.group(
+            ARGUMENTS_CODEC.fieldOf("arguments").forGetter(ItemBuiltin::arguments),
+        ).apply(it, ::ItemBuiltin)
+    }
+    val PLACE_BLOCK_BUILTIN_CODEC: MapCodec<PlaceBlockBuiltin> = mapCodec {
+        it.group(
+            ARGUMENTS_CODEC.fieldOf("arguments").forGetter(PlaceBlockBuiltin::arguments),
+        ).apply(it, ::PlaceBlockBuiltin)
+    }
+    val READ_ITEM_COUNT_BUILTIN_CODEC: MapCodec<ReadItemCountBuiltin> = mapCodec {
+        it.group(
+            ARGUMENTS_CODEC.fieldOf("arguments").forGetter(ReadItemCountBuiltin::arguments),
+        ).apply(it, ::ReadItemCountBuiltin)
+    }
+    val TAG_BUILTIN_CODEC: MapCodec<TagBuiltin> = mapCodec {
+        it.group(
+            ARGUMENTS_CODEC.fieldOf("arguments").forGetter(TagBuiltin::arguments),
+        ).apply(it, ::TagBuiltin)
+    }
+    val TAGS_BUILTIN_CODEC: MapCodec<TagsBuiltin> = mapCodec {
+        it.group(
+            ARGUMENTS_CODEC.fieldOf("arguments").forGetter(TagsBuiltin::arguments),
+        ).apply(it, ::TagsBuiltin)
+    }
+    val USE_ITEM_BUILTIN_CODEC: MapCodec<UseItemBuiltin> = mapCodec {
+        it.group(
+            ARGUMENTS_CODEC.fieldOf("arguments").forGetter(UseItemBuiltin::arguments),
+        ).apply(it, ::UseItemBuiltin)
     }
 }

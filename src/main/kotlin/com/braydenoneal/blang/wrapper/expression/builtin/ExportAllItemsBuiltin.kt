@@ -1,54 +1,49 @@
-package com.braydenoneal.blang.parser.expression.builtin
+package com.braydenoneal.blang.wrapper.expression.builtin
 
-import com.braydenoneal.blang.parser.Program
-import com.braydenoneal.blang.parser.RunException
-import com.braydenoneal.blang.parser.expression.Arguments
-import com.braydenoneal.blang.parser.expression.Expression
-import com.braydenoneal.blang.parser.expression.ExpressionType
-import com.braydenoneal.blang.parser.expression.ExpressionTypes
-import com.braydenoneal.blang.parser.expression.value.BooleanValue
-import com.braydenoneal.blang.parser.expression.value.ItemValue
-import com.braydenoneal.blang.parser.expression.value.Null
-import com.braydenoneal.blang.parser.expression.value.Value
-import com.mojang.serialization.MapCodec
-import com.mojang.serialization.codecs.RecordCodecBuilder
+import com.braydenoneal.blang.wrapper.BlogicProgram
+import com.braydenoneal.blang.wrapper.expression.value.ItemValue
 import net.minecraft.block.entity.LockableContainerBlockEntity
 import net.minecraft.item.Items
 import net.minecraft.util.math.BlockPos
-import java.util.Map
+import parser.Program
+import parser.RunException
+import parser.expression.Arguments
+import parser.expression.Expression
+import parser.expression.value.BooleanValue
+import parser.expression.value.Null
+import parser.expression.value.Value
 import kotlin.math.min
 
-
 data class ExportAllItemsBuiltin(val arguments: Arguments) : Expression {
-    override fun evaluate(program: Program): Value<*> {
-        val x = arguments.integerValue(program, "x", 0).value
-        val y = arguments.integerValue(program, "y", 1).value
-        val z = arguments.integerValue(program, "z", 2).value
-        val itemPredicate = arguments.functionValue(program, "itemPredicate", 3)
-        val initialCount = if (arguments.arguments.size > 4 || arguments.namedArguments.containsKey("count")) arguments.integerValue(program, "count", 4).value else null
-        var count = initialCount
-        val deleteOverflow = if (arguments.arguments.size > 5 || arguments.namedArguments.containsKey("deleteOverflow")) arguments.booleanValue(program, "deleteOverflow", 5).value else false
-
-        val world = program.context().entity!!.getWorld()
-
-        if (world == null) {
-            throw RunException("World is null")
+    override fun evaluate(program: Program): Value<*>? {
+        if (program !is BlogicProgram) {
+            throw RunException("Program is not a BlogicProgram")
         }
 
-        val entityPos = program.context().pos
+        val x = (arguments.integerValue(program, "x", 0) ?: return null).value
+        val y = (arguments.integerValue(program, "y", 1) ?: return null).value
+        val z = (arguments.integerValue(program, "z", 2) ?: return null).value
+        val itemPredicate = (arguments.functionValue(program, "itemPredicate", 3) ?: return null)
+        val initialCount = if (arguments.arguments.size > 4 || arguments.namedArguments.containsKey("count")) (arguments.integerValue(program, "count", 4) ?: return null).value else null
+        var count = initialCount
+        val deleteOverflow = if (arguments.arguments.size > 5 || arguments.namedArguments.containsKey("deleteOverflow")) (arguments.booleanValue(program, "deleteOverflow", 5) ?: return null).value else false
+
+        val world = program.context.entity.getWorld() ?: throw RunException("World is null")
+
+        val entityPos = program.context.pos
         val exportEntity = world.getBlockEntity(BlockPos(entityPos.x + x, entityPos.y + y, entityPos.z + z))
 
         if (exportEntity !is LockableContainerBlockEntity) {
             throw RunException("Block at position is not a container")
         }
 
-        val containers = program.context().entity!!.getConnectedContainers()
+        val containers = program.context.entity.getConnectedContainers()
 
         for (container in containers) {
             for (slot in 0..<container.size()) {
                 val stack = container.getStack(slot)
 
-                val predicateArguments = Arguments(mutableListOf(ItemValue(stack.item)), Map.of())
+                val predicateArguments = Arguments(mutableListOf(ItemValue(stack.item)), mutableMapOf())
                 val predicateResult = itemPredicate.call(program, predicateArguments)
 
                 if (predicateResult !is BooleanValue) {
@@ -122,15 +117,5 @@ data class ExportAllItemsBuiltin(val arguments: Arguments) : Expression {
         }
 
         return Null.VALUE
-    }
-
-    override val type: ExpressionType<*> get() = ExpressionTypes.EXPORT_ALL_ITEMS_BUILTIN
-
-    companion object {
-        val CODEC: MapCodec<ExportAllItemsBuiltin> = RecordCodecBuilder.mapCodec {
-            it.group(
-                Arguments.CODEC.fieldOf("arguments").forGetter(ExportAllItemsBuiltin::arguments)
-            ).apply(it, ::ExportAllItemsBuiltin)
-        }
     }
 }
