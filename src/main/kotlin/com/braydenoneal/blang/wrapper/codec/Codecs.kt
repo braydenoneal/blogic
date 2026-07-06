@@ -1,8 +1,9 @@
 package com.braydenoneal.blang.wrapper.codec
 
-import com.braydenoneal.blang.parser.expression.value.Value
+import com.braydenoneal.blang.wrapper.codec.value.ValueType
 import com.mojang.serialization.Codec
+import parser.expression.value.Value
 
 object Codecs {
-    val VARIABLES: Codec<MutableMap<String, Value<*>>> = Codec.unboundedMap(Codec.STRING, Value.CODEC)
+    val VARIABLES_CODEC: Codec<MutableMap<String, Value<*>>> = Codec.unboundedMap(Codec.STRING, ValueType.CODEC)
 }

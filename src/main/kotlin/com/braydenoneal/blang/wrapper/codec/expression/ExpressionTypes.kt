@@ -1,16 +1,23 @@
 package com.braydenoneal.blang.wrapper.codec.expression
 
+import com.braydenoneal.blang.wrapper.codec.value.ValueType
 import net.minecraft.registry.Registry
 import net.minecraft.util.Identifier
 import parser.expression.*
 import parser.expression.builtin.*
 import parser.expression.builtin.list.*
-import parser.expression.builtin.struct.*
-import parser.expression.operator.*
+import parser.expression.builtin.struct.StructEntriesBuiltin
+import parser.expression.builtin.struct.StructKeysBuiltin
+import parser.expression.builtin.struct.StructRemoveBuiltin
+import parser.expression.builtin.struct.StructValuesBuiltin
+import parser.expression.operator.ArithmeticOperator
+import parser.expression.operator.BooleanOperator
+import parser.expression.operator.ComparisonOperator
+import parser.expression.operator.UnaryOperator
 import parser.expression.value.Value
 
 object ExpressionTypes {
-    val VALUE: ExpressionType<Value<*>> = register("value", ExpressionType(Value.MAP_CODEC))
+    val VALUE: ExpressionType<Value<*>> = register("value", ExpressionType(ValueType.MAP_CODEC))
     val ASSIGNMENT_EXPRESSION: ExpressionType<AssignmentExpression> = register("assignment_expression", ExpressionType(ExpressionCodecs.ASSIGNMENT_EXPRESSION_CODEC))
     val CALL_EXPRESSION: ExpressionType<CallExpression> = register("call_expression", ExpressionType(ExpressionCodecs.CALL_EXPRESSION_CODEC))
     val IF_ELSE_EXPRESSION: ExpressionType<IfElseExpression> = register("if_else_expression", ExpressionType(ExpressionCodecs.IF_ELSE_EXPRESSION_CODEC))
@@ -45,7 +52,7 @@ object ExpressionTypes {
     val STRUCT_VALUES_BUILTIN: ExpressionType<StructValuesBuiltin> = register("struct_values_builtin", ExpressionType(ExpressionCodecs.STRUCT_VALUES_BUILTIN_CODEC))
     val STRUCT_ENTRIES_BUILTIN: ExpressionType<StructEntriesBuiltin> = register("struct_entries_builtin", ExpressionType(ExpressionCodecs.STRUCT_ENTRIES_BUILTIN_CODEC))
     val TYPE_BUILTIN: ExpressionType<TypeBuiltin> = register("type_builtin", ExpressionType(ExpressionCodecs.TYPE_BUILTIN_CODEC))
-    val PRINT_BUILTIN: ExpressionType<PrintBuiltin> = register("print_builtin", ExpressionType(PrintBuiltin.CODEC))
+    val PRINT_BUILTIN: ExpressionType<PrintBuiltin> = register("print_builtin", ExpressionType(ExpressionCodecs.PRINT_BUILTIN_CODEC))
 
 //    val BLOCK_BUILTIN: ExpressionType<BlockBuiltin> = register("block_builtin", ExpressionType(BlockBuiltin.CODEC))
 //    val ITEM_BUILTIN: ExpressionType<ItemBuiltin> = register("item_builtin", ExpressionType(ItemBuiltin.CODEC))
