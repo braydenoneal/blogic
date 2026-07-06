@@ -45,8 +45,6 @@ data class ForStatement(
         return this
     }
 
-    override val type: StatementType<*> get() = StatementTypes.FOR_STATEMENT
-
     companion object {
         fun parse(program: Program): Statement {
             val statements: MutableList<Statement> = ArrayList()

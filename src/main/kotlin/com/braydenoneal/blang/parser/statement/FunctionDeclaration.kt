@@ -21,8 +21,6 @@ data class FunctionDeclaration(val name: String, val function: Funct) : Statemen
         return this.function.call(program, arguments)
     }
 
-    override val type: StatementType<*> get() = StatementTypes.FUNCTION_DECLARATION
-
     companion object {
         fun parse(program: Program): Statement {
             val parameters: MutableList<String> = ArrayList()

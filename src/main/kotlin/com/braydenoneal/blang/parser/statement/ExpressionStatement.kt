@@ -12,8 +12,6 @@ data class ExpressionStatement(val expression: Expression) : Statement {
         return this
     }
 
-    override val type: StatementType<*> get() = StatementTypes.EXPRESSION_STATEMENT
-
     companion object {
         fun parse(program: Program): Statement {
             val expression = Expression.parse(program)

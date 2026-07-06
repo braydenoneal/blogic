@@ -1,9 +1,8 @@
 package com.braydenoneal.block.entity
 
-import com.braydenoneal.blang.Context
-import com.braydenoneal.blang.parser.Program
 import com.braydenoneal.blang.parser.Scope
-import com.braydenoneal.blang.parser.expression.value.Value
+import com.braydenoneal.blang.wrapper.Context
+import com.braydenoneal.blang.wrapper.ProgramWrapper
 import com.braydenoneal.block.CableBlock
 import com.mojang.serialization.Codec
 import net.fabricmc.fabric.api.screenhandler.v1.ExtendedScreenHandlerFactory
@@ -24,19 +23,24 @@ import net.minecraft.util.math.BlockPos
 import net.minecraft.util.math.Direction
 import net.minecraft.world.RedstoneView
 import net.minecraft.world.World
+import parser.Program
+import parser.expression.value.Value
 import java.util.*
 import java.util.Map
+import kotlin.collections.ArrayList
+import kotlin.collections.HashMap
+import kotlin.collections.HashSet
+import kotlin.collections.MutableList
+import kotlin.collections.MutableMap
+import kotlin.collections.MutableSet
+import kotlin.jvm.optionals.getOrNull
 
 class ControllerBlockEntity(pos: BlockPos, state: BlockState) :
     BlockEntity(ModBlockEntities.CONTROLLER_BLOCK_ENTITY, pos, state), ExtendedScreenHandlerFactory<BlockPos> {
-    private var program: Program
-    private var variables: MutableMap<String, Value<*>>
     private var source: String = "name;"
-
-    init {
-        program = Program(source, Context(pos, this))
-        variables = Map.of()
-    }
+    private var programWrapper: ProgramWrapper = ProgramWrapper(Program(source), Context(pos, this))
+    private var program: Program = programWrapper.program
+    private var variables: MutableMap<String, Value<*>> = Map.of()
 
     fun source(): String {
         return source
@@ -50,7 +54,8 @@ class ControllerBlockEntity(pos: BlockPos, state: BlockState) :
         this.source = source
 
         if (!world!!.isClient) {
-            program = Program(source, Context(pos, this))
+            programWrapper = ProgramWrapper(Program(source), Context(pos, this))
+            program = programWrapper.program
             program.run()
             variables = program.topScope().variables()
         }
@@ -60,10 +65,11 @@ class ControllerBlockEntity(pos: BlockPos, state: BlockState) :
 
     override fun readData(view: ReadView) {
         super.readData(view)
-        variables = view.read("variables", Scope.VARIABLES_CODEC).orElse(Map.of())
-        source = view.read("source", Codec.STRING).orElse("name;")
+        variables = view.read("variables", Scope.VARIABLES_CODEC).getOrNull() ?: Map.of()
+        source = view.read("source", Codec.STRING).getOrNull() ?: "name;"
 
-        program = Program(source, Context(pos, this))
+        programWrapper = ProgramWrapper(Program(source), Context(pos, this))
+        program = programWrapper.program
         program.topScope().setVariables(HashMap(variables))
     }
 

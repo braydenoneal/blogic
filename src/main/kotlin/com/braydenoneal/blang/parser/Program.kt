@@ -1,6 +1,5 @@
 package com.braydenoneal.blang.parser
 
-import com.braydenoneal.blang.Context
 import com.braydenoneal.blang.parser.expression.Arguments
 import com.braydenoneal.blang.parser.statement.FunctionDeclaration
 import com.braydenoneal.blang.parser.statement.ImportStatement
@@ -8,6 +7,7 @@ import com.braydenoneal.blang.parser.statement.Statement
 import com.braydenoneal.blang.tokenizer.Token
 import com.braydenoneal.blang.tokenizer.Token.Companion.tokenize
 import com.braydenoneal.blang.tokenizer.Type
+import com.braydenoneal.blang.wrapper.Context
 import org.apache.logging.log4j.LogManager
 import org.apache.logging.log4j.Logger
 import java.util.*

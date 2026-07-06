@@ -36,8 +36,6 @@ data class IfStatement(
         return Statement.runStatements(program, elseStatement.statements)
     }
 
-    override val type: StatementType<*> get() = StatementTypes.IF_STATEMENT
-
     companion object {
         fun parse(program: Program): Statement {
             val statements: MutableList<Statement> = ArrayList()

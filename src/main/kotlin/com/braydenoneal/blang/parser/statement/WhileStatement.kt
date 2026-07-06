@@ -33,8 +33,6 @@ data class WhileStatement(val condition: Expression, val statements: MutableList
         return this
     }
 
-    override val type: StatementType<*> get() = StatementTypes.WHILE_STATEMENT
-
     companion object {
         fun parse(program: Program): Statement {
             val statements: MutableList<Statement> = ArrayList()

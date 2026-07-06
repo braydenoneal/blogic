@@ -12,8 +12,6 @@ data class ImportStatement(val identifiers: MutableList<String>) : Statement {
         return this
     }
 
-    override val type: StatementType<*> get() = StatementTypes.IMPORT_STATEMENT
-
     companion object {
         fun parse(program: Program): Statement {
             val identifiers: MutableList<String> = ArrayList()

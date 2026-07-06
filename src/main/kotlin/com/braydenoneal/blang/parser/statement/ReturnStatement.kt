@@ -17,8 +17,6 @@ data class ReturnStatement(val expression: Expression) : Statement {
         return expression.evaluate(program)
     }
 
-    override val type: StatementType<*> get() = StatementTypes.RETURN_STATEMENT
-
     companion object {
         fun parse(program: Program): Statement {
             program.expect(Type.KEYWORD, "return")

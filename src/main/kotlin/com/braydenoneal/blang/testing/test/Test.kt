@@ -1,8 +1,8 @@
 package com.braydenoneal.blang.testing.test
 
-import com.braydenoneal.blang.Context
 import com.braydenoneal.blang.parser.Program
 import com.braydenoneal.blang.parser.expression.value.Value
+import com.braydenoneal.blang.wrapper.Context
 import net.minecraft.util.math.BlockPos
 
 abstract class Test {

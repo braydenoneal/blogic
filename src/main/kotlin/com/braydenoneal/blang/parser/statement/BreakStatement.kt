@@ -10,8 +10,6 @@ class BreakStatement : Statement {
         return this
     }
 
-    override val type: StatementType<*> get() = StatementTypes.BREAK_STATEMENT
-
     companion object {
         fun parse(program: Program): Statement {
             program.expect(Type.KEYWORD, "break")

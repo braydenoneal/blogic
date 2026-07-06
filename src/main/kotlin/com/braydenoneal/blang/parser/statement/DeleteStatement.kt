@@ -14,8 +14,6 @@ data class DeleteStatement(val name: String) : Statement {
         return this
     }
 
-    override val type: StatementType<*> get() = StatementTypes.DELETE_STATEMENT
-
     companion object {
         val CODEC: MapCodec<DeleteStatement> = RecordCodecBuilder.mapCodec {
             it.group(
