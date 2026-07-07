@@ -34,8 +34,6 @@ object Codecs {
             it.group(
                 selfCodec.optionalFieldOf("parent", null).forGetter(Scope::parent),
                 Codec.unboundedMap(Codec.STRING, ValueType.CODEC).fieldOf("variables").forGetter(Scope::variables),
-                // TODO: Remove this class if it isn't necessary
-//                MutableMapCodec<String, Value<*>>().getCodec(Codec.STRING, ValueType.CODEC).fieldOf("variables").forGetter(Scope::variables),
             ).apply(it, ::Scope)
         }
     }
