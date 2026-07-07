@@ -6,6 +6,7 @@ Minecraft mod that adds a survival-friendly programming language that can intera
 
 ## Todo
 
+- add empty/null statement for empty statement lists
 - allow saving the world mid-execution by encoding the program and its execution state
 - controlled order of execution for multiple controllers in a network?
 - separate font for the text editor
