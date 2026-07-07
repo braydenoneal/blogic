@@ -208,6 +208,10 @@ class ControllerBlockEntity(pos: BlockPos, state: BlockState) : BlockEntity(ModB
 
     companion object {
         fun tick(world: World, blockPos: BlockPos, ignoredBlockState: BlockState, entity: ControllerBlockEntity) {
+            if (!entity.program.parsed) {
+                entity.program.parse()
+            }
+
             if (entity.initializing) {
                 try {
                     val result = entity.program.tick()
