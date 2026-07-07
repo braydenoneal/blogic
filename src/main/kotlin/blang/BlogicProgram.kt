@@ -2,13 +2,23 @@ package blang
 
 import blang.expression.builtin.*
 import parser.Program
+import parser.Scope
 import parser.expression.Arguments
 import parser.expression.Expression
 import parser.expression.value.Value
 import parser.statement.FunctionDeclaration
 import parser.statement.ImportStatement
+import parser.statement.StatementList
 
-data class BlogicProgram(val source: String, val context: Context) : Program(source) {
+data class BlogicProgram(
+    val context: Context,
+    override var source: String = "",
+    override var name: String = "",
+    override val imports: MutableList<ImportStatement> = mutableListOf(),
+    override val statements: StatementList = StatementList(),
+    override val functions: MutableMap<String, FunctionDeclaration> = mutableMapOf(),
+    override val scopes: MutableList<Scope> = mutableListOf(),
+) : Program(source) {
     private var hasRuntimeError = false
 
     fun runMain() {
@@ -78,8 +88,8 @@ data class BlogicProgram(val source: String, val context: Context) : Program(sou
 
         for (importName in importStatement.identifiers) {
             for (controller in importProgram.context.entity.getConnectedControllerBlockEntities()) {
-                if (controller.program().name() == importName) {
-                    importProgram = controller.program()
+                if (controller.program.name == importName) {
+                    importProgram = controller.program
                 }
             }
         }

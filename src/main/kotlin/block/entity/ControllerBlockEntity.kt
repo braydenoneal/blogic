@@ -4,7 +4,6 @@ import blang.BlogicProgram
 import blang.Context
 import blang.codec.Codecs
 import block.CableBlock
-import com.mojang.serialization.Codec
 import net.fabricmc.fabric.api.screenhandler.v1.ExtendedScreenHandlerFactory
 import net.minecraft.block.BlockState
 import net.minecraft.block.entity.BlockEntity
@@ -23,32 +22,20 @@ import net.minecraft.util.math.BlockPos
 import net.minecraft.util.math.Direction
 import net.minecraft.world.RedstoneView
 import net.minecraft.world.World
+import parser.Program
 import parser.Program.Companion.log
-import parser.expression.value.Value
 import java.util.*
 import kotlin.jvm.optionals.getOrNull
 
 class ControllerBlockEntity(pos: BlockPos, state: BlockState) : BlockEntity(ModBlockEntities.CONTROLLER_BLOCK_ENTITY, pos, state), ExtendedScreenHandlerFactory<BlockPos> {
-    private var source: String = "name;"
-    private var program: BlogicProgram = BlogicProgram(source, Context(pos, this))
-    private var variables: MutableMap<String, Value<*>> = mutableMapOf()
-    private var initializing = true
-
-    fun source(): String {
-        return source
-    }
-
-    fun program(): BlogicProgram {
-        return program
-    }
+    var program: BlogicProgram = BlogicProgram(Context(pos, this), "name;")
+    var initializing = true
 
     fun setSource(source: String) {
-        this.source = source
-
         if (!world!!.isClient) {
-            program = BlogicProgram(source, Context(pos, this))
+            program.source = source
+            program.parse()
             initializing = true
-            variables = program.topScope().variables()
         }
 
         markDirty()
@@ -56,17 +43,31 @@ class ControllerBlockEntity(pos: BlockPos, state: BlockState) : BlockEntity(ModB
 
     override fun readData(view: ReadView) {
         super.readData(view)
-        variables = view.read("variables", Codecs.VARIABLES_CODEC).getOrNull() ?: mutableMapOf()
-        source = view.read("source", Codec.STRING).getOrNull() ?: "name;"
+        val rawProgram = view.read("raw_program", Codecs.PROGRAM_CODEC).getOrNull() ?: Program("name;")
 
-        program = BlogicProgram(source, Context(pos, this))
-        program.topScope().setVariables(HashMap(variables))
+        program = BlogicProgram(
+            Context(pos, this),
+            rawProgram.source,
+            rawProgram.name,
+            rawProgram.imports,
+            rawProgram.statements,
+            rawProgram.functions,
+            rawProgram.scopes,
+        )
     }
 
     override fun writeData(view: WriteView) {
         super.writeData(view)
-        view.put("variables", Codecs.VARIABLES_CODEC, variables)
-        view.put("source", Codec.STRING, source)
+        val rawProgram = Program(
+            program.source,
+            program.name,
+            program.imports,
+            program.statements,
+            program.functions,
+            program.scopes,
+        )
+
+        view.put("raw_program", Codecs.PROGRAM_CODEC, rawProgram)
     }
 
     override fun toInitialChunkDataNbt(registryLookup: WrapperLookup): NbtCompound {
@@ -224,7 +225,6 @@ class ControllerBlockEntity(pos: BlockPos, state: BlockState) : BlockEntity(ModB
 
             if (world.isReceivingRedstonePower(blockPos)) {
                 entity.program.runMain()
-                entity.variables = entity.program.topScope().variables()
                 entity.markDirty()
             }
         }

@@ -22,7 +22,7 @@ object StatementCodecs {
         it.group(
             ExpressionType.CODEC.fieldOf("condition").forGetter(ElseIfStatement::condition),
             STATEMENT_LIST_CODEC.fieldOf("statements").forGetter(ElseIfStatement::statements),
-            ValueType.CODEC.fieldOf("conditionValue").forGetter(ElseIfStatement::conditionValue),
+            ValueType.CODEC.optionalFieldOf("conditionValue", null).forGetter(ElseIfStatement::conditionValue),
         ).apply(it, ::ElseIfStatement)
     }
     val ELSE_STATEMENT_CODEC: MapCodec<ElseStatement> = mapCodec {
@@ -54,7 +54,7 @@ object StatementCodecs {
             STATEMENT_LIST_CODEC.fieldOf("statements").forGetter(IfStatement::statements),
             Codec.list(ELSE_IF_STATEMENT_CODEC).fieldOf("elseIfStatements").forGetter(IfStatement::elseIfStatements),
             ELSE_STATEMENT_CODEC.fieldOf("elseStatement").forGetter(IfStatement::elseStatement),
-            ValueType.CODEC.fieldOf("conditionValue").forGetter(IfStatement::conditionValue),
+            ValueType.CODEC.optionalFieldOf("conditionValue", null).forGetter(IfStatement::conditionValue),
         ).apply(it, ::IfStatement)
     }
     val IMPORT_STATEMENT_CODEC: MapCodec<ImportStatement> = mapCodec {

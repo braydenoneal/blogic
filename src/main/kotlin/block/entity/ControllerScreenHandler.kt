@@ -10,7 +10,7 @@ class ControllerScreenHandler(syncId: Int, ignoredPlayerInventory: PlayerInvento
     constructor(syncId: Int, playerInventory: PlayerInventory, pos: BlockPos) : this(syncId, playerInventory, (playerInventory.player.world.getBlockEntity(pos) as ControllerBlockEntity))
 
     fun source(): String {
-        return entity.source()
+        return entity.program.source
     }
 
     fun pos(): BlockPos {
