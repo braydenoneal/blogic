@@ -31,16 +31,22 @@ Minecraft mod that adds a survival-friendly programming language that can intera
 - unify some of the logic between custom and builtin functions (parsing and arguments)
 - add block for import?, access modifiers
 - address while loop max iterations issue
-- separate language from the game, allowing it to run on its own
 - static types?
 - enums?
 - list comprehension?
 - in-language errors, exceptions?
-- codec for entire program?
 - balancing: breaking blocks requires tool, and takes time
 
 ## Ideas
 
+- balancing: ability to upgrade:
+    - reach
+    - number of actions per tick
+    - types of actions it can do
+    - number of items it can move per tick
+    - speed of the actions
+    - upgrades and code are stored in the controller when broken
+    - upgrades and code can be taken out of the controller and stored as items
 - portable controller that executes from player
 - wait/sleep function to control tick time (prob requires multithreading)
 - reader, importer, and exporter blocks instead of available everywhere?
@@ -58,7 +64,7 @@ Minecraft mod that adds a survival-friendly programming language that can intera
 - wireless imports/exports
 - fluids and energy
 - xp pickup
-- ways to control logic with keybinds (create gamepad thingy)
+- ways to control logic with keybinds (create-mod gamepad thingy)
 
 ## Farms
 
