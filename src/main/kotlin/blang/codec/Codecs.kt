@@ -40,6 +40,7 @@ object Codecs {
     val PROGRAM_CODEC: Codec<Program> = RecordCodecBuilder.create {
         it.group(
             Codec.STRING.fieldOf("source").forGetter(Program::source),
+            Codec.BOOL.fieldOf("parsed").forGetter(Program::parsed),
             Codec.STRING.fieldOf("name").forGetter(Program::name),
             Codec.list(StatementCodecs.IMPORT_STATEMENT_CODEC.codec()).fieldOf("imports").forGetter(Program::imports),
             STATEMENT_LIST_CODEC.fieldOf("statements").forGetter(Program::statements),
