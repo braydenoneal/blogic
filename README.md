@@ -6,7 +6,8 @@ Minecraft mod that adds a survival-friendly programming language that can intera
 
 ## Todo
 
-- convert blang to standalone external library that can be extended
+- allow saving the world mid-execution by encoding the program and its execution state
+- controlled order of execution for multiple controllers in a network?
 - separate font for the text editor
 - ide extension or just mirroring files to allow editing code externally
 - fix array access after call: someFunc()[0]
