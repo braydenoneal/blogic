@@ -21,7 +21,7 @@ class ControllerScreen(handler: ControllerScreenHandler, inventory: PlayerInvent
         addDrawableChild<ButtonWidget>(
             ButtonWidget.builder(ScreenTexts.DONE) {
                 handler.setSource(editBoxWidget.text)
-                ClientPlayNetworking.send(StringPayload(handler.pos(), handler.source()))
+                ClientPlayNetworking.send(StringPayload(handler.pos(), editBoxWidget.text))
                 close()
             }.dimensions(width / 2 - 4 - 150, height - 40, 150, 20).build(),
         )

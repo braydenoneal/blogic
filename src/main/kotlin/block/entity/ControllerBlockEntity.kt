@@ -83,7 +83,7 @@ class ControllerBlockEntity(pos: BlockPos, state: BlockState) : BlockEntity(ModB
     }
 
     override fun createMenu(syncId: Int, playerInventory: PlayerInventory, player: PlayerEntity): ScreenHandler {
-        return ControllerScreenHandler(syncId, playerInventory, pos)
+        return ControllerScreenHandler(syncId, playerInventory, this)
     }
 
     override fun getScreenOpeningData(player: ServerPlayerEntity): BlockPos {
@@ -212,6 +212,7 @@ class ControllerBlockEntity(pos: BlockPos, state: BlockState) : BlockEntity(ModB
         fun tick(world: World, blockPos: BlockPos, ignoredBlockState: BlockState, entity: ControllerBlockEntity) {
             if (!entity.program.parsed) {
                 entity.program.parse()
+                entity.markDirty()
             }
 
             if (entity.initializing) {
@@ -221,6 +222,8 @@ class ControllerBlockEntity(pos: BlockPos, state: BlockState) : BlockEntity(ModB
                     if (result != null) {
                         entity.initializing = false
                     }
+
+                    entity.markDirty()
                 } catch (e: Exception) {
                     // TODO: Fix this such that it doesn't try to re-run the code every tick when it has an exception
                     log.error("Run main error", e)
