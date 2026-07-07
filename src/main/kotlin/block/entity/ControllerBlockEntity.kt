@@ -23,6 +23,7 @@ import net.minecraft.util.math.BlockPos
 import net.minecraft.util.math.Direction
 import net.minecraft.world.RedstoneView
 import net.minecraft.world.World
+import parser.Program.Companion.log
 import parser.expression.value.Value
 import java.util.*
 import kotlin.jvm.optionals.getOrNull
@@ -207,10 +208,15 @@ class ControllerBlockEntity(pos: BlockPos, state: BlockState) : BlockEntity(ModB
     companion object {
         fun tick(world: World, blockPos: BlockPos, ignoredBlockState: BlockState, entity: ControllerBlockEntity) {
             if (entity.initializing) {
-                val result = entity.program.tick()
+                try {
+                    val result = entity.program.tick()
 
-                if (result != null) {
-                    entity.initializing = false
+                    if (result != null) {
+                        entity.initializing = false
+                    }
+                } catch (e: Exception) {
+                    // TODO: Fix this such that it doesn't try to re-run the code every tick when it has an exception
+                    log.error("Run main error", e)
                 }
 
                 return
