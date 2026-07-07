@@ -48,6 +48,7 @@ class ControllerBlockEntity(pos: BlockPos, state: BlockState) : BlockEntity(ModB
         program = BlogicProgram(
             Context(pos, this),
             rawProgram.source,
+            rawProgram.parsed,
             rawProgram.name,
             rawProgram.imports,
             rawProgram.statements,
@@ -60,6 +61,7 @@ class ControllerBlockEntity(pos: BlockPos, state: BlockState) : BlockEntity(ModB
         super.writeData(view)
         val rawProgram = Program(
             program.source,
+            program.parsed,
             program.name,
             program.imports,
             program.statements,

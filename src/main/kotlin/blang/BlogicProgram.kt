@@ -13,6 +13,7 @@ import parser.statement.StatementList
 data class BlogicProgram(
     val context: Context,
     override var source: String = "",
+    override var parsed: Boolean = false,
     override var name: String = "",
     override val imports: MutableList<ImportStatement> = mutableListOf(),
     override val statements: StatementList = StatementList(),
