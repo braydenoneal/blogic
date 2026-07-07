@@ -20,7 +20,6 @@ import net.minecraft.world.BlockView
 import net.minecraft.world.World
 import net.minecraft.world.WorldView
 import net.minecraft.world.tick.ScheduledTickView
-import java.util.Map
 
 class CableBlock(settings: Settings) : Block(settings) {
     init {
@@ -42,13 +41,13 @@ class CableBlock(settings: Settings) : Block(settings) {
     private fun getShape(state: BlockState): VoxelShape {
         var shape = createCuboidShape(5.0, 5.0, 5.0, 11.0, 11.0, 11.0)
 
-        val directionShapeMap = Map.of(
-            Direction.UP, createCuboidShape(5.0, 11.0, 5.0, 11.0, 16.0, 11.0),
-            Direction.DOWN, createCuboidShape(5.0, 0.0, 5.0, 11.0, 5.0, 11.0),
-            Direction.NORTH, createCuboidShape(5.0, 5.0, 0.0, 11.0, 11.0, 5.0),
-            Direction.EAST, createCuboidShape(11.0, 5.0, 5.0, 16.0, 11.0, 11.0),
-            Direction.SOUTH, createCuboidShape(5.0, 5.0, 11.0, 11.0, 11.0, 16.0),
-            Direction.WEST, createCuboidShape(0.0, 5.0, 5.0, 5.0, 11.0, 11.0),
+        val directionShapeMap = mapOf<Direction, VoxelShape>(
+            Pair(Direction.UP, createCuboidShape(5.0, 11.0, 5.0, 11.0, 16.0, 11.0)),
+            Pair(Direction.DOWN, createCuboidShape(5.0, 0.0, 5.0, 11.0, 5.0, 11.0)),
+            Pair(Direction.NORTH, createCuboidShape(5.0, 5.0, 0.0, 11.0, 11.0, 5.0)),
+            Pair(Direction.EAST, createCuboidShape(11.0, 5.0, 5.0, 16.0, 11.0, 11.0)),
+            Pair(Direction.SOUTH, createCuboidShape(5.0, 5.0, 11.0, 11.0, 11.0, 16.0)),
+            Pair(Direction.WEST, createCuboidShape(0.0, 5.0, 5.0, 5.0, 11.0, 11.0)),
         )
 
         for (direction in DIRECTIONS) {
@@ -91,13 +90,13 @@ class CableBlock(settings: Settings) : Block(settings) {
         val SOUTH: BooleanProperty = Properties.SOUTH
         val WEST: BooleanProperty = Properties.WEST
 
-        val DIRECTION_BOOLEAN_PROPERTY_MAP: MutableMap<Direction, BooleanProperty> = Map.of(
-            Direction.UP, UP,
-            Direction.DOWN, DOWN,
-            Direction.NORTH, NORTH,
-            Direction.EAST, EAST,
-            Direction.SOUTH, SOUTH,
-            Direction.WEST, WEST,
+        val DIRECTION_BOOLEAN_PROPERTY_MAP: MutableMap<Direction, BooleanProperty> = mutableMapOf<Direction, BooleanProperty>(
+            Pair(Direction.UP, UP),
+            Pair(Direction.DOWN, DOWN),
+            Pair(Direction.NORTH, NORTH),
+            Pair(Direction.EAST, EAST),
+            Pair(Direction.SOUTH, SOUTH),
+            Pair(Direction.WEST, WEST),
         )
 
         fun settings(): Settings {

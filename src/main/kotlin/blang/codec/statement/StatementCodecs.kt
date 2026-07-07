@@ -1,7 +1,8 @@
 package blang.codec.statement
 
+import blang.codec.Codecs.FUNCT_CODEC
+import blang.codec.Codecs.STATEMENT_LIST_CODEC
 import blang.codec.expression.ExpressionType
-import blang.codec.value.ValueCodecs
 import blang.codec.value.ValueType
 import com.mojang.serialization.Codec
 import com.mojang.serialization.MapCodec
@@ -10,12 +11,6 @@ import com.mojang.serialization.codecs.RecordCodecBuilder.mapCodec
 import parser.statement.*
 
 object StatementCodecs {
-    val STATEMENT_LIST_CODEC: MapCodec<StatementList> = mapCodec {
-        it.group(
-            Codec.list(StatementType.CODEC).fieldOf("ran").forGetter(StatementList::ran),
-            Codec.list(StatementType.CODEC).fieldOf("toRun").forGetter(StatementList::toRun),
-        ).apply(it, ::StatementList)
-    }
     val BREAK_STATEMENT_CODEC: MapCodec<BreakStatement> = Codec.unit(BreakStatement()).fieldOf("break_statement")
     val CONTINUE_STATEMENT_CODEC: MapCodec<ContinueStatement> = Codec.unit(ContinueStatement()).fieldOf("continue_statement")
     val DELETE_STATEMENT_CODEC: MapCodec<DeleteStatement> = mapCodec {
@@ -50,7 +45,7 @@ object StatementCodecs {
     val FUNCTION_DECLARATION_CODEC: MapCodec<FunctionDeclaration> = mapCodec {
         it.group(
             Codec.STRING.fieldOf("name").forGetter(FunctionDeclaration::name),
-            ValueCodecs.FUNCT_CODEC.fieldOf("function").forGetter(FunctionDeclaration::function),
+            FUNCT_CODEC.fieldOf("function").forGetter(FunctionDeclaration::function),
         ).apply(it, ::FunctionDeclaration)
     }
     val IF_STATEMENT_CODEC: MapCodec<IfStatement> = mapCodec {

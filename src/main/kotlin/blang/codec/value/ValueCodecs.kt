@@ -1,5 +1,6 @@
 package blang.codec.value
 
+import blang.codec.Codecs.FUNCT_CODEC
 import blang.expression.value.BlockValue
 import blang.expression.value.ItemStackValue
 import blang.expression.value.ItemValue
@@ -15,19 +16,6 @@ import net.minecraft.registry.tag.TagKey
 import parser.expression.value.*
 
 object ValueCodecs {
-    val FUNCT_CODEC: Codec<Funct> = RecordCodecBuilder.create {
-        it.group(
-            Codec.list(Codec.STRING).fieldOf("parameters").forGetter(Funct::parameters),
-            Codec.list(
-                blang.codec.expression.PairCodec.pair(
-                    Codec.STRING,
-                    blang.codec.expression.ExpressionType.CODEC,
-                ),
-            ).fieldOf("defaultParameters").forGetter(Funct::defaultParameters),
-            blang.codec.statement.StatementCodecs.STATEMENT_LIST_CODEC.fieldOf("statements").forGetter(Funct::statements),
-            Codec.BOOL.fieldOf("running").forGetter(Funct::running),
-        ).apply(it, ::Funct)
-    }
     val NULL_CODEC: Codec<Null> = Codec.unit(Null())
     val RANGE_CODEC: Codec<Range> = RecordCodecBuilder.create {
         it.group(
