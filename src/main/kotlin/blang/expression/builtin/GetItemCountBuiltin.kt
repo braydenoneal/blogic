@@ -1,5 +1,6 @@
 package blang.expression.builtin
 
+import blang.expression.value.ItemValue
 import parser.Program
 import parser.RunException
 import parser.expression.Arguments
@@ -19,7 +20,7 @@ data class GetItemCountBuiltin(val arguments: Arguments) : Expression {
 
         for (container in program.context.entity.getConnectedContainers()) {
             container.iterator().forEachRemaining { stack ->
-                val predicateArguments = Arguments(mutableListOf(_root_ide_package_.blang.expression.value.ItemValue(stack.item)), mutableMapOf())
+                val predicateArguments = Arguments(mutableListOf(ItemValue(stack.item)), mutableMapOf())
                 val predicateResult = itemPredicate.call(program, predicateArguments)
 
                 if (predicateResult !is BooleanValue) {

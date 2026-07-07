@@ -1,5 +1,6 @@
 package blang.expression.builtin
 
+import blang.expression.value.ItemValue
 import net.fabricmc.fabric.api.entity.FakePlayer
 import net.minecraft.item.ItemUsageContext
 import net.minecraft.item.Items
@@ -41,7 +42,7 @@ data class UseItemBuiltin(val arguments: Arguments) : Expression {
                     continue
                 }
 
-                val predicateArguments = Arguments(mutableListOf(_root_ide_package_.blang.expression.value.ItemValue(stack.item)), mutableMapOf())
+                val predicateArguments = Arguments(mutableListOf(ItemValue(stack.item)), mutableMapOf())
                 val predicateResult = itemPredicate.call(program, predicateArguments)
 
                 if (predicateResult !is BooleanValue) {

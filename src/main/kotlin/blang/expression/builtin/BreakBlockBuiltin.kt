@@ -1,5 +1,6 @@
 package blang.expression.builtin
 
+import blang.expression.value.BlockValue
 import net.fabricmc.fabric.api.entity.FakePlayer
 import net.minecraft.block.Block
 import net.minecraft.block.Blocks
@@ -35,7 +36,7 @@ data class BreakBlockBuiltin(val arguments: Arguments) : Expression {
 
         val block = world.getBlockState(pos).block
 
-        val predicateArguments = Arguments(mutableListOf(_root_ide_package_.blang.expression.value.BlockValue(block)), mutableMapOf())
+        val predicateArguments = Arguments(mutableListOf(BlockValue(block)), mutableMapOf())
         val predicateResult = blockPredicate.call(program, predicateArguments)
 
         if (predicateResult !is BooleanValue) {

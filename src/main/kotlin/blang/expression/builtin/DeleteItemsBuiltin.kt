@@ -1,5 +1,6 @@
 package blang.expression.builtin
 
+import blang.expression.value.ItemValue
 import parser.Program
 import parser.RunException
 import parser.expression.Arguments
@@ -28,7 +29,7 @@ data class DeleteItemsBuiltin(val arguments: Arguments) : Expression {
 
                 val stack = container.getStack(slot)
 
-                val predicateArguments = Arguments(mutableListOf(_root_ide_package_.blang.expression.value.ItemValue(stack.item)), mutableMapOf())
+                val predicateArguments = Arguments(mutableListOf(ItemValue(stack.item)), mutableMapOf())
                 val predicateResult = itemPredicate.call(program, predicateArguments)
 
                 if (predicateResult !is BooleanValue) {

@@ -1,5 +1,6 @@
 package blang.expression.builtin
 
+import blang.expression.value.BlockValue
 import net.minecraft.util.math.BlockPos
 import parser.Program
 import parser.RunException
@@ -21,6 +22,6 @@ data class GetBlockBuiltin(val arguments: Arguments) : Expression {
         val pos = BlockPos(entityPos.x + x.value, entityPos.y + y.value, entityPos.z + z.value)
         val world = program.context.entity.getWorld() ?: throw RunException("World is null")
 
-        return _root_ide_package_.blang.expression.value.BlockValue(world.getBlockState(pos).block)
+        return BlockValue(world.getBlockState(pos).block)
     }
 }

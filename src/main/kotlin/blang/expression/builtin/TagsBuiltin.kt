@@ -1,5 +1,6 @@
 package blang.expression.builtin
 
+import blang.expression.value.TagValue
 import parser.Program
 import parser.expression.Arguments
 import parser.expression.Expression
@@ -11,7 +12,7 @@ data class TagsBuiltin(val arguments: Arguments) : Expression {
         val item = (blang.expression.BlogicArguments.itemValue(arguments, program, "value", 0) ?: return null).value
         val tags = ArrayList<Value<*>>()
 
-        item.defaultStack.streamTags().forEach { tags.add(_root_ide_package_.blang.expression.value.TagValue(it)) }
+        item.defaultStack.streamTags().forEach { tags.add(TagValue(it)) }
 
         return ListValue(tags)
     }

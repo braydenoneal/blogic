@@ -1,5 +1,6 @@
 package blang.expression.builtin
 
+import blang.expression.value.ItemValue
 import net.minecraft.block.entity.LockableContainerBlockEntity
 import net.minecraft.item.Items
 import net.minecraft.util.math.BlockPos
@@ -41,7 +42,7 @@ data class ExportAllItemsBuiltin(val arguments: Arguments) : Expression {
             for (slot in 0..<container.size()) {
                 val stack = container.getStack(slot)
 
-                val predicateArguments = Arguments(mutableListOf(_root_ide_package_.blang.expression.value.ItemValue(stack.item)), mutableMapOf())
+                val predicateArguments = Arguments(mutableListOf(ItemValue(stack.item)), mutableMapOf())
                 val predicateResult = itemPredicate.call(program, predicateArguments)
 
                 if (predicateResult !is BooleanValue) {

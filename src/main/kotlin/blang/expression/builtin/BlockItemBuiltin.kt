@@ -1,5 +1,6 @@
 package blang.expression.builtin
 
+import blang.expression.value.ItemValue
 import parser.Program
 import parser.expression.Arguments
 import parser.expression.Expression
@@ -13,7 +14,7 @@ data class BlockItemBuiltin(val arguments: Arguments) : Expression {
         return if (item == null) {
             Null.VALUE
         } else {
-            _root_ide_package_.blang.expression.value.ItemValue(item)
+            ItemValue(item)
         }
     }
 }

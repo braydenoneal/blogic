@@ -1,5 +1,6 @@
 package blang.expression.builtin
 
+import blang.expression.value.ItemValue
 import net.minecraft.block.entity.LockableContainerBlockEntity
 import net.minecraft.util.math.BlockPos
 import parser.Program
@@ -32,7 +33,7 @@ data class ReadItemCountBuiltin(val arguments: Arguments) : Expression {
         }
 
         exportEntity.iterator().forEachRemaining { stack ->
-            val predicateArguments = Arguments(mutableListOf(_root_ide_package_.blang.expression.value.ItemValue(stack.item)), mutableMapOf())
+            val predicateArguments = Arguments(mutableListOf(ItemValue(stack.item)), mutableMapOf())
             val predicateResult = itemPredicate.call(program, predicateArguments)
 
             if (predicateResult !is BooleanValue) {
