@@ -3,8 +3,8 @@ package blang.codec.expression
 import blang.codec.value.ValueType
 import blang.expression.builtin.*
 import blang.expression.builtin.PrintBuiltin
-import net.minecraft.registry.Registry
-import net.minecraft.util.Identifier
+import net.minecraft.core.Registry
+import net.minecraft.resources.Identifier
 import parser.expression.*
 import parser.expression.builtin.*
 import parser.expression.builtin.list.*
@@ -74,7 +74,7 @@ object ExpressionTypes {
     val USE_ITEM_BUILTIN: ExpressionType<UseItemBuiltin> = register("use_item_builtin", ExpressionType(ExpressionCodecs.USE_ITEM_BUILTIN_CODEC))
 
     fun <T : Expression> register(id: String, expressionType: ExpressionType<T>): ExpressionType<T> {
-        return Registry.register(ExpressionType.REGISTRY, Identifier.of("blogic", id), expressionType)
+        return Registry.register(ExpressionType.REGISTRY, Identifier.fromNamespaceAndPath("blogic", id), expressionType)
     }
 
     fun initialize() {

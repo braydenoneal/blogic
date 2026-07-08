@@ -1,9 +1,9 @@
 package blang.expression.builtin
 
 import blang.expression.value.ItemValue
-import net.minecraft.block.entity.LockableContainerBlockEntity
-import net.minecraft.item.Items
-import net.minecraft.util.math.BlockPos
+import net.minecraft.core.BlockPos
+import net.minecraft.world.item.Items
+import net.minecraft.world.level.block.entity.BaseContainerBlockEntity
 import parser.Program
 import parser.RunException
 import parser.expression.Arguments
@@ -27,20 +27,20 @@ data class ExportAllItemsBuiltin(val arguments: Arguments) : Expression {
         var count = initialCount
         val deleteOverflow = if (arguments.arguments.size > 5 || arguments.namedArguments.containsKey("deleteOverflow")) (arguments.booleanValue(program, "deleteOverflow", 5) ?: return null).value else false
 
-        val world = program.context.entity.getWorld() ?: throw RunException("World is null")
+        val world = program.context.entity.level ?: throw RunException("World is null")
 
         val entityPos = program.context.pos
         val exportEntity = world.getBlockEntity(BlockPos(entityPos.x + x, entityPos.y + y, entityPos.z + z))
 
-        if (exportEntity !is LockableContainerBlockEntity) {
+        if (exportEntity !is BaseContainerBlockEntity) {
             throw RunException("Block at position is not a container")
         }
 
         val containers = program.context.entity.getConnectedContainers()
 
         for (container in containers) {
-            for (slot in 0..<container.size()) {
-                val stack = container.getStack(slot)
+            for (slot in 0..<container.containerSize) {
+                val stack = container.getItem(slot)
 
                 val predicateArguments = Arguments(mutableListOf(ItemValue(stack.item)), mutableMapOf())
                 val predicateResult = itemPredicate.call(program, predicateArguments)
@@ -53,38 +53,38 @@ data class ExportAllItemsBuiltin(val arguments: Arguments) : Expression {
                     continue
                 }
 
-                for (exportSlot in 0..<exportEntity.size()) {
+                for (exportSlot in 0..<exportEntity.containerSize) {
                     if (count != null && count <= 0) {
                         return Null.VALUE
                     }
 
-                    val exportStack = exportEntity.getStack(exportSlot)
+                    val exportStack = exportEntity.getItem(exportSlot)
 
-                    if (exportStack.isOf(Items.AIR)) {
+                    if (exportStack.`is`(Items.AIR)) {
                         if (count != null) {
                             if (count - stack.count >= 0) {
                                 count -= stack.count
                             } else {
-                                stack.decrement(count)
+                                stack.shrink(count)
 
                                 val newStack = stack.copy()
                                 newStack.count = count
-                                exportEntity.setStack(exportSlot, newStack)
+                                exportEntity.setItem(exportSlot, newStack)
 
                                 return Null.VALUE
                             }
                         }
 
-                        container.removeStack(slot)
-                        exportEntity.setStack(exportSlot, stack)
+                        container.removeItemNoUpdate(slot)
+                        exportEntity.setItem(exportSlot, stack)
                         break
                     }
 
-                    if (!exportStack.isOf(stack.item)) {
+                    if (!exportStack.`is`(stack.item)) {
                         continue
                     }
 
-                    var move = min(stack.count, exportStack.maxCount - exportStack.count)
+                    var move = min(stack.count, exportStack.maxStackSize - exportStack.count)
 
                     if (move <= 0) {
                         continue
@@ -99,18 +99,18 @@ data class ExportAllItemsBuiltin(val arguments: Arguments) : Expression {
                         }
                     }
 
-                    stack.decrement(move)
-                    exportStack.increment(move)
+                    stack.shrink(move)
+                    exportStack.grow(move)
 
                     if (stack.isEmpty) {
-                        container.removeStack(slot)
-                        exportEntity.setStack(exportSlot, exportStack)
+                        container.removeItemNoUpdate(slot)
+                        exportEntity.setItem(exportSlot, exportStack)
                         break
                     }
                 }
 
                 if (deleteOverflow) {
-                    container.removeStack(slot)
+                    container.removeItemNoUpdate(slot)
                 }
             }
         }

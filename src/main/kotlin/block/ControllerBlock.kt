@@ -3,58 +3,58 @@ package block
 import block.entity.ControllerBlockEntity
 import block.entity.ModBlockEntities
 import com.mojang.serialization.MapCodec
-import net.minecraft.block.Block
-import net.minecraft.block.BlockState
-import net.minecraft.block.BlockWithEntity
-import net.minecraft.block.entity.BlockEntity
-import net.minecraft.block.entity.BlockEntityTicker
-import net.minecraft.block.entity.BlockEntityType
-import net.minecraft.entity.player.PlayerEntity
-import net.minecraft.item.ItemPlacementContext
-import net.minecraft.state.StateManager
-import net.minecraft.state.property.Properties
-import net.minecraft.util.ActionResult
-import net.minecraft.util.hit.BlockHitResult
-import net.minecraft.util.math.BlockPos
-import net.minecraft.util.math.Direction
-import net.minecraft.world.World
+import net.minecraft.core.BlockPos
+import net.minecraft.core.Direction
+import net.minecraft.world.InteractionResult
+import net.minecraft.world.entity.player.Player
+import net.minecraft.world.item.context.BlockPlaceContext
+import net.minecraft.world.level.Level
+import net.minecraft.world.level.block.BaseEntityBlock
+import net.minecraft.world.level.block.Block
+import net.minecraft.world.level.block.entity.BlockEntity
+import net.minecraft.world.level.block.entity.BlockEntityTicker
+import net.minecraft.world.level.block.entity.BlockEntityType
+import net.minecraft.world.level.block.state.BlockState
+import net.minecraft.world.level.block.state.StateDefinition
+import net.minecraft.world.level.block.state.properties.BlockStateProperties
+import net.minecraft.world.phys.BlockHitResult
 
-class ControllerBlock(settings: Settings) : BlockWithEntity(settings) {
+class ControllerBlock(settings: Properties) : BaseEntityBlock(settings) {
     init {
-        defaultState = getStateManager().getDefaultState().with<Direction, Direction>(Properties.FACING, Direction.UP)
+        registerDefaultState(stateDefinition.any().setValue<Direction, Direction>(BlockStateProperties.FACING, Direction.UP))
     }
 
-    override fun appendProperties(builder: StateManager.Builder<Block, BlockState>) {
-        builder.add(Properties.FACING)
+    override fun createBlockStateDefinition(builder: StateDefinition.Builder<Block, BlockState>) {
+        builder.add(BlockStateProperties.FACING)
     }
 
-    override fun getPlacementState(ctx: ItemPlacementContext): BlockState {
-        return defaultState.with(Properties.FACING, ctx.playerLookDirection.opposite)
+    override fun getStateForPlacement(ctx: BlockPlaceContext): BlockState {
+        return defaultBlockState().setValue(BlockStateProperties.FACING, ctx.nearestLookingDirection.opposite)
     }
 
-    override fun getCodec(): MapCodec<out BlockWithEntity> {
-        return createCodec<ControllerBlock> { ControllerBlock(it) }
+    override fun codec(): MapCodec<out BaseEntityBlock> {
+        return simpleCodec<ControllerBlock> { ControllerBlock(it) }
     }
 
-    override fun createBlockEntity(pos: BlockPos, state: BlockState): BlockEntity {
+    override fun newBlockEntity(pos: BlockPos, state: BlockState): BlockEntity {
         return ControllerBlockEntity(pos, state)
     }
 
-    override fun onUse(state: BlockState, world: World, pos: BlockPos, player: PlayerEntity, hit: BlockHitResult): ActionResult {
-        if (!world.isClient) {
-            val screenHandlerFactory = state.createScreenHandlerFactory(world, pos)
+    override fun useWithoutItem(state: BlockState, world: Level, pos: BlockPos, player: Player, hit: BlockHitResult): InteractionResult {
+        if (!world.isClientSide) {
+            val screenHandlerFactory = state.getMenuProvider(world, pos)
 
             if (screenHandlerFactory != null) {
-                player.openHandledScreen(screenHandlerFactory)
+                player.openMenu(screenHandlerFactory)
             }
         }
 
-        return ActionResult.SUCCESS
+        return InteractionResult.SUCCESS
     }
 
-    override fun <T : BlockEntity> getTicker(world: World, state: BlockState, type: BlockEntityType<T>): BlockEntityTicker<T>? {
-        if (!world.isClient) {
-            return validateTicker(type, ModBlockEntities.CONTROLLER_BLOCK_ENTITY, ControllerBlockEntity::tick)
+    override fun <T : BlockEntity> getTicker(world: Level, state: BlockState, type: BlockEntityType<T>): BlockEntityTicker<T>? {
+        if (!world.isClientSide) {
+            return createTickerHelper(type, ModBlockEntities.CONTROLLER_BLOCK_ENTITY, ControllerBlockEntity::tick)
         }
 
         return null

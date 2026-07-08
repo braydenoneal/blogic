@@ -1,7 +1,7 @@
 package blang.expression.builtin
 
 import blang.expression.value.ItemValue
-import net.minecraft.item.Items
+import net.minecraft.world.item.Items
 import parser.Program
 import parser.RunException
 import parser.expression.Arguments
@@ -19,7 +19,7 @@ data class GetItemsBuiltin(val arguments: Arguments) : Expression {
 
         for (container in program.context.entity.getConnectedContainers()) {
             container.iterator().forEachRemaining { stack ->
-                if (!stack.isOf(Items.AIR) && !items.contains(ItemValue(stack.item))) {
+                if (!stack.`is`(Items.AIR) && !items.contains(ItemValue(stack.item))) {
                     items.add(ItemValue(stack.item))
                 }
             }

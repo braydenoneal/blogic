@@ -6,23 +6,23 @@ import blang.codec.Codecs
 import block.CableBlock
 import com.mojang.serialization.Codec
 import net.fabricmc.fabric.api.screenhandler.v1.ExtendedScreenHandlerFactory
-import net.minecraft.block.BlockState
-import net.minecraft.block.entity.BlockEntity
-import net.minecraft.block.entity.LockableContainerBlockEntity
-import net.minecraft.entity.player.PlayerEntity
-import net.minecraft.entity.player.PlayerInventory
-import net.minecraft.nbt.NbtCompound
-import net.minecraft.registry.RegistryWrapper.WrapperLookup
-import net.minecraft.screen.ScreenHandler
-import net.minecraft.server.network.ServerPlayerEntity
-import net.minecraft.state.property.Properties
-import net.minecraft.storage.ReadView
-import net.minecraft.storage.WriteView
-import net.minecraft.text.Text
-import net.minecraft.util.math.BlockPos
-import net.minecraft.util.math.Direction
-import net.minecraft.world.RedstoneView
-import net.minecraft.world.World
+import net.minecraft.core.BlockPos
+import net.minecraft.core.Direction
+import net.minecraft.core.HolderLookup.Provider
+import net.minecraft.nbt.CompoundTag
+import net.minecraft.network.chat.Component
+import net.minecraft.server.level.ServerPlayer
+import net.minecraft.world.entity.player.Inventory
+import net.minecraft.world.entity.player.Player
+import net.minecraft.world.inventory.AbstractContainerMenu
+import net.minecraft.world.level.Level
+import net.minecraft.world.level.SignalGetter
+import net.minecraft.world.level.block.entity.BaseContainerBlockEntity
+import net.minecraft.world.level.block.entity.BlockEntity
+import net.minecraft.world.level.block.state.BlockState
+import net.minecraft.world.level.block.state.properties.BlockStateProperties
+import net.minecraft.world.level.storage.ValueInput
+import net.minecraft.world.level.storage.ValueOutput
 import parser.Program
 import parser.Program.Companion.log
 import java.util.*
@@ -35,21 +35,21 @@ class ControllerBlockEntity(pos: BlockPos, state: BlockState) : BlockEntity(ModB
     fun setSource(source: String) {
         program.source = source
 
-        if (!world!!.isClient) {
+        if (!level!!.isClientSide) {
             program.parse()
             initializing = true
         }
 
-        markDirty()
+        setChanged()
     }
 
-    override fun readData(view: ReadView) {
-        super.readData(view)
+    override fun loadAdditional(view: ValueInput) {
+        super.loadAdditional(view)
         initializing = view.read("initializing", Codec.BOOL).getOrNull() ?: true
         val rawProgram = view.read("raw_program", Codecs.PROGRAM_CODEC).getOrNull() ?: Program("name;")
 
         program = BlogicProgram(
-            Context(pos, this),
+            Context(worldPosition, this),
             rawProgram.source,
             rawProgram.parsed,
             rawProgram.name,
@@ -60,9 +60,9 @@ class ControllerBlockEntity(pos: BlockPos, state: BlockState) : BlockEntity(ModB
         )
     }
 
-    override fun writeData(view: WriteView) {
-        super.writeData(view)
-        view.put("initializing", Codec.BOOL, initializing)
+    override fun saveAdditional(view: ValueOutput) {
+        super.saveAdditional(view)
+        view.store("initializing", Codec.BOOL, initializing)
         val rawProgram = Program(
             program.source,
             program.parsed,
@@ -73,25 +73,25 @@ class ControllerBlockEntity(pos: BlockPos, state: BlockState) : BlockEntity(ModB
             program.scopes,
         )
 
-        view.put("raw_program", Codecs.PROGRAM_CODEC, rawProgram)
+        view.store("raw_program", Codecs.PROGRAM_CODEC, rawProgram)
     }
 
-    override fun toInitialChunkDataNbt(registryLookup: WrapperLookup): NbtCompound {
-        return createNbt(registryLookup)
+    override fun getUpdateTag(registryLookup: Provider): CompoundTag {
+        return saveWithoutMetadata(registryLookup)
     }
 
-    val facing: Direction get() = cachedState.get(Properties.FACING)
+    val facing: Direction get() = blockState.getValue(BlockStateProperties.FACING)
 
-    override fun getDisplayName(): Text {
-        return Text.translatable(cachedState.block.getTranslationKey())
+    override fun getDisplayName(): Component {
+        return Component.translatable(blockState.block.descriptionId)
     }
 
-    override fun createMenu(syncId: Int, playerInventory: PlayerInventory, player: PlayerEntity): ScreenHandler {
+    override fun createMenu(syncId: Int, playerInventory: Inventory, player: Player): AbstractContainerMenu {
         return ControllerScreenHandler(syncId, playerInventory, this)
     }
 
-    override fun getScreenOpeningData(player: ServerPlayerEntity): BlockPos {
-        return pos
+    override fun getScreenOpeningData(player: ServerPlayer): BlockPos {
+        return worldPosition
     }
 
     fun getConnectedControllerBlockEntities(): MutableList<ControllerBlockEntity> {
@@ -100,10 +100,10 @@ class ControllerBlockEntity(pos: BlockPos, state: BlockState) : BlockEntity(ModB
 
         val stack = Stack<BlockPos>()
 
-        for (direction in RedstoneView.DIRECTIONS) {
-            val adjacentPos = pos.offset(direction)
+        for (direction in SignalGetter.DIRECTIONS) {
+            val adjacentPos = worldPosition.relative(direction)
 
-            val adjacentBlock = world!!.getBlockState(adjacentPos).block
+            val adjacentBlock = level!!.getBlockState(adjacentPos).block
 
             if (adjacentBlock is CableBlock) {
                 stack.push(adjacentPos)
@@ -114,14 +114,14 @@ class ControllerBlockEntity(pos: BlockPos, state: BlockState) : BlockEntity(ModB
         while (!stack.isEmpty()) {
             val pos = stack.pop()
 
-            for (direction in RedstoneView.DIRECTIONS) {
-                val adjacentPos = pos.offset(direction)
+            for (direction in SignalGetter.DIRECTIONS) {
+                val adjacentPos = pos.relative(direction)
 
                 if (cables.contains(adjacentPos)) {
                     continue
                 }
 
-                val adjacentBlock = world!!.getBlockState(adjacentPos).block
+                val adjacentBlock = level!!.getBlockState(adjacentPos).block
 
                 if (adjacentBlock is CableBlock) {
                     stack.push(adjacentPos)
@@ -132,7 +132,7 @@ class ControllerBlockEntity(pos: BlockPos, state: BlockState) : BlockEntity(ModB
                     continue
                 }
 
-                val adjacentBlockEntity = world!!.getBlockEntity(adjacentPos)
+                val adjacentBlockEntity = level!!.getBlockEntity(adjacentPos)
 
                 if (adjacentBlockEntity is ControllerBlockEntity) {
                     networkBlocks.add(adjacentPos)
@@ -143,7 +143,7 @@ class ControllerBlockEntity(pos: BlockPos, state: BlockState) : BlockEntity(ModB
         val controllers: MutableList<ControllerBlockEntity> = ArrayList()
 
         for (pos in networkBlocks) {
-            val adjacentBlockEntity = world!!.getBlockEntity(pos)
+            val adjacentBlockEntity = level!!.getBlockEntity(pos)
 
             if (adjacentBlockEntity is ControllerBlockEntity) {
                 controllers.add(adjacentBlockEntity)
@@ -153,16 +153,16 @@ class ControllerBlockEntity(pos: BlockPos, state: BlockState) : BlockEntity(ModB
         return controllers
     }
 
-    fun getConnectedContainers(): MutableList<LockableContainerBlockEntity> {
+    fun getConnectedContainers(): MutableList<BaseContainerBlockEntity> {
         val cables: MutableSet<BlockPos> = HashSet()
         val networkBlocks: MutableList<BlockPos> = ArrayList()
 
         val stack = Stack<BlockPos>()
 
-        for (direction in RedstoneView.DIRECTIONS) {
-            val adjacentPos = pos.offset(direction)
+        for (direction in SignalGetter.DIRECTIONS) {
+            val adjacentPos = worldPosition.relative(direction)
 
-            val adjacentBlock = world!!.getBlockState(adjacentPos).block
+            val adjacentBlock = level!!.getBlockState(adjacentPos).block
 
             if (adjacentBlock is CableBlock) {
                 stack.push(adjacentPos)
@@ -173,14 +173,14 @@ class ControllerBlockEntity(pos: BlockPos, state: BlockState) : BlockEntity(ModB
         while (!stack.isEmpty()) {
             val pos = stack.pop()
 
-            for (direction in RedstoneView.DIRECTIONS) {
-                val adjacentPos = pos.offset(direction)
+            for (direction in SignalGetter.DIRECTIONS) {
+                val adjacentPos = pos.relative(direction)
 
                 if (cables.contains(adjacentPos)) {
                     continue
                 }
 
-                val adjacentBlock = world!!.getBlockState(adjacentPos).block
+                val adjacentBlock = level!!.getBlockState(adjacentPos).block
 
                 if (adjacentBlock is CableBlock) {
                     stack.push(adjacentPos)
@@ -191,20 +191,20 @@ class ControllerBlockEntity(pos: BlockPos, state: BlockState) : BlockEntity(ModB
                     continue
                 }
 
-                val adjacentBlockEntity = world!!.getBlockEntity(adjacentPos)
+                val adjacentBlockEntity = level!!.getBlockEntity(adjacentPos)
 
-                if (adjacentBlockEntity is LockableContainerBlockEntity) {
+                if (adjacentBlockEntity is BaseContainerBlockEntity) {
                     networkBlocks.add(adjacentPos)
                 }
             }
         }
 
-        val controllers: MutableList<LockableContainerBlockEntity> = ArrayList()
+        val controllers: MutableList<BaseContainerBlockEntity> = ArrayList()
 
         for (pos in networkBlocks) {
-            val adjacentBlockEntity = world!!.getBlockEntity(pos)
+            val adjacentBlockEntity = level!!.getBlockEntity(pos)
 
-            if (adjacentBlockEntity is LockableContainerBlockEntity) {
+            if (adjacentBlockEntity is BaseContainerBlockEntity) {
                 controllers.add(adjacentBlockEntity)
             }
         }
@@ -213,10 +213,10 @@ class ControllerBlockEntity(pos: BlockPos, state: BlockState) : BlockEntity(ModB
     }
 
     companion object {
-        fun tick(world: World, blockPos: BlockPos, ignoredBlockState: BlockState, entity: ControllerBlockEntity) {
+        fun tick(world: Level, blockPos: BlockPos, ignoredBlockState: BlockState, entity: ControllerBlockEntity) {
             if (!entity.program.parsed) {
                 entity.program.parse()
-                entity.markDirty()
+                entity.setChanged()
             }
 
             if (entity.initializing) {
@@ -227,7 +227,7 @@ class ControllerBlockEntity(pos: BlockPos, state: BlockState) : BlockEntity(ModB
                         entity.initializing = false
                     }
 
-                    entity.markDirty()
+                    entity.setChanged()
                 } catch (e: Exception) {
                     // TODO: Fix this such that it doesn't try to re-run the code every tick when it has an exception
                     log.error("Run main error", e)
@@ -236,9 +236,9 @@ class ControllerBlockEntity(pos: BlockPos, state: BlockState) : BlockEntity(ModB
                 return
             }
 
-            if (world.isReceivingRedstonePower(blockPos)) {
+            if (world.hasNeighborSignal(blockPos)) {
                 entity.program.runMain()
-                entity.markDirty()
+                entity.setChanged()
             }
         }
     }

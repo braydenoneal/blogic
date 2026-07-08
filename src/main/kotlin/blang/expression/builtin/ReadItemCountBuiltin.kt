@@ -1,8 +1,8 @@
 package blang.expression.builtin
 
 import blang.expression.value.ItemValue
-import net.minecraft.block.entity.LockableContainerBlockEntity
-import net.minecraft.util.math.BlockPos
+import net.minecraft.core.BlockPos
+import net.minecraft.world.level.block.entity.BaseContainerBlockEntity
 import parser.Program
 import parser.RunException
 import parser.expression.Arguments
@@ -23,12 +23,12 @@ data class ReadItemCountBuiltin(val arguments: Arguments) : Expression {
         val itemPredicate = (arguments.functionValue(program, "itemPredicate", 3) ?: return null)
         var count = 0
 
-        val world = program.context.entity.getWorld() ?: throw RunException("World is null")
+        val world = program.context.entity.level ?: throw RunException("World is null")
 
         val entityPos = program.context.pos
         val exportEntity = world.getBlockEntity(BlockPos(entityPos.x + x, entityPos.y + y, entityPos.z + z))
 
-        if (exportEntity !is LockableContainerBlockEntity) {
+        if (exportEntity !is BaseContainerBlockEntity) {
             throw RunException("Block at position is not a container")
         }
 

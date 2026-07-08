@@ -1,6 +1,6 @@
 package blang.expression.builtin
 
-import net.minecraft.text.Text
+import net.minecraft.network.chat.Component
 import parser.Program
 import parser.RunException
 import parser.expression.Arguments
@@ -22,11 +22,11 @@ data class PrintBuiltin(val arguments: Arguments) : Expression {
             string = string.substring(1, string.length - 1)
         }
 
-        val world = program.context.entity.getWorld()
+        val world = program.context.entity.level
 
         if (world != null && world.server != null) {
-            for (player in world.server?.playerManager?.playerList!!) {
-                player.sendMessage(Text.of(string))
+            for (player in world.server?.playerList?.players!!) {
+                player.sendSystemMessage(Component.nullToEmpty(string))
             }
         }
 

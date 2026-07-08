@@ -1,6 +1,6 @@
 package blang.expression.value
 
-import net.minecraft.block.Block
+import net.minecraft.world.level.block.Block
 import parser.expression.value.Value
 
 class BlockValue(value: Block) : Value<Block>(value) {

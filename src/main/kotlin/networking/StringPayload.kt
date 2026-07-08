@@ -1,22 +1,22 @@
 package networking
 
-import net.minecraft.network.RegistryByteBuf
-import net.minecraft.network.codec.PacketCodec
-import net.minecraft.network.codec.PacketCodecs
-import net.minecraft.network.packet.CustomPayload
-import net.minecraft.util.Identifier
-import net.minecraft.util.math.BlockPos
+import net.minecraft.core.BlockPos
+import net.minecraft.network.RegistryFriendlyByteBuf
+import net.minecraft.network.codec.ByteBufCodecs
+import net.minecraft.network.codec.StreamCodec
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload
+import net.minecraft.resources.Identifier
 
-data class StringPayload(val pos: BlockPos, val string: String) : CustomPayload {
-    override fun getId(): CustomPayload.Id<out CustomPayload> {
+data class StringPayload(val pos: BlockPos, val string: String) : CustomPacketPayload {
+    override fun type(): CustomPacketPayload.Type<out CustomPacketPayload> {
         return ID
     }
 
     companion object {
-        val ID: CustomPayload.Id<StringPayload> = CustomPayload.Id(Identifier.of("blogic", "string"))
-        val CODEC: PacketCodec<RegistryByteBuf, StringPayload> = PacketCodec.tuple(
-            BlockPos.PACKET_CODEC, StringPayload::pos,
-            PacketCodecs.STRING, StringPayload::string,
+        val ID: CustomPacketPayload.Type<StringPayload> = CustomPacketPayload.Type(Identifier.fromNamespaceAndPath("blogic", "string"))
+        val CODEC: StreamCodec<RegistryFriendlyByteBuf, StringPayload> = StreamCodec.composite(
+            BlockPos.STREAM_CODEC, StringPayload::pos,
+            ByteBufCodecs.STRING_UTF8, StringPayload::string,
         ) { pos: BlockPos, string: String -> StringPayload(pos, string) }
     }
 }

@@ -3,20 +3,20 @@ import com.google.common.collect.Lists;
 import com.mojang.logging.LogUtils;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.font.TextRenderer;
-import net.minecraft.client.input.CursorMovement;
-import net.minecraft.client.input.KeyInput;
-import net.minecraft.text.Style;
-import net.minecraft.util.StringHelper;
-import net.minecraft.util.math.MathHelper;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.Font;
+import net.minecraft.client.gui.components.Whence;
+import net.minecraft.client.input.KeyEvent;
+import net.minecraft.network.chat.Style;
+import net.minecraft.util.Mth;
+import net.minecraft.util.StringUtil;
 import org.slf4j.Logger;
 
 import java.util.List;
 import java.util.function.Consumer;
 
 /**
- * Reimplementation of {@link net.minecraft.client.gui.EditBox}
+ * Reimplementation of {@link net.minecraft.client.gui.components.MultilineTextField}
  * A multiline edit box with support for basic keyboard shortcuts.
  */
 @Environment(EnvType.CLIENT)
@@ -28,7 +28,7 @@ public class EditBox {
     public static final int UNLIMITED_LENGTH = Integer.MAX_VALUE;
     private static final Logger LOGGER = LogUtils.getLogger();
     private static final int CURSOR_WIDTH = 2;
-    private final TextRenderer textRenderer;
+    private final Font textRenderer;
     private final List<Substring> lines = Lists.newArrayList();
     private final int width;
     private final int lineHeight;
@@ -43,7 +43,7 @@ public class EditBox {
     private Runnable cursorChangeListener = () -> {
     };
 
-    public EditBox(TextRenderer textRenderer, int width, int lineHeight) {
+    public EditBox(Font textRenderer, int width, int lineHeight) {
         this.textRenderer = textRenderer;
         this.width = width;
         this.lineHeight = lineHeight;
@@ -152,12 +152,12 @@ public class EditBox {
     /**
      * Replaces the current selection with {@code string}. If there is no
      * selection, this inserts the string at the cursor position. This removes
-     * {@linkplain StringHelper#isValidChar invalid characters} and truncates
+     * {@linkplain StringUtil#isAllowedChatCharacter invalid characters} and truncates
      * the passed string if necessary.
      */
     public void replaceSelection(String string) {
         if (!string.isEmpty() || this.hasSelection()) {
-            String string2 = this.truncate(StringHelper.stripInvalidChars(string, true));
+            String string2 = this.truncate(StringUtil.filterText(string, true));
             Substring substring = this.getSelection();
             String string3 = new StringBuilder(this.text).replace(substring.beginIndex, substring.endIndex, string2).toString();
             if (!this.exceedsMaxLines(string3)) {
@@ -176,7 +176,7 @@ public class EditBox {
      */
     public void delete(int offset) {
         if (!this.hasSelection()) {
-            this.selectionEnd = MathHelper.clamp(this.cursor + offset, 0, this.text.length());
+            this.selectionEnd = Mth.clamp(this.cursor + offset, 0, this.text.length());
         }
 
         this.replaceSelection("");
@@ -230,15 +230,15 @@ public class EditBox {
      * {@return the line with index {@code index}}
      */
     public Substring getLine(int index) {
-        return this.lines.get(MathHelper.clamp(index, 0, this.lines.size() - 1));
+        return this.lines.get(Mth.clamp(index, 0, this.lines.size() - 1));
     }
 
     /**
      * Moves the cursor by {@code amount} characters.
      *
-     * @apiNote See {@link CursorMovement} for the types of the movement.
+     * @apiNote See {@link Whence} for the types of the movement.
      */
-    public void moveCursor(CursorMovement movement, int amount) {
+    public void moveCursor(Whence movement, int amount) {
         switch (movement) {
             case ABSOLUTE:
                 this.cursor = amount;
@@ -250,7 +250,7 @@ public class EditBox {
                 this.cursor = this.text.length() + amount;
         }
 
-        this.cursor = MathHelper.clamp(this.cursor, 0, this.text.length());
+        this.cursor = Mth.clamp(this.cursor, 0, this.text.length());
         this.cursorChangeListener.run();
         if (!this.selecting) {
             this.selectionEnd = this.cursor;
@@ -263,10 +263,10 @@ public class EditBox {
      */
     public void moveCursorLine(int offset) {
         if (offset != 0) {
-            int i = this.textRenderer.getWidth(this.text.substring(this.getCurrentLine().beginIndex, this.cursor)) + 2;
+            int i = this.textRenderer.width(this.text.substring(this.getCurrentLine().beginIndex, this.cursor)) + 2;
             Substring substring = this.getOffsetLine(offset);
-            int j = this.textRenderer.trimToWidth(this.text.substring(substring.beginIndex, substring.endIndex), i).length();
-            this.moveCursor(CursorMovement.ABSOLUTE, substring.beginIndex + j);
+            int j = this.textRenderer.plainSubstrByWidth(this.text.substring(substring.beginIndex, substring.endIndex), i).length();
+            this.moveCursor(Whence.ABSOLUTE, substring.beginIndex + j);
         }
     }
 
@@ -274,37 +274,37 @@ public class EditBox {
      * Moves the cursor to the specified position relative to the edit box.
      */
     public void moveCursor(double x, double y) {
-        int i = MathHelper.floor(x);
-        int j = MathHelper.floor(y / lineHeight);
-        Substring substring = this.lines.get(MathHelper.clamp(j, 0, this.lines.size() - 1));
-        int k = this.textRenderer.trimToWidth(this.text.substring(substring.beginIndex, substring.endIndex), i).length();
-        this.moveCursor(CursorMovement.ABSOLUTE, substring.beginIndex + k);
+        int i = Mth.floor(x);
+        int j = Mth.floor(y / lineHeight);
+        Substring substring = this.lines.get(Mth.clamp(j, 0, this.lines.size() - 1));
+        int k = this.textRenderer.plainSubstrByWidth(this.text.substring(substring.beginIndex, substring.endIndex), i).length();
+        this.moveCursor(Whence.ABSOLUTE, substring.beginIndex + k);
     }
 
     public void selectWord() {
         EditBox.Substring substring = this.getPreviousWordAtCursor();
-        this.moveCursor(CursorMovement.ABSOLUTE, substring.beginIndex);
+        this.moveCursor(Whence.ABSOLUTE, substring.beginIndex);
         this.setSelecting(true);
-        this.moveCursor(CursorMovement.ABSOLUTE, substring.endIndex);
+        this.moveCursor(Whence.ABSOLUTE, substring.endIndex);
     }
 
     /**
      * Handles the special keys, such as copy, cut, linebreak, and cursor movements.
      */
-    public boolean handleSpecialKey(KeyInput key) {
-        this.selecting = key.hasShift();
+    public boolean handleSpecialKey(KeyEvent key) {
+        this.selecting = key.hasShiftDown();
         if (key.isSelectAll()) {
             this.cursor = this.text.length();
             this.selectionEnd = 0;
             return true;
         } else if (key.isCopy()) {
-            MinecraftClient.getInstance().keyboard.setClipboard(this.getSelectedText());
+            Minecraft.getInstance().keyboardHandler.setClipboard(this.getSelectedText());
             return true;
         } else if (key.isPaste()) {
-            this.replaceSelection(MinecraftClient.getInstance().keyboard.getClipboard());
+            this.replaceSelection(Minecraft.getInstance().keyboardHandler.getClipboard());
             return true;
         } else if (key.isCut()) {
-            MinecraftClient.getInstance().keyboard.setClipboard(this.getSelectedText());
+            Minecraft.getInstance().keyboardHandler.setClipboard(this.getSelectedText());
             this.replaceSelection("");
             return true;
         } else {
@@ -314,7 +314,7 @@ public class EditBox {
                     this.replaceSelection("\n");
                     return true;
                 case 259:
-                    if (key.hasCtrlOrCmd()) {
+                    if (key.hasControlDownWithQuirk()) {
                         EditBox.Substring substring = this.getPreviousWordAtCursor();
                         this.delete(substring.beginIndex - this.cursor);
                     } else {
@@ -323,7 +323,7 @@ public class EditBox {
 
                     return true;
                 case 261:
-                    if (key.hasCtrlOrCmd()) {
+                    if (key.hasControlDownWithQuirk()) {
                         EditBox.Substring substring = this.getNextWordAtCursor();
                         this.delete(substring.beginIndex - this.cursor);
                     } else {
@@ -332,54 +332,54 @@ public class EditBox {
 
                     return true;
                 case 262:
-                    if (key.hasCtrlOrCmd()) {
+                    if (key.hasControlDownWithQuirk()) {
                         EditBox.Substring substring = this.getNextWordAtCursor();
-                        this.moveCursor(CursorMovement.ABSOLUTE, substring.beginIndex);
+                        this.moveCursor(Whence.ABSOLUTE, substring.beginIndex);
                     } else {
-                        this.moveCursor(CursorMovement.RELATIVE, 1);
+                        this.moveCursor(Whence.RELATIVE, 1);
                     }
 
                     return true;
                 case 263:
-                    if (key.hasCtrlOrCmd()) {
+                    if (key.hasControlDownWithQuirk()) {
                         EditBox.Substring substring = this.getPreviousWordAtCursor();
-                        this.moveCursor(CursorMovement.ABSOLUTE, substring.beginIndex);
+                        this.moveCursor(Whence.ABSOLUTE, substring.beginIndex);
                     } else {
-                        this.moveCursor(CursorMovement.RELATIVE, -1);
+                        this.moveCursor(Whence.RELATIVE, -1);
                     }
 
                     return true;
                 case 264:
-                    if (!key.hasCtrlOrCmd()) {
+                    if (!key.hasControlDownWithQuirk()) {
                         this.moveCursorLine(1);
                     }
 
                     return true;
                 case 265:
-                    if (!key.hasCtrlOrCmd()) {
+                    if (!key.hasControlDownWithQuirk()) {
                         this.moveCursorLine(-1);
                     }
 
                     return true;
                 case 266:
-                    this.moveCursor(CursorMovement.ABSOLUTE, 0);
+                    this.moveCursor(Whence.ABSOLUTE, 0);
                     return true;
                 case 267:
-                    this.moveCursor(CursorMovement.END, 0);
+                    this.moveCursor(Whence.END, 0);
                     return true;
                 case 268:
-                    if (key.hasCtrlOrCmd()) {
-                        this.moveCursor(CursorMovement.ABSOLUTE, 0);
+                    if (key.hasControlDownWithQuirk()) {
+                        this.moveCursor(Whence.ABSOLUTE, 0);
                     } else {
-                        this.moveCursor(CursorMovement.ABSOLUTE, this.getCurrentLine().beginIndex);
+                        this.moveCursor(Whence.ABSOLUTE, this.getCurrentLine().beginIndex);
                     }
 
                     return true;
                 case 269:
-                    if (key.hasCtrlOrCmd()) {
-                        this.moveCursor(CursorMovement.END, 0);
+                    if (key.hasControlDownWithQuirk()) {
+                        this.moveCursor(Whence.END, 0);
                     } else {
-                        this.moveCursor(CursorMovement.ABSOLUTE, this.getCurrentLine().endIndex);
+                        this.moveCursor(Whence.ABSOLUTE, this.getCurrentLine().endIndex);
                     }
 
                     return true;
@@ -428,7 +428,7 @@ public class EditBox {
             LOGGER.error("Cursor is not within text (cursor = {}, length = {})", this.cursor, this.text.length());
             return this.lines.get(this.lines.size() - 1);
         } else {
-            return this.lines.get(MathHelper.clamp(i + offsetFromCurrent, 0, this.lines.size() - 1));
+            return this.lines.get(Mth.clamp(i + offsetFromCurrent, 0, this.lines.size() - 1));
         }
     }
 
@@ -446,7 +446,7 @@ public class EditBox {
         if (this.text.isEmpty()) {
             return Substring.EMPTY;
         } else {
-            int i = MathHelper.clamp(this.cursor, 0, this.text.length() - 1);
+            int i = Mth.clamp(this.cursor, 0, this.text.length() - 1);
 
             while (i > 0 && Character.isWhitespace(this.text.charAt(i - 1))) {
                 i--;
@@ -474,7 +474,7 @@ public class EditBox {
         if (this.text.isEmpty()) {
             return Substring.EMPTY;
         } else {
-            int i = MathHelper.clamp(this.cursor, 0, this.text.length() - 1);
+            int i = Mth.clamp(this.cursor, 0, this.text.length() - 1);
 
             while (i < this.text.length() && !Character.isWhitespace(this.text.charAt(i))) {
                 i++;
@@ -523,7 +523,7 @@ public class EditBox {
         if (this.text.isEmpty()) {
             this.lines.add(Substring.EMPTY);
         } else {
-            this.textRenderer.getTextHandler().wrapLines(this.text, this.width, Style.EMPTY, false, (style, start, end) -> this.lines.add(new Substring(start, end)));
+            this.textRenderer.getSplitter().splitLines(this.text, this.width, Style.EMPTY, false, (style, start, end) -> this.lines.add(new Substring(start, end)));
             if (this.text.charAt(this.text.length() - 1) == '\n') {
                 this.lines.add(new Substring(this.text.length(), this.text.length()));
             }
@@ -536,7 +536,7 @@ public class EditBox {
      * @see #truncate
      */
     private String truncateForReplacement(String value) {
-        return this.hasMaxLength() ? StringHelper.truncate(value, this.maxLength, false) : value;
+        return this.hasMaxLength() ? StringUtil.truncateStringIfNecessary(value, this.maxLength, false) : value;
     }
 
     /**
@@ -550,14 +550,14 @@ public class EditBox {
         String string = value;
         if (this.hasMaxLength()) {
             int i = this.maxLength - this.text.length();
-            string = StringHelper.truncate(value, i, false);
+            string = StringUtil.truncateStringIfNecessary(value, i, false);
         }
 
         return string;
     }
 
     private boolean exceedsMaxLines(String text) {
-        return this.hasMaxLines() && this.textRenderer.getTextHandler().wrapLines(text, this.width, Style.EMPTY).size() + (StringHelper.endsWithLineBreak(text) ? 1 : 0) > this.maxLines;
+        return this.hasMaxLines() && this.textRenderer.getSplitter().splitLines(text, this.width, Style.EMPTY).size() + (StringUtil.endsWithNewLine(text) ? 1 : 0) > this.maxLines;
     }
 
     /**

@@ -22,12 +22,12 @@ data class DeleteItemsBuiltin(val arguments: Arguments) : Expression {
         val containers = program.context.entity.getConnectedContainers()
 
         for (container in containers) {
-            for (slot in 0..<container.size()) {
+            for (slot in 0..<container.containerSize) {
                 if (count != null && count <= 0) {
                     return Null.VALUE
                 }
 
-                val stack = container.getStack(slot)
+                val stack = container.getItem(slot)
 
                 val predicateArguments = Arguments(mutableListOf(ItemValue(stack.item)), mutableMapOf())
                 val predicateResult = itemPredicate.call(program, predicateArguments)
@@ -44,12 +44,12 @@ data class DeleteItemsBuiltin(val arguments: Arguments) : Expression {
                     if (count - stack.count >= 0) {
                         count -= stack.count
                     } else {
-                        stack.decrement(count)
+                        stack.shrink(count)
                         return Null.VALUE
                     }
                 }
 
-                container.removeStack(slot)
+                container.removeItemNoUpdate(slot)
             }
         }
 

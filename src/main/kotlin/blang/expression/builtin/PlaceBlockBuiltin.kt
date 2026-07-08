@@ -1,11 +1,11 @@
 package blang.expression.builtin
 
 import blang.expression.value.ItemValue
-import net.minecraft.block.Blocks
-import net.minecraft.item.BlockItem
-import net.minecraft.item.ItemStack
-import net.minecraft.item.Items
-import net.minecraft.util.math.BlockPos
+import net.minecraft.core.BlockPos
+import net.minecraft.world.item.BlockItem
+import net.minecraft.world.item.ItemStack
+import net.minecraft.world.item.Items
+import net.minecraft.world.level.block.Blocks
 import parser.Program
 import parser.RunException
 import parser.expression.Arguments
@@ -26,7 +26,7 @@ data class PlaceBlockBuiltin(val arguments: Arguments) : Expression {
 
         val entityPos = program.context.pos
         val pos = BlockPos(entityPos.x + x, entityPos.y + y, entityPos.z + z)
-        val world = program.context.entity.getWorld() ?: throw RunException("World is null")
+        val world = program.context.entity.level ?: throw RunException("World is null")
 
         if (world.getBlockState(pos).block !== Blocks.AIR) {
             return BooleanValue(false)
@@ -35,10 +35,10 @@ data class PlaceBlockBuiltin(val arguments: Arguments) : Expression {
         val containers = program.context.entity.getConnectedContainers()
 
         for (container in containers) {
-            for (slot in 0..<container.size()) {
-                val stack = container.getStack(slot)
+            for (slot in 0..<container.containerSize) {
+                val stack = container.getItem(slot)
 
-                if (stack.isOf(Items.AIR)) {
+                if (stack.`is`(Items.AIR)) {
                     continue
                 }
 
@@ -53,20 +53,20 @@ data class PlaceBlockBuiltin(val arguments: Arguments) : Expression {
                     continue
                 }
 
-                for (entry in BlockItem.BLOCK_ITEMS.entries) {
-                    if (!stack.isOf(entry.value)) {
+                for (entry in BlockItem.BY_BLOCK.entries) {
+                    if (!stack.`is`(entry.value)) {
                         continue
                     }
 
-                    stack.decrement(1)
+                    stack.shrink(1)
 
                     if (stack.isEmpty) {
-                        container.setStack(slot, ItemStack.EMPTY)
+                        container.setItem(slot, ItemStack.EMPTY)
                     } else {
-                        container.setStack(slot, stack)
+                        container.setItem(slot, stack)
                     }
 
-                    world.setBlockState(pos, entry.key.defaultState)
+                    world.setBlockAndUpdate(pos, entry.key.defaultBlockState())
                     return BooleanValue(true)
                 }
             }

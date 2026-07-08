@@ -2,14 +2,14 @@ package blang.expression.builtin
 
 import blang.expression.value.BlockValue
 import net.fabricmc.fabric.api.entity.FakePlayer
-import net.minecraft.block.Block
-import net.minecraft.block.Blocks
-import net.minecraft.enchantment.Enchantments
-import net.minecraft.item.ItemStack
-import net.minecraft.item.Items
-import net.minecraft.registry.RegistryKeys
-import net.minecraft.server.world.ServerWorld
-import net.minecraft.util.math.BlockPos
+import net.minecraft.core.BlockPos
+import net.minecraft.core.registries.Registries
+import net.minecraft.server.level.ServerLevel
+import net.minecraft.world.item.ItemStack
+import net.minecraft.world.item.Items
+import net.minecraft.world.item.enchantment.Enchantments
+import net.minecraft.world.level.block.Block
+import net.minecraft.world.level.block.Blocks
 import parser.Program
 import parser.RunException
 import parser.expression.Arguments
@@ -32,7 +32,7 @@ data class BreakBlockBuiltin(val arguments: Arguments) : Expression {
 
         val entityPos = program.context.pos
         val pos = BlockPos(entityPos.x + x, entityPos.y + y, entityPos.z + z)
-        val world = program.context.entity.getWorld() ?: throw RunException("World is null")
+        val world = program.context.entity.level ?: throw RunException("World is null")
 
         val block = world.getBlockState(pos).block
 
@@ -51,30 +51,30 @@ data class BreakBlockBuiltin(val arguments: Arguments) : Expression {
         val tool = ItemStack(Items.DIAMOND_PICKAXE)
 
         if (silkTouch) {
-            val registry = world.registryManager.getOrThrow(RegistryKeys.ENCHANTMENT)
-            val enchantment = registry.getEntry(registry.get(Enchantments.SILK_TOUCH))
-            tool.addEnchantment(enchantment, 1)
+            val registry = world.registryAccess().lookupOrThrow(Registries.ENCHANTMENT)
+            val enchantment = registry.wrapAsHolder(registry.getValue(Enchantments.SILK_TOUCH)!!)
+            tool.enchant(enchantment, 1)
         }
 
-        val drops = Block.getDroppedStacks(world.getBlockState(pos), world as ServerWorld, pos, world.getBlockEntity(pos), FakePlayer.get(world), tool)
-        world.setBlockState(pos, Blocks.AIR.defaultState)
+        val drops = Block.getDrops(world.getBlockState(pos), world as ServerLevel, pos, world.getBlockEntity(pos), FakePlayer.get(world), tool)
+        world.setBlockAndUpdate(pos, Blocks.AIR.defaultBlockState())
 
         for (drop in drops) {
             for (container in containers) {
-                for (slot in 0..<container.size()) {
-                    val stack = container.getStack(slot)
+                for (slot in 0..<container.containerSize) {
+                    val stack = container.getItem(slot)
 
-                    if (stack.isOf(drop.item) && stack.count < stack.maxCount) {
-                        val move = min(drop.count, stack.maxCount - stack.count)
+                    if (stack.`is`(drop.item) && stack.count < stack.maxStackSize) {
+                        val move = min(drop.count, stack.maxStackSize - stack.count)
 
-                        drop.decrement(move)
-                        stack.increment(move)
+                        drop.shrink(move)
+                        stack.grow(move)
 
-                        container.setStack(slot, stack)
+                        container.setItem(slot, stack)
                     }
 
-                    if (stack.isOf(Items.AIR)) {
-                        container.setStack(slot, drop.copy())
+                    if (stack.`is`(Items.AIR)) {
+                        container.setItem(slot, drop.copy())
                         drop.count = 0
                     }
 

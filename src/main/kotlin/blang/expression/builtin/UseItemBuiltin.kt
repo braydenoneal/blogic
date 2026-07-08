@@ -2,13 +2,13 @@ package blang.expression.builtin
 
 import blang.expression.value.ItemValue
 import net.fabricmc.fabric.api.entity.FakePlayer
-import net.minecraft.item.ItemUsageContext
-import net.minecraft.item.Items
-import net.minecraft.server.world.ServerWorld
-import net.minecraft.util.ActionResult
-import net.minecraft.util.Hand
-import net.minecraft.util.hit.BlockHitResult
-import net.minecraft.util.math.BlockPos
+import net.minecraft.core.BlockPos
+import net.minecraft.server.level.ServerLevel
+import net.minecraft.world.InteractionHand
+import net.minecraft.world.InteractionResult
+import net.minecraft.world.item.Items
+import net.minecraft.world.item.context.UseOnContext
+import net.minecraft.world.phys.BlockHitResult
 import parser.Program
 import parser.RunException
 import parser.expression.Arguments
@@ -30,15 +30,15 @@ data class UseItemBuiltin(val arguments: Arguments) : Expression {
 
         val entityPos = program.context.pos
         val pos = BlockPos(entityPos.x + x, entityPos.y + y, entityPos.z + z)
-        val world = program.context.entity.getWorld() ?: throw RunException("World is null")
+        val world = program.context.entity.level ?: throw RunException("World is null")
 
         val containers = program.context.entity.getConnectedContainers()
 
         for (container in containers) {
-            for (slot in 0..<container.size()) {
-                val stack = container.getStack(slot)
+            for (slot in 0..<container.containerSize) {
+                val stack = container.getItem(slot)
 
-                if (stack.isOf(Items.AIR)) {
+                if (stack.`is`(Items.AIR)) {
                     continue
                 }
 
@@ -54,63 +54,63 @@ data class UseItemBuiltin(val arguments: Arguments) : Expression {
                 }
 
                 val facing = program.context.entity.facing
-                val hit = BlockHitResult(pos.toCenterPos(), facing, pos, false)
-                val player = FakePlayer.get(world as ServerWorld)
+                val hit = BlockHitResult(pos.center, facing, pos, false)
+                val player = FakePlayer.get(world as ServerLevel)
 
-                var result = world.getBlockState(pos).onUseWithItem(stack, world, player, Hand.MAIN_HAND, hit)
+                var result = world.getBlockState(pos).useItemOn(stack, world, player, InteractionHand.MAIN_HAND, hit)
 
-                if (result is ActionResult.PassToDefaultBlockAction) {
-                    if (stack.useOnBlock(ItemUsageContext(world, player, Hand.MAIN_HAND, stack, hit)) !is ActionResult.Pass) {
+                if (result is InteractionResult.TryEmptyHandInteraction) {
+                    if (stack.useOn(UseOnContext(world, player, InteractionHand.MAIN_HAND, stack, hit)) !is InteractionResult.Pass) {
                         return BooleanValue(true)
                     }
                 }
 
-                player.setPosition(pos.toCenterPos().add(0.0, -1.5, 0.0))
-                player.inventory.clear()
+                player.setPos(pos.center.add(0.0, -1.5, 0.0))
+                player.inventory.clearContent()
                 val newStack = stack.split(1)
 
                 if (stack.isEmpty) {
-                    container.removeStack(slot)
+                    container.removeItemNoUpdate(slot)
                 }
 
-                player.giveItemStack(newStack)
-                result = player.mainHandStack.item.use(world, player, Hand.MAIN_HAND)
+                player.addItem(newStack)
+                result = player.mainHandItem.item.use(world, player, InteractionHand.MAIN_HAND)
 
-                if (result is ActionResult.Success) {
-                    player.giveItemStack(result.newHandStack)
+                if (result is InteractionResult.Success) {
+                    player.addItem(result.heldItemTransformedTo()!!)
 
-                    for (playerSlot in 0..<player.inventory.size()) {
-                        val playerStack = player.inventory.getStack(playerSlot)
+                    for (playerSlot in 0..<player.inventory.containerSize) {
+                        val playerStack = player.inventory.getItem(playerSlot)
 
-                        if (playerStack.isOf(Items.AIR)) {
+                        if (playerStack.`is`(Items.AIR)) {
                             continue
                         }
 
                         for (container in program.context.entity.getConnectedContainers()) {
-                            for (slot in 0..<container.size()) {
-                                val stack = container.getStack(slot)
+                            for (slot in 0..<container.containerSize) {
+                                val stack = container.getItem(slot)
 
-                                if (stack.isOf(Items.AIR)) {
-                                    container.setStack(slot, playerStack)
-                                    player.inventory.removeStack(playerSlot)
+                                if (stack.`is`(Items.AIR)) {
+                                    container.setItem(slot, playerStack)
+                                    player.inventory.removeItemNoUpdate(playerSlot)
                                     break
                                 }
 
-                                if (!playerStack.isOf(stack.item)) {
+                                if (!playerStack.`is`(stack.item)) {
                                     continue
                                 }
 
-                                val move = min(playerStack.count, stack.maxCount - stack.count)
+                                val move = min(playerStack.count, stack.maxStackSize - stack.count)
 
                                 if (move <= 0) {
                                     continue
                                 }
 
-                                playerStack.decrement(move)
-                                stack.increment(move)
+                                playerStack.shrink(move)
+                                stack.grow(move)
 
                                 if (playerStack.isEmpty) {
-                                    player.inventory.removeStack(playerSlot)
+                                    player.inventory.removeItemNoUpdate(playerSlot)
                                     break
                                 }
                             }

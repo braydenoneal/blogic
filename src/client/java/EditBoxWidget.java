@@ -1,16 +1,16 @@
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.minecraft.client.font.TextRenderer;
-import net.minecraft.client.gui.Click;
-import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.gui.screen.narration.NarrationMessageBuilder;
-import net.minecraft.client.gui.screen.narration.NarrationPart;
-import net.minecraft.client.gui.widget.ScrollableTextFieldWidget;
-import net.minecraft.client.input.CharInput;
-import net.minecraft.client.input.KeyInput;
-import net.minecraft.screen.ScreenTexts;
-import net.minecraft.text.Text;
-import net.minecraft.util.Colors;
+import net.minecraft.client.gui.Font;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.components.AbstractTextAreaWidget;
+import net.minecraft.client.gui.narration.NarratedElementType;
+import net.minecraft.client.gui.narration.NarrationElementOutput;
+import net.minecraft.client.input.CharacterEvent;
+import net.minecraft.client.input.KeyEvent;
+import net.minecraft.client.input.MouseButtonEvent;
+import net.minecraft.network.chat.CommonComponents;
+import net.minecraft.network.chat.Component;
+import net.minecraft.util.CommonColors;
 import net.minecraft.util.Util;
 import tokenizer.Type;
 
@@ -18,26 +18,26 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- * Reimplementation of {@link net.minecraft.client.gui.widget.EditBoxWidget}
+ * Reimplementation of {@link net.minecraft.client.gui.components.MultiLineEditBox}
  */
-public class EditBoxWidget extends ScrollableTextFieldWidget {
+public class EditBoxWidget extends AbstractTextAreaWidget {
     private static final int UNFOCUSED_BOX_TEXT_COLOR = 0xCCE0E0E0;
     private static final int CURSOR_BLINK_INTERVAL = 500;
     private static final int LINE_HEIGHT = 11;
-    private final TextRenderer textRenderer;
+    private final Font textRenderer;
     /**
      * The placeholder text that gets rendered when the edit box is empty. This does not
      * get returned from {@link #getText}; an empty text will be returned in such cases.
      */
-    private final Text placeholder;
+    private final Component placeholder;
     private final EditBox editBox;
-    private long lastSwitchFocusTime = Util.getMeasuringTimeMs();
+    private long lastSwitchFocusTime = Util.getMillis();
 
-    EditBoxWidget(TextRenderer textRenderer, int x, int y, int width, int height, Text placeholder, Text message, boolean hasBackground, boolean hasOverlay) {
+    EditBoxWidget(Font textRenderer, int x, int y, int width, int height, Component placeholder, Component message, boolean hasBackground, boolean hasOverlay) {
         super(x, y, width, height, message, hasBackground, hasOverlay);
         this.textRenderer = textRenderer;
         this.placeholder = placeholder;
-        this.editBox = new EditBox(textRenderer, width - this.getPadding(), LINE_HEIGHT);
+        this.editBox = new EditBox(textRenderer, width - this.totalInnerPadding(), LINE_HEIGHT);
         this.editBox.setCursorChangeListener(this::onCursorChange);
     }
 
@@ -69,44 +69,44 @@ public class EditBoxWidget extends ScrollableTextFieldWidget {
     }
 
     @Override
-    public void appendClickableNarrations(NarrationMessageBuilder builder) {
-        builder.put(NarrationPart.TITLE, Text.translatable("gui.narrate.editBox", this.getMessage(), this.getText()));
+    public void updateWidgetNarration(NarrationElementOutput builder) {
+        builder.add(NarratedElementType.TITLE, Component.translatable("gui.narrate.editBox", this.getMessage(), this.getText()));
     }
 
     @Override
-    public void onClick(Click click, boolean doubled) {
+    public void onClick(MouseButtonEvent click, boolean doubled) {
         if (doubled) {
             this.editBox.selectWord();
         } else {
-            this.editBox.setSelecting(click.hasShift());
+            this.editBox.setSelecting(click.hasShiftDown());
             this.moveCursor(click.x(), click.y());
         }
 
     }
 
     @Override
-    protected void onDrag(Click click, double offsetX, double offsetY) {
+    protected void onDrag(MouseButtonEvent click, double offsetX, double offsetY) {
         this.editBox.setSelecting(true);
         this.moveCursor(click.x(), click.y());
-        this.editBox.setSelecting(click.hasShift());
+        this.editBox.setSelecting(click.hasShiftDown());
     }
 
     @Override
-    public boolean keyPressed(KeyInput input) {
+    public boolean keyPressed(KeyEvent input) {
         return this.editBox.handleSpecialKey(input);
     }
 
     @Override
-    public boolean charTyped(CharInput input) {
-        if (this.visible && this.isFocused() && input.isValidChar()) {
-            this.editBox.replaceSelection(input.asString());
+    public boolean charTyped(CharacterEvent input) {
+        if (this.visible && this.isFocused() && input.isAllowedChatCharacter()) {
+            this.editBox.replaceSelection(input.codepointAsString());
             return true;
         } else {
             return false;
         }
     }
 
-    private void drawText(DrawContext context, String text, int x, int y) {
+    private void drawText(GuiGraphics context, String text, int x, int y) {
         int position = 0;
 
         while (position < text.length()) {
@@ -130,39 +130,39 @@ public class EditBoxWidget extends ScrollableTextFieldWidget {
                         color = 0xFFC77DBB;
                     }
 
-                    context.drawText(textRenderer, group, x, y, color, false);
+                    context.drawString(textRenderer, group, x, y, color, false);
                     position += group.length();
-                    x += textRenderer.getWidth(group);
+                    x += textRenderer.width(group);
                     error = false;
                     break;
                 }
             }
 
             if (error) {
-                context.drawText(textRenderer, text.substring(position), x, y, 0xFFF75464, false);
+                context.drawString(textRenderer, text.substring(position), x, y, 0xFFF75464, false);
                 break;
             }
         }
     }
 
     @Override
-    protected void renderContents(DrawContext context, int mouseX, int mouseY, float deltaTicks) {
+    protected void renderContents(GuiGraphics context, int mouseX, int mouseY, float deltaTicks) {
         context.fill(getX(), getY(), getX() + getWidth(), getY() + Math.max(getHeight(), editBox.getLineCount() * LINE_HEIGHT + 6), 0xFF1E1F22);
         String text = editBox.getText();
 
         if (text.isEmpty() && !isFocused()) {
-            context.drawWrappedTextWithShadow(textRenderer, placeholder, getTextX(), getTextY() + 2, width - getPadding(), UNFOCUSED_BOX_TEXT_COLOR);
+            context.drawWordWrap(textRenderer, placeholder, getInnerLeft(), getInnerTop() + 2, width - totalInnerPadding(), UNFOCUSED_BOX_TEXT_COLOR);
             return;
         }
 
         int pos = editBox.getCursor();
-        boolean focused = isFocused() && (Util.getMeasuringTimeMs() - lastSwitchFocusTime) / CURSOR_BLINK_INTERVAL % 2L == 0L;
+        boolean focused = isFocused() && (Util.getMillis() - lastSwitchFocusTime) / CURSOR_BLINK_INTERVAL % 2L == 0L;
         int x;
-        int textY = getTextY() + 2;
+        int textY = getInnerTop() + 2;
 
         for (EditBox.Substring line : editBox.getLines()) {
-            boolean isVisible = isVisible(textY, textY + LINE_HEIGHT);
-            int textX = getTextX();
+            boolean isVisible = withinContentAreaTopBottom(textY, textY + LINE_HEIGHT);
+            int textX = getInnerLeft();
 
             if (isVisible) {
                 String fullLineText = text.substring(line.beginIndex(), line.endIndex());
@@ -172,7 +172,7 @@ public class EditBoxWidget extends ScrollableTextFieldWidget {
             if (focused && pos >= line.beginIndex() && pos <= line.endIndex()) {
                 if (isVisible) {
                     String lineUntilPos = text.substring(line.beginIndex(), pos);
-                    x = textX + textRenderer.getWidth(lineUntilPos);
+                    x = textX + textRenderer.width(lineUntilPos);
                     context.fill(x, textY - 2, x + 1, textY + 9, 0xE0FFFFFF);
                 }
             }
@@ -182,8 +182,8 @@ public class EditBoxWidget extends ScrollableTextFieldWidget {
 
         if (editBox.hasSelection()) {
             EditBox.Substring substring2 = editBox.getSelection();
-            int n = getTextX();
-            textY = getTextY();
+            int n = getInnerLeft();
+            textY = getInnerTop();
 
             for (EditBox.Substring substring3 : editBox.getLines()) {
                 if (substring2.beginIndex() <= substring3.endIndex()) {
@@ -191,17 +191,17 @@ public class EditBoxWidget extends ScrollableTextFieldWidget {
                         break;
                     }
 
-                    if (isVisible(textY, textY + LINE_HEIGHT)) {
-                        int o = textRenderer.getWidth(text.substring(substring3.beginIndex(), Math.max(substring2.beginIndex(), substring3.beginIndex())));
+                    if (withinContentAreaTopBottom(textY, textY + LINE_HEIGHT)) {
+                        int o = textRenderer.width(text.substring(substring3.beginIndex(), Math.max(substring2.beginIndex(), substring3.beginIndex())));
                         int p;
 
                         if (substring2.endIndex() > substring3.endIndex()) {
-                            p = width - getTextMargin();
+                            p = width - innerPadding();
                         } else {
-                            p = textRenderer.getWidth(text.substring(substring3.beginIndex(), substring2.endIndex()));
+                            p = textRenderer.width(text.substring(substring3.beginIndex(), substring2.endIndex()));
                         }
 
-                        context.drawSelection(n + o, textY, n + p, textY + LINE_HEIGHT, true);
+                        context.textHighlight(n + o, textY, n + p, textY + LINE_HEIGHT, true);
                     }
                 }
 
@@ -211,43 +211,43 @@ public class EditBoxWidget extends ScrollableTextFieldWidget {
     }
 
     @Override
-    protected void renderOverlay(DrawContext context) {
-        super.renderOverlay(context);
+    protected void renderDecorations(GuiGraphics context) {
+        super.renderDecorations(context);
         if (this.editBox.hasMaxLength()) {
             int i = this.editBox.getMaxLength();
-            Text text = Text.translatable("gui.multiLineEditBox.character_limit", this.editBox.getText().length(), i);
-            context.drawTextWithShadow(this.textRenderer, text, this.getX() + this.width - this.textRenderer.getWidth(text), this.getY() + this.height + 4, Colors.LIGHT_GRAY);
+            Component text = Component.translatable("gui.multiLineEditBox.character_limit", this.editBox.getText().length(), i);
+            context.drawString(this.textRenderer, text, this.getX() + this.width - this.textRenderer.width(text), this.getY() + this.height + 4, CommonColors.LIGHT_GRAY);
         }
     }
 
     @Override
-    public int getContentsHeight() {
+    public int getInnerHeight() {
         return LINE_HEIGHT * this.editBox.getLineCount();
     }
 
     @Override
-    protected double getDeltaYPerScroll() {
+    protected double scrollRate() {
         return LINE_HEIGHT * 3.0;
     }
 
     private void onCursorChange() {
-        double d = this.getScrollY();
+        double d = this.scrollAmount();
         EditBox.Substring substring = this.editBox.getLine((int) (d / LINE_HEIGHT));
         if (this.editBox.getCursor() <= substring.beginIndex()) {
             d = this.editBox.getCurrentLineIndex() * LINE_HEIGHT;
         } else {
             EditBox.Substring substring2 = this.editBox.getLine((int) ((d + this.height) / LINE_HEIGHT) - 1);
             if (this.editBox.getCursor() > substring2.endIndex()) {
-                d = this.editBox.getCurrentLineIndex() * LINE_HEIGHT - this.height + LINE_HEIGHT + this.getPadding();
+                d = this.editBox.getCurrentLineIndex() * LINE_HEIGHT - this.height + LINE_HEIGHT + this.totalInnerPadding();
             }
         }
 
-        this.setScrollY(d);
+        this.setScrollAmount(d);
     }
 
     private void moveCursor(double mouseX, double mouseY) {
-        double d = mouseX - this.getX() - this.getTextMargin();
-        double e = mouseY - this.getY() - this.getTextMargin() + this.getScrollY();
+        double d = mouseX - this.getX() - this.innerPadding();
+        double e = mouseY - this.getY() - this.innerPadding() + this.scrollAmount();
         this.editBox.moveCursor(d, e);
     }
 
@@ -255,7 +255,7 @@ public class EditBoxWidget extends ScrollableTextFieldWidget {
     public void setFocused(boolean focused) {
         super.setFocused(focused);
         if (focused) {
-            this.lastSwitchFocusTime = Util.getMeasuringTimeMs();
+            this.lastSwitchFocusTime = Util.getMillis();
         }
     }
 
@@ -274,10 +274,10 @@ public class EditBoxWidget extends ScrollableTextFieldWidget {
             return this;
         }
 
-        public EditBoxWidget build(TextRenderer textRenderer, int width, int height, Text message) {
+        public EditBoxWidget build(Font textRenderer, int width, int height, Component message) {
             boolean hasBackground = true;
             boolean hasOverlay = true;
-            return new EditBoxWidget(textRenderer, this.x, this.y, width, height, ScreenTexts.EMPTY, message, hasBackground, hasOverlay);
+            return new EditBoxWidget(textRenderer, this.x, this.y, width, height, CommonComponents.EMPTY, message, hasBackground, hasOverlay);
         }
     }
 }

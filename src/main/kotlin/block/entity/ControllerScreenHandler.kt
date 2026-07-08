@@ -1,31 +1,31 @@
 package block.entity
 
-import net.minecraft.entity.player.PlayerEntity
-import net.minecraft.entity.player.PlayerInventory
-import net.minecraft.item.ItemStack
-import net.minecraft.screen.ScreenHandler
-import net.minecraft.util.math.BlockPos
+import net.minecraft.core.BlockPos
+import net.minecraft.world.entity.player.Inventory
+import net.minecraft.world.entity.player.Player
+import net.minecraft.world.inventory.AbstractContainerMenu
+import net.minecraft.world.item.ItemStack
 
-class ControllerScreenHandler(syncId: Int, ignoredPlayerInventory: PlayerInventory, private val entity: ControllerBlockEntity) : ScreenHandler(ModBlockEntities.CONTROLLER_SCREEN_HANDLER, syncId) {
-    constructor(syncId: Int, playerInventory: PlayerInventory, pos: BlockPos) : this(syncId, playerInventory, (playerInventory.player.entityWorld.getBlockEntity(pos) as ControllerBlockEntity))
+class ControllerScreenHandler(syncId: Int, ignoredPlayerInventory: Inventory, private val entity: ControllerBlockEntity) : AbstractContainerMenu(ModBlockEntities.CONTROLLER_SCREEN_HANDLER, syncId) {
+    constructor(syncId: Int, playerInventory: Inventory, pos: BlockPos) : this(syncId, playerInventory, (playerInventory.player.level().getBlockEntity(pos) as ControllerBlockEntity))
 
     fun source(): String {
         return entity.program.source
     }
 
     fun pos(): BlockPos {
-        return entity.getPos()
+        return entity.blockPos
     }
 
     fun setSource(source: String) {
         entity.setSource(source)
     }
 
-    override fun quickMove(player: PlayerEntity, slot: Int): ItemStack? {
-        return null
+    override fun quickMoveStack(player: Player, i: Int): ItemStack {
+        return ItemStack.EMPTY
     }
 
-    override fun canUse(player: PlayerEntity): Boolean {
+    override fun stillValid(player: Player): Boolean {
         return true
     }
 }

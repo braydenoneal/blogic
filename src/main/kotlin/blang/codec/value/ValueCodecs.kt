@@ -11,10 +11,10 @@ import com.mojang.serialization.Codec
 import com.mojang.serialization.MapCodec
 import com.mojang.serialization.codecs.RecordCodecBuilder
 import com.mojang.serialization.codecs.RecordCodecBuilder.mapCodec
-import net.minecraft.item.ItemStack
-import net.minecraft.registry.Registries
-import net.minecraft.registry.RegistryKeys
-import net.minecraft.registry.tag.TagKey
+import net.minecraft.core.registries.BuiltInRegistries
+import net.minecraft.core.registries.Registries
+import net.minecraft.tags.TagKey
+import net.minecraft.world.item.ItemStack
 import parser.expression.value.*
 
 object ValueCodecs {
@@ -74,7 +74,7 @@ object ValueCodecs {
     }
     val BLOCK_VALUE_CODEC: MapCodec<BlockValue> = mapCodec {
         it.group(
-            Registries.BLOCK.getCodec().fieldOf("value").forGetter(BlockValue::value),
+            BuiltInRegistries.BLOCK.byNameCodec().fieldOf("value").forGetter(BlockValue::value),
         ).apply(it, ::BlockValue)
     }
     val ITEM_STACK_CODEC: MapCodec<ItemStackValue> = mapCodec {
@@ -84,12 +84,12 @@ object ValueCodecs {
     }
     val ITEM_CODEC: MapCodec<ItemValue> = mapCodec {
         it.group(
-            Registries.ITEM.getCodec().fieldOf("value").forGetter(ItemValue::value),
+            BuiltInRegistries.ITEM.byNameCodec().fieldOf("value").forGetter(ItemValue::value),
         ).apply(it, ::ItemValue)
     }
     val TAG_CODEC: MapCodec<TagValue> = mapCodec {
         it.group(
-            TagKey.codec(RegistryKeys.ITEM).fieldOf("value").forGetter(TagValue::value),
+            TagKey.hashedCodec(Registries.ITEM).fieldOf("value").forGetter(TagValue::value),
         ).apply(it, ::TagValue)
     }
 }

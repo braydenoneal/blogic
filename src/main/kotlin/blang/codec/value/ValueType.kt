@@ -3,10 +3,10 @@ package blang.codec.value
 import com.mojang.serialization.Codec
 import com.mojang.serialization.Lifecycle
 import com.mojang.serialization.MapCodec
-import net.minecraft.registry.Registry
-import net.minecraft.registry.RegistryKey
-import net.minecraft.registry.SimpleRegistry
-import net.minecraft.util.Identifier
+import net.minecraft.core.MappedRegistry
+import net.minecraft.core.Registry
+import net.minecraft.resources.Identifier
+import net.minecraft.resources.ResourceKey
 import parser.expression.value.*
 import java.util.function.Function
 
@@ -31,11 +31,11 @@ data class ValueType<T : Value<*>>(val codec: MapCodec<T>) {
             }
         }
 
-        val REGISTRY: Registry<ValueType<*>> = SimpleRegistry(
-            RegistryKey.ofRegistry(Identifier.of("blogic", "value_types")), Lifecycle.stable(),
+        val REGISTRY: Registry<ValueType<*>> = MappedRegistry(
+            ResourceKey.createRegistryKey(Identifier.fromNamespaceAndPath("blogic", "value_types")), Lifecycle.stable(),
         )
 
-        val CODEC: Codec<Value<*>> = REGISTRY.getCodec().dispatch("type", type, ValueType<*>::codec)
+        val CODEC: Codec<Value<*>> = REGISTRY.byNameCodec().dispatch("type", type, ValueType<*>::codec)
         val MAP_CODEC: MapCodec<Value<*>> = CODEC.fieldOf("value")
     }
 }

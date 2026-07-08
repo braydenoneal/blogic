@@ -1,7 +1,7 @@
 package blang.codec.statement
 
-import net.minecraft.registry.Registry
-import net.minecraft.util.Identifier
+import net.minecraft.core.Registry
+import net.minecraft.resources.Identifier
 import parser.statement.Statement
 
 object StatementTypes {
@@ -19,7 +19,7 @@ object StatementTypes {
     fun <T : Statement> register(id: String, statementType: StatementType<T>): StatementType<T> {
         return Registry.register(
             StatementType.REGISTRY,
-            Identifier.of("blogic", id),
+            Identifier.fromNamespaceAndPath("blogic", id),
             statementType,
         )
     }

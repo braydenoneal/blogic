@@ -3,10 +3,10 @@ package blang.codec.statement
 import com.mojang.serialization.Codec
 import com.mojang.serialization.Lifecycle
 import com.mojang.serialization.MapCodec
-import net.minecraft.registry.Registry
-import net.minecraft.registry.RegistryKey
-import net.minecraft.registry.SimpleRegistry
-import net.minecraft.util.Identifier
+import net.minecraft.core.MappedRegistry
+import net.minecraft.core.Registry
+import net.minecraft.resources.Identifier
+import net.minecraft.resources.ResourceKey
 import parser.statement.*
 import java.util.function.Function
 
@@ -28,10 +28,10 @@ data class StatementType<T : Statement>(val codec: MapCodec<T>) {
             }
         }
 
-        val REGISTRY: Registry<StatementType<*>> = SimpleRegistry(
-            RegistryKey.ofRegistry(Identifier.of("blogic", "statement_types")), Lifecycle.stable(),
+        val REGISTRY: Registry<StatementType<*>> = MappedRegistry(
+            ResourceKey.createRegistryKey(Identifier.fromNamespaceAndPath("blogic", "statement_types")), Lifecycle.stable(),
         )
 
-        val CODEC: Codec<Statement> = REGISTRY.getCodec().dispatch("type", type, StatementType<*>::codec)
+        val CODEC: Codec<Statement> = REGISTRY.byNameCodec().dispatch("type", type, StatementType<*>::codec)
     }
 }

@@ -5,10 +5,10 @@ import blang.expression.builtin.PrintBuiltin
 import com.mojang.serialization.Codec
 import com.mojang.serialization.Lifecycle
 import com.mojang.serialization.MapCodec
-import net.minecraft.registry.Registry
-import net.minecraft.registry.RegistryKey
-import net.minecraft.registry.SimpleRegistry
-import net.minecraft.util.Identifier
+import net.minecraft.core.MappedRegistry
+import net.minecraft.core.Registry
+import net.minecraft.resources.Identifier
+import net.minecraft.resources.ResourceKey
 import parser.expression.*
 import parser.expression.builtin.*
 import parser.expression.builtin.list.*
@@ -84,10 +84,10 @@ data class ExpressionType<T : Expression>(val codec: MapCodec<T>) {
             }
         }
 
-        val REGISTRY: Registry<ExpressionType<*>> = SimpleRegistry(
-            RegistryKey.ofRegistry(Identifier.of("blogic", "expression_types")), Lifecycle.stable(),
+        val REGISTRY: Registry<ExpressionType<*>> = MappedRegistry(
+            ResourceKey.createRegistryKey(Identifier.fromNamespaceAndPath("blogic", "expression_types")), Lifecycle.stable(),
         )
 
-        val CODEC: Codec<Expression> = REGISTRY.getCodec().dispatch("type", type, ExpressionType<*>::codec)
+        val CODEC: Codec<Expression> = REGISTRY.byNameCodec().dispatch("type", type, ExpressionType<*>::codec)
     }
 }

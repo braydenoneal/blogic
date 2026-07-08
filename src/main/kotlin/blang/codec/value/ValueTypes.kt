@@ -1,7 +1,7 @@
 package blang.codec.value
 
-import net.minecraft.registry.Registry
-import net.minecraft.util.Identifier
+import net.minecraft.core.Registry
+import net.minecraft.resources.Identifier
 import parser.expression.value.*
 
 object ValueTypes {
@@ -20,7 +20,7 @@ object ValueTypes {
     val TAG: ValueType<blang.expression.value.TagValue> = register("tag", ValueType(ValueCodecs.TAG_CODEC))
 
     fun <T : Value<*>> register(id: String, valueType: ValueType<T>): ValueType<T> {
-        return Registry.register(ValueType.REGISTRY, Identifier.of("blogic", id), valueType)
+        return Registry.register(ValueType.REGISTRY, Identifier.fromNamespaceAndPath("blogic", id), valueType)
     }
 
     fun initialize() {

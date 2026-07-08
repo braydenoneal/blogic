@@ -1,6 +1,6 @@
 package blang.expression.value
 
-import net.minecraft.item.ItemStack
+import net.minecraft.world.item.ItemStack
 import parser.RunException
 import parser.expression.value.Value
 

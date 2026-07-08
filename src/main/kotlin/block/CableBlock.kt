@@ -1,96 +1,96 @@
 package block
 
 import block.entity.ControllerBlockEntity
-import net.minecraft.block.Block
-import net.minecraft.block.BlockState
-import net.minecraft.block.Blocks
-import net.minecraft.block.ShapeContext
-import net.minecraft.block.entity.LockableContainerBlockEntity
-import net.minecraft.entity.LivingEntity
-import net.minecraft.item.ItemStack
-import net.minecraft.state.StateManager
-import net.minecraft.state.property.BooleanProperty
-import net.minecraft.state.property.Properties
-import net.minecraft.util.math.BlockPos
-import net.minecraft.util.math.Direction
-import net.minecraft.util.math.random.Random
-import net.minecraft.util.shape.VoxelShape
-import net.minecraft.util.shape.VoxelShapes
-import net.minecraft.world.BlockView
-import net.minecraft.world.World
-import net.minecraft.world.WorldView
-import net.minecraft.world.tick.ScheduledTickView
+import net.minecraft.core.BlockPos
+import net.minecraft.core.Direction
+import net.minecraft.util.RandomSource
+import net.minecraft.world.entity.LivingEntity
+import net.minecraft.world.item.ItemStack
+import net.minecraft.world.level.BlockGetter
+import net.minecraft.world.level.Level
+import net.minecraft.world.level.LevelReader
+import net.minecraft.world.level.ScheduledTickAccess
+import net.minecraft.world.level.block.Block
+import net.minecraft.world.level.block.Blocks
+import net.minecraft.world.level.block.entity.BaseContainerBlockEntity
+import net.minecraft.world.level.block.state.BlockState
+import net.minecraft.world.level.block.state.StateDefinition
+import net.minecraft.world.level.block.state.properties.BlockStateProperties
+import net.minecraft.world.level.block.state.properties.Property
+import net.minecraft.world.phys.shapes.CollisionContext
+import net.minecraft.world.phys.shapes.Shapes
+import net.minecraft.world.phys.shapes.VoxelShape
 
-class CableBlock(settings: Settings) : Block(settings) {
+class CableBlock(settings: Properties) : Block(settings) {
     init {
-        defaultState = getStateManager().getDefaultState().with(UP, false).with(DOWN, false).with(NORTH, false).with(EAST, false).with(SOUTH, false).with(WEST, false)
+        registerDefaultState(stateDefinition.any().setValue(UP, false).setValue(DOWN, false).setValue(NORTH, false).setValue(EAST, false).setValue(SOUTH, false).setValue(WEST, false))
     }
 
-    override fun appendProperties(builder: StateManager.Builder<Block?, BlockState?>) {
+    override fun createBlockStateDefinition(builder: StateDefinition.Builder<Block, BlockState>) {
         builder.add(UP, DOWN, NORTH, EAST, SOUTH, WEST)
     }
 
-    override fun getCollisionShape(state: BlockState, world: BlockView, pos: BlockPos, context: ShapeContext): VoxelShape {
+    override fun getCollisionShape(state: BlockState, world: BlockGetter, pos: BlockPos, context: CollisionContext): VoxelShape {
         return getShape(state)
     }
 
-    override fun getOutlineShape(state: BlockState, world: BlockView, pos: BlockPos, context: ShapeContext): VoxelShape {
+    override fun getShape(state: BlockState, world: BlockGetter, pos: BlockPos, context: CollisionContext): VoxelShape {
         return getShape(state)
     }
 
     private fun getShape(state: BlockState): VoxelShape {
-        var shape = createCuboidShape(5.0, 5.0, 5.0, 11.0, 11.0, 11.0)
+        var shape = box(5.0, 5.0, 5.0, 11.0, 11.0, 11.0)
 
         val directionShapeMap = mapOf<Direction, VoxelShape>(
-            Pair(Direction.UP, createCuboidShape(5.0, 11.0, 5.0, 11.0, 16.0, 11.0)),
-            Pair(Direction.DOWN, createCuboidShape(5.0, 0.0, 5.0, 11.0, 5.0, 11.0)),
-            Pair(Direction.NORTH, createCuboidShape(5.0, 5.0, 0.0, 11.0, 11.0, 5.0)),
-            Pair(Direction.EAST, createCuboidShape(11.0, 5.0, 5.0, 16.0, 11.0, 11.0)),
-            Pair(Direction.SOUTH, createCuboidShape(5.0, 5.0, 11.0, 11.0, 11.0, 16.0)),
-            Pair(Direction.WEST, createCuboidShape(0.0, 5.0, 5.0, 5.0, 11.0, 11.0)),
+            Pair(Direction.UP, box(5.0, 11.0, 5.0, 11.0, 16.0, 11.0)),
+            Pair(Direction.DOWN, box(5.0, 0.0, 5.0, 11.0, 5.0, 11.0)),
+            Pair(Direction.NORTH, box(5.0, 5.0, 0.0, 11.0, 11.0, 5.0)),
+            Pair(Direction.EAST, box(11.0, 5.0, 5.0, 16.0, 11.0, 11.0)),
+            Pair(Direction.SOUTH, box(5.0, 5.0, 11.0, 11.0, 11.0, 16.0)),
+            Pair(Direction.WEST, box(0.0, 5.0, 5.0, 5.0, 11.0, 11.0)),
         )
 
-        for (direction in DIRECTIONS) {
-            if (state.get(DIRECTION_BOOLEAN_PROPERTY_MAP[direction])) {
-                shape = VoxelShapes.union(shape, directionShapeMap[direction])
+        for (direction in UPDATE_SHAPE_ORDER) {
+            if (state.getValue(DIRECTION_BOOLEAN_PROPERTY_MAP[direction]!!)) {
+                shape = Shapes.or(shape, directionShapeMap[direction]!!)
             }
         }
 
         return shape
     }
 
-    override fun getStateForNeighborUpdate(state: BlockState, world: WorldView, tickView: ScheduledTickView, pos: BlockPos, fromDirection: Direction, neighborPos: BlockPos, neighborState: BlockState, random: Random): BlockState {
+    override fun updateShape(state: BlockState, world: LevelReader, tickView: ScheduledTickAccess, pos: BlockPos, fromDirection: Direction, neighborPos: BlockPos, neighborState: BlockState, random: RandomSource): BlockState {
         return getUpdatedState(state, world, pos)
     }
 
-    private fun getUpdatedState(state: BlockState, world: WorldView, pos: BlockPos): BlockState {
+    private fun getUpdatedState(state: BlockState, world: LevelReader, pos: BlockPos): BlockState {
         var newState = state
 
-        for (direction in DIRECTIONS) {
-            val adjacentPos = pos.offset(direction)
+        for (direction in UPDATE_SHAPE_ORDER) {
+            val adjacentPos = pos.relative(direction)
             val adjacentState = world.getBlockState(adjacentPos)
             val adjacentBlockEntity = world.getBlockEntity(adjacentPos)
-            val connectSide = adjacentState.block is CableBlock || adjacentBlockEntity is ControllerBlockEntity || adjacentBlockEntity is LockableContainerBlockEntity
-            newState = newState.with(DIRECTION_BOOLEAN_PROPERTY_MAP[direction], connectSide)
+            val connectSide = adjacentState.block is CableBlock || adjacentBlockEntity is ControllerBlockEntity || adjacentBlockEntity is BaseContainerBlockEntity
+            newState = newState.setValue(DIRECTION_BOOLEAN_PROPERTY_MAP[direction]!!, connectSide)
         }
 
         return newState
     }
 
-    override fun onPlaced(world: World, pos: BlockPos, state: BlockState, placer: LivingEntity?, itemStack: ItemStack) {
-        super.onPlaced(world, pos, state, placer, itemStack)
-        world.setBlockState(pos, getUpdatedState(state, world, pos))
+    override fun setPlacedBy(world: Level, pos: BlockPos, state: BlockState, placer: LivingEntity?, itemStack: ItemStack) {
+        super.setPlacedBy(world, pos, state, placer, itemStack)
+        world.setBlockAndUpdate(pos, getUpdatedState(state, world, pos))
     }
 
     companion object {
-        val UP: BooleanProperty = Properties.UP
-        val DOWN: BooleanProperty = Properties.DOWN
-        val NORTH: BooleanProperty = Properties.NORTH
-        val EAST: BooleanProperty = Properties.EAST
-        val SOUTH: BooleanProperty = Properties.SOUTH
-        val WEST: BooleanProperty = Properties.WEST
+        val UP: Property<Boolean> = BlockStateProperties.UP
+        val DOWN: Property<Boolean> = BlockStateProperties.DOWN
+        val NORTH: Property<Boolean> = BlockStateProperties.NORTH
+        val EAST: Property<Boolean> = BlockStateProperties.EAST
+        val SOUTH: Property<Boolean> = BlockStateProperties.SOUTH
+        val WEST: Property<Boolean> = BlockStateProperties.WEST
 
-        val DIRECTION_BOOLEAN_PROPERTY_MAP: MutableMap<Direction, BooleanProperty> = mutableMapOf<Direction, BooleanProperty>(
+        val DIRECTION_BOOLEAN_PROPERTY_MAP: MutableMap<Direction, Property<Boolean>> = mutableMapOf(
             Pair(Direction.UP, UP),
             Pair(Direction.DOWN, DOWN),
             Pair(Direction.NORTH, NORTH),
@@ -99,8 +99,8 @@ class CableBlock(settings: Settings) : Block(settings) {
             Pair(Direction.WEST, WEST),
         )
 
-        fun settings(): Settings {
-            return Settings.copy(Blocks.STONE).nonOpaque()
+        fun settings(): Properties {
+            return Properties.ofFullCopy(Blocks.STONE).noOcclusion()
         }
     }
 }
