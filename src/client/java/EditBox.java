@@ -21,10 +21,6 @@ import java.util.function.Consumer;
  */
 @Environment(EnvType.CLIENT)
 public class EditBox {
-    /**
-     * A constant denoting that the edit box accepts unlimited amount of text. Edit box
-     * widgets with such edit boxes do not show the current text length indicator.
-     */
     public static final int UNLIMITED_LENGTH = Integer.MAX_VALUE;
     private static final Logger LOGGER = LogUtils.getLogger();
     private static final int CURSOR_WIDTH = 2;
@@ -36,9 +32,9 @@ public class EditBox {
     private int cursor;
     private int selectionEnd;
     private boolean selecting;
-    private int maxLength = Integer.MAX_VALUE;
-    private int maxLines = Integer.MAX_VALUE;
-    private Consumer<String> changeListener = text -> {
+    private final int maxLength = Integer.MAX_VALUE;
+    private final int maxLines = Integer.MAX_VALUE;
+    private final Consumer<String> changeListener = text -> {
     };
     private Runnable cursorChangeListener = () -> {
     };
@@ -50,56 +46,10 @@ public class EditBox {
         this.setText("");
     }
 
-    /**
-     * {@return the maximum length of the edit box text in characters}
-     *
-     * <p>If this equals {@link #UNLIMITED_LENGTH}, the edit box does not have a
-     * length limit. Edit box widgets with such edit boxes do not show the current
-     * text length indicator.
-     *
-     * @see #setMaxLength
-     * @see #hasMaxLength
-     */
     public int getMaxLength() {
         return this.maxLength;
     }
 
-    /**
-     * Sets the maximum length of the edit box text in characters.
-     *
-     * <p>If {@code maxLength} equals {@link #UNLIMITED_LENGTH}, the edit box does not
-     * have a length limit. Edit box widgets with such edit boxes do not show the current
-     * text length indicator.
-     *
-     * @throws IllegalArgumentException if {@code maxLength} is negative
-     * @see #getMaxLength
-     * @see #hasMaxLength
-     */
-    public void setMaxLength(int maxLength) {
-        if (maxLength < 0) {
-            throw new IllegalArgumentException("Character limit cannot be negative");
-        } else {
-            this.maxLength = maxLength;
-        }
-    }
-
-    public void setMaxLines(int maxLines) {
-        if (maxLines < 0) {
-            throw new IllegalArgumentException("Character limit cannot be negative");
-        } else {
-            this.maxLines = maxLines;
-        }
-    }
-
-    /**
-     * {@return whether the edit box has a maximum length limit}
-     *
-     * <p>Edit box widgets with edit boxes without a length limit do not
-     * show the current text length indicator.
-     *
-     * @see #getMaxLength
-     * @see #setMaxLength
-     */
     public boolean hasMaxLength() {
         return this.maxLength != Integer.MAX_VALUE;
     }
@@ -108,25 +58,10 @@ public class EditBox {
         return this.maxLines != Integer.MAX_VALUE;
     }
 
-    /**
-     * Sets the change listener that is called every time the text changes.
-     *
-     * @param changeListener the listener that takes the new text of the edit box
-     */
-    public void setChangeListener(Consumer<String> changeListener) {
-        this.changeListener = changeListener;
-    }
-
-    /**
-     * Sets the cursor change listener that is called every time the cursor position changes.
-     */
     public void setCursorChangeListener(Runnable cursorChangeListener) {
         this.cursorChangeListener = cursorChangeListener;
     }
 
-    /**
-     * Sets the text of the edit box and moves the cursor to the end of the edit box.
-     */
     public void setText(String text, boolean allowOverflow) {
         String string = this.truncateForReplacement(text);
         if (allowOverflow || !this.exceedsMaxLines(string)) {
@@ -138,9 +73,6 @@ public class EditBox {
         }
     }
 
-    /**
-     * {@return the text of the edit box}
-     */
     public String getText() {
         return this.text;
     }
@@ -149,12 +81,6 @@ public class EditBox {
         this.setText(setText, false);
     }
 
-    /**
-     * Replaces the current selection with {@code string}. If there is no
-     * selection, this inserts the string at the cursor position. This removes
-     * {@linkplain StringUtil#isAllowedChatCharacter invalid characters} and truncates
-     * the passed string if necessary.
-     */
     public void replaceSelection(String string) {
         if (!string.isEmpty() || this.hasSelection()) {
             String string2 = this.truncate(StringUtil.filterText(string, true));
@@ -169,11 +95,6 @@ public class EditBox {
         }
     }
 
-    /**
-     * Deletes the selected text, or {@code offset} characters of text from the cursor position
-     * if there is no selection. If the offset is negative, the characters before the cursor
-     * will be removed, and vice versa.
-     */
     public void delete(int offset) {
         if (!this.hasSelection()) {
             this.selectionEnd = Mth.clamp(this.cursor + offset, 0, this.text.length());
@@ -182,39 +103,22 @@ public class EditBox {
         this.replaceSelection("");
     }
 
-    /**
-     * {@return the cursor position}
-     */
     public int getCursor() {
         return this.cursor;
     }
 
-    /**
-     * Sets whether the edit box is currently selecting.
-     *
-     * <p>If using the widget, this is done by dragging or holding down Shift and clicking.
-     */
     public void setSelecting(boolean selecting) {
         this.selecting = selecting;
     }
 
-    /**
-     * {@return the current selection}
-     */
     public Substring getSelection() {
         return new Substring(Math.min(this.selectionEnd, this.cursor), Math.max(this.selectionEnd, this.cursor));
     }
 
-    /**
-     * {@return the number of total lines in the edit box}
-     */
     public int getLineCount() {
         return this.lines.size();
     }
 
-    /**
-     * {@return the line index that the cursor is located at}
-     */
     public int getCurrentLineIndex() {
         for (int i = 0; i < this.lines.size(); i++) {
             Substring substring = this.lines.get(i);
@@ -226,18 +130,10 @@ public class EditBox {
         return -1;
     }
 
-    /**
-     * {@return the line with index {@code index}}
-     */
     public Substring getLine(int index) {
         return this.lines.get(Mth.clamp(index, 0, this.lines.size() - 1));
     }
 
-    /**
-     * Moves the cursor by {@code amount} characters.
-     *
-     * @apiNote See {@link Whence} for the types of the movement.
-     */
     public void moveCursor(Whence movement, int amount) {
         switch (movement) {
             case ABSOLUTE:
@@ -257,10 +153,6 @@ public class EditBox {
         }
     }
 
-    /**
-     * Moves the cursor by {@code offset} lines. This method attempts to keep the
-     * relative position within the line the same. Does nothing if {@code offset} is zero.
-     */
     public void moveCursorLine(int offset) {
         if (offset != 0) {
             int i = this.textRenderer.width(this.text.substring(this.getCurrentLine().beginIndex, this.cursor)) + 2;
@@ -270,9 +162,6 @@ public class EditBox {
         }
     }
 
-    /**
-     * Moves the cursor to the specified position relative to the edit box.
-     */
     public void moveCursor(double x, double y) {
         int i = Mth.floor(x);
         int j = Mth.floor(y / lineHeight);
@@ -288,9 +177,6 @@ public class EditBox {
         this.moveCursor(Whence.ABSOLUTE, substring.endIndex);
     }
 
-    /**
-     * Handles the special keys, such as copy, cut, linebreak, and cursor movements.
-     */
     public boolean handleSpecialKey(KeyEvent key) {
         this.selecting = key.hasShiftDown();
         if (key.isSelectAll()) {
@@ -308,139 +194,124 @@ public class EditBox {
             this.replaceSelection("");
             return true;
         } else {
-            switch (key.key()) {
-                case 257:
-                case 335:
+            return switch (key.key()) {
+                case 257, 335 -> {
                     this.replaceSelection("\n");
-                    return true;
-                case 259:
+                    yield true;
+                }
+                case 259 -> {
                     if (key.hasControlDownWithQuirk()) {
-                        EditBox.Substring substring = this.getPreviousWordAtCursor();
+                        Substring substring = this.getPreviousWordAtCursor();
                         this.delete(substring.beginIndex - this.cursor);
                     } else {
                         this.delete(-1);
                     }
 
-                    return true;
-                case 261:
+                    yield true;
+                }
+                case 261 -> {
                     if (key.hasControlDownWithQuirk()) {
-                        EditBox.Substring substring = this.getNextWordAtCursor();
+                        Substring substring = this.getNextWordAtCursor();
                         this.delete(substring.beginIndex - this.cursor);
                     } else {
                         this.delete(1);
                     }
 
-                    return true;
-                case 262:
+                    yield true;
+                }
+                case 262 -> {
                     if (key.hasControlDownWithQuirk()) {
-                        EditBox.Substring substring = this.getNextWordAtCursor();
+                        Substring substring = this.getNextWordAtCursor();
                         this.moveCursor(Whence.ABSOLUTE, substring.beginIndex);
                     } else {
                         this.moveCursor(Whence.RELATIVE, 1);
                     }
 
-                    return true;
-                case 263:
+                    yield true;
+                }
+                case 263 -> {
                     if (key.hasControlDownWithQuirk()) {
-                        EditBox.Substring substring = this.getPreviousWordAtCursor();
+                        Substring substring = this.getPreviousWordAtCursor();
                         this.moveCursor(Whence.ABSOLUTE, substring.beginIndex);
                     } else {
                         this.moveCursor(Whence.RELATIVE, -1);
                     }
 
-                    return true;
-                case 264:
+                    yield true;
+                }
+                case 264 -> {
                     if (!key.hasControlDownWithQuirk()) {
                         this.moveCursorLine(1);
                     }
 
-                    return true;
-                case 265:
+                    yield true;
+                }
+                case 265 -> {
                     if (!key.hasControlDownWithQuirk()) {
                         this.moveCursorLine(-1);
                     }
 
-                    return true;
-                case 266:
+                    yield true;
+                }
+                case 266 -> {
                     this.moveCursor(Whence.ABSOLUTE, 0);
-                    return true;
-                case 267:
+                    yield true;
+                }
+                case 267 -> {
                     this.moveCursor(Whence.END, 0);
-                    return true;
-                case 268:
+                    yield true;
+                }
+                case 268 -> {
                     if (key.hasControlDownWithQuirk()) {
                         this.moveCursor(Whence.ABSOLUTE, 0);
                     } else {
                         this.moveCursor(Whence.ABSOLUTE, this.getCurrentLine().beginIndex);
                     }
 
-                    return true;
-                case 269:
+                    yield true;
+                }
+                case 269 -> {
                     if (key.hasControlDownWithQuirk()) {
                         this.moveCursor(Whence.END, 0);
                     } else {
                         this.moveCursor(Whence.ABSOLUTE, this.getCurrentLine().endIndex);
                     }
 
-                    return true;
-                default:
-                    return false;
-            }
+                    yield true;
+                }
+                default -> false;
+            };
         }
     }
 
-    /**
-     * {@return the lines of the edit box's text}
-     */
     public Iterable<Substring> getLines() {
         return this.lines;
     }
 
-    /**
-     * {@return whether the edit box has a selected text}
-     */
     public boolean hasSelection() {
         return this.selectionEnd != this.cursor;
     }
 
-    /**
-     * {@return the text that is currently selected, or an empty string if there is no selection}
-     */
     @VisibleForTesting
     public String getSelectedText() {
         Substring substring = this.getSelection();
         return this.text.substring(substring.beginIndex, substring.endIndex);
     }
 
-    /**
-     * {@return the line that the cursor is located at}
-     */
     private Substring getCurrentLine() {
         return this.getOffsetLine(0);
     }
 
-    /**
-     * {@return the line offset by {@code offsetFromCurrent} from the cursor's line}
-     */
     private Substring getOffsetLine(int offsetFromCurrent) {
         int i = this.getCurrentLineIndex();
         if (i < 0) {
             LOGGER.error("Cursor is not within text (cursor = {}, length = {})", this.cursor, this.text.length());
-            return this.lines.get(this.lines.size() - 1);
+            return this.lines.getLast();
         } else {
             return this.lines.get(Mth.clamp(i + offsetFromCurrent, 0, this.lines.size() - 1));
         }
     }
 
-    /**
-     * {@return the substring of a word whose start position is before the cursor}
-     *
-     * <p>A word is a string consisting entirely of non-whitespace characters. If the
-     * cursor is in the middle of a word, the start position is that of the word; if not,
-     * the start position is that of the first word before the cursor.
-     *
-     * @see #getNextWordAtCursor
-     */
     @VisibleForTesting
     public Substring getPreviousWordAtCursor() {
         if (this.text.isEmpty()) {
@@ -460,15 +331,6 @@ public class EditBox {
         }
     }
 
-    /**
-     * {@return the substring of a word whose start position is after the cursor}
-     *
-     * <p>A word is a string consisting entirely of non-whitespace characters. If the
-     * cursor is in the middle of a word, the start position is that of the first word
-     * after the cursor; if not, the start position is that of the next word.
-     *
-     * @see #getPreviousWordAtCursor
-     */
     @VisibleForTesting
     public Substring getNextWordAtCursor() {
         if (this.text.isEmpty()) {
@@ -488,13 +350,6 @@ public class EditBox {
         }
     }
 
-    /**
-     * {@return the end index of the word starting at {@code startIndex}}
-     *
-     * <p>A word is a string consisting entirely of non-whitespace characters. Therefore,
-     * the end index is the index of the character whose succeeding character is the first
-     * whitespace since {@code startIndex}.
-     */
     private int getWordEndIndex(int startIndex) {
         int i = startIndex;
 
@@ -505,19 +360,12 @@ public class EditBox {
         return i;
     }
 
-    /**
-     * Called when the text changes. This rewraps the text, calls
-     * {@link #changeListener}, then calls {@link #cursorChangeListener}.
-     */
     private void onChange() {
         this.rewrap();
         this.changeListener.accept(this.text);
         this.cursorChangeListener.run();
     }
 
-    /**
-     * Rewraps the text. This is called whenever the text changes.
-     */
     private void rewrap() {
         this.lines.clear();
         if (this.text.isEmpty()) {
@@ -530,22 +378,10 @@ public class EditBox {
         }
     }
 
-    /**
-     * {@return {@code value} truncated to at most {@link #maxLength} characters}
-     *
-     * @see #truncate
-     */
     private String truncateForReplacement(String value) {
         return this.hasMaxLength() ? StringUtil.truncateStringIfNecessary(value, this.maxLength, false) : value;
     }
 
-    /**
-     * {@return {@code value} truncated to fit in the current text}
-     * <p>For example, if the edit box with 100 characters limit currently
-     * has 90 characters, this method will return at most 10 characters.
-     *
-     * @see #truncateForReplacement
-     */
     private String truncate(String value) {
         String string = value;
         if (this.hasMaxLength()) {
@@ -560,16 +396,7 @@ public class EditBox {
         return this.hasMaxLines() && this.textRenderer.getSplitter().splitLines(text, this.width, Style.EMPTY).size() + (StringUtil.endsWithNewLine(text) ? 1 : 0) > this.maxLines;
     }
 
-    /**
-     * A substring of an edit box's text, specified using the indices of the
-     * start and the end. This can indicate selections, lines, words, etc. This
-     * does not contain the string itself; to obtain the string, get the text
-     * first, then call {@link String#substring}.
-     */
     public record Substring(int beginIndex, int endIndex) {
-        /**
-         * An empty substring.
-         */
         static final Substring EMPTY = new Substring(0, 0);
     }
 }

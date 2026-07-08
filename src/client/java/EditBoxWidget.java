@@ -27,10 +27,6 @@ public class EditBoxWidget extends AbstractTextAreaWidget {
     private static final int CURSOR_BLINK_INTERVAL = 500;
     private static final int LINE_HEIGHT = 11;
     private final Font textRenderer;
-    /**
-     * The placeholder text that gets rendered when the edit box is empty. This does not
-     * get returned from {@link #getText}; an empty text will be returned in such cases.
-     */
     private final Component placeholder;
     private final EditBox editBox;
     private long lastSwitchFocusTime = Util.getMillis();
@@ -57,16 +53,10 @@ public class EditBoxWidget extends AbstractTextAreaWidget {
         this.editBox.setText(text, allowOverflow);
     }
 
-    /**
-     * {@return the current text of the edit box}
-     */
     public String getText() {
         return this.editBox.getText();
     }
 
-    /**
-     * Sets the text of the edit box and moves the cursor to the end of the edit box.
-     */
     public void setText(String text) {
         this.setText(text, false);
     }
@@ -279,7 +269,7 @@ public class EditBoxWidget extends AbstractTextAreaWidget {
 
         public EditBoxWidget build(Font textRenderer, int width, int height, Component message) {
             boolean hasBackground = true;
-            boolean hasOverlay = false;
+            boolean hasOverlay = true;
             return new EditBoxWidget(textRenderer, this.x, this.y, width, height, CommonComponents.EMPTY, message, hasBackground, hasOverlay);
         }
     }
