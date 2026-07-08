@@ -12,7 +12,7 @@ data class TagsBuiltin(val arguments: Arguments) : Expression {
         val item = (blang.expression.BlogicArguments.itemValue(arguments, program, "value", 0) ?: return null).value
         val tags = ArrayList<Value<*>>()
 
-        item.defaultInstance.tags.forEach { tags.add(TagValue(it)) }
+        item.defaultInstance.tags().forEach { tags.add(TagValue(it)) }
 
         return ListValue(tags)
     }

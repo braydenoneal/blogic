@@ -1,7 +1,8 @@
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.client.gui.components.AbstractScrollArea;
 import net.minecraft.client.gui.components.AbstractTextAreaWidget;
 import net.minecraft.client.gui.narration.NarratedElementType;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
@@ -14,6 +15,7 @@ import net.minecraft.util.CommonColors;
 import net.minecraft.util.Util;
 import tokenizer.Type;
 
+import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -33,8 +35,9 @@ public class EditBoxWidget extends AbstractTextAreaWidget {
     private final EditBox editBox;
     private long lastSwitchFocusTime = Util.getMillis();
 
-    EditBoxWidget(Font textRenderer, int x, int y, int width, int height, Component placeholder, Component message, boolean hasBackground, boolean hasOverlay) {
-        super(x, y, width, height, message, hasBackground, hasOverlay);
+    EditBoxWidget(final Font textRenderer, int x, int y, int width, int height, Component placeholder, Component message, boolean hasBackground, boolean hasOverlay) {
+        Objects.requireNonNull(textRenderer);
+        super(x, y, width, height, message, AbstractScrollArea.defaultSettings((int) ((double) 9.0F / (double) 2.0F)), hasBackground, hasOverlay);
         this.textRenderer = textRenderer;
         this.placeholder = placeholder;
         this.editBox = new EditBox(textRenderer, width - this.totalInnerPadding(), LINE_HEIGHT);
@@ -106,7 +109,7 @@ public class EditBoxWidget extends AbstractTextAreaWidget {
         }
     }
 
-    private void drawText(GuiGraphics context, String text, int x, int y) {
+    private void drawText(GuiGraphicsExtractor context, String text, int x, int y) {
         int position = 0;
 
         while (position < text.length()) {
@@ -130,7 +133,7 @@ public class EditBoxWidget extends AbstractTextAreaWidget {
                         color = 0xFFC77DBB;
                     }
 
-                    context.drawString(textRenderer, group, x, y, color, false);
+                    context.text(textRenderer, group, x, y, color, false);
                     position += group.length();
                     x += textRenderer.width(group);
                     error = false;
@@ -139,19 +142,19 @@ public class EditBoxWidget extends AbstractTextAreaWidget {
             }
 
             if (error) {
-                context.drawString(textRenderer, text.substring(position), x, y, 0xFFF75464, false);
+                context.text(textRenderer, text.substring(position), x, y, 0xFFF75464, false);
                 break;
             }
         }
     }
 
     @Override
-    protected void renderContents(GuiGraphics context, int mouseX, int mouseY, float deltaTicks) {
+    protected void extractContents(GuiGraphicsExtractor context, int mouseX, int mouseY, float deltaTicks) {
         context.fill(getX(), getY(), getX() + getWidth(), getY() + Math.max(getHeight(), editBox.getLineCount() * LINE_HEIGHT + 6), 0xFF1E1F22);
         String text = editBox.getText();
 
         if (text.isEmpty() && !isFocused()) {
-            context.drawWordWrap(textRenderer, placeholder, getInnerLeft(), getInnerTop() + 2, width - totalInnerPadding(), UNFOCUSED_BOX_TEXT_COLOR);
+            context.textWithWordWrap(textRenderer, placeholder, getInnerLeft(), getInnerTop() + 2, width - totalInnerPadding(), UNFOCUSED_BOX_TEXT_COLOR);
             return;
         }
 
@@ -211,12 +214,12 @@ public class EditBoxWidget extends AbstractTextAreaWidget {
     }
 
     @Override
-    protected void renderDecorations(GuiGraphics context) {
-        super.renderDecorations(context);
+    protected void extractDecorations(GuiGraphicsExtractor context) {
+        super.extractDecorations(context);
         if (this.editBox.hasMaxLength()) {
             int i = this.editBox.getMaxLength();
             Component text = Component.translatable("gui.multiLineEditBox.character_limit", this.editBox.getText().length(), i);
-            context.drawString(this.textRenderer, text, this.getX() + this.width - this.textRenderer.width(text), this.getY() + this.height + 4, CommonColors.LIGHT_GRAY);
+            context.text(this.textRenderer, text, this.getX() + this.width - this.textRenderer.width(text), this.getY() + this.height + 4, CommonColors.LIGHT_GRAY);
         }
     }
 
@@ -276,7 +279,7 @@ public class EditBoxWidget extends AbstractTextAreaWidget {
 
         public EditBoxWidget build(Font textRenderer, int width, int height, Component message) {
             boolean hasBackground = true;
-            boolean hasOverlay = true;
+            boolean hasOverlay = false;
             return new EditBoxWidget(textRenderer, this.x, this.y, width, height, CommonComponents.EMPTY, message, hasBackground, hasOverlay);
         }
     }

@@ -1,7 +1,7 @@
 package block
 
-import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents
-import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents.ModifyEntries
+import Blogic
+import net.fabricmc.fabric.api.creativetab.v1.CreativeModeTabEvents
 import net.minecraft.core.Registry
 import net.minecraft.core.registries.BuiltInRegistries
 import net.minecraft.core.registries.Registries
@@ -10,7 +10,6 @@ import net.minecraft.resources.ResourceKey
 import net.minecraft.world.item.BlockItem
 import net.minecraft.world.item.CreativeModeTabs
 import net.minecraft.world.item.Item
-import net.minecraft.world.item.Items
 import net.minecraft.world.level.block.Block
 import net.minecraft.world.level.block.Blocks
 import net.minecraft.world.level.block.state.BlockBehaviour
@@ -30,11 +29,10 @@ object ModBlocks {
     }
 
     fun initialize() {
-        ItemGroupEvents.modifyEntriesEvent(CreativeModeTabs.REDSTONE_BLOCKS).register(
-            ModifyEntries {
-                it.addBefore(Items.REDSTONE, CABLE.asItem())
-                it.addBefore(Items.REDSTONE, CONTROLLER.asItem())
-            },
-        )
+        CreativeModeTabEvents.modifyOutputEvent(CreativeModeTabs.REDSTONE_BLOCKS).register {
+            it.accept(CABLE.asItem())
+            it.accept(CONTROLLER.asItem())
+        }
+
     }
 }

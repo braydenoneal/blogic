@@ -1,8 +1,9 @@
 package block.entity
 
+import Blogic
 import block.ModBlocks
+import net.fabricmc.fabric.api.menu.v1.ExtendedMenuType
 import net.fabricmc.fabric.api.`object`.builder.v1.block.entity.FabricBlockEntityTypeBuilder
-import net.fabricmc.fabric.api.screenhandler.v1.ExtendedScreenHandlerType
 import net.minecraft.core.BlockPos
 import net.minecraft.core.Registry
 import net.minecraft.core.registries.BuiltInRegistries
@@ -18,10 +19,10 @@ class ModBlockEntities {
     companion object {
         val CONTROLLER_BLOCK_ENTITY = register("controller", FabricBlockEntityTypeBuilder.Factory { pos: BlockPos, state: BlockState -> ControllerBlockEntity(pos, state) }, ModBlocks.CONTROLLER)
 
-        val CONTROLLER_SCREEN_HANDLER: ExtendedScreenHandlerType<ControllerScreenHandler, BlockPos> = Registry.register<MenuType<*>, ExtendedScreenHandlerType<ControllerScreenHandler, BlockPos>>(
+        val CONTROLLER_SCREEN_HANDLER: ExtendedMenuType<ControllerScreenHandler, BlockPos> = Registry.register<MenuType<*>, ExtendedMenuType<ControllerScreenHandler, BlockPos>>(
             BuiltInRegistries.MENU,
             Identifier.fromNamespaceAndPath("blogic", "controller_block"),
-            ExtendedScreenHandlerType<ControllerScreenHandler, BlockPos>(
+            ExtendedMenuType(
                 { syncId: Int, playerInventory: Inventory, pos: BlockPos ->
                     ControllerScreenHandler(syncId, playerInventory, pos)
                 },

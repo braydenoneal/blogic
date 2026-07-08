@@ -9,6 +9,7 @@ import net.minecraft.world.InteractionResult
 import net.minecraft.world.item.Items
 import net.minecraft.world.item.context.UseOnContext
 import net.minecraft.world.phys.BlockHitResult
+import net.minecraft.world.phys.Vec3
 import parser.Program
 import parser.RunException
 import parser.expression.Arguments
@@ -54,7 +55,7 @@ data class UseItemBuiltin(val arguments: Arguments) : Expression {
                 }
 
                 val facing = program.context.entity.facing
-                val hit = BlockHitResult(pos.center, facing, pos, false)
+                val hit = BlockHitResult(Vec3.atCenterOf(pos), facing, pos, false)
                 val player = FakePlayer.get(world as ServerLevel)
 
                 var result = world.getBlockState(pos).useItemOn(stack, world, player, InteractionHand.MAIN_HAND, hit)
@@ -65,7 +66,7 @@ data class UseItemBuiltin(val arguments: Arguments) : Expression {
                     }
                 }
 
-                player.setPos(pos.center.add(0.0, -1.5, 0.0))
+                player.setPos(Vec3.atCenterOf(pos).add(0.0, -1.5, 0.0))
                 player.inventory.clearContent()
                 val newStack = stack.split(1)
 

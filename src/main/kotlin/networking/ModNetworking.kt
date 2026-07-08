@@ -6,7 +6,7 @@ import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking
 
 object ModNetworking {
     fun initialize() {
-        PayloadTypeRegistry.playC2S().register(StringPayload.ID, StringPayload.CODEC)
+        PayloadTypeRegistry.serverboundPlay().register(StringPayload.ID, StringPayload.CODEC)
         ServerPlayNetworking.registerGlobalReceiver(StringPayload.ID) { stringPayload: StringPayload, context: ServerPlayNetworking.Context ->
             context.server().execute {
                 (context.player().level().getBlockEntity(stringPayload.pos) as ControllerBlockEntity).setSource(stringPayload.string)

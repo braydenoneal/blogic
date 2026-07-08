@@ -1,7 +1,6 @@
 import block.entity.ControllerScreenHandler
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking
 import net.minecraft.client.Minecraft
-import net.minecraft.client.gui.GuiGraphics
 import net.minecraft.client.gui.components.Button
 import net.minecraft.client.gui.components.Renderable
 import net.minecraft.client.gui.components.events.GuiEventListener
@@ -28,12 +27,6 @@ class ControllerScreen(handler: ControllerScreenHandler, inventory: Inventory, t
         )
         addRenderableWidget(Button.builder(CommonComponents.GUI_CANCEL) { onClose() }.bounds(width / 2 + 4, height - 40, 150, 20).build())
         focused = editBoxWidget
-    }
-
-    override fun renderLabels(context: GuiGraphics, mouseX: Int, mouseY: Int) {
-    }
-
-    override fun renderBg(context: GuiGraphics, deltaTicks: Float, mouseX: Int, mouseY: Int) {
     }
 
     public override fun <T> addRenderableWidget(drawableElement: T): T where T : GuiEventListener, T : Renderable, T : NarratableEntry {

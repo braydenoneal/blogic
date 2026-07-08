@@ -5,7 +5,7 @@ import blang.Context
 import blang.codec.Codecs
 import block.CableBlock
 import com.mojang.serialization.Codec
-import net.fabricmc.fabric.api.screenhandler.v1.ExtendedScreenHandlerFactory
+import net.fabricmc.fabric.api.menu.v1.ExtendedMenuProvider
 import net.minecraft.core.BlockPos
 import net.minecraft.core.Direction
 import net.minecraft.core.HolderLookup.Provider
@@ -28,7 +28,7 @@ import parser.Program.Companion.log
 import java.util.*
 import kotlin.jvm.optionals.getOrNull
 
-class ControllerBlockEntity(pos: BlockPos, state: BlockState) : BlockEntity(ModBlockEntities.CONTROLLER_BLOCK_ENTITY, pos, state), ExtendedScreenHandlerFactory<BlockPos> {
+class ControllerBlockEntity(pos: BlockPos, state: BlockState) : BlockEntity(ModBlockEntities.CONTROLLER_BLOCK_ENTITY, pos, state), ExtendedMenuProvider<BlockPos> {
     var program: BlogicProgram = BlogicProgram(Context(pos, this), "name;")
     var initializing = true
 

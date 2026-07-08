@@ -1,7 +1,7 @@
 package item
 
-import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents
-import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents.ModifyEntries
+import Blogic
+import net.fabricmc.fabric.api.creativetab.v1.CreativeModeTabEvents
 import net.minecraft.core.Registry
 import net.minecraft.core.registries.BuiltInRegistries
 import net.minecraft.core.registries.Registries
@@ -20,8 +20,6 @@ object ModItems {
     }
 
     fun initialize() {
-        ItemGroupEvents.modifyEntriesEvent(CreativeModeTabs.REDSTONE_BLOCKS).register(
-            ModifyEntries {},
-        )
+        CreativeModeTabEvents.modifyOutputEvent(CreativeModeTabs.REDSTONE_BLOCKS).register {}
     }
 }

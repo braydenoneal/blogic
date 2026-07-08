@@ -1,6 +1,6 @@
 ## Todo
 
-- migrate to mojang mappings
+- fix controller screen showing container labels
 - study how codecs work
 - reimplement EditBox and EditBoxWidget in kotlin and without copying source code
 - codec for converting kotlin nullables to java optionals (scope, elseIfStatement, ifStatement)
