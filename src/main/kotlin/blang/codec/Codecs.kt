@@ -13,6 +13,7 @@ import parser.Program
 import parser.Scope
 import parser.expression.value.Funct
 import parser.statement.StatementList
+import java.util.*
 
 object Codecs {
     val STATEMENT_LIST_CODEC: MapCodec<StatementList> = mapCodec {
@@ -32,9 +33,11 @@ object Codecs {
     val SCOPE_CODEC: Codec<Scope> = Codec.recursive("scope") { selfCodec ->
         RecordCodecBuilder.create {
             it.group(
-                selfCodec.optionalFieldOf("parent", null).forGetter(Scope::parent),
+                selfCodec.optionalFieldOf("parent").forGetter { i -> Optional.ofNullable(i.parent) },
                 Codec.unboundedMap(Codec.STRING, ValueType.CODEC).fieldOf("variables").forGetter(Scope::variables),
-            ).apply(it, ::Scope)
+            ).apply(it) { parent, variables ->
+                Scope(parent.orElse(null), variables)
+            }
         }
     }
     val PROGRAM_CODEC: Codec<Program> = RecordCodecBuilder.create {

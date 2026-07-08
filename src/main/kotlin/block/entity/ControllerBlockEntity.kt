@@ -25,15 +25,15 @@ import net.minecraft.world.World
 import parser.Program
 import parser.Program.Companion.log
 import java.util.*
-import kotlin.jvm.optionals.getOrNull
 
 class ControllerBlockEntity(pos: BlockPos, state: BlockState) : BlockEntity(ModBlockEntities.CONTROLLER_BLOCK_ENTITY, pos, state), ExtendedScreenHandlerFactory<BlockPos> {
     var program: BlogicProgram = BlogicProgram(Context(pos, this), "name;")
     var initializing = true
 
     fun setSource(source: String) {
+        program.source = source
+
         if (!world!!.isClient) {
-            program.source = source
             program.parse()
             initializing = true
         }
@@ -43,7 +43,7 @@ class ControllerBlockEntity(pos: BlockPos, state: BlockState) : BlockEntity(ModB
 
     override fun readData(view: ReadView) {
         super.readData(view)
-        val rawProgram = view.read("raw_program", Codecs.PROGRAM_CODEC).getOrNull() ?: Program("name;")
+        val rawProgram = view.read("raw_program", Codecs.PROGRAM_CODEC).get()//.getOrNull() ?: Program("name;")
 
         program = BlogicProgram(
             Context(pos, this),
