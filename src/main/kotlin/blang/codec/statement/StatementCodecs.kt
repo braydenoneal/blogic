@@ -9,6 +9,7 @@ import com.mojang.serialization.MapCodec
 import com.mojang.serialization.codecs.RecordCodecBuilder
 import com.mojang.serialization.codecs.RecordCodecBuilder.mapCodec
 import parser.statement.*
+import java.util.*
 
 object StatementCodecs {
     val BREAK_STATEMENT_CODEC: MapCodec<BreakStatement> = Codec.unit(BreakStatement()).fieldOf("break_statement")
@@ -22,8 +23,8 @@ object StatementCodecs {
         it.group(
             ExpressionType.CODEC.fieldOf("condition").forGetter(ElseIfStatement::condition),
             STATEMENT_LIST_CODEC.fieldOf("statements").forGetter(ElseIfStatement::statements),
-            ValueType.CODEC.optionalFieldOf("conditionValue", null).forGetter(ElseIfStatement::conditionValue),
-        ).apply(it, ::ElseIfStatement)
+            ValueType.CODEC.optionalFieldOf("conditionValue").forGetter { elseIfStatement -> Optional.ofNullable(elseIfStatement.conditionValue) },
+        ).apply(it) { condition, statements, conditionValue -> ElseIfStatement(condition, statements, conditionValue.orElse(null)) }
     }
     val ELSE_STATEMENT_CODEC: MapCodec<ElseStatement> = mapCodec {
         it.group(
@@ -54,8 +55,8 @@ object StatementCodecs {
             STATEMENT_LIST_CODEC.fieldOf("statements").forGetter(IfStatement::statements),
             Codec.list(ELSE_IF_STATEMENT_CODEC).fieldOf("elseIfStatements").forGetter(IfStatement::elseIfStatements),
             ELSE_STATEMENT_CODEC.fieldOf("elseStatement").forGetter(IfStatement::elseStatement),
-            ValueType.CODEC.optionalFieldOf("conditionValue", null).forGetter(IfStatement::conditionValue),
-        ).apply(it, ::IfStatement)
+            ValueType.CODEC.optionalFieldOf("conditionValue").forGetter { ifStatement -> Optional.ofNullable(ifStatement.conditionValue) },
+        ).apply(it) { condition, statements, elseIfStatements, elseStatement, conditionValue -> IfStatement(condition, statements, elseIfStatements, elseStatement, conditionValue.orElse(null)) }
     }
     val IMPORT_STATEMENT_CODEC: MapCodec<ImportStatement> = mapCodec {
         it.group(

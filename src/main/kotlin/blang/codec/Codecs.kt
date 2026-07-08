@@ -33,7 +33,7 @@ object Codecs {
     val SCOPE_CODEC: Codec<Scope> = Codec.recursive("scope") { selfCodec ->
         RecordCodecBuilder.create {
             it.group(
-                selfCodec.optionalFieldOf("parent").forGetter { i -> Optional.ofNullable(i.parent) },
+                selfCodec.optionalFieldOf("parent").forGetter { scope -> Optional.ofNullable(scope.parent) },
                 Codec.unboundedMap(Codec.STRING, ValueType.CODEC).fieldOf("variables").forGetter(Scope::variables),
             ).apply(it) { parent, variables ->
                 Scope(parent.orElse(null), variables)

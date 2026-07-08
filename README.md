@@ -6,6 +6,7 @@ Minecraft mod that adds a survival-friendly programming language that can intera
 
 ## Todo
 
+- codec for converting kotlin nullables to java optionals (scope, elseIfStatement, ifStatement)
 - allow saving the world mid-execution by encoding the program and its execution state
 - separate the parsing and execution logic a bit more
 - add empty/null statement for empty statement lists
