@@ -26,11 +26,6 @@ object Codecs {
         { it },
     )
 
-    fun <T> nullableCodec(codec: MapCodec<Optional<T & Any>>): MapCodec<T?> = codec.xmap(
-        { it.orElse(null) },
-        { Optional.ofNullable(it) },
-    )
-
     val STATEMENT_LIST_CODEC: MapCodec<StatementList> = mapCodec {
         it.group(
             mutableListCodec(StatementType.CODEC).fieldOf("ran").forGetter(StatementList::ran),
@@ -55,15 +50,6 @@ object Codecs {
             }
         }
     }
-
-    //    val SCOPE_CODEC: Codec<Scope> = Codec.recursive("scope") { selfCodec ->
-//        RecordCodecBuilder.create {
-//            it.group(
-//                nullableCodec(selfCodec.optionalFieldOf("parent")).forGetter(Scope::parent),
-//                mutableMapCodec(Codec.STRING, ValueType.CODEC).fieldOf("variables").forGetter(Scope::variables),
-//            ).apply(it, ::Scope)
-//        }
-//    }
     val PROGRAM_CODEC: Codec<Program> = RecordCodecBuilder.create {
         it.group(
             Codec.STRING.fieldOf("source").forGetter(Program::source),
