@@ -18,7 +18,7 @@ import net.minecraft.registry.tag.TagKey
 import parser.expression.value.*
 
 object ValueCodecs {
-    val NULL_CODEC: Codec<Null> = Codec.unit(Null())
+    val NULL_CODEC: Codec<Null> = MapCodec.unitCodec(Null())
     val RANGE_CODEC: Codec<Range> = RecordCodecBuilder.create {
         it.group(
             Codec.INT.fieldOf("start").forGetter(Range::start),

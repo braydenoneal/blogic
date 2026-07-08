@@ -5,8 +5,8 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
-import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.input.CursorMovement;
+import net.minecraft.client.input.KeyInput;
 import net.minecraft.text.Style;
 import net.minecraft.util.StringHelper;
 import net.minecraft.util.math.MathHelper;
@@ -16,9 +16,8 @@ import java.util.List;
 import java.util.function.Consumer;
 
 /**
+ * Reimplementation of {@link net.minecraft.client.gui.EditBox}
  * A multiline edit box with support for basic keyboard shortcuts.
- * This should not be used directly; {@link net.minecraft.client.gui.widget.EditBoxWidget}
- * provides the GUI for the edit box.
  */
 @Environment(EnvType.CLIENT)
 public class EditBox {
@@ -282,113 +281,111 @@ public class EditBox {
         this.moveCursor(CursorMovement.ABSOLUTE, substring.beginIndex + k);
     }
 
+    public void selectWord() {
+        EditBox.Substring substring = this.getPreviousWordAtCursor();
+        this.moveCursor(CursorMovement.ABSOLUTE, substring.beginIndex);
+        this.setSelecting(true);
+        this.moveCursor(CursorMovement.ABSOLUTE, substring.endIndex);
+    }
+
     /**
      * Handles the special keys, such as copy, cut, linebreak, and cursor movements.
      */
-    public boolean handleSpecialKey(int keyCode) {
-        this.selecting = Screen.hasShiftDown();
-        if (Screen.isSelectAll(keyCode)) {
+    public boolean handleSpecialKey(KeyInput key) {
+        this.selecting = key.hasShift();
+        if (key.isSelectAll()) {
             this.cursor = this.text.length();
             this.selectionEnd = 0;
             return true;
-        } else if (Screen.isCopy(keyCode)) {
+        } else if (key.isCopy()) {
             MinecraftClient.getInstance().keyboard.setClipboard(this.getSelectedText());
             return true;
-        } else if (Screen.isPaste(keyCode)) {
+        } else if (key.isPaste()) {
             this.replaceSelection(MinecraftClient.getInstance().keyboard.getClipboard());
             return true;
-        } else if (Screen.isCut(keyCode)) {
+        } else if (key.isCut()) {
             MinecraftClient.getInstance().keyboard.setClipboard(this.getSelectedText());
             this.replaceSelection("");
             return true;
         } else {
-            return switch (keyCode) {
-                case 257, 335 -> {
+            switch (key.key()) {
+                case 257:
+                case 335:
                     this.replaceSelection("\n");
-                    yield true;
-                }
-                case 259 -> {
-                    if (Screen.hasControlDown()) {
-                        Substring substring = this.getPreviousWordAtCursor();
+                    return true;
+                case 259:
+                    if (key.hasCtrlOrCmd()) {
+                        EditBox.Substring substring = this.getPreviousWordAtCursor();
                         this.delete(substring.beginIndex - this.cursor);
                     } else {
                         this.delete(-1);
                     }
 
-                    yield true;
-                }
-                case 261 -> {
-                    if (Screen.hasControlDown()) {
-                        Substring substring = this.getNextWordAtCursor();
+                    return true;
+                case 261:
+                    if (key.hasCtrlOrCmd()) {
+                        EditBox.Substring substring = this.getNextWordAtCursor();
                         this.delete(substring.beginIndex - this.cursor);
                     } else {
                         this.delete(1);
                     }
 
-                    yield true;
-                }
-                case 262 -> {
-                    if (Screen.hasControlDown()) {
-                        Substring substring = this.getNextWordAtCursor();
+                    return true;
+                case 262:
+                    if (key.hasCtrlOrCmd()) {
+                        EditBox.Substring substring = this.getNextWordAtCursor();
                         this.moveCursor(CursorMovement.ABSOLUTE, substring.beginIndex);
                     } else {
                         this.moveCursor(CursorMovement.RELATIVE, 1);
                     }
 
-                    yield true;
-                }
-                case 263 -> {
-                    if (Screen.hasControlDown()) {
-                        Substring substring = this.getPreviousWordAtCursor();
+                    return true;
+                case 263:
+                    if (key.hasCtrlOrCmd()) {
+                        EditBox.Substring substring = this.getPreviousWordAtCursor();
                         this.moveCursor(CursorMovement.ABSOLUTE, substring.beginIndex);
                     } else {
                         this.moveCursor(CursorMovement.RELATIVE, -1);
                     }
 
-                    yield true;
-                }
-                case 264 -> {
-                    if (!Screen.hasControlDown()) {
+                    return true;
+                case 264:
+                    if (!key.hasCtrlOrCmd()) {
                         this.moveCursorLine(1);
                     }
 
-                    yield true;
-                }
-                case 265 -> {
-                    if (!Screen.hasControlDown()) {
+                    return true;
+                case 265:
+                    if (!key.hasCtrlOrCmd()) {
                         this.moveCursorLine(-1);
                     }
 
-                    yield true;
-                }
-                case 266 -> {
+                    return true;
+                case 266:
                     this.moveCursor(CursorMovement.ABSOLUTE, 0);
-                    yield true;
-                }
-                case 267 -> {
+                    return true;
+                case 267:
                     this.moveCursor(CursorMovement.END, 0);
-                    yield true;
-                }
-                case 268 -> {
-                    if (Screen.hasControlDown()) {
+                    return true;
+                case 268:
+                    if (key.hasCtrlOrCmd()) {
                         this.moveCursor(CursorMovement.ABSOLUTE, 0);
                     } else {
                         this.moveCursor(CursorMovement.ABSOLUTE, this.getCurrentLine().beginIndex);
                     }
 
-                    yield true;
-                }
-                case 269 -> {
-                    if (Screen.hasControlDown()) {
+                    return true;
+                case 269:
+                    if (key.hasCtrlOrCmd()) {
                         this.moveCursor(CursorMovement.END, 0);
                     } else {
                         this.moveCursor(CursorMovement.ABSOLUTE, this.getCurrentLine().endIndex);
                     }
 
-                    yield true;
-                }
-                default -> false;
-            };
+                    return true;
+                default:
+                    return false;
+            }
         }
     }
 

@@ -9,7 +9,7 @@ object ModNetworking {
         PayloadTypeRegistry.playC2S().register(StringPayload.ID, StringPayload.CODEC)
         ServerPlayNetworking.registerGlobalReceiver(StringPayload.ID) { stringPayload: StringPayload, context: ServerPlayNetworking.Context ->
             context.server().execute {
-                (context.player().world.getBlockEntity(stringPayload.pos) as ControllerBlockEntity).setSource(stringPayload.string)
+                (context.player().entityWorld.getBlockEntity(stringPayload.pos) as ControllerBlockEntity).setSource(stringPayload.string)
             }
         }
     }

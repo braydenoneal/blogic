@@ -1,5 +1,8 @@
 ## Todo
 
+- migrate to mojang mappings
+- study how codecs work
+- reimplement EditBox and EditBoxWidget in kotlin and without copying source code
 - codec for converting kotlin nullables to java optionals (scope, elseIfStatement, ifStatement)
 - allow saving the world mid-execution by encoding the program and its execution state
 - controlled order of execution for multiple controllers in a network?

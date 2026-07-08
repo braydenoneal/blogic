@@ -13,8 +13,8 @@ import parser.statement.*
 import java.util.*
 
 object StatementCodecs {
-    val BREAK_STATEMENT_CODEC: MapCodec<BreakStatement> = Codec.unit(BreakStatement()).fieldOf("break_statement")
-    val CONTINUE_STATEMENT_CODEC: MapCodec<ContinueStatement> = Codec.unit(ContinueStatement()).fieldOf("continue_statement")
+    val BREAK_STATEMENT_CODEC: MapCodec<BreakStatement> = MapCodec.unitCodec(BreakStatement()).fieldOf("break_statement")
+    val CONTINUE_STATEMENT_CODEC: MapCodec<ContinueStatement> = MapCodec.unitCodec(ContinueStatement()).fieldOf("continue_statement")
     val DELETE_STATEMENT_CODEC: MapCodec<DeleteStatement> = mapCodec {
         it.group(
             Codec.STRING.fieldOf("name").forGetter(DeleteStatement::name),

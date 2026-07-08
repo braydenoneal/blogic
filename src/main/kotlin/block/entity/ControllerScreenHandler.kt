@@ -7,7 +7,7 @@ import net.minecraft.screen.ScreenHandler
 import net.minecraft.util.math.BlockPos
 
 class ControllerScreenHandler(syncId: Int, ignoredPlayerInventory: PlayerInventory, private val entity: ControllerBlockEntity) : ScreenHandler(ModBlockEntities.CONTROLLER_SCREEN_HANDLER, syncId) {
-    constructor(syncId: Int, playerInventory: PlayerInventory, pos: BlockPos) : this(syncId, playerInventory, (playerInventory.player.world.getBlockEntity(pos) as ControllerBlockEntity))
+    constructor(syncId: Int, playerInventory: PlayerInventory, pos: BlockPos) : this(syncId, playerInventory, (playerInventory.player.entityWorld.getBlockEntity(pos) as ControllerBlockEntity))
 
     fun source(): String {
         return entity.program.source

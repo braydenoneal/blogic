@@ -7,6 +7,7 @@ import net.minecraft.client.gui.Element
 import net.minecraft.client.gui.Selectable
 import net.minecraft.client.gui.screen.ingame.HandledScreen
 import net.minecraft.client.gui.widget.ButtonWidget
+import net.minecraft.client.input.KeyInput
 import net.minecraft.entity.player.PlayerInventory
 import net.minecraft.screen.ScreenTexts
 import net.minecraft.text.Text
@@ -39,12 +40,12 @@ class ControllerScreen(handler: ControllerScreenHandler, inventory: PlayerInvent
         return super.addDrawableChild<T>(drawableElement)
     }
 
-    override fun keyPressed(keyCode: Int, scanCode: Int, modifiers: Int): Boolean {
-        if (client != null && client!!.options.inventoryKey.matchesKey(keyCode, scanCode)) {
+    override fun keyPressed(input: KeyInput?): Boolean {
+        if (input != null && client != null && client!!.options.inventoryKey.matchesKey(input)) {
             return true
         }
 
-        return super.keyPressed(keyCode, scanCode, modifiers)
+        return super.keyPressed(input)
     }
 
     override fun mouseScrolled(mouseX: Double, mouseY: Double, horizontalAmount: Double, verticalAmount: Double): Boolean {
