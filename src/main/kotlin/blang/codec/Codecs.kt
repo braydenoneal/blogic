@@ -17,19 +17,19 @@ import java.util.*
 
 object Codecs {
     fun <T> mutableListCodec(codec: Codec<T>): Codec<MutableList<T>> = Codec.list(codec).xmap(
-        { i -> i.toMutableList() },
-        { o -> o },
+        { it.toMutableList() },
+        { it },
     )
 
     fun <K, V> mutableMapCodec(keyCodec: Codec<K>, valueCodec: Codec<V>): Codec<MutableMap<K, V>> = Codec.unboundedMap(keyCodec, valueCodec).xmap(
-        { i -> i.toMutableMap() },
-        { o -> o },
+        { it.toMutableMap() },
+        { it },
     )
 
-//    fun <T> nullableCodec(codec: Codec<T>): Codec<MutableList<T>> = Codec.list(codec).xmap(
-//        { i -> i.toMutableList() },
-//        { o -> o },
-//    )
+    fun <T> nullableCodec(codec: MapCodec<Optional<T & Any>>): MapCodec<T?> = codec.xmap(
+        { it.orElse(null) },
+        { Optional.ofNullable(it) },
+    )
 
     val STATEMENT_LIST_CODEC: MapCodec<StatementList> = mapCodec {
         it.group(
@@ -55,6 +55,15 @@ object Codecs {
             }
         }
     }
+
+    //    val SCOPE_CODEC: Codec<Scope> = Codec.recursive("scope") { selfCodec ->
+//        RecordCodecBuilder.create {
+//            it.group(
+//                nullableCodec(selfCodec.optionalFieldOf("parent")).forGetter(Scope::parent),
+//                mutableMapCodec(Codec.STRING, ValueType.CODEC).fieldOf("variables").forGetter(Scope::variables),
+//            ).apply(it, ::Scope)
+//        }
+//    }
     val PROGRAM_CODEC: Codec<Program> = RecordCodecBuilder.create {
         it.group(
             Codec.STRING.fieldOf("source").forGetter(Program::source),
