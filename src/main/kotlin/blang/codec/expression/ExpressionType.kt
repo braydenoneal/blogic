@@ -1,5 +1,7 @@
 package blang.codec.expression
 
+import blang.expression.builtin.*
+import blang.expression.builtin.PrintBuiltin
 import com.mojang.serialization.Codec
 import com.mojang.serialization.Lifecycle
 import com.mojang.serialization.MapCodec
@@ -60,23 +62,24 @@ data class ExpressionType<T : Expression>(val codec: MapCodec<T>) {
                 is StructValuesBuiltin -> ExpressionTypes.STRUCT_VALUES_BUILTIN
                 is StructEntriesBuiltin -> ExpressionTypes.STRUCT_ENTRIES_BUILTIN
                 is TypeBuiltin -> ExpressionTypes.TYPE_BUILTIN
-                is blang.expression.builtin.PrintBuiltin -> ExpressionTypes.PRINT_BUILTIN
+                is WaitBuiltin -> ExpressionTypes.WAIT_BUILTIN
+                is PrintBuiltin -> ExpressionTypes.PRINT_BUILTIN
                 is CeilBuiltin -> ExpressionTypes.CEIL_BUILTIN
                 is FloorBuiltin -> ExpressionTypes.FLOOR_BUILTIN
-                is blang.expression.builtin.BlockBuiltin -> ExpressionTypes.BLOCK_BUILTIN
-                is blang.expression.builtin.BlockItemBuiltin -> ExpressionTypes.BLOCK_ITEM_BUILTIN
-                is blang.expression.builtin.BreakBlockBuiltin -> ExpressionTypes.BREAK_BLOCK_BUILTIN
-                is blang.expression.builtin.DeleteItemsBuiltin -> ExpressionTypes.DELETE_ITEMS_BUILTIN
-                is blang.expression.builtin.ExportAllItemsBuiltin -> ExpressionTypes.EXPORT_ALL_ITEMS_BUILTIN
-                is blang.expression.builtin.GetBlockBuiltin -> ExpressionTypes.GET_BLOCK_BUILTIN
-                is blang.expression.builtin.GetItemCountBuiltin -> ExpressionTypes.GET_ITEM_COUNT_BUILTIN
-                is blang.expression.builtin.GetItemsBuiltin -> ExpressionTypes.GET_ITEMS_BUILTIN
-                is blang.expression.builtin.ItemBuiltin -> ExpressionTypes.ITEM_BUILTIN
-                is blang.expression.builtin.PlaceBlockBuiltin -> ExpressionTypes.PLACE_BLOCK_BUILTIN
-                is blang.expression.builtin.ReadItemCountBuiltin -> ExpressionTypes.READ_ITEM_COUNT_BUILTIN
-                is blang.expression.builtin.TagBuiltin -> ExpressionTypes.TAG_BUILTIN
-                is blang.expression.builtin.TagsBuiltin -> ExpressionTypes.TAGS_BUILTIN
-                is blang.expression.builtin.UseItemBuiltin -> ExpressionTypes.USE_ITEM_BUILTIN
+                is BlockBuiltin -> ExpressionTypes.BLOCK_BUILTIN
+                is BlockItemBuiltin -> ExpressionTypes.BLOCK_ITEM_BUILTIN
+                is BreakBlockBuiltin -> ExpressionTypes.BREAK_BLOCK_BUILTIN
+                is DeleteItemsBuiltin -> ExpressionTypes.DELETE_ITEMS_BUILTIN
+                is ExportAllItemsBuiltin -> ExpressionTypes.EXPORT_ALL_ITEMS_BUILTIN
+                is GetBlockBuiltin -> ExpressionTypes.GET_BLOCK_BUILTIN
+                is GetItemCountBuiltin -> ExpressionTypes.GET_ITEM_COUNT_BUILTIN
+                is GetItemsBuiltin -> ExpressionTypes.GET_ITEMS_BUILTIN
+                is ItemBuiltin -> ExpressionTypes.ITEM_BUILTIN
+                is PlaceBlockBuiltin -> ExpressionTypes.PLACE_BLOCK_BUILTIN
+                is ReadItemCountBuiltin -> ExpressionTypes.READ_ITEM_COUNT_BUILTIN
+                is TagBuiltin -> ExpressionTypes.TAG_BUILTIN
+                is TagsBuiltin -> ExpressionTypes.TAGS_BUILTIN
+                is UseItemBuiltin -> ExpressionTypes.USE_ITEM_BUILTIN
                 else -> throw Exception("Expression type not found")
             }
         }

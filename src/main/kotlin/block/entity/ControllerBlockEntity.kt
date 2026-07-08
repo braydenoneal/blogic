@@ -4,6 +4,7 @@ import blang.BlogicProgram
 import blang.Context
 import blang.codec.Codecs
 import block.CableBlock
+import com.mojang.serialization.Codec
 import net.fabricmc.fabric.api.screenhandler.v1.ExtendedScreenHandlerFactory
 import net.minecraft.block.BlockState
 import net.minecraft.block.entity.BlockEntity
@@ -25,6 +26,7 @@ import net.minecraft.world.World
 import parser.Program
 import parser.Program.Companion.log
 import java.util.*
+import kotlin.jvm.optionals.getOrNull
 
 class ControllerBlockEntity(pos: BlockPos, state: BlockState) : BlockEntity(ModBlockEntities.CONTROLLER_BLOCK_ENTITY, pos, state), ExtendedScreenHandlerFactory<BlockPos> {
     var program: BlogicProgram = BlogicProgram(Context(pos, this), "name;")
@@ -43,7 +45,8 @@ class ControllerBlockEntity(pos: BlockPos, state: BlockState) : BlockEntity(ModB
 
     override fun readData(view: ReadView) {
         super.readData(view)
-        val rawProgram = view.read("raw_program", Codecs.PROGRAM_CODEC).get()//.getOrNull() ?: Program("name;")
+        initializing = view.read("initializing", Codec.BOOL).getOrNull() ?: true
+        val rawProgram = view.read("raw_program", Codecs.PROGRAM_CODEC).getOrNull() ?: Program("name;")
 
         program = BlogicProgram(
             Context(pos, this),
@@ -59,6 +62,7 @@ class ControllerBlockEntity(pos: BlockPos, state: BlockState) : BlockEntity(ModB
 
     override fun writeData(view: WriteView) {
         super.writeData(view)
+        view.put("initializing", Codec.BOOL, initializing)
         val rawProgram = Program(
             program.source,
             program.parsed,

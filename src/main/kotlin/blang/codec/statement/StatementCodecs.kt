@@ -2,6 +2,7 @@ package blang.codec.statement
 
 import blang.codec.Codecs.FUNCT_CODEC
 import blang.codec.Codecs.STATEMENT_LIST_CODEC
+import blang.codec.Codecs.mutableListCodec
 import blang.codec.expression.ExpressionType
 import blang.codec.value.ValueType
 import com.mojang.serialization.Codec
@@ -53,14 +54,14 @@ object StatementCodecs {
         it.group(
             ExpressionType.CODEC.fieldOf("condition").forGetter(IfStatement::condition),
             STATEMENT_LIST_CODEC.fieldOf("statements").forGetter(IfStatement::statements),
-            Codec.list(ELSE_IF_STATEMENT_CODEC).fieldOf("elseIfStatements").forGetter(IfStatement::elseIfStatements),
+            mutableListCodec(ELSE_IF_STATEMENT_CODEC).fieldOf("elseIfStatements").forGetter(IfStatement::elseIfStatements),
             ELSE_STATEMENT_CODEC.fieldOf("elseStatement").forGetter(IfStatement::elseStatement),
             ValueType.CODEC.optionalFieldOf("conditionValue").forGetter { ifStatement -> Optional.ofNullable(ifStatement.conditionValue) },
         ).apply(it) { condition, statements, elseIfStatements, elseStatement, conditionValue -> IfStatement(condition, statements, elseIfStatements, elseStatement, conditionValue.orElse(null)) }
     }
     val IMPORT_STATEMENT_CODEC: MapCodec<ImportStatement> = mapCodec {
         it.group(
-            Codec.list(Codec.STRING).fieldOf("identifiers").forGetter(ImportStatement::identifiers),
+            mutableListCodec(Codec.STRING).fieldOf("identifiers").forGetter(ImportStatement::identifiers),
         ).apply(it, ::ImportStatement)
     }
     val RETURN_STATEMENT_CODEC: MapCodec<ReturnStatement> = mapCodec {

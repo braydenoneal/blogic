@@ -1,6 +1,7 @@
 package blang.codec.value
 
 import blang.codec.Codecs.FUNCT_CODEC
+import blang.codec.Codecs.mutableListCodec
 import blang.codec.expression.PairCodec
 import blang.expression.value.BlockValue
 import blang.expression.value.ItemStackValue
@@ -48,7 +49,7 @@ object ValueCodecs {
     }
     val LIST_VALUE_CODEC: MapCodec<ListValue> = mapCodec {
         it.group(
-            Codec.list(ValueType.CODEC).fieldOf("value").forGetter(ListValue::value),
+            mutableListCodec(ValueType.CODEC).fieldOf("value").forGetter(ListValue::value),
         ).apply(it, ::ListValue)
     }
     val NULL_VALUE_CODEC: MapCodec<NullValue> = mapCodec {
@@ -68,7 +69,7 @@ object ValueCodecs {
     }
     val STRUCT_VALUE_CODEC: MapCodec<StructValue> = mapCodec {
         it.group(
-            Codec.list(PairCodec.pair(Codec.STRING, ValueType.CODEC)).fieldOf("value").forGetter(StructValue::value),
+            mutableListCodec(PairCodec.pair(Codec.STRING, ValueType.CODEC)).fieldOf("value").forGetter(StructValue::value),
         ).apply(it, ::StructValue)
     }
     val BLOCK_VALUE_CODEC: MapCodec<BlockValue> = mapCodec {

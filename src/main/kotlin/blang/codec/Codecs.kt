@@ -16,16 +16,31 @@ import parser.statement.StatementList
 import java.util.*
 
 object Codecs {
+    fun <T> mutableListCodec(codec: Codec<T>): Codec<MutableList<T>> = Codec.list(codec).xmap(
+        { i -> i.toMutableList() },
+        { o -> o },
+    )
+
+    fun <K, V> mutableMapCodec(keyCodec: Codec<K>, valueCodec: Codec<V>): Codec<MutableMap<K, V>> = Codec.unboundedMap(keyCodec, valueCodec).xmap(
+        { i -> i.toMutableMap() },
+        { o -> o },
+    )
+
+//    fun <T> nullableCodec(codec: Codec<T>): Codec<MutableList<T>> = Codec.list(codec).xmap(
+//        { i -> i.toMutableList() },
+//        { o -> o },
+//    )
+
     val STATEMENT_LIST_CODEC: MapCodec<StatementList> = mapCodec {
         it.group(
-            Codec.list(StatementType.CODEC).fieldOf("ran").forGetter(StatementList::ran),
-            Codec.list(StatementType.CODEC).fieldOf("toRun").forGetter(StatementList::toRun),
+            mutableListCodec(StatementType.CODEC).fieldOf("ran").forGetter(StatementList::ran),
+            mutableListCodec(StatementType.CODEC).fieldOf("toRun").forGetter(StatementList::toRun),
         ).apply(it, ::StatementList)
     }
     val FUNCT_CODEC: Codec<Funct> = RecordCodecBuilder.create {
         it.group(
-            Codec.list(Codec.STRING).fieldOf("parameters").forGetter(Funct::parameters),
-            Codec.list(pair(Codec.STRING, ExpressionType.CODEC)).fieldOf("defaultParameters").forGetter(Funct::defaultParameters),
+            mutableListCodec(Codec.STRING).fieldOf("parameters").forGetter(Funct::parameters),
+            mutableListCodec(pair(Codec.STRING, ExpressionType.CODEC)).fieldOf("defaultParameters").forGetter(Funct::defaultParameters),
             STATEMENT_LIST_CODEC.fieldOf("statements").forGetter(Funct::statements),
             Codec.BOOL.fieldOf("running").forGetter(Funct::running),
         ).apply(it, ::Funct)
@@ -34,7 +49,7 @@ object Codecs {
         RecordCodecBuilder.create {
             it.group(
                 selfCodec.optionalFieldOf("parent").forGetter { scope -> Optional.ofNullable(scope.parent) },
-                Codec.unboundedMap(Codec.STRING, ValueType.CODEC).fieldOf("variables").forGetter(Scope::variables),
+                mutableMapCodec(Codec.STRING, ValueType.CODEC).fieldOf("variables").forGetter(Scope::variables),
             ).apply(it) { parent, variables ->
                 Scope(parent.orElse(null), variables)
             }
@@ -45,10 +60,10 @@ object Codecs {
             Codec.STRING.fieldOf("source").forGetter(Program::source),
             Codec.BOOL.fieldOf("parsed").forGetter(Program::parsed),
             Codec.STRING.fieldOf("name").forGetter(Program::name),
-            Codec.list(StatementCodecs.IMPORT_STATEMENT_CODEC.codec()).fieldOf("imports").forGetter(Program::imports),
+            mutableListCodec(StatementCodecs.IMPORT_STATEMENT_CODEC.codec()).fieldOf("imports").forGetter(Program::imports),
             STATEMENT_LIST_CODEC.fieldOf("statements").forGetter(Program::statements),
-            Codec.unboundedMap(Codec.STRING, StatementCodecs.FUNCTION_DECLARATION_CODEC.codec()).fieldOf("functions").forGetter(Program::functions),
-            Codec.list(SCOPE_CODEC).fieldOf("scopes").forGetter(Program::scopes),
+            mutableMapCodec(Codec.STRING, StatementCodecs.FUNCTION_DECLARATION_CODEC.codec()).fieldOf("functions").forGetter(Program::functions),
+            mutableListCodec(SCOPE_CODEC).fieldOf("scopes").forGetter(Program::scopes),
         ).apply(it, ::Program)
     }
 }

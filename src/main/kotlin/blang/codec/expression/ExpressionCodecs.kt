@@ -1,5 +1,7 @@
 package blang.codec.expression
 
+import blang.codec.Codecs.mutableListCodec
+import blang.codec.Codecs.mutableMapCodec
 import blang.expression.builtin.*
 import blang.expression.builtin.PrintBuiltin
 import com.mojang.serialization.Codec
@@ -21,8 +23,8 @@ import parser.expression.operator.UnaryOperator
 object ExpressionCodecs {
     val ARGUMENTS_CODEC: Codec<Arguments> = RecordCodecBuilder.create {
         it.group(
-            Codec.list(ExpressionType.CODEC).fieldOf("arguments").forGetter(Arguments::arguments),
-            Codec.unboundedMap(Codec.STRING, ExpressionType.CODEC).fieldOf("namedArguments").forGetter(Arguments::namedArguments),
+            mutableListCodec(ExpressionType.CODEC).fieldOf("arguments").forGetter(Arguments::arguments),
+            mutableMapCodec(Codec.STRING, ExpressionType.CODEC).fieldOf("namedArguments").forGetter(Arguments::namedArguments),
         ).apply(it, ::Arguments)
     }
     val ASSIGNMENT_EXPRESSION_CODEC: MapCodec<AssignmentExpression> = mapCodec {
@@ -42,12 +44,12 @@ object ExpressionCodecs {
     val LIST_ACCESS_EXPRESSION_CODEC: MapCodec<ListAccessExpression> = mapCodec {
         it.group(
             ExpressionType.CODEC.fieldOf("listExpression").forGetter(ListAccessExpression::listExpression),
-            Codec.list(ExpressionType.CODEC).fieldOf("indices").forGetter(ListAccessExpression::indices),
+            mutableListCodec(ExpressionType.CODEC).fieldOf("indices").forGetter(ListAccessExpression::indices),
         ).apply(it, ::ListAccessExpression)
     }
     val LIST_EXPRESSION_CODEC: MapCodec<ListExpression> = mapCodec {
         it.group(
-            Codec.list(ExpressionType.CODEC).fieldOf("expressions").forGetter(ListExpression::expressions),
+            mutableListCodec(ExpressionType.CODEC).fieldOf("expressions").forGetter(ListExpression::expressions),
         ).apply(it, ::ListExpression)
     }
     val MEMBER_CALL_EXPRESSION_CODEC: MapCodec<MemberCallExpression> = mapCodec {
@@ -72,7 +74,7 @@ object ExpressionCodecs {
     val NAMED_LIST_ACCESS_EXPRESSION_CODEC: MapCodec<NamedListAccessExpression> = mapCodec {
         it.group(
             ExpressionType.CODEC.fieldOf("variableExpression").forGetter(NamedListAccessExpression::variableExpression),
-            Codec.list(ExpressionType.CODEC).fieldOf("indices").forGetter(NamedListAccessExpression::indices),
+            mutableListCodec(ExpressionType.CODEC).fieldOf("indices").forGetter(NamedListAccessExpression::indices),
         ).apply(it, ::NamedListAccessExpression)
     }
     val STRUCT_EXPRESSION_CODEC: MapCodec<StructExpression> = mapCodec {
@@ -175,6 +177,11 @@ object ExpressionCodecs {
         it.group(
             ARGUMENTS_CODEC.fieldOf("arguments").forGetter(TypeBuiltin::arguments),
         ).apply(it, ::TypeBuiltin)
+    }
+    val WAIT_BUILTIN_CODEC: MapCodec<WaitBuiltin> = mapCodec {
+        it.group(
+            ARGUMENTS_CODEC.fieldOf("arguments").forGetter(WaitBuiltin::arguments),
+        ).apply(it, ::WaitBuiltin)
     }
     val LIST_APPEND_BUILTIN_CODEC: MapCodec<ListAppendBuiltin> = mapCodec {
         it.group(

@@ -54,6 +54,7 @@ object ExpressionTypes {
     val STRUCT_VALUES_BUILTIN: ExpressionType<StructValuesBuiltin> = register("struct_values_builtin", ExpressionType(ExpressionCodecs.STRUCT_VALUES_BUILTIN_CODEC))
     val STRUCT_ENTRIES_BUILTIN: ExpressionType<StructEntriesBuiltin> = register("struct_entries_builtin", ExpressionType(ExpressionCodecs.STRUCT_ENTRIES_BUILTIN_CODEC))
     val TYPE_BUILTIN: ExpressionType<TypeBuiltin> = register("type_builtin", ExpressionType(ExpressionCodecs.TYPE_BUILTIN_CODEC))
+    val WAIT_BUILTIN: ExpressionType<WaitBuiltin> = register("wait_builtin", ExpressionType(ExpressionCodecs.WAIT_BUILTIN_CODEC))
     val PRINT_BUILTIN: ExpressionType<PrintBuiltin> = register("print_builtin", ExpressionType(ExpressionCodecs.PRINT_BUILTIN_CODEC))
     val CEIL_BUILTIN: ExpressionType<CeilBuiltin> = register("ceil_builtin", ExpressionType(ExpressionCodecs.CEIL_BUILTIN_CODEC))
     val FLOOR_BUILTIN: ExpressionType<FloorBuiltin> = register("floor_builtin", ExpressionType(ExpressionCodecs.FLOOR_BUILTIN_CODEC))
