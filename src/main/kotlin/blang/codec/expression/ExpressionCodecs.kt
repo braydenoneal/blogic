@@ -2,6 +2,7 @@ package blang.codec.expression
 
 import blang.codec.Codecs.mutableListCodec
 import blang.codec.Codecs.mutableMapCodec
+import blang.codec.value.ValueCodecs
 import blang.expression.builtin.*
 import blang.expression.builtin.PrintBuiltin
 import com.mojang.serialization.Codec
@@ -185,61 +186,61 @@ object ExpressionCodecs {
     }
     val LIST_APPEND_BUILTIN_CODEC: MapCodec<ListAppendBuiltin> = mapCodec {
         it.group(
-            blang.codec.value.ValueCodecs.LIST_VALUE_CODEC.fieldOf("listValue").forGetter(ListAppendBuiltin::listValue),
+            ValueCodecs.LIST_VALUE_CODEC.fieldOf("listValue").forGetter(ListAppendBuiltin::listValue),
             ARGUMENTS_CODEC.fieldOf("arguments").forGetter(ListAppendBuiltin::arguments),
         ).apply(it, ::ListAppendBuiltin)
     }
     val LIST_CONTAINS_ALL_BUILTIN_CODEC: MapCodec<ListContainsAllBuiltin> = mapCodec {
         it.group(
-            blang.codec.value.ValueCodecs.LIST_VALUE_CODEC.fieldOf("listValue").forGetter(ListContainsAllBuiltin::listValue),
+            ValueCodecs.LIST_VALUE_CODEC.fieldOf("listValue").forGetter(ListContainsAllBuiltin::listValue),
             ARGUMENTS_CODEC.fieldOf("arguments").forGetter(ListContainsAllBuiltin::arguments),
         ).apply(it, ::ListContainsAllBuiltin)
     }
     val LIST_CONTAINS_BUILTIN_CODEC: MapCodec<ListContainsBuiltin> = mapCodec {
         it.group(
-            blang.codec.value.ValueCodecs.LIST_VALUE_CODEC.fieldOf("listValue").forGetter(ListContainsBuiltin::listValue),
+            ValueCodecs.LIST_VALUE_CODEC.fieldOf("listValue").forGetter(ListContainsBuiltin::listValue),
             ARGUMENTS_CODEC.fieldOf("arguments").forGetter(ListContainsBuiltin::arguments),
         ).apply(it, ::ListContainsBuiltin)
     }
     val LIST_INSERT_BUILTIN_CODEC: MapCodec<ListInsertBuiltin> = mapCodec {
         it.group(
-            blang.codec.value.ValueCodecs.LIST_VALUE_CODEC.fieldOf("listValue").forGetter(ListInsertBuiltin::listValue),
+            ValueCodecs.LIST_VALUE_CODEC.fieldOf("listValue").forGetter(ListInsertBuiltin::listValue),
             ARGUMENTS_CODEC.fieldOf("arguments").forGetter(ListInsertBuiltin::arguments),
         ).apply(it, ::ListInsertBuiltin)
     }
     val LIST_POP_BUILTIN_CODEC: MapCodec<ListPopBuiltin> = mapCodec {
         it.group(
-            blang.codec.value.ValueCodecs.LIST_VALUE_CODEC.fieldOf("listValue").forGetter(ListPopBuiltin::listValue),
+            ValueCodecs.LIST_VALUE_CODEC.fieldOf("listValue").forGetter(ListPopBuiltin::listValue),
             ARGUMENTS_CODEC.fieldOf("arguments").forGetter(ListPopBuiltin::arguments),
         ).apply(it, ::ListPopBuiltin)
     }
     val LIST_REMOVE_BUILTIN_CODEC: MapCodec<ListRemoveBuiltin> = mapCodec {
         it.group(
-            blang.codec.value.ValueCodecs.LIST_VALUE_CODEC.fieldOf("listValue").forGetter(ListRemoveBuiltin::listValue),
+            ValueCodecs.LIST_VALUE_CODEC.fieldOf("listValue").forGetter(ListRemoveBuiltin::listValue),
             ARGUMENTS_CODEC.fieldOf("arguments").forGetter(ListRemoveBuiltin::arguments),
         ).apply(it, ::ListRemoveBuiltin)
     }
     val STRUCT_ENTRIES_BUILTIN_CODEC: MapCodec<StructEntriesBuiltin> = mapCodec {
         it.group(
-            blang.codec.value.ValueCodecs.STRUCT_VALUE_CODEC.fieldOf("struct").forGetter(StructEntriesBuiltin::struct),
+            ValueCodecs.STRUCT_VALUE_CODEC.fieldOf("struct").forGetter(StructEntriesBuiltin::struct),
             ARGUMENTS_CODEC.fieldOf("arguments").forGetter(StructEntriesBuiltin::arguments),
         ).apply(it, ::StructEntriesBuiltin)
     }
     val STRUCT_KEYS_BUILTIN_CODEC: MapCodec<StructKeysBuiltin> = mapCodec {
         it.group(
-            blang.codec.value.ValueCodecs.STRUCT_VALUE_CODEC.fieldOf("struct").forGetter(StructKeysBuiltin::struct),
+            ValueCodecs.STRUCT_VALUE_CODEC.fieldOf("struct").forGetter(StructKeysBuiltin::struct),
             ARGUMENTS_CODEC.fieldOf("arguments").forGetter(StructKeysBuiltin::arguments),
         ).apply(it, ::StructKeysBuiltin)
     }
     val STRUCT_REMOVE_BUILTIN_CODEC: MapCodec<StructRemoveBuiltin> = mapCodec {
         it.group(
-            blang.codec.value.ValueCodecs.STRUCT_VALUE_CODEC.fieldOf("struct").forGetter(StructRemoveBuiltin::struct),
+            ValueCodecs.STRUCT_VALUE_CODEC.fieldOf("struct").forGetter(StructRemoveBuiltin::struct),
             ARGUMENTS_CODEC.fieldOf("arguments").forGetter(StructRemoveBuiltin::arguments),
         ).apply(it, ::StructRemoveBuiltin)
     }
     val STRUCT_VALUES_BUILTIN_CODEC: MapCodec<StructValuesBuiltin> = mapCodec {
         it.group(
-            blang.codec.value.ValueCodecs.STRUCT_VALUE_CODEC.fieldOf("struct").forGetter(StructValuesBuiltin::struct),
+            ValueCodecs.STRUCT_VALUE_CODEC.fieldOf("struct").forGetter(StructValuesBuiltin::struct),
             ARGUMENTS_CODEC.fieldOf("arguments").forGetter(StructValuesBuiltin::arguments),
         ).apply(it, ::StructValuesBuiltin)
     }

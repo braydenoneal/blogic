@@ -1,5 +1,6 @@
 package blang.expression.builtin
 
+import blang.BlogicProgram
 import blang.expression.value.ItemValue
 import net.fabricmc.fabric.api.entity.FakePlayer
 import net.minecraft.core.BlockPos
@@ -20,7 +21,7 @@ import kotlin.math.min
 
 data class UseItemBuiltin(val arguments: Arguments) : Expression {
     override fun evaluate(program: Program): Value<*>? {
-        if (program !is blang.BlogicProgram) {
+        if (program !is BlogicProgram) {
             throw RunException("Program is not a BlogicProgram")
         }
 

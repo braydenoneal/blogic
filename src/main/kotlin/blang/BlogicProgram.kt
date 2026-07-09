@@ -1,6 +1,10 @@
 package blang
 
 import blang.expression.builtin.*
+import blang.expression.value.BlockValue
+import blang.expression.value.ItemStackValue
+import blang.expression.value.ItemValue
+import blang.expression.value.TagValue
 import parser.Program
 import parser.Scope
 import parser.expression.Arguments
@@ -76,10 +80,10 @@ data class BlogicProgram(
 
     override fun getCustomType(value: Value<*>): String? {
         return when (value) {
-            is blang.expression.value.BlockValue -> "block"
-            is blang.expression.value.ItemStackValue -> "itemStack"
-            is blang.expression.value.ItemValue -> "item"
-            is blang.expression.value.TagValue -> "tag"
+            is BlockValue -> "block"
+            is ItemStackValue -> "itemStack"
+            is ItemValue -> "item"
+            is TagValue -> "tag"
             else -> null
         }
     }

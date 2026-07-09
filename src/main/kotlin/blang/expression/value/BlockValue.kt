@@ -1,5 +1,6 @@
 package blang.expression.value
 
+import blang.codec.value.ValueTypes
 import net.minecraft.world.level.block.Block
 import parser.expression.value.Value
 
@@ -14,7 +15,7 @@ class BlockValue(value: Block) : Value<Block>(value) {
 
     override fun hashCode(): Int {
         var result = super.hashCode()
-        result = 31 * result + blang.codec.value.ValueTypes.BLOCK.hashCode()
+        result = 31 * result + ValueTypes.BLOCK.hashCode()
         return result
     }
 }

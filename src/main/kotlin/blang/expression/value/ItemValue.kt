@@ -1,5 +1,6 @@
 package blang.expression.value
 
+import blang.codec.value.ValueTypes
 import net.minecraft.world.item.Item
 import parser.RunException
 import parser.expression.value.Value
@@ -19,7 +20,7 @@ class ItemValue(value: Item) : Value<Item>(value) {
 
     override fun hashCode(): Int {
         var result = super.hashCode()
-        result = 31 * result + blang.codec.value.ValueTypes.ITEM.hashCode()
+        result = 31 * result + ValueTypes.ITEM.hashCode()
         return result
     }
 }

@@ -1,5 +1,6 @@
 package blang.expression.value
 
+import blang.codec.value.ValueTypes
 import net.minecraft.tags.TagKey
 import net.minecraft.world.item.Item
 import parser.RunException
@@ -20,7 +21,7 @@ class TagValue(value: TagKey<Item>) : Value<TagKey<Item>>(value) {
 
     override fun hashCode(): Int {
         var result = super.hashCode()
-        result = 31 * result + blang.codec.value.ValueTypes.TAG.hashCode()
+        result = 31 * result + ValueTypes.TAG.hashCode()
         return result
     }
 }

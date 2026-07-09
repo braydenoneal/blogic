@@ -1,5 +1,9 @@
 package blang.codec.value
 
+import blang.expression.value.BlockValue
+import blang.expression.value.ItemStackValue
+import blang.expression.value.ItemValue
+import blang.expression.value.TagValue
 import net.minecraft.core.Registry
 import net.minecraft.resources.Identifier
 import parser.expression.value.*
@@ -14,10 +18,10 @@ object ValueTypes {
     val RANGE: ValueType<RangeValue> = register("range", ValueType(ValueCodecs.RANGE_VALUE_CODEC))
     val STRING: ValueType<StringValue> = register("string", ValueType(ValueCodecs.STRING_VALUE_CODEC))
     val STRUCT: ValueType<StructValue> = register("struct", ValueType(ValueCodecs.STRUCT_VALUE_CODEC))
-    val BLOCK: ValueType<blang.expression.value.BlockValue> = register("block", ValueType(ValueCodecs.BLOCK_VALUE_CODEC))
-    val ITEM_STACK: ValueType<blang.expression.value.ItemStackValue> = register("item_stack", ValueType(ValueCodecs.ITEM_STACK_CODEC))
-    val ITEM: ValueType<blang.expression.value.ItemValue> = register("item", ValueType(ValueCodecs.ITEM_CODEC))
-    val TAG: ValueType<blang.expression.value.TagValue> = register("tag", ValueType(ValueCodecs.TAG_CODEC))
+    val BLOCK: ValueType<BlockValue> = register("block", ValueType(ValueCodecs.BLOCK_VALUE_CODEC))
+    val ITEM_STACK: ValueType<ItemStackValue> = register("item_stack", ValueType(ValueCodecs.ITEM_STACK_CODEC))
+    val ITEM: ValueType<ItemValue> = register("item", ValueType(ValueCodecs.ITEM_CODEC))
+    val TAG: ValueType<TagValue> = register("tag", ValueType(ValueCodecs.TAG_CODEC))
 
     fun <T : Value<*>> register(id: String, valueType: ValueType<T>): ValueType<T> {
         return Registry.register(ValueType.REGISTRY, Identifier.fromNamespaceAndPath("blogic", id), valueType)

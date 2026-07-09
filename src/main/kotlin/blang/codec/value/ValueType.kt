@@ -1,5 +1,9 @@
 package blang.codec.value
 
+import blang.expression.value.BlockValue
+import blang.expression.value.ItemStackValue
+import blang.expression.value.ItemValue
+import blang.expression.value.TagValue
 import com.mojang.serialization.Codec
 import com.mojang.serialization.Lifecycle
 import com.mojang.serialization.MapCodec
@@ -23,10 +27,10 @@ data class ValueType<T : Value<*>>(val codec: MapCodec<T>) {
                 is RangeValue -> ValueTypes.RANGE
                 is StringValue -> ValueTypes.STRING
                 is StructValue -> ValueTypes.STRUCT
-                is blang.expression.value.BlockValue -> ValueTypes.BLOCK
-                is blang.expression.value.ItemStackValue -> ValueTypes.ITEM_STACK
-                is blang.expression.value.ItemValue -> ValueTypes.ITEM
-                is blang.expression.value.TagValue -> ValueTypes.TAG
+                is BlockValue -> ValueTypes.BLOCK
+                is ItemStackValue -> ValueTypes.ITEM_STACK
+                is ItemValue -> ValueTypes.ITEM
+                is TagValue -> ValueTypes.TAG
                 else -> throw Exception("Statement type not found")
             }
         }

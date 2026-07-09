@@ -1,5 +1,6 @@
 package blang.expression.value
 
+import blang.codec.value.ValueTypes
 import net.minecraft.world.item.ItemStack
 import parser.RunException
 import parser.expression.value.Value
@@ -19,7 +20,7 @@ class ItemStackValue(value: ItemStack) : Value<ItemStack>(value) {
 
     override fun hashCode(): Int {
         var result = super.hashCode()
-        result = 31 * result + blang.codec.value.ValueTypes.ITEM_STACK.hashCode()
+        result = 31 * result + ValueTypes.ITEM_STACK.hashCode()
         return result
     }
 }

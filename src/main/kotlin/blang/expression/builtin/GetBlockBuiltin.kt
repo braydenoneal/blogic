@@ -1,5 +1,6 @@
 package blang.expression.builtin
 
+import blang.BlogicProgram
 import blang.expression.value.BlockValue
 import net.minecraft.core.BlockPos
 import parser.Program
@@ -10,7 +11,7 @@ import parser.expression.value.Value
 
 data class GetBlockBuiltin(val arguments: Arguments) : Expression {
     override fun evaluate(program: Program): Value<*>? {
-        if (program !is blang.BlogicProgram) {
+        if (program !is BlogicProgram) {
             throw RunException("Program is not a BlogicProgram")
         }
 
