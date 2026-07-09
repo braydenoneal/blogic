@@ -1,6 +1,7 @@
 import block.entity.ControllerScreenHandler
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking
 import net.minecraft.client.Minecraft
+import net.minecraft.client.gui.GuiGraphicsExtractor
 import net.minecraft.client.gui.components.Button
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen
 import net.minecraft.client.input.KeyEvent
@@ -39,6 +40,8 @@ class ControllerScreen(handler: ControllerScreenHandler, inventory: Inventory, t
 
         focused = editBoxWidget
     }
+
+    override fun extractLabels(graphics: GuiGraphicsExtractor, xm: Int, ym: Int) {}
 
     override fun keyPressed(keyEvent: KeyEvent): Boolean {
         if (minecraft.options.keyInventory.matches(keyEvent)) {

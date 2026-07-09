@@ -21,7 +21,7 @@ import net.minecraft.world.phys.BlockHitResult
 
 class ControllerBlock(settings: Properties) : BaseEntityBlock(settings) {
     init {
-        registerDefaultState(stateDefinition.any().setValue<Direction, Direction>(BlockStateProperties.FACING, Direction.UP))
+        registerDefaultState(stateDefinition.any().setValue(BlockStateProperties.FACING, Direction.UP))
     }
 
     override fun createBlockStateDefinition(builder: StateDefinition.Builder<Block, BlockState>) {

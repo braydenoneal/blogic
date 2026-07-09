@@ -9,7 +9,6 @@ import net.minecraft.core.Registry
 import net.minecraft.core.registries.BuiltInRegistries
 import net.minecraft.resources.Identifier
 import net.minecraft.world.entity.player.Inventory
-import net.minecraft.world.inventory.MenuType
 import net.minecraft.world.level.block.Block
 import net.minecraft.world.level.block.entity.BlockEntity
 import net.minecraft.world.level.block.entity.BlockEntityType
@@ -19,7 +18,7 @@ class ModBlockEntities {
     companion object {
         val CONTROLLER_BLOCK_ENTITY = register("controller", FabricBlockEntityTypeBuilder.Factory { pos: BlockPos, state: BlockState -> ControllerBlockEntity(pos, state) }, ModBlocks.CONTROLLER)
 
-        val CONTROLLER_SCREEN_HANDLER: ExtendedMenuType<ControllerScreenHandler, BlockPos> = Registry.register<MenuType<*>, ExtendedMenuType<ControllerScreenHandler, BlockPos>>(
+        val CONTROLLER_SCREEN_HANDLER: ExtendedMenuType<ControllerScreenHandler, BlockPos> = Registry.register(
             BuiltInRegistries.MENU,
             Identifier.fromNamespaceAndPath("blogic", "controller_block"),
             ExtendedMenuType(
