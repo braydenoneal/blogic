@@ -14,19 +14,19 @@ class ControllerScreen(handler: ControllerScreenHandler, inventory: Inventory, t
     override fun init() {
         super.init()
 
-        val editBoxWidget = EditBoxWidget.builder().x(20).y(20).build(
+        val multiLineEditBox = ModMultiLineEditBox.builder().setX(20).setY(20).build(
             Minecraft.getInstance().font,
             width - 40,
             height - 80,
             Component.nullToEmpty(""),
         )
 
-        editBoxWidget.text = menu.source()
-        addRenderableWidget(editBoxWidget)
+        multiLineEditBox.value = menu.source()
+        addRenderableWidget(multiLineEditBox)
 
         addRenderableWidget(
             Button.builder(CommonComponents.GUI_DONE) {
-                menu.setSource(editBoxWidget.text)
+                menu.setSource(multiLineEditBox.value)
                 ClientPlayNetworking.send(StringPayload(menu.pos(), menu.source()))
                 onClose()
             }.bounds(width / 2 - 4 - 150, height - 40, 150, 20).build(),
@@ -38,7 +38,7 @@ class ControllerScreen(handler: ControllerScreenHandler, inventory: Inventory, t
             }.bounds(width / 2 + 4, height - 40, 150, 20).build(),
         )
 
-        focused = editBoxWidget
+        focused = multiLineEditBox
     }
 
     override fun extractLabels(graphics: GuiGraphicsExtractor, xm: Int, ym: Int) {}

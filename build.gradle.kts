@@ -26,6 +26,8 @@ loom {
             sourceSet(sourceSets.getByName("client"))
         }
     }
+
+    accessWidenerPath = file("src/main/resources/blogic.classtweaker")
 }
 
 fabricApi {

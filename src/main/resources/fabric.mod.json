@@ -37,5 +37,6 @@
     "java": ">=25",
     "fabric-api": "*",
     "fabric-language-kotlin": "*"
-  }
+  },
+  "accessWidener": "blogic.classtweaker"
 }
