@@ -17,7 +17,7 @@ data class DeleteItemsBuiltin(val arguments: Arguments) : Expression {
         }
 
         val itemPredicate = (arguments.functionValue(program, "itemPredicate", 0) ?: return null)
-        val initialCount = if (arguments.arguments.size > 1 || arguments.namedArguments.containsKey("count")) (arguments.integerValue(program, "count", 1) ?: return null).value else null
+        val initialCount = if (arguments.namelessArguments.size > 1 || arguments.namedArguments.containsKey("count")) (arguments.integerValue(program, "count", 1) ?: return null).value else null
         var count = initialCount
 
         val containers = program.context.entity.getConnectedContainers()

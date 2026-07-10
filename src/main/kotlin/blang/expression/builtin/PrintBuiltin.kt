@@ -16,7 +16,7 @@ data class PrintBuiltin(val arguments: Arguments) : Expression {
             throw RunException("Program is not a BlogicProgram")
         }
 
-        val value = if (arguments.arguments.isEmpty()) StringValue("") else (arguments.anyValue(program, "value", 0) ?: return null)
+        val value = if (arguments.namelessArguments.isEmpty()) StringValue("") else (arguments.anyValue(program, "value", 0) ?: return null)
         var string = value.toString()
 
         if (value is StringValue) {

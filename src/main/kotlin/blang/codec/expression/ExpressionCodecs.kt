@@ -24,7 +24,7 @@ import parser.expression.operator.UnaryOperator
 object ExpressionCodecs {
     val ARGUMENTS_CODEC: Codec<Arguments> = RecordCodecBuilder.create {
         it.group(
-            mutableListCodec(ExpressionType.CODEC).fieldOf("arguments").forGetter(Arguments::arguments),
+            mutableListCodec(ExpressionType.CODEC).fieldOf("namelessArguments").forGetter(Arguments::namelessArguments),
             mutableMapCodec(Codec.STRING, ExpressionType.CODEC).fieldOf("namedArguments").forGetter(Arguments::namedArguments),
         ).apply(it, ::Arguments)
     }

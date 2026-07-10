@@ -24,9 +24,9 @@ data class ExportAllItemsBuiltin(val arguments: Arguments) : Expression {
         val y = (arguments.integerValue(program, "y", 1) ?: return null).value
         val z = (arguments.integerValue(program, "z", 2) ?: return null).value
         val itemPredicate = (arguments.functionValue(program, "itemPredicate", 3) ?: return null)
-        val initialCount = if (arguments.arguments.size > 4 || arguments.namedArguments.containsKey("count")) (arguments.integerValue(program, "count", 4) ?: return null).value else null
+        val initialCount = if (arguments.namelessArguments.size > 4 || arguments.namedArguments.containsKey("count")) (arguments.integerValue(program, "count", 4) ?: return null).value else null
         var count = initialCount
-        val deleteOverflow = if (arguments.arguments.size > 5 || arguments.namedArguments.containsKey("deleteOverflow")) (arguments.booleanValue(program, "deleteOverflow", 5) ?: return null).value else false
+        val deleteOverflow = if (arguments.namelessArguments.size > 5 || arguments.namedArguments.containsKey("deleteOverflow")) (arguments.booleanValue(program, "deleteOverflow", 5) ?: return null).value else false
 
         val world = program.context.entity.level ?: throw RunException("World is null")
 

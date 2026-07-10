@@ -29,7 +29,7 @@ data class BreakBlockBuiltin(val arguments: Arguments) : Expression {
         val y = (arguments.integerValue(program, "y", 1) ?: return null).value
         val z = (arguments.integerValue(program, "z", 2) ?: return null).value
         val blockPredicate = (arguments.functionValue(program, "blockPredicate", 3) ?: return null)
-        val silkTouch = if (arguments.arguments.size > 4 || arguments.namedArguments.containsKey("silkTouch")) (arguments.booleanValue(program, "silkTouch", 4) ?: return null).value else false
+        val silkTouch = if (arguments.namelessArguments.size > 4 || arguments.namedArguments.containsKey("silkTouch")) (arguments.booleanValue(program, "silkTouch", 4) ?: return null).value else false
 
         val entityPos = program.context.pos
         val pos = BlockPos(entityPos.x + x, entityPos.y + y, entityPos.z + z)
