@@ -5,6 +5,7 @@ import blang.expression.value.BlockValue
 import blang.expression.value.ItemStackValue
 import blang.expression.value.ItemValue
 import blang.expression.value.TagValue
+import parser.Parser
 import parser.Program
 import parser.Scope
 import parser.expression.Arguments
@@ -57,23 +58,23 @@ data class BlogicProgram(
         }
     }
 
-    override fun parseCustomBuiltins(name: String): Expression? {
+    override fun parseCustomBuiltins(parser: Parser, name: String): Expression? {
         return when (name) {
-            "print" -> PrintBuiltin(Arguments.parse(this))
-            "block" -> BlockBuiltin(Arguments.parse(this))
-            "blockItem" -> BlockItemBuiltin(Arguments.parse(this))
-            "breakBlock" -> BreakBlockBuiltin(Arguments.parse(this))
-            "deleteItems" -> DeleteItemsBuiltin(Arguments.parse(this))
-            "exportAllItems" -> ExportAllItemsBuiltin(Arguments.parse(this))
-            "getBlock" -> GetBlockBuiltin(Arguments.parse(this))
-            "getItemCount" -> GetItemCountBuiltin(Arguments.parse(this))
-            "getItems" -> GetItemsBuiltin(Arguments.parse(this))
-            "item" -> ItemBuiltin(Arguments.parse(this))
-            "placeBlock" -> PlaceBlockBuiltin(Arguments.parse(this))
-            "readItemCount" -> ReadItemCountBuiltin(Arguments.parse(this))
-            "tag" -> TagBuiltin(Arguments.parse(this))
-            "tags" -> TagsBuiltin(Arguments.parse(this))
-            "useItem" -> UseItemBuiltin(Arguments.parse(this))
+            "print" -> PrintBuiltin(Arguments.parse(parser))
+            "block" -> BlockBuiltin(Arguments.parse(parser))
+            "blockItem" -> BlockItemBuiltin(Arguments.parse(parser))
+            "breakBlock" -> BreakBlockBuiltin(Arguments.parse(parser))
+            "deleteItems" -> DeleteItemsBuiltin(Arguments.parse(parser))
+            "exportAllItems" -> ExportAllItemsBuiltin(Arguments.parse(parser))
+            "getBlock" -> GetBlockBuiltin(Arguments.parse(parser))
+            "getItemCount" -> GetItemCountBuiltin(Arguments.parse(parser))
+            "getItems" -> GetItemsBuiltin(Arguments.parse(parser))
+            "item" -> ItemBuiltin(Arguments.parse(parser))
+            "placeBlock" -> PlaceBlockBuiltin(Arguments.parse(parser))
+            "readItemCount" -> ReadItemCountBuiltin(Arguments.parse(parser))
+            "tag" -> TagBuiltin(Arguments.parse(parser))
+            "tags" -> TagsBuiltin(Arguments.parse(parser))
+            "useItem" -> UseItemBuiltin(Arguments.parse(parser))
             else -> null
         }
     }
