@@ -24,7 +24,7 @@ object StatementCodecs {
         it.group(
             ExpressionType.CODEC.fieldOf("condition").forGetter(ElseIfStatement::condition),
             STATEMENT_LIST_CODEC.fieldOf("statements").forGetter(ElseIfStatement::statements),
-            ValueType.CODEC.optionalFieldOf("conditionValue").forGetter { elseIfStatement -> Optional.ofNullable(elseIfStatement.conditionValue) },
+            ValueType.CODEC.optionalFieldOf("condition_value").forGetter { elseIfStatement -> Optional.ofNullable(elseIfStatement.conditionValue) },
         ).apply(it) { condition, statements, conditionValue -> ElseIfStatement(condition, statements, conditionValue.orElse(null)) }
     }
     val ELSE_STATEMENT_CODEC: MapCodec<ElseStatement> = mapCodec {
@@ -40,7 +40,7 @@ object StatementCodecs {
     val FOR_STATEMENT_CODEC: MapCodec<ForStatement> = mapCodec {
         it.group(
             Codec.STRING.fieldOf("itemName").forGetter(ForStatement::itemName),
-            ExpressionType.CODEC.fieldOf("listExpression").forGetter(ForStatement::listExpression),
+            ExpressionType.CODEC.fieldOf("list_expression").forGetter(ForStatement::listExpression),
             STATEMENT_LIST_CODEC.fieldOf("statements").forGetter(ForStatement::statements),
         ).apply(it, ::ForStatement)
     }
@@ -54,9 +54,9 @@ object StatementCodecs {
         it.group(
             ExpressionType.CODEC.fieldOf("condition").forGetter(IfStatement::condition),
             STATEMENT_LIST_CODEC.fieldOf("statements").forGetter(IfStatement::statements),
-            mutableListCodec(ELSE_IF_STATEMENT_CODEC).fieldOf("elseIfStatements").forGetter(IfStatement::elseIfStatements),
-            ELSE_STATEMENT_CODEC.fieldOf("elseStatement").forGetter(IfStatement::elseStatement),
-            ValueType.CODEC.optionalFieldOf("conditionValue").forGetter { ifStatement -> Optional.ofNullable(ifStatement.conditionValue) },
+            mutableListCodec(ELSE_IF_STATEMENT_CODEC).fieldOf("else_if_statements").forGetter(IfStatement::elseIfStatements),
+            ELSE_STATEMENT_CODEC.fieldOf("else_statement").forGetter(IfStatement::elseStatement),
+            ValueType.CODEC.optionalFieldOf("condition_value").forGetter { ifStatement -> Optional.ofNullable(ifStatement.conditionValue) },
         ).apply(it) { condition, statements, elseIfStatements, elseStatement, conditionValue -> IfStatement(condition, statements, elseIfStatements, elseStatement, conditionValue.orElse(null)) }
     }
     val IMPORT_STATEMENT_CODEC: MapCodec<ImportStatement> = mapCodec {

@@ -24,8 +24,8 @@ import parser.expression.operator.UnaryOperator
 object ExpressionCodecs {
     val ARGUMENTS_CODEC: Codec<Arguments> = RecordCodecBuilder.create {
         it.group(
-            mutableListCodec(ExpressionType.CODEC).fieldOf("namelessArguments").forGetter(Arguments::namelessArguments),
-            mutableMapCodec(Codec.STRING, ExpressionType.CODEC).fieldOf("namedArguments").forGetter(Arguments::namedArguments),
+            mutableListCodec(ExpressionType.CODEC).fieldOf("nameless_arguments").forGetter(Arguments::namelessArguments),
+            mutableMapCodec(Codec.STRING, ExpressionType.CODEC).fieldOf("named_arguments").forGetter(Arguments::namedArguments),
         ).apply(it, ::Arguments)
     }
     val ASSIGNMENT_EXPRESSION_CODEC: MapCodec<AssignmentExpression> = mapCodec {
@@ -44,7 +44,7 @@ object ExpressionCodecs {
     }
     val LIST_ACCESS_EXPRESSION_CODEC: MapCodec<ListAccessExpression> = mapCodec {
         it.group(
-            ExpressionType.CODEC.fieldOf("listExpression").forGetter(ListAccessExpression::listExpression),
+            ExpressionType.CODEC.fieldOf("list_expression").forGetter(ListAccessExpression::listExpression),
             mutableListCodec(ExpressionType.CODEC).fieldOf("indices").forGetter(ListAccessExpression::indices),
         ).apply(it, ::ListAccessExpression)
     }
@@ -56,7 +56,7 @@ object ExpressionCodecs {
     val MEMBER_CALL_EXPRESSION_CODEC: MapCodec<MemberCallExpression> = mapCodec {
         it.group(
             ExpressionType.CODEC.fieldOf("member").forGetter(MemberCallExpression::member),
-            Codec.STRING.fieldOf("functionName").forGetter(MemberCallExpression::functionName),
+            Codec.STRING.fieldOf("function_name").forGetter(MemberCallExpression::functionName),
             ARGUMENTS_CODEC.fieldOf("arguments").forGetter(MemberCallExpression::arguments),
         ).apply(it, ::MemberCallExpression)
     }
@@ -74,7 +74,7 @@ object ExpressionCodecs {
     }
     val NAMED_LIST_ACCESS_EXPRESSION_CODEC: MapCodec<NamedListAccessExpression> = mapCodec {
         it.group(
-            ExpressionType.CODEC.fieldOf("variableExpression").forGetter(NamedListAccessExpression::variableExpression),
+            ExpressionType.CODEC.fieldOf("variable_expression").forGetter(NamedListAccessExpression::variableExpression),
             mutableListCodec(ExpressionType.CODEC).fieldOf("indices").forGetter(NamedListAccessExpression::indices),
         ).apply(it, ::NamedListAccessExpression)
     }
@@ -186,37 +186,37 @@ object ExpressionCodecs {
     }
     val LIST_APPEND_BUILTIN_CODEC: MapCodec<ListAppendBuiltin> = mapCodec {
         it.group(
-            ValueCodecs.LIST_VALUE_CODEC.fieldOf("listValue").forGetter(ListAppendBuiltin::listValue),
+            ValueCodecs.LIST_VALUE_CODEC.fieldOf("list_value").forGetter(ListAppendBuiltin::listValue),
             ARGUMENTS_CODEC.fieldOf("arguments").forGetter(ListAppendBuiltin::arguments),
         ).apply(it, ::ListAppendBuiltin)
     }
     val LIST_CONTAINS_ALL_BUILTIN_CODEC: MapCodec<ListContainsAllBuiltin> = mapCodec {
         it.group(
-            ValueCodecs.LIST_VALUE_CODEC.fieldOf("listValue").forGetter(ListContainsAllBuiltin::listValue),
+            ValueCodecs.LIST_VALUE_CODEC.fieldOf("list_value").forGetter(ListContainsAllBuiltin::listValue),
             ARGUMENTS_CODEC.fieldOf("arguments").forGetter(ListContainsAllBuiltin::arguments),
         ).apply(it, ::ListContainsAllBuiltin)
     }
     val LIST_CONTAINS_BUILTIN_CODEC: MapCodec<ListContainsBuiltin> = mapCodec {
         it.group(
-            ValueCodecs.LIST_VALUE_CODEC.fieldOf("listValue").forGetter(ListContainsBuiltin::listValue),
+            ValueCodecs.LIST_VALUE_CODEC.fieldOf("list_value").forGetter(ListContainsBuiltin::listValue),
             ARGUMENTS_CODEC.fieldOf("arguments").forGetter(ListContainsBuiltin::arguments),
         ).apply(it, ::ListContainsBuiltin)
     }
     val LIST_INSERT_BUILTIN_CODEC: MapCodec<ListInsertBuiltin> = mapCodec {
         it.group(
-            ValueCodecs.LIST_VALUE_CODEC.fieldOf("listValue").forGetter(ListInsertBuiltin::listValue),
+            ValueCodecs.LIST_VALUE_CODEC.fieldOf("list_value").forGetter(ListInsertBuiltin::listValue),
             ARGUMENTS_CODEC.fieldOf("arguments").forGetter(ListInsertBuiltin::arguments),
         ).apply(it, ::ListInsertBuiltin)
     }
     val LIST_POP_BUILTIN_CODEC: MapCodec<ListPopBuiltin> = mapCodec {
         it.group(
-            ValueCodecs.LIST_VALUE_CODEC.fieldOf("listValue").forGetter(ListPopBuiltin::listValue),
+            ValueCodecs.LIST_VALUE_CODEC.fieldOf("list_value").forGetter(ListPopBuiltin::listValue),
             ARGUMENTS_CODEC.fieldOf("arguments").forGetter(ListPopBuiltin::arguments),
         ).apply(it, ::ListPopBuiltin)
     }
     val LIST_REMOVE_BUILTIN_CODEC: MapCodec<ListRemoveBuiltin> = mapCodec {
         it.group(
-            ValueCodecs.LIST_VALUE_CODEC.fieldOf("listValue").forGetter(ListRemoveBuiltin::listValue),
+            ValueCodecs.LIST_VALUE_CODEC.fieldOf("list_value").forGetter(ListRemoveBuiltin::listValue),
             ARGUMENTS_CODEC.fieldOf("arguments").forGetter(ListRemoveBuiltin::arguments),
         ).apply(it, ::ListRemoveBuiltin)
     }

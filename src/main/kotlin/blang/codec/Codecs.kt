@@ -29,13 +29,13 @@ object Codecs {
     val STATEMENT_LIST_CODEC: MapCodec<StatementList> = mapCodec {
         it.group(
             mutableListCodec(StatementType.CODEC).fieldOf("ran").forGetter(StatementList::ran),
-            mutableListCodec(StatementType.CODEC).fieldOf("toRun").forGetter(StatementList::toRun),
+            mutableListCodec(StatementType.CODEC).fieldOf("to_run").forGetter(StatementList::toRun),
         ).apply(it, ::StatementList)
     }
     val FUNCT_CODEC: Codec<Funct> = RecordCodecBuilder.create {
         it.group(
             mutableListCodec(Codec.STRING).fieldOf("parameters").forGetter(Funct::parameters),
-            mutableListCodec(pair(Codec.STRING, ExpressionType.CODEC)).fieldOf("defaultParameters").forGetter(Funct::defaultParameters),
+            mutableListCodec(pair(Codec.STRING, ExpressionType.CODEC)).fieldOf("default_parameters").forGetter(Funct::defaultParameters),
             STATEMENT_LIST_CODEC.fieldOf("statements").forGetter(Funct::statements),
             Codec.BOOL.fieldOf("running").forGetter(Funct::running),
         ).apply(it, ::Funct)
