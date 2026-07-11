@@ -213,7 +213,7 @@ class ControllerBlockEntity(pos: BlockPos, state: BlockState) : BlockEntity(ModB
     }
 
     companion object {
-        fun tick(world: Level, blockPos: BlockPos, ignoredBlockState: BlockState, entity: ControllerBlockEntity) {
+        fun tick(world: Level, blockPos: BlockPos, @Suppress("unused") ignoredBlockState: BlockState, entity: ControllerBlockEntity) {
             if (!entity.program.parsed) {
                 entity.program.parse()
                 entity.setChanged()
