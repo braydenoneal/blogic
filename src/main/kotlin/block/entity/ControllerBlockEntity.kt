@@ -36,6 +36,7 @@ class ControllerBlockEntity(pos: BlockPos, state: BlockState) : BlockEntity(ModB
     fun setSource(payload: ControllerPayload) {
         program.name = payload.name
         program.source = payload.source
+        program.cursorPosition = payload.cursorPosition
 
         if (!level!!.isClientSide) {
             program.parse()

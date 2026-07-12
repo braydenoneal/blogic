@@ -22,6 +22,10 @@ class ControllerScreenHandler(syncId: Int, @Suppress("unused") ignoredPlayerInve
         return entity.program.source
     }
 
+    fun cursorPosition(): Int {
+        return entity.program.cursorPosition
+    }
+
     fun setSource(payload: ControllerPayload) {
         entity.setSource(payload)
     }

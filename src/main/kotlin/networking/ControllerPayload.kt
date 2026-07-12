@@ -7,7 +7,7 @@ import net.minecraft.network.codec.StreamCodec
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload
 import net.minecraft.resources.Identifier
 
-data class ControllerPayload(val pos: BlockPos, val name: String, val source: String) : CustomPacketPayload {
+data class ControllerPayload(val pos: BlockPos, val name: String, val source: String, val cursorPosition: Int) : CustomPacketPayload {
     override fun type(): CustomPacketPayload.Type<out CustomPacketPayload> {
         return ID
     }
@@ -18,6 +18,7 @@ data class ControllerPayload(val pos: BlockPos, val name: String, val source: St
             BlockPos.STREAM_CODEC, ControllerPayload::pos,
             ByteBufCodecs.STRING_UTF8, ControllerPayload::name,
             ByteBufCodecs.STRING_UTF8, ControllerPayload::source,
-        ) { pos: BlockPos, name: String, source: String -> ControllerPayload(pos, name, source) }
+            ByteBufCodecs.INT, ControllerPayload::cursorPosition,
+        ) { pos, name, source, cursorPosition -> ControllerPayload(pos, name, source, cursorPosition) }
     }
 }

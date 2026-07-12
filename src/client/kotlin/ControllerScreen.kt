@@ -28,11 +28,13 @@ class ControllerScreen(handler: ControllerScreenHandler, inventory: Inventory, t
         )
 
         multiLineEditBox.value = menu.source()
+        multiLineEditBox.textField.cursor = menu.cursorPosition()
+        multiLineEditBox.textField.selectCursor = menu.cursorPosition()
         addRenderableWidget(multiLineEditBox)
 
         addRenderableWidget(
             Button.builder(CommonComponents.GUI_DONE) {
-                val payload = ControllerPayload(menu.pos(), nameEditBox.value, multiLineEditBox.value)
+                val payload = ControllerPayload(menu.pos(), nameEditBox.value, multiLineEditBox.value, multiLineEditBox.textField.cursor)
                 menu.setSource(payload)
                 ClientPlayNetworking.send(payload)
                 onClose()

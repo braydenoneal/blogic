@@ -1,6 +1,5 @@
 ## Todo
 
-- store the edit box cursor position
 - study how codecs work
 - codec for converting kotlin nullables to java optionals (scope, elseIfStatement, ifStatement)
 - controlled order of execution for multiple controllers in a network?

@@ -24,6 +24,7 @@ data class BlogicProgram(
     override val statements: StatementList = StatementList(),
     override val functions: MutableMap<String, FunctionDeclaration> = mutableMapOf(),
     override val scopes: MutableList<Scope> = mutableListOf(),
+    var cursorPosition: Int = 0,
 ) : Program(source) {
     private var hasRuntimeError = false
 
