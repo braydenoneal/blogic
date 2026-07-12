@@ -3,9 +3,11 @@ import net.minecraft.client.gui.GuiGraphicsExtractor
 import net.minecraft.client.gui.components.MultiLineEditBox
 import net.minecraft.network.chat.CommonComponents
 import net.minecraft.network.chat.Component
+import net.minecraft.util.ARGB
 import net.minecraft.util.Util
 import tokenizer.Type
 import java.util.regex.Pattern
+import kotlin.math.log10
 import kotlin.math.max
 
 class ModMultiLineEditBox(
@@ -35,9 +37,18 @@ class ModMultiLineEditBox(
         textField.setCursorListener { scrollToCursor() }
     }
 
-    private fun drawText(context: GuiGraphicsExtractor, text: String, x: Int, y: Int) {
+    private val lineDigits get(): Int = (log10(textField.displayLines.size.toDouble()) + 1).toInt()
+
+    private val gutterChars get(): Int = lineDigits + 2
+
+    private val gutterWidth get(): Int = font.width(" ".repeat(gutterChars))
+
+    private fun drawText(context: GuiGraphicsExtractor, text: String, x: Int, y: Int, lineNumber: Int) {
         var x = x
         var position = 0
+
+        context.text(font, lineNumber.toString().padStart(lineDigits, ' ') + " ", x, y, ARGB.color(75, 80, 89), false)
+        x += gutterWidth
 
         while (position < text.length) {
             var error = true
@@ -81,6 +92,7 @@ class ModMultiLineEditBox(
 
     override fun extractContents(graphics: GuiGraphicsExtractor, mouseX: Int, mouseY: Int, a: Float) {
         graphics.fill(x, y, x + getWidth(), y + max(getHeight(), textField.lineCount * LINE_HEIGHT + 6), -0xe1e0de)
+        graphics.fill(innerLeft + gutterWidth - font.width(" "), y, innerLeft + gutterWidth - font.width(" ") + 1, y + max(getHeight(), textField.lineCount * LINE_HEIGHT + 6), ARGB.color(49, 52, 56))
         val text: String = textField.value
 
         if (text.isEmpty() && !isFocused) {
@@ -88,10 +100,11 @@ class ModMultiLineEditBox(
             return
         }
 
-        val pos: Int = textField.cursor
+        val pos = textField.cursor
         val focused = isFocused && (Util.getMillis() - focusedTime) / CURSOR_BLINK_INTERVAL % 2L == 0L
         var x: Int
         var textY = innerTop + 2
+        var lineNumber = 1
 
         for (line in textField.displayLines) {
             val isVisible = withinContentAreaTopBottom(textY, textY + LINE_HEIGHT)
@@ -99,18 +112,19 @@ class ModMultiLineEditBox(
 
             if (isVisible) {
                 val fullLineText = text.substring(line.beginIndex, line.endIndex)
-                drawText(graphics, fullLineText, textX, textY)
+                drawText(graphics, fullLineText, textX, textY, lineNumber)
             }
 
             if (focused && pos >= line.beginIndex && pos <= line.endIndex) {
                 if (isVisible) {
                     val lineUntilPos = text.substring(line.beginIndex, pos)
-                    x = textX + font.width(lineUntilPos)
+                    x = textX + font.width(lineUntilPos) + gutterWidth
                     graphics.fill(x, textY - 2, x + 1, textY + 9, -0x1f000001)
                 }
             }
 
             textY += LINE_HEIGHT
+            lineNumber++
         }
 
         if (textField.hasSelection()) {

@@ -59,7 +59,6 @@ class ControllerScreen(handler: ControllerScreenHandler, inventory: Inventory, t
     }
 
     override fun mouseScrolled(mouseX: Double, mouseY: Double, horizontalAmount: Double, verticalAmount: Double): Boolean {
-        children().first().mouseScrolled(mouseX, mouseY, horizontalAmount, verticalAmount)
-        return super.mouseScrolled(mouseX, mouseY, horizontalAmount, verticalAmount)
+        return children()[1].mouseScrolled(mouseX, mouseY, horizontalAmount, verticalAmount)
     }
 }
