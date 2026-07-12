@@ -21,3 +21,4 @@ accessible field net/minecraft/client/gui/components/MultiLineEditBox cursorColo
 accessible field net/minecraft/client/gui/components/MultiLineEditBox preeditOverlay Lnet/minecraft/client/gui/components/IMEPreeditOverlay;
 accessible field net/minecraft/client/gui/components/MultiLineEditBox focusedTime J
 extendable method net/minecraft/client/gui/components/MultiLineEditBox scrollToCursor ()V
+extendable method net/minecraft/client/gui/components/MultiLineEditBox seekCursorScreen (DD)V

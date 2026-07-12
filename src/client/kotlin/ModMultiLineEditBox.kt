@@ -3,6 +3,8 @@ import net.minecraft.client.gui.GuiGraphicsExtractor
 import net.minecraft.client.gui.components.MultiLineEditBox
 import net.minecraft.network.chat.CommonComponents
 import net.minecraft.network.chat.Component
+import net.minecraft.network.chat.FontDescription
+import net.minecraft.resources.Identifier
 import net.minecraft.util.ARGB
 import net.minecraft.util.Util
 import tokenizer.Type
@@ -26,10 +28,16 @@ class ModMultiLineEditBox(
 ) : MultiLineEditBox(font, x, y, width, height, placeholder, narration, textColor, textShadow, cursorColor, showBackground, showDecorations) {
     companion object {
         const val LINE_HEIGHT: Int = 11
-        const val UNFOCUSED_BOX_TEXT_COLOR: Int = -0x331f1f20
         const val CURSOR_BLINK_INTERVAL: Int = 500
+        val MONOSPACE_FONT: FontDescription = FontDescription.Resource(Identifier.fromNamespaceAndPath("blogic", "monospace"))
 
         fun builder(): Builder = Builder()
+
+        fun monospaceText(string: String): Component {
+            val component = Component.literal(string)
+            component.style = component.style.withFont(MONOSPACE_FONT)
+            return component
+        }
     }
 
     init {
@@ -39,15 +47,19 @@ class ModMultiLineEditBox(
 
     private val lineDigits get(): Int = (log10(textField.displayLines.size.toDouble()) + 1).toInt()
 
-    private val gutterChars get(): Int = lineDigits + 2
+    private val gutterWidth get(): Int = font.width(monospaceText(" ".repeat(lineDigits + 2)))
 
-    private val gutterWidth get(): Int = font.width(" ".repeat(gutterChars))
+    private fun drawMonospace(context: GuiGraphicsExtractor, string: String, x: Int, y: Int, color: Int) {
+        val component = Component.literal(string)
+        component.style = component.style.withFont(MONOSPACE_FONT)
+        context.text(font, component, x, y, color, false)
+    }
 
-    private fun drawText(context: GuiGraphicsExtractor, text: String, x: Int, y: Int, lineNumber: Int) {
+    private fun drawText(graphics: GuiGraphicsExtractor, text: String, x: Int, y: Int, lineNumber: Int) {
         var x = x
         var position = 0
 
-        context.text(font, lineNumber.toString().padStart(lineDigits, ' ') + " ", x, y, ARGB.color(75, 80, 89), false)
+        drawMonospace(graphics, lineNumber.toString().padStart(lineDigits, ' ') + " ", x, y, ARGB.color(75, 80, 89))
         x += gutterWidth
 
         while (position < text.length) {
@@ -71,19 +83,25 @@ class ModMultiLineEditBox(
                         color = -0x388245
                     }
 
-                    context.text(font, group, x, y, color, false)
+                    drawMonospace(graphics, group, x, y, color)
                     position += group.length
-                    x += font.width(group)
+                    x += font.width(monospaceText(group))
                     error = false
                     break
                 }
             }
 
             if (error) {
-                context.text(font, text.substring(position), x, y, -0x8ab9c, false)
+                drawMonospace(graphics, text.substring(position), x, y, -0x8ab9c)
                 break
             }
         }
+    }
+
+    override fun seekCursorScreen(x: Double, y: Double) {
+        val mouseX = x - this.x.toDouble() - innerPadding().toDouble() - gutterWidth
+        val mouseY = y - this.y.toDouble() - innerPadding().toDouble() + scrollAmount()
+        textField.seekCursorToPoint(mouseX, mouseY)
     }
 
     override fun getInnerHeight(): Int {
@@ -92,13 +110,8 @@ class ModMultiLineEditBox(
 
     override fun extractContents(graphics: GuiGraphicsExtractor, mouseX: Int, mouseY: Int, a: Float) {
         graphics.fill(x, y, x + getWidth(), y + max(getHeight(), textField.lineCount * LINE_HEIGHT + 6), -0xe1e0de)
-        graphics.fill(innerLeft + gutterWidth - font.width(" "), y, innerLeft + gutterWidth - font.width(" ") + 1, y + max(getHeight(), textField.lineCount * LINE_HEIGHT + 6), ARGB.color(49, 52, 56))
+        graphics.fill(innerLeft + gutterWidth - font.width(monospaceText(" ")), y, innerLeft + gutterWidth - font.width(monospaceText(" ")) + 1, y + max(getHeight(), textField.lineCount * LINE_HEIGHT + 6), ARGB.color(49, 52, 56))
         val text: String = textField.value
-
-        if (text.isEmpty() && !isFocused) {
-            graphics.textWithWordWrap(font, placeholder, innerLeft, innerTop + 2, width - totalInnerPadding(), UNFOCUSED_BOX_TEXT_COLOR)
-            return
-        }
 
         val pos = textField.cursor
         val focused = isFocused && (Util.getMillis() - focusedTime) / CURSOR_BLINK_INTERVAL % 2L == 0L
@@ -118,7 +131,7 @@ class ModMultiLineEditBox(
             if (focused && pos >= line.beginIndex && pos <= line.endIndex) {
                 if (isVisible) {
                     val lineUntilPos = text.substring(line.beginIndex, pos)
-                    x = textX + font.width(lineUntilPos) + gutterWidth
+                    x = textX + font.width(monospaceText(lineUntilPos)) + gutterWidth
                     graphics.fill(x, textY - 2, x + 1, textY + 9, -0x1f000001)
                 }
             }
@@ -139,15 +152,15 @@ class ModMultiLineEditBox(
                     }
 
                     if (withinContentAreaTopBottom(textY, textY + LINE_HEIGHT)) {
-                        val o: Int = font.width(text.substring(substring3.beginIndex, max(substring2.beginIndex, substring3.beginIndex)))
+                        val o: Int = font.width(monospaceText(text.substring(substring3.beginIndex, max(substring2.beginIndex, substring3.beginIndex))))
 
                         val p: Int = if (substring2.endIndex > substring3.endIndex) {
                             width - innerPadding()
                         } else {
-                            font.width(text.substring(substring3.beginIndex, substring2.endIndex))
+                            font.width(monospaceText(text.substring(substring3.beginIndex, substring2.endIndex)))
                         }
 
-                        graphics.textHighlight(n + o, textY, n + p, textY + LINE_HEIGHT, true)
+                        graphics.textHighlight(n + o + gutterWidth, textY, n + p + gutterWidth, textY + LINE_HEIGHT, true)
                     }
                 }
 

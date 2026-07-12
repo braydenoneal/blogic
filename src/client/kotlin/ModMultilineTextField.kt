@@ -2,7 +2,8 @@ import net.minecraft.client.gui.Font
 import net.minecraft.client.gui.components.MultilineTextField
 import net.minecraft.client.gui.components.Whence
 import net.minecraft.util.Mth
-import java.util.*
+import kotlin.math.max
+import kotlin.math.min
 
 class ModMultilineTextField(
     font: Font,
@@ -21,11 +22,14 @@ class ModMultilineTextField(
     }
 
     override fun seekCursorToPoint(x: Double, y: Double) {
-        val left = Mth.floor(x)
-        Objects.requireNonNull(font)
+        val characterWidth = font.width(ModMultiLineEditBox.monospaceText(" "))
+        val left = Mth.floor(x / characterWidth)
+
         val top = Mth.floor(y / lineHeight)
         val lineView = displayLines[Mth.clamp(top, 0, displayLines.size - 1)]
-        val clickedColumn = font.plainSubstrByWidth(value.substring(lineView.beginIndex, lineView.endIndex), left).length
+
+        val clickedColumn = min(max(left, 0), lineView.endIndex - lineView.beginIndex)
+
         seekCursor(Whence.ABSOLUTE, lineView.beginIndex + clickedColumn)
     }
 }

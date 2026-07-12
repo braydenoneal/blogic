@@ -4,7 +4,8 @@
 - study how codecs work
 - codec for converting kotlin nullables to java optionals (scope, elseIfStatement, ifStatement)
 - controlled order of execution for multiple controllers in a network?
-- separate font for the text editor
+- store text edit draft (option to save text editing progress without activating the changes)
+- fix double click selection issue caused by line number gutter
 - ide extension or just mirroring files to allow editing code externally
 - option to run imports from either context/location
 - isChunkLoaded function
