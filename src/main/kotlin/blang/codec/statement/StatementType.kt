@@ -17,6 +17,7 @@ data class StatementType<T : Statement>(val codec: MapCodec<T>) {
                 is BreakStatement -> StatementTypes.BREAK_STATEMENT
                 is ContinueStatement -> StatementTypes.CONTINUE_STATEMENT
                 is DeleteStatement -> StatementTypes.DELETE_STATEMENT
+                is EmptyStatement -> StatementTypes.EMPTY_STATEMENT
                 is ExpressionStatement -> StatementTypes.EXPRESSION_STATEMENT
                 is ForStatement -> StatementTypes.FOR_STATEMENT
                 is FunctionDeclaration -> StatementTypes.FUNCTION_DECLARATION

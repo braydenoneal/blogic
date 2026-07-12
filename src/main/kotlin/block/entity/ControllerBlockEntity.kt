@@ -30,7 +30,7 @@ import java.util.*
 import kotlin.jvm.optionals.getOrNull
 
 class ControllerBlockEntity(pos: BlockPos, state: BlockState) : BlockEntity(ModBlockEntities.CONTROLLER_BLOCK_ENTITY, pos, state), ExtendedMenuProvider<BlockPos> {
-    var program: BlogicProgram = BlogicProgram(Context(pos, this), "name\n\n")
+    var program: BlogicProgram = BlogicProgram(Context(pos, this))
     var initializing = true
 
     fun setSource(payload: ControllerPayload) {
@@ -49,7 +49,7 @@ class ControllerBlockEntity(pos: BlockPos, state: BlockState) : BlockEntity(ModB
     override fun loadAdditional(view: ValueInput) {
         super.loadAdditional(view)
         initializing = view.read("initializing", Codec.BOOL).getOrNull() ?: true
-        val rawProgram = view.read("raw_program", Codecs.PROGRAM_CODEC).getOrNull() ?: Program("name\n\n")
+        val rawProgram = view.read("raw_program", Codecs.PROGRAM_CODEC).getOrNull() ?: Program()
 
         program = BlogicProgram(
             Context(worldPosition, this),

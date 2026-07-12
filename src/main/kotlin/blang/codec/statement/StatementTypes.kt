@@ -7,6 +7,7 @@ import parser.statement.Statement
 object StatementTypes {
     val BREAK_STATEMENT = register("break_statement", StatementType(StatementCodecs.BREAK_STATEMENT_CODEC))
     val CONTINUE_STATEMENT = register("continue_statement", StatementType(StatementCodecs.CONTINUE_STATEMENT_CODEC))
+    val EMPTY_STATEMENT = register("empty_statement", StatementType(StatementCodecs.EMPTY_STATEMENT_CODEC))
     val EXPRESSION_STATEMENT = register("expression_statement", StatementType(StatementCodecs.EXPRESSION_STATEMENT_CODEC))
     val FOR_STATEMENT = register("for_statement", StatementType(StatementCodecs.FOR_STATEMENT_CODEC))
     val FUNCTION_DECLARATION = register("function_declaration", StatementType(StatementCodecs.FUNCTION_DECLARATION_CODEC))

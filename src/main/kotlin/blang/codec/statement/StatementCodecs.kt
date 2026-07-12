@@ -32,6 +32,7 @@ object StatementCodecs {
             STATEMENT_LIST_CODEC.fieldOf("statements").forGetter(ElseStatement::statements),
         ).apply(it, ::ElseStatement)
     }
+    val EMPTY_STATEMENT_CODEC: MapCodec<EmptyStatement> = MapCodec.unitCodec(EmptyStatement()).fieldOf("empty_statement")
     val EXPRESSION_STATEMENT_CODEC: MapCodec<ExpressionStatement> = mapCodec {
         it.group(
             ExpressionType.CODEC.fieldOf("expression").forGetter(ExpressionStatement::expression),

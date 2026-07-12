@@ -1,6 +1,5 @@
 ## Todo
 
-- change file name to its own separate field
 - study how codecs work
 - codec for converting kotlin nullables to java optionals (scope, elseIfStatement, ifStatement)
 - controlled order of execution for multiple controllers in a network?

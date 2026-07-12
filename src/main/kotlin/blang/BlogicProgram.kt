@@ -19,7 +19,7 @@ data class BlogicProgram(
     val context: Context,
     override var source: String = "",
     override var parsed: Boolean = false,
-    override var name: String = "",
+    override var name: String = "name",
     override val imports: MutableList<ImportStatement> = mutableListOf(),
     override val statements: StatementList = StatementList(),
     override val functions: MutableMap<String, FunctionDeclaration> = mutableMapOf(),
