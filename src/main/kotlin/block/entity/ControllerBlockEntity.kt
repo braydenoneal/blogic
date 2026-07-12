@@ -23,6 +23,7 @@ import net.minecraft.world.level.block.state.BlockState
 import net.minecraft.world.level.block.state.properties.BlockStateProperties
 import net.minecraft.world.level.storage.ValueInput
 import net.minecraft.world.level.storage.ValueOutput
+import networking.ControllerPayload
 import parser.Program
 import parser.Program.Companion.log
 import java.util.*
@@ -32,14 +33,16 @@ class ControllerBlockEntity(pos: BlockPos, state: BlockState) : BlockEntity(ModB
     var program: BlogicProgram = BlogicProgram(Context(pos, this), "name\n\n")
     var initializing = true
 
-    fun setSource(source: String) {
-        program.source = source
+    fun setSource(payload: ControllerPayload) {
+        program.name = payload.name
+        program.source = payload.source
 
         if (!level!!.isClientSide) {
             program.parse()
             initializing = true
         }
 
+        program.name = payload.name
         setChanged()
     }
 
