@@ -3,7 +3,6 @@
 - study how codecs work
 - codec for converting kotlin nullables to java optionals (scope, elseIfStatement, ifStatement)
 - controlled order of execution for multiple controllers in a network?
-- cleanup nullable widgets
 - separate cursor position for draft
 - indicator for unsaved changes?
 - fix double click selection issue caused by line number gutter

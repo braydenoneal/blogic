@@ -10,37 +10,36 @@ import net.minecraft.world.entity.player.Inventory
 import networking.ControllerPayload
 
 class ControllerScreen(handler: ControllerScreenHandler, inventory: Inventory, title: Component) : AbstractContainerScreen<ControllerScreenHandler>(handler, inventory, title) {
-    // TODO: Implement a better way of making these accessible in other methods
-    var nameEditBox: EditBox? = null
-    var multiLineEditBox: ModMultiLineEditBox? = null
-    var discardButton: Button? = null
+    lateinit var nameEditBox: EditBox
+    lateinit var sourceEditBox: ModMultiLineEditBox
+    lateinit var discardButton: Button
 
     override fun init() {
         super.init()
 
         nameEditBox = EditBox(font, width - 40, 20, Component.nullToEmpty("name"))
-        nameEditBox!!.x = 20
-        nameEditBox!!.y = 20
-        nameEditBox!!.value = menu.name()
-        addRenderableWidget(nameEditBox!!)
+        nameEditBox.x = 20
+        nameEditBox.y = 20
+        nameEditBox.value = menu.name()
+        addRenderableWidget(nameEditBox)
 
-        multiLineEditBox = ModMultiLineEditBox.builder().setX(20).setY(60).build(
+        sourceEditBox = ModMultiLineEditBox.builder().setX(20).setY(60).build(
             font,
             width - 40,
             height - 120,
             Component.nullToEmpty("source"),
         )
 
-        multiLineEditBox!!.value = menu.draft()
-        multiLineEditBox!!.textField.cursor = menu.cursorPosition()
-        multiLineEditBox!!.textField.selectCursor = menu.cursorPosition()
-        addRenderableWidget(multiLineEditBox!!)
+        sourceEditBox.value = menu.draft()
+        sourceEditBox.textField.cursor = menu.cursorPosition()
+        sourceEditBox.textField.selectCursor = menu.cursorPosition()
+        addRenderableWidget(sourceEditBox)
 
         val buttonWidth = (width - 80) / 3
 
         addRenderableWidget(
             Button.builder(Component.literal("Save")) {
-                val payload = ControllerPayload(menu.pos(), nameEditBox!!.value, multiLineEditBox!!.value, multiLineEditBox!!.textField.cursor, false)
+                val payload = ControllerPayload(menu.pos(), nameEditBox.value, sourceEditBox.value, sourceEditBox.textField.cursor, false)
                 menu.setSource(payload)
                 ClientPlayNetworking.send(payload)
                 super.onClose()
@@ -54,14 +53,21 @@ class ControllerScreen(handler: ControllerScreenHandler, inventory: Inventory, t
             super.onClose()
         }.bounds(40 + buttonWidth, height - 40, buttonWidth, 20).build()
 
-        discardButton!!.active = multiLineEditBox!!.value != menu.source()
-        addRenderableWidget(discardButton!!)
+        discardButton.active = shouldDiscardActive()
+        addRenderableWidget(discardButton)
 
         addRenderableWidget(
             Button.builder(Component.literal("Close")) { onClose() }.bounds(60 + buttonWidth * 2, height - 40, buttonWidth, 20).build(),
         )
 
-        focused = multiLineEditBox
+        focused = sourceEditBox
+    }
+
+    private fun shouldDiscardActive(): Boolean = sourceEditBox.value != menu.source()
+
+    override fun containerTick() {
+        super.containerTick()
+        discardButton.active = shouldDiscardActive()
     }
 
     override fun extractLabels(graphics: GuiGraphicsExtractor, xm: Int, ym: Int) {}
@@ -74,18 +80,12 @@ class ControllerScreen(handler: ControllerScreenHandler, inventory: Inventory, t
         return super.keyPressed(keyEvent)
     }
 
-    override fun extractContents(graphics: GuiGraphicsExtractor, mouseX: Int, mouseY: Int, a: Float) {
-        // TODO: Implement a better way of setting the active state each time the edit box is updated
-        discardButton!!.active = multiLineEditBox!!.value != menu.source()
-        super.extractContents(graphics, mouseX, mouseY, a)
-    }
-
     override fun mouseScrolled(mouseX: Double, mouseY: Double, horizontalAmount: Double, verticalAmount: Double): Boolean {
         return children()[1].mouseScrolled(mouseX, mouseY, horizontalAmount, verticalAmount)
     }
 
     override fun onClose() {
-        val payload = ControllerPayload(menu.pos(), nameEditBox!!.value, multiLineEditBox!!.value, multiLineEditBox!!.textField.cursor, true)
+        val payload = ControllerPayload(menu.pos(), nameEditBox.value, sourceEditBox.value, sourceEditBox.textField.cursor, true)
         menu.setSource(payload)
         ClientPlayNetworking.send(payload)
         super.onClose()
