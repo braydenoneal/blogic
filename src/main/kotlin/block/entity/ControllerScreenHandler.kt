@@ -22,6 +22,10 @@ class ControllerScreenHandler(syncId: Int, @Suppress("unused") ignoredPlayerInve
         return entity.program.source
     }
 
+    fun draft(): String {
+        return entity.program.draft
+    }
+
     fun cursorPosition(): Int {
         return entity.program.cursorPosition
     }

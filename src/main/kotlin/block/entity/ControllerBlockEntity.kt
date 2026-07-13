@@ -35,21 +35,26 @@ class ControllerBlockEntity(pos: BlockPos, state: BlockState) : BlockEntity(ModB
 
     fun setSource(payload: ControllerPayload) {
         program.name = payload.name
-        program.source = payload.source
         program.cursorPosition = payload.cursorPosition
+        program.draft = payload.source
 
-        if (!level!!.isClientSide) {
-            program.parse()
-            initializing = true
+        if (!payload.isDraft) {
+            program.source = payload.source
+
+            if (!level!!.isClientSide) {
+                program.parse()
+                initializing = true
+            }
         }
 
-        program.name = payload.name
         setChanged()
     }
 
     override fun loadAdditional(view: ValueInput) {
         super.loadAdditional(view)
         initializing = view.read("initializing", Codec.BOOL).getOrNull() ?: true
+        val draft = view.read("draft", Codec.STRING).getOrNull() ?: ""
+        val cursorPosition = view.read("cursor_position", Codec.INT).getOrNull() ?: 0
         val rawProgram = view.read("raw_program", Codecs.PROGRAM_CODEC).getOrNull() ?: Program()
 
         program = BlogicProgram(
@@ -61,12 +66,16 @@ class ControllerBlockEntity(pos: BlockPos, state: BlockState) : BlockEntity(ModB
             rawProgram.statements,
             rawProgram.functions,
             rawProgram.scopes,
+            draft,
+            cursorPosition,
         )
     }
 
     override fun saveAdditional(view: ValueOutput) {
         super.saveAdditional(view)
         view.store("initializing", Codec.BOOL, initializing)
+        view.store("draft", Codec.STRING, program.draft)
+        view.store("cursor_position", Codec.INT, program.cursorPosition)
         val rawProgram = Program(
             program.source,
             program.parsed,

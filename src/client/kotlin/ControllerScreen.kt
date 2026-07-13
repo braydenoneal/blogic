@@ -5,46 +5,57 @@ import net.minecraft.client.gui.components.Button
 import net.minecraft.client.gui.components.EditBox
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen
 import net.minecraft.client.input.KeyEvent
-import net.minecraft.network.chat.CommonComponents
 import net.minecraft.network.chat.Component
 import net.minecraft.world.entity.player.Inventory
 import networking.ControllerPayload
 
 class ControllerScreen(handler: ControllerScreenHandler, inventory: Inventory, title: Component) : AbstractContainerScreen<ControllerScreenHandler>(handler, inventory, title) {
+    var nameEditBox: EditBox? = null
+    var multiLineEditBox: ModMultiLineEditBox? = null
+
     override fun init() {
         super.init()
 
-        val nameEditBox = EditBox(font, width - 40, 20, Component.nullToEmpty("name"))
-        nameEditBox.x = 20
-        nameEditBox.y = 20
-        nameEditBox.value = menu.name()
-        addRenderableWidget(nameEditBox)
+        nameEditBox = EditBox(font, width - 40, 20, Component.nullToEmpty("name"))
+        nameEditBox!!.x = 20
+        nameEditBox!!.y = 20
+        nameEditBox!!.value = menu.name()
+        addRenderableWidget(nameEditBox!!)
 
-        val multiLineEditBox = ModMultiLineEditBox.builder().setX(20).setY(60).build(
+        multiLineEditBox = ModMultiLineEditBox.builder().setX(20).setY(60).build(
             font,
             width - 40,
             height - 120,
             Component.nullToEmpty("source"),
         )
 
-        multiLineEditBox.value = menu.source()
-        multiLineEditBox.textField.cursor = menu.cursorPosition()
-        multiLineEditBox.textField.selectCursor = menu.cursorPosition()
-        addRenderableWidget(multiLineEditBox)
+        multiLineEditBox!!.value = menu.draft()
+        multiLineEditBox!!.textField.cursor = menu.cursorPosition()
+        multiLineEditBox!!.textField.selectCursor = menu.cursorPosition()
+        addRenderableWidget(multiLineEditBox!!)
+
+        val buttonWidth = (width - 80) / 3
 
         addRenderableWidget(
-            Button.builder(CommonComponents.GUI_DONE) {
-                val payload = ControllerPayload(menu.pos(), nameEditBox.value, multiLineEditBox.value, multiLineEditBox.textField.cursor)
+            Button.builder(Component.literal("Save")) {
+                val payload = ControllerPayload(menu.pos(), nameEditBox!!.value, multiLineEditBox!!.value, multiLineEditBox!!.textField.cursor, false)
                 menu.setSource(payload)
                 ClientPlayNetworking.send(payload)
-                onClose()
-            }.bounds(width / 2 - 4 - 150, height - 40, 150, 20).build(),
+                super.onClose()
+            }.bounds(20, height - 40, buttonWidth, 20).build(),
         )
 
         addRenderableWidget(
-            Button.builder(CommonComponents.GUI_CANCEL) {
-                onClose()
-            }.bounds(width / 2 + 4, height - 40, 150, 20).build(),
+            Button.builder(Component.literal("Discard")) {
+                val payload = ControllerPayload(menu.pos(), menu.name(), menu.source(), 0, true)
+                menu.setSource(payload)
+                ClientPlayNetworking.send(payload)
+                super.onClose()
+            }.bounds(40 + buttonWidth, height - 40, buttonWidth, 20).build(),
+        )
+
+        addRenderableWidget(
+            Button.builder(Component.literal("Close")) { onClose() }.bounds(60 + buttonWidth * 2, height - 40, buttonWidth, 20).build(),
         )
 
         focused = multiLineEditBox
@@ -62,5 +73,12 @@ class ControllerScreen(handler: ControllerScreenHandler, inventory: Inventory, t
 
     override fun mouseScrolled(mouseX: Double, mouseY: Double, horizontalAmount: Double, verticalAmount: Double): Boolean {
         return children()[1].mouseScrolled(mouseX, mouseY, horizontalAmount, verticalAmount)
+    }
+
+    override fun onClose() {
+        val payload = ControllerPayload(menu.pos(), nameEditBox!!.value, multiLineEditBox!!.value, multiLineEditBox!!.textField.cursor, true)
+        menu.setSource(payload)
+        ClientPlayNetworking.send(payload)
+        super.onClose()
     }
 }
