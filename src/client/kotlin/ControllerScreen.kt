@@ -10,8 +10,10 @@ import net.minecraft.world.entity.player.Inventory
 import networking.ControllerPayload
 
 class ControllerScreen(handler: ControllerScreenHandler, inventory: Inventory, title: Component) : AbstractContainerScreen<ControllerScreenHandler>(handler, inventory, title) {
+    // TODO: Implement a better way of making these accessible in other methods
     var nameEditBox: EditBox? = null
     var multiLineEditBox: ModMultiLineEditBox? = null
+    var discardButton: Button? = null
 
     override fun init() {
         super.init()
@@ -45,14 +47,15 @@ class ControllerScreen(handler: ControllerScreenHandler, inventory: Inventory, t
             }.bounds(20, height - 40, buttonWidth, 20).build(),
         )
 
-        addRenderableWidget(
-            Button.builder(Component.literal("Discard")) {
-                val payload = ControllerPayload(menu.pos(), menu.name(), menu.source(), 0, true)
-                menu.setSource(payload)
-                ClientPlayNetworking.send(payload)
-                super.onClose()
-            }.bounds(40 + buttonWidth, height - 40, buttonWidth, 20).build(),
-        )
+        discardButton = Button.builder(Component.literal("Discard")) {
+            val payload = ControllerPayload(menu.pos(), menu.name(), menu.source(), 0, true)
+            menu.setSource(payload)
+            ClientPlayNetworking.send(payload)
+            super.onClose()
+        }.bounds(40 + buttonWidth, height - 40, buttonWidth, 20).build()
+
+        discardButton!!.active = multiLineEditBox!!.value != menu.source()
+        addRenderableWidget(discardButton!!)
 
         addRenderableWidget(
             Button.builder(Component.literal("Close")) { onClose() }.bounds(60 + buttonWidth * 2, height - 40, buttonWidth, 20).build(),
@@ -69,6 +72,12 @@ class ControllerScreen(handler: ControllerScreenHandler, inventory: Inventory, t
         }
 
         return super.keyPressed(keyEvent)
+    }
+
+    override fun extractContents(graphics: GuiGraphicsExtractor, mouseX: Int, mouseY: Int, a: Float) {
+        // TODO: Implement a better way of setting the active state each time the edit box is updated
+        discardButton!!.active = multiLineEditBox!!.value != menu.source()
+        super.extractContents(graphics, mouseX, mouseY, a)
     }
 
     override fun mouseScrolled(mouseX: Double, mouseY: Double, horizontalAmount: Double, verticalAmount: Double): Boolean {
