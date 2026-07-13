@@ -1,15 +1,12 @@
 ## Todo
 
-- study how codecs work
-- codec for converting kotlin nullables to java optionals (scope, elseIfStatement, ifStatement)
-- controlled order of execution for multiple controllers in a network?
 - separate cursor position for draft
 - indicator for unsaved changes?
 - fix double click selection issue caused by line number gutter
 - ide extension or just mirroring files to allow editing code externally
 - option to run imports from either context/location
-- isChunkLoaded function
-- if switch to read, import, export block for functions, then have network priority option to control order
+- isChunkLoaded, loadChunk functions
+- controlled order of execution for multiple controllers in a network?
 - tab, shift-tab, auto-indent, auto open and close
 - tab autocomplete
 - add block for import?, access modifiers
@@ -27,7 +24,6 @@
     - upgrades and code are stored in the controller when broken
     - upgrades and code can be taken out of the controller and stored as items
 - portable controller that executes from player
-- wait/sleep function to control tick time (prob requires multithreading)
 - reader, importer, and exporter blocks instead of available everywhere?
 - time/amount/too easy balancing
 - maybe action functions (read, import, export) each take 1 tick to execute
@@ -42,6 +38,7 @@
 - building features like building gadgets
 - wireless imports/exports
 - fluids and energy
+- controllers require energy and/or cooling?
 - xp pickup
 - ways to control logic with keybinds (create-mod gamepad thingy)
 
