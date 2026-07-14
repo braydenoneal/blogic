@@ -72,12 +72,6 @@ object ExpressionCodecs {
             Codec.STRING.fieldOf("property").forGetter(MemberExpression::property),
         ).apply(it, ::MemberExpression)
     }
-    val NAMED_LIST_ACCESS_EXPRESSION_CODEC: MapCodec<NamedListAccessExpression> = mapCodec {
-        it.group(
-            ExpressionType.CODEC.fieldOf("variable_expression").forGetter(NamedListAccessExpression::variableExpression),
-            mutableListCodec(ExpressionType.CODEC).fieldOf("indices").forGetter(NamedListAccessExpression::indices),
-        ).apply(it, ::NamedListAccessExpression)
-    }
     val STRUCT_EXPRESSION_CODEC: MapCodec<StructExpression> = mapCodec {
         it.group(
             Codec.list(PairCodec.pair(Codec.STRING, ExpressionType.CODEC)).fieldOf("expressions").forGetter(StructExpression::expressions),

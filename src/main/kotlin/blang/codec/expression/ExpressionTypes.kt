@@ -28,7 +28,6 @@ object ExpressionTypes {
     val LIST_ACCESS_EXPRESSION: ExpressionType<ListAccessExpression> = register("list_access_expression", ExpressionType(ExpressionCodecs.LIST_ACCESS_EXPRESSION_CODEC))
     val MEMBER_EXPRESSION: ExpressionType<MemberExpression> = register("member_expression", ExpressionType(ExpressionCodecs.MEMBER_EXPRESSION_CODEC))
     val MEMBER_CALL_EXPRESSION: ExpressionType<MemberCallExpression> = register("member_call_expression", ExpressionType(ExpressionCodecs.MEMBER_CALL_EXPRESSION_CODEC))
-    val NAMED_LIST_ACCESS_EXPRESSION: ExpressionType<NamedListAccessExpression> = register("named_list_access_expression", ExpressionType(ExpressionCodecs.NAMED_LIST_ACCESS_EXPRESSION_CODEC))
     val VARIABLE_EXPRESSION: ExpressionType<VariableExpression> = register("variable_expression", ExpressionType(ExpressionCodecs.VARIABLE_EXPRESSION_CODEC))
     val ARITHMETIC_OPERATOR: ExpressionType<ArithmeticOperator> = register("arithmetic_operator", ExpressionType(ExpressionCodecs.ARITHMETIC_OPERATOR_CODEC))
     val BOOLEAN_OPERATOR: ExpressionType<BooleanOperator> = register("boolean_operator", ExpressionType(ExpressionCodecs.BOOLEAN_OPERATOR_CODEC))

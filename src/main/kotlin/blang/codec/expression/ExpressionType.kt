@@ -36,7 +36,6 @@ data class ExpressionType<T : Expression>(val codec: MapCodec<T>) {
                 is ListAccessExpression -> ExpressionTypes.LIST_ACCESS_EXPRESSION
                 is MemberExpression -> ExpressionTypes.MEMBER_EXPRESSION
                 is MemberCallExpression -> ExpressionTypes.MEMBER_CALL_EXPRESSION
-                is NamedListAccessExpression -> ExpressionTypes.NAMED_LIST_ACCESS_EXPRESSION
                 is VariableExpression -> ExpressionTypes.VARIABLE_EXPRESSION
                 is ArithmeticOperator -> ExpressionTypes.ARITHMETIC_OPERATOR
                 is BooleanOperator -> ExpressionTypes.BOOLEAN_OPERATOR
