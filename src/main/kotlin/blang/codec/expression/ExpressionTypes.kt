@@ -13,9 +13,9 @@ import parser.expression.builtin.struct.StructKeysBuiltin
 import parser.expression.builtin.struct.StructRemoveBuiltin
 import parser.expression.builtin.struct.StructValuesBuiltin
 import parser.expression.operator.ArithmeticOperator
+import parser.expression.operator.BangOperator
 import parser.expression.operator.BooleanOperator
 import parser.expression.operator.ComparisonOperator
-import parser.expression.operator.UnaryOperator
 import parser.expression.value.Value
 
 object ExpressionTypes {
@@ -32,7 +32,7 @@ object ExpressionTypes {
     val ARITHMETIC_OPERATOR: ExpressionType<ArithmeticOperator> = register("arithmetic_operator", ExpressionType(ExpressionCodecs.ARITHMETIC_OPERATOR_CODEC))
     val BOOLEAN_OPERATOR: ExpressionType<BooleanOperator> = register("boolean_operator", ExpressionType(ExpressionCodecs.BOOLEAN_OPERATOR_CODEC))
     val COMPARISON_OPERATOR: ExpressionType<ComparisonOperator> = register("comparison_operator", ExpressionType(ExpressionCodecs.COMPARISON_OPERATOR_CODEC))
-    val UNARY_OPERATOR: ExpressionType<UnaryOperator> = register("unary_operator", ExpressionType(ExpressionCodecs.UNARY_OPERATOR_CODEC))
+    val UNARY_OPERATOR: ExpressionType<BangOperator> = register("unary_operator", ExpressionType(ExpressionCodecs.UNARY_OPERATOR_CODEC))
     val ABSOLUTE_VALUE_BUILTIN: ExpressionType<AbsoluteValueBuiltin> = register("absolute_value_builtin", ExpressionType(ExpressionCodecs.ABSOLUTE_VALUE_BUILTIN_CODEC))
     val INTEGER_CAST_BUILTIN: ExpressionType<IntegerCastBuiltin> = register("integer_cast_builtin", ExpressionType(ExpressionCodecs.INTEGER_CAST_BUILTIN_CODEC))
     val FLOAT_CAST_BUILTIN: ExpressionType<FloatCastBuiltin> = register("float_cast_builtin", ExpressionType(ExpressionCodecs.FLOAT_CAST_BUILTIN_CODEC))

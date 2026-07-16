@@ -17,9 +17,9 @@ import parser.expression.builtin.struct.StructKeysBuiltin
 import parser.expression.builtin.struct.StructRemoveBuiltin
 import parser.expression.builtin.struct.StructValuesBuiltin
 import parser.expression.operator.ArithmeticOperator
+import parser.expression.operator.BangOperator
 import parser.expression.operator.BooleanOperator
 import parser.expression.operator.ComparisonOperator
-import parser.expression.operator.UnaryOperator
 
 object ExpressionCodecs {
     val ARGUMENTS_CODEC: Codec<Arguments> = RecordCodecBuilder.create {
@@ -103,10 +103,10 @@ object ExpressionCodecs {
             ExpressionType.CODEC.fieldOf("operand_b").forGetter(ComparisonOperator::operandB),
         ).apply(it, ::ComparisonOperator)
     }
-    val UNARY_OPERATOR_CODEC: MapCodec<UnaryOperator> = mapCodec {
+    val UNARY_OPERATOR_CODEC: MapCodec<BangOperator> = mapCodec {
         it.group(
-            ExpressionType.CODEC.fieldOf("operand").forGetter(UnaryOperator::operand),
-        ).apply(it, ::UnaryOperator)
+            ExpressionType.CODEC.fieldOf("operand").forGetter(BangOperator::operand),
+        ).apply(it, ::BangOperator)
     }
     val ABSOLUTE_VALUE_BUILTIN_CODEC: MapCodec<AbsoluteValueBuiltin> = mapCodec {
         it.group(

@@ -17,9 +17,9 @@ import parser.expression.builtin.struct.StructKeysBuiltin
 import parser.expression.builtin.struct.StructRemoveBuiltin
 import parser.expression.builtin.struct.StructValuesBuiltin
 import parser.expression.operator.ArithmeticOperator
+import parser.expression.operator.BangOperator
 import parser.expression.operator.BooleanOperator
 import parser.expression.operator.ComparisonOperator
-import parser.expression.operator.UnaryOperator
 import parser.expression.value.Value
 import java.util.function.Function
 
@@ -40,7 +40,7 @@ data class ExpressionType<T : Expression>(val codec: MapCodec<T>) {
                 is ArithmeticOperator -> ExpressionTypes.ARITHMETIC_OPERATOR
                 is BooleanOperator -> ExpressionTypes.BOOLEAN_OPERATOR
                 is ComparisonOperator -> ExpressionTypes.COMPARISON_OPERATOR
-                is UnaryOperator -> ExpressionTypes.UNARY_OPERATOR
+                is BangOperator -> ExpressionTypes.UNARY_OPERATOR
                 is AbsoluteValueBuiltin -> ExpressionTypes.ABSOLUTE_VALUE_BUILTIN
                 is IntegerCastBuiltin -> ExpressionTypes.INTEGER_CAST_BUILTIN
                 is FloatCastBuiltin -> ExpressionTypes.FLOAT_CAST_BUILTIN

@@ -109,7 +109,7 @@ class ControllerBlockEntity(pos: BlockPos, state: BlockState) : BlockEntity(ModB
 
     fun getConnectedControllerBlockEntities(): MutableList<ControllerBlockEntity> {
         val cables: MutableSet<BlockPos> = HashSet()
-        val networkBlocks: MutableList<BlockPos> = ArrayList()
+        val networkBlocks: MutableList<BlockPos> = mutableListOf()
 
         val stack = Stack<BlockPos>()
 
@@ -153,7 +153,7 @@ class ControllerBlockEntity(pos: BlockPos, state: BlockState) : BlockEntity(ModB
             }
         }
 
-        val controllers: MutableList<ControllerBlockEntity> = ArrayList()
+        val controllers: MutableList<ControllerBlockEntity> = mutableListOf()
 
         for (pos in networkBlocks) {
             val adjacentBlockEntity = level!!.getBlockEntity(pos)
@@ -168,7 +168,7 @@ class ControllerBlockEntity(pos: BlockPos, state: BlockState) : BlockEntity(ModB
 
     fun getConnectedContainers(): MutableList<BaseContainerBlockEntity> {
         val cables: MutableSet<BlockPos> = HashSet()
-        val networkBlocks: MutableList<BlockPos> = ArrayList()
+        val networkBlocks: MutableList<BlockPos> = mutableListOf()
 
         val stack = Stack<BlockPos>()
 
@@ -212,7 +212,7 @@ class ControllerBlockEntity(pos: BlockPos, state: BlockState) : BlockEntity(ModB
             }
         }
 
-        val controllers: MutableList<BaseContainerBlockEntity> = ArrayList()
+        val controllers: MutableList<BaseContainerBlockEntity> = mutableListOf()
 
         for (pos in networkBlocks) {
             val adjacentBlockEntity = level!!.getBlockEntity(pos)

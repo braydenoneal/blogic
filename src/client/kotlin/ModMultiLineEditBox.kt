@@ -73,7 +73,7 @@ class ModMultiLineEditBox(
 
                     var color = when (type) {
                         Type.QUOTE -> -0x95548d
-                        Type.KEYWORD, Type.BOOLEAN, Type.BOOLEAN_OPERATOR, Type.NULL -> -0x307193
+                        Type.KEYWORD, Type.FN_KEYWORD, Type.IF_KEYWORD, Type.BOOLEAN, Type.AND, Type.OR, Type.NULL -> -0x307193
                         Type.INTEGER, Type.FLOAT -> -0xd55348
                         Type.COMMENT -> -0x85817b
                         else -> -0x43413c

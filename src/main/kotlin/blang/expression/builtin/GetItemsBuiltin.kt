@@ -16,7 +16,7 @@ data class GetItemsBuiltin(val arguments: Arguments) : Expression {
             throw RunException("Program is not a BlogicProgram")
         }
 
-        val items: MutableList<Value<*>> = ArrayList()
+        val items: MutableList<Value<*>> = mutableListOf()
 
         for (container in program.context.entity.getConnectedContainers()) {
             container.iterator().forEachRemaining { stack ->
