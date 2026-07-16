@@ -6,14 +6,14 @@ import blang.expression.value.ItemStackValue
 import blang.expression.value.ItemValue
 import blang.expression.value.TagValue
 import parser.Parser
-import parser.Program
-import parser.Scope
-import parser.expression.Arguments
-import parser.expression.Expression
-import parser.expression.value.Value
-import parser.statement.FunctionDeclaration
-import parser.statement.ImportStatement
-import parser.statement.StatementList
+import program.Program
+import program.Scope
+import program.expression.Arguments
+import program.expression.Expression
+import program.expression.value.Value
+import program.statement.FunctionDeclaration
+import program.statement.ImportStatement
+import program.statement.StatementList
 
 data class BlogicProgram(
     val context: Context,

@@ -2,9 +2,9 @@ package blang.expression
 
 import blang.expression.value.BlockValue
 import blang.expression.value.ItemValue
-import parser.Program
-import parser.RunException
-import parser.expression.Arguments
+import program.Program
+import program.RunException
+import program.expression.Arguments
 
 object BlogicArguments {
     fun blockValue(arguments: Arguments, program: Program, name: String, index: Int): BlockValue? {

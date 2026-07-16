@@ -11,7 +11,16 @@ import net.minecraft.core.MappedRegistry
 import net.minecraft.core.Registry
 import net.minecraft.resources.Identifier
 import net.minecraft.resources.ResourceKey
-import parser.expression.value.*
+import program.expression.value.BooleanValue
+import program.expression.value.FloatValue
+import program.expression.value.FunctionValue
+import program.expression.value.IntegerValue
+import program.expression.value.ListValue
+import program.expression.value.NullValue
+import program.expression.value.RangeValue
+import program.expression.value.StringValue
+import program.expression.value.StructValue
+import program.expression.value.Value
 import java.util.function.Function
 
 data class ValueType<T : Value<*>>(val codec: MapCodec<T>) {

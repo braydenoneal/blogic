@@ -7,7 +7,18 @@ import net.minecraft.core.MappedRegistry
 import net.minecraft.core.Registry
 import net.minecraft.resources.Identifier
 import net.minecraft.resources.ResourceKey
-import parser.statement.*
+import program.statement.BreakStatement
+import program.statement.ContinueStatement
+import program.statement.DeleteStatement
+import program.statement.EmptyStatement
+import program.statement.ExpressionStatement
+import program.statement.ForStatement
+import program.statement.FunctionDeclaration
+import program.statement.IfStatement
+import program.statement.ImportStatement
+import program.statement.ReturnStatement
+import program.statement.Statement
+import program.statement.WhileStatement
 import java.util.function.Function
 
 data class StatementType<T : Statement>(val codec: MapCodec<T>) {

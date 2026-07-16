@@ -7,7 +7,7 @@ import net.minecraft.network.chat.FontDescription
 import net.minecraft.resources.Identifier
 import net.minecraft.util.ARGB
 import net.minecraft.util.Util
-import tokenizer.Type
+import parser.tokenizer.Type
 import java.util.regex.Pattern
 import kotlin.math.log10
 import kotlin.math.max

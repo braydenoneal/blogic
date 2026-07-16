@@ -9,7 +9,19 @@ import com.mojang.serialization.Codec
 import com.mojang.serialization.MapCodec
 import com.mojang.serialization.codecs.RecordCodecBuilder
 import com.mojang.serialization.codecs.RecordCodecBuilder.mapCodec
-import parser.statement.*
+import program.statement.BreakStatement
+import program.statement.ContinueStatement
+import program.statement.DeleteStatement
+import program.statement.ElseIfStatement
+import program.statement.ElseStatement
+import program.statement.EmptyStatement
+import program.statement.ExpressionStatement
+import program.statement.ForStatement
+import program.statement.FunctionDeclaration
+import program.statement.IfStatement
+import program.statement.ImportStatement
+import program.statement.ReturnStatement
+import program.statement.WhileStatement
 import java.util.*
 
 object StatementCodecs {

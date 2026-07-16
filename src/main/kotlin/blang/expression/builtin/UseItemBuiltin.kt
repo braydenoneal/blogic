@@ -11,12 +11,12 @@ import net.minecraft.world.item.Items
 import net.minecraft.world.item.context.UseOnContext
 import net.minecraft.world.phys.BlockHitResult
 import net.minecraft.world.phys.Vec3
-import parser.Program
-import parser.RunException
-import parser.expression.Arguments
-import parser.expression.Expression
-import parser.expression.value.BooleanValue
-import parser.expression.value.Value
+import program.Program
+import program.RunException
+import program.expression.Arguments
+import program.expression.Expression
+import program.expression.value.BooleanValue
+import program.expression.value.Value
 import kotlin.math.min
 
 data class UseItemBuiltin(val arguments: Arguments) : Expression {

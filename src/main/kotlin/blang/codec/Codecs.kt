@@ -9,10 +9,10 @@ import com.mojang.serialization.Codec
 import com.mojang.serialization.MapCodec
 import com.mojang.serialization.codecs.RecordCodecBuilder
 import com.mojang.serialization.codecs.RecordCodecBuilder.mapCodec
-import parser.Program
-import parser.Scope
-import parser.expression.value.Funct
-import parser.statement.StatementList
+import program.Program
+import program.Scope
+import program.expression.value.Funct
+import program.statement.StatementList
 import java.util.*
 
 object Codecs {

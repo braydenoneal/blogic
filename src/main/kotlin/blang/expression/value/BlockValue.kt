@@ -2,7 +2,7 @@ package blang.expression.value
 
 import blang.codec.value.ValueTypes
 import net.minecraft.world.level.block.Block
-import parser.expression.value.Value
+import program.expression.value.Value
 
 class BlockValue(value: Block) : Value<Block>(value) {
     override fun equals(other: Any?): Boolean {

@@ -7,12 +7,12 @@ import net.minecraft.world.item.BlockItem
 import net.minecraft.world.item.ItemStack
 import net.minecraft.world.item.Items
 import net.minecraft.world.level.block.Blocks
-import parser.Program
-import parser.RunException
-import parser.expression.Arguments
-import parser.expression.Expression
-import parser.expression.value.BooleanValue
-import parser.expression.value.Value
+import program.Program
+import program.RunException
+import program.expression.Arguments
+import program.expression.Expression
+import program.expression.value.BooleanValue
+import program.expression.value.Value
 
 data class PlaceBlockBuiltin(val arguments: Arguments) : Expression {
     override fun evaluate(program: Program): Value<*>? {

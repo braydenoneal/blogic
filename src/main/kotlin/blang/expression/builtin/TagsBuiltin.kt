@@ -2,11 +2,11 @@ package blang.expression.builtin
 
 import blang.expression.BlogicArguments.itemValue
 import blang.expression.value.TagValue
-import parser.Program
-import parser.expression.Arguments
-import parser.expression.Expression
-import parser.expression.value.ListValue
-import parser.expression.value.Value
+import program.Program
+import program.expression.Arguments
+import program.expression.Expression
+import program.expression.value.ListValue
+import program.expression.value.Value
 
 data class TagsBuiltin(val arguments: Arguments) : Expression {
     override fun evaluate(program: Program): Value<*>? {

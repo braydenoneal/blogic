@@ -2,17 +2,12 @@ package blang.expression.value
 
 import blang.codec.value.ValueTypes
 import net.minecraft.world.item.ItemStack
-import parser.RunException
-import parser.expression.value.Value
+import program.expression.value.Value
 
 class ItemStackValue(value: ItemStack) : Value<ItemStack>(value) {
     override fun equals(other: Any?): Boolean {
-        try {
-            if (other is ItemStackValue) {
-                return value == other.value
-            }
-        } catch (_: Error) {
-            throw RunException("Cannot equate item stack values outside of the game")
+        if (other is ItemStackValue) {
+            return value == other.value
         }
 
         return false

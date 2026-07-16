@@ -3,11 +3,11 @@ package blang.expression.builtin
 import blang.BlogicProgram
 import blang.expression.value.BlockValue
 import net.minecraft.core.BlockPos
-import parser.Program
-import parser.RunException
-import parser.expression.Arguments
-import parser.expression.Expression
-import parser.expression.value.Value
+import program.Program
+import program.RunException
+import program.expression.Arguments
+import program.expression.Expression
+import program.expression.value.Value
 
 data class GetBlockBuiltin(val arguments: Arguments) : Expression {
     override fun evaluate(program: Program): Value<*>? {

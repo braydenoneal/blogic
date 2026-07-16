@@ -2,13 +2,13 @@ package blang.expression.builtin
 
 import blang.BlogicProgram
 import blang.expression.value.ItemValue
-import parser.Program
-import parser.RunException
-import parser.expression.Arguments
-import parser.expression.Expression
-import parser.expression.value.BooleanValue
-import parser.expression.value.Null
-import parser.expression.value.Value
+import program.Program
+import program.RunException
+import program.expression.Arguments
+import program.expression.Expression
+import program.expression.value.BooleanValue
+import program.expression.value.Null
+import program.expression.value.Value
 
 data class DeleteItemsBuiltin(val arguments: Arguments) : Expression {
     override fun evaluate(program: Program): Value<*>? {

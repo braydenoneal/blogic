@@ -2,7 +2,7 @@ package blang.codec.statement
 
 import net.minecraft.core.Registry
 import net.minecraft.resources.Identifier
-import parser.statement.Statement
+import program.statement.Statement
 
 object StatementTypes {
     val BREAK_STATEMENT = register("break_statement", StatementType(StatementCodecs.BREAK_STATEMENT_CODEC))

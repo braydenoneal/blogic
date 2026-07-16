@@ -15,7 +15,17 @@ import net.minecraft.core.registries.BuiltInRegistries
 import net.minecraft.core.registries.Registries
 import net.minecraft.tags.TagKey
 import net.minecraft.world.item.ItemStack
-import parser.expression.value.*
+import program.expression.value.BooleanValue
+import program.expression.value.FloatValue
+import program.expression.value.FunctionValue
+import program.expression.value.IntegerValue
+import program.expression.value.ListValue
+import program.expression.value.Null
+import program.expression.value.NullValue
+import program.expression.value.Range
+import program.expression.value.RangeValue
+import program.expression.value.StringValue
+import program.expression.value.StructValue
 
 object ValueCodecs {
     val NULL_CODEC: Codec<Null> = MapCodec.unitCodec(Null())

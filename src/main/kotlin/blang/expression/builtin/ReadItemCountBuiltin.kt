@@ -4,13 +4,13 @@ import blang.BlogicProgram
 import blang.expression.value.ItemValue
 import net.minecraft.core.BlockPos
 import net.minecraft.world.level.block.entity.BaseContainerBlockEntity
-import parser.Program
-import parser.RunException
-import parser.expression.Arguments
-import parser.expression.Expression
-import parser.expression.value.BooleanValue
-import parser.expression.value.IntegerValue
-import parser.expression.value.Value
+import program.Program
+import program.RunException
+import program.expression.Arguments
+import program.expression.Expression
+import program.expression.value.BooleanValue
+import program.expression.value.IntegerValue
+import program.expression.value.Value
 
 data class ReadItemCountBuiltin(val arguments: Arguments) : Expression {
     override fun evaluate(program: Program): Value<*>? {

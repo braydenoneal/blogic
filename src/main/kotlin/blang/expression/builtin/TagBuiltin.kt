@@ -4,10 +4,10 @@ import blang.expression.value.TagValue
 import net.minecraft.core.registries.Registries
 import net.minecraft.resources.Identifier
 import net.minecraft.tags.TagKey
-import parser.Program
-import parser.expression.Arguments
-import parser.expression.Expression
-import parser.expression.value.Value
+import program.Program
+import program.expression.Arguments
+import program.expression.Expression
+import program.expression.value.Value
 
 data class TagBuiltin(val arguments: Arguments) : Expression {
     override fun evaluate(program: Program): Value<*>? {

@@ -5,13 +5,13 @@ import blang.expression.value.ItemValue
 import net.minecraft.core.BlockPos
 import net.minecraft.world.item.Items
 import net.minecraft.world.level.block.entity.BaseContainerBlockEntity
-import parser.Program
-import parser.RunException
-import parser.expression.Arguments
-import parser.expression.Expression
-import parser.expression.value.BooleanValue
-import parser.expression.value.Null
-import parser.expression.value.Value
+import program.Program
+import program.RunException
+import program.expression.Arguments
+import program.expression.Expression
+import program.expression.value.BooleanValue
+import program.expression.value.Null
+import program.expression.value.Value
 import kotlin.math.min
 
 data class ExportAllItemsBuiltin(val arguments: Arguments) : Expression {

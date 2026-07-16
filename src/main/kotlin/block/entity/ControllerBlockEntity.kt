@@ -24,8 +24,8 @@ import net.minecraft.world.level.block.state.properties.BlockStateProperties
 import net.minecraft.world.level.storage.ValueInput
 import net.minecraft.world.level.storage.ValueOutput
 import networking.ControllerPayload
-import parser.Program
-import parser.Program.Companion.log
+import program.Program
+import program.Program.Companion.log
 import java.util.*
 import kotlin.jvm.optionals.getOrNull
 
