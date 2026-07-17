@@ -5,12 +5,10 @@ import net.minecraft.world.level.block.Block
 import program.expression.value.Value
 
 class BlockValue(value: Block) : Value<Block>(value) {
-    override fun equals(other: Any?): Boolean {
-        if (other is BlockValue) {
-            return value == other.value
-        }
+    override fun typeString(): String = "block"
 
-        return false
+    override fun equals(other: Any?): Boolean {
+        return other is BlockValue && value == other.value
     }
 
     override fun hashCode(): Int {

@@ -5,12 +5,10 @@ import net.minecraft.world.item.Item
 import program.expression.value.Value
 
 class ItemValue(value: Item) : Value<Item>(value) {
-    override fun equals(other: Any?): Boolean {
-        if (other is ItemValue) {
-            return value == other.value
-        }
+    override fun typeString(): String = "item"
 
-        return false
+    override fun equals(other: Any?): Boolean {
+        return other is ItemValue && value == other.value
     }
 
     override fun hashCode(): Int {

@@ -5,12 +5,10 @@ import net.minecraft.world.item.ItemStack
 import program.expression.value.Value
 
 class ItemStackValue(value: ItemStack) : Value<ItemStack>(value) {
-    override fun equals(other: Any?): Boolean {
-        if (other is ItemStackValue) {
-            return value == other.value
-        }
+    override fun typeString(): String = "itemStack"
 
-        return false
+    override fun equals(other: Any?): Boolean {
+        return other is ItemStackValue && value == other.value
     }
 
     override fun hashCode(): Int {

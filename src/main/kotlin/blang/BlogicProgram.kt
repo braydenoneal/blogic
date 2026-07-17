@@ -1,13 +1,8 @@
 package blang
 
-import blang.expression.value.BlockValue
-import blang.expression.value.ItemStackValue
-import blang.expression.value.ItemValue
-import blang.expression.value.TagValue
 import program.Program
 import program.Scope
 import program.expression.Arguments
-import program.expression.value.Value
 import program.statement.FunctionStatement
 import program.statement.ImportStatement
 import program.statement.StatementList
@@ -54,16 +49,6 @@ data class BlogicProgram(
             }
 
             result = main.call(this, Arguments.EMPTY)
-        }
-    }
-
-    override fun getCustomType(value: Value<*>): String? {
-        return when (value) {
-            is BlockValue -> "block"
-            is ItemStackValue -> "itemStack"
-            is ItemValue -> "item"
-            is TagValue -> "tag"
-            else -> null
         }
     }
 
