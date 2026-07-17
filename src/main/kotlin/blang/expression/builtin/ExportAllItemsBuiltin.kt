@@ -9,12 +9,13 @@ import program.Program
 import program.RunException
 import program.expression.Arguments
 import program.expression.Expression
+import program.expression.builtin.Builtin
 import program.expression.value.BooleanValue
 import program.expression.value.Null
 import program.expression.value.Value
 import kotlin.math.min
 
-data class ExportAllItemsBuiltin(val arguments: Arguments) : Expression {
+data class ExportAllItemsBuiltin(override val arguments: Arguments) : Builtin(arguments), Expression {
     override fun evaluate(program: Program): Value<*>? {
         if (program !is BlogicProgram) {
             throw RunException("Program is not a BlogicProgram")
@@ -26,7 +27,7 @@ data class ExportAllItemsBuiltin(val arguments: Arguments) : Expression {
         val itemPredicate = (arguments.functionValue(program, "itemPredicate", 3) ?: return null)
         val initialCount = if (arguments.namelessArguments.size > 4 || arguments.namedArguments.containsKey("count")) (arguments.integerValue(program, "count", 4) ?: return null).value else null
         var count = initialCount
-        val deleteOverflow = if (arguments.namelessArguments.size > 5 || arguments.namedArguments.containsKey("deleteOverflow")) (arguments.booleanValue(program, "deleteOverflow", 5) ?: return null).value else false
+        val deleteOverflow = (arguments.namelessArguments.size > 5 || arguments.namedArguments.containsKey("deleteOverflow")) && (arguments.booleanValue(program, "deleteOverflow", 5) ?: return null).value
 
         val world = program.context.entity.level ?: throw RunException("World is null")
 

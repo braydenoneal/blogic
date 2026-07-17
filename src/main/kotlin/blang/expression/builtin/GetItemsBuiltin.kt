@@ -7,10 +7,11 @@ import program.Program
 import program.RunException
 import program.expression.Arguments
 import program.expression.Expression
+import program.expression.builtin.Builtin
 import program.expression.value.ListValue
 import program.expression.value.Value
 
-data class GetItemsBuiltin(val arguments: Arguments) : Expression {
+data class GetItemsBuiltin(override val arguments: Arguments) : Builtin(arguments), Expression {
     override fun evaluate(program: Program): Value<*> {
         if (program !is BlogicProgram) {
             throw RunException("Program is not a BlogicProgram")

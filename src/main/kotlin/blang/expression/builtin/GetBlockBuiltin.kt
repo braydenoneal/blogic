@@ -7,9 +7,10 @@ import program.Program
 import program.RunException
 import program.expression.Arguments
 import program.expression.Expression
+import program.expression.builtin.Builtin
 import program.expression.value.Value
 
-data class GetBlockBuiltin(val arguments: Arguments) : Expression {
+data class GetBlockBuiltin(override val arguments: Arguments) : Builtin(arguments), Expression {
     override fun evaluate(program: Program): Value<*>? {
         if (program !is BlogicProgram) {
             throw RunException("Program is not a BlogicProgram")

@@ -1,16 +1,12 @@
 package blang
 
-import blang.expression.builtin.*
 import blang.expression.value.BlockValue
 import blang.expression.value.ItemStackValue
 import blang.expression.value.ItemValue
 import blang.expression.value.TagValue
-import parser.Parser
-import parser.statement.ArgumentsParser
 import program.Program
 import program.Scope
 import program.expression.Arguments
-import program.expression.Expression
 import program.expression.value.Value
 import program.statement.FunctionStatement
 import program.statement.ImportStatement
@@ -58,27 +54,6 @@ data class BlogicProgram(
             }
 
             result = main.call(this, Arguments.EMPTY)
-        }
-    }
-
-    override fun parseCustomBuiltins(parser: Parser, name: String): Expression? {
-        return when (name) {
-            "print" -> PrintBuiltin(ArgumentsParser.parse(parser))
-            "block" -> BlockBuiltin(ArgumentsParser.parse(parser))
-            "blockItem" -> BlockItemBuiltin(ArgumentsParser.parse(parser))
-            "breakBlock" -> BreakBlockBuiltin(ArgumentsParser.parse(parser))
-            "deleteItems" -> DeleteItemsBuiltin(ArgumentsParser.parse(parser))
-            "exportAllItems" -> ExportAllItemsBuiltin(ArgumentsParser.parse(parser))
-            "getBlock" -> GetBlockBuiltin(ArgumentsParser.parse(parser))
-            "getItemCount" -> GetItemCountBuiltin(ArgumentsParser.parse(parser))
-            "getItems" -> GetItemsBuiltin(ArgumentsParser.parse(parser))
-            "item" -> ItemBuiltin(ArgumentsParser.parse(parser))
-            "placeBlock" -> PlaceBlockBuiltin(ArgumentsParser.parse(parser))
-            "readItemCount" -> ReadItemCountBuiltin(ArgumentsParser.parse(parser))
-            "tag" -> TagBuiltin(ArgumentsParser.parse(parser))
-            "tags" -> TagsBuiltin(ArgumentsParser.parse(parser))
-            "useItem" -> UseItemBuiltin(ArgumentsParser.parse(parser))
-            else -> null
         }
     }
 

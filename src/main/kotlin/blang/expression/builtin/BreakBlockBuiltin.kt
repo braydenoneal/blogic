@@ -15,11 +15,12 @@ import program.Program
 import program.RunException
 import program.expression.Arguments
 import program.expression.Expression
+import program.expression.builtin.Builtin
 import program.expression.value.BooleanValue
 import program.expression.value.Value
 import kotlin.math.min
 
-data class BreakBlockBuiltin(val arguments: Arguments) : Expression {
+data class BreakBlockBuiltin(override val arguments: Arguments) : Builtin(arguments), Expression {
     override fun evaluate(program: Program): Value<*>? {
         if (program !is BlogicProgram) {
             throw RunException("Program is not a BlogicProgram")
@@ -29,7 +30,7 @@ data class BreakBlockBuiltin(val arguments: Arguments) : Expression {
         val y = (arguments.integerValue(program, "y", 1) ?: return null).value
         val z = (arguments.integerValue(program, "z", 2) ?: return null).value
         val blockPredicate = (arguments.functionValue(program, "blockPredicate", 3) ?: return null)
-        val silkTouch = if (arguments.namelessArguments.size > 4 || arguments.namedArguments.containsKey("silkTouch")) (arguments.booleanValue(program, "silkTouch", 4) ?: return null).value else false
+        val silkTouch = (arguments.namelessArguments.size > 4 || arguments.namedArguments.containsKey("silkTouch")) && (arguments.booleanValue(program, "silkTouch", 4) ?: return null).value
 
         val entityPos = program.context.pos
         val pos = BlockPos(entityPos.x + x, entityPos.y + y, entityPos.z + z)
