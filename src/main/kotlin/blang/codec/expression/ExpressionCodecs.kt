@@ -9,43 +9,17 @@ import com.mojang.serialization.Codec
 import com.mojang.serialization.MapCodec
 import com.mojang.serialization.codecs.RecordCodecBuilder
 import com.mojang.serialization.codecs.RecordCodecBuilder.mapCodec
+import program.expression.*
+import program.expression.builtin.*
+import program.expression.builtin.list.*
 import program.expression.builtin.struct.StructEntriesBuiltin
 import program.expression.builtin.struct.StructKeysBuiltin
 import program.expression.builtin.struct.StructRemoveBuiltin
 import program.expression.builtin.struct.StructValuesBuiltin
 import program.expression.operator.ArithmeticOperator
 import program.expression.operator.BangOperator
-import program.expression.Arguments
-import program.expression.AssignmentExpression
 import program.expression.operator.BooleanOperator
 import program.expression.operator.ComparisonOperator
-import program.expression.CallExpression
-import program.expression.IfElseExpression
-import program.expression.ListAccessExpression
-import program.expression.ListExpression
-import program.expression.MemberCallExpression
-import program.expression.MemberExpression
-import program.expression.StructExpression
-import program.expression.VariableExpression
-import program.expression.builtin.AbsoluteValueBuiltin
-import program.expression.builtin.CeilBuiltin
-import program.expression.builtin.FloatCastBuiltin
-import program.expression.builtin.FloorBuiltin
-import program.expression.builtin.IntegerCastBuiltin
-import program.expression.builtin.LengthBuiltin
-import program.expression.builtin.MaximumBuiltin
-import program.expression.builtin.MinimumBuiltin
-import program.expression.builtin.RangeBuiltin
-import program.expression.builtin.RoundBuiltin
-import program.expression.builtin.StringCastBuiltin
-import program.expression.builtin.TypeBuiltin
-import program.expression.builtin.WaitBuiltin
-import program.expression.builtin.list.ListAppendBuiltin
-import program.expression.builtin.list.ListContainsAllBuiltin
-import program.expression.builtin.list.ListContainsBuiltin
-import program.expression.builtin.list.ListInsertBuiltin
-import program.expression.builtin.list.ListPopBuiltin
-import program.expression.builtin.list.ListRemoveBuiltin
 
 object ExpressionCodecs {
     val ARGUMENTS_CODEC: Codec<Arguments> = RecordCodecBuilder.create {
@@ -71,7 +45,7 @@ object ExpressionCodecs {
     val LIST_ACCESS_EXPRESSION_CODEC: MapCodec<ListAccessExpression> = mapCodec {
         it.group(
             ExpressionType.CODEC.fieldOf("list_expression").forGetter(ListAccessExpression::listExpression),
-            mutableListCodec(ExpressionType.CODEC).fieldOf("indices").forGetter(ListAccessExpression::indices),
+            ExpressionType.CODEC.fieldOf("index_expression").forGetter(ListAccessExpression::indexExpression),
         ).apply(it, ::ListAccessExpression)
     }
     val LIST_EXPRESSION_CODEC: MapCodec<ListExpression> = mapCodec {
