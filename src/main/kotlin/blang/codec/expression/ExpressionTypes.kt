@@ -78,20 +78,20 @@ object ExpressionTypes {
     }
 
     fun initialize() {
-        BuiltinExpressionParser.register("print") { arguments: Arguments -> PrintBuiltin(arguments) }
-        BuiltinExpressionParser.register("block") { arguments: Arguments -> BlockBuiltin(arguments) }
-        BuiltinExpressionParser.register("blockItem") { arguments: Arguments -> BlockItemBuiltin(arguments) }
-        BuiltinExpressionParser.register("breakBlock") { arguments: Arguments -> BreakBlockBuiltin(arguments) }
-        BuiltinExpressionParser.register("deleteItems") { arguments: Arguments -> DeleteItemsBuiltin(arguments) }
-        BuiltinExpressionParser.register("exportAllItems") { arguments: Arguments -> ExportAllItemsBuiltin(arguments) }
-        BuiltinExpressionParser.register("getBlock") { arguments: Arguments -> GetBlockBuiltin(arguments) }
-        BuiltinExpressionParser.register("getItemCount") { arguments: Arguments -> GetItemCountBuiltin(arguments) }
-        BuiltinExpressionParser.register("getItems") { arguments: Arguments -> GetItemsBuiltin(arguments) }
-        BuiltinExpressionParser.register("item") { arguments: Arguments -> ItemBuiltin(arguments) }
-        BuiltinExpressionParser.register("placeBlock") { arguments: Arguments -> PlaceBlockBuiltin(arguments) }
-        BuiltinExpressionParser.register("readItemCount") { arguments: Arguments -> ReadItemCountBuiltin(arguments) }
-        BuiltinExpressionParser.register("tag") { arguments: Arguments -> TagBuiltin(arguments) }
-        BuiltinExpressionParser.register("tags") { arguments: Arguments -> TagsBuiltin(arguments) }
-        BuiltinExpressionParser.register("useItem") { arguments: Arguments -> UseItemBuiltin(arguments) }
+        BuiltinExpressionParser.register("print") { arguments -> PrintBuiltin(arguments) }
+        BuiltinExpressionParser.register("block") { arguments -> BlockBuiltin(arguments) }
+        BuiltinExpressionParser.register("blockItem") { arguments -> BlockItemBuiltin(arguments) }
+        BuiltinExpressionParser.register("breakBlock") { arguments -> BreakBlockBuiltin(arguments) }
+        BuiltinExpressionParser.register("deleteItems") { arguments -> DeleteItemsBuiltin(arguments) }
+        BuiltinExpressionParser.register("exportAllItems") { arguments -> ExportAllItemsBuiltin(arguments) }
+        BuiltinExpressionParser.register("getBlock") { arguments -> GetBlockBuiltin(arguments) }
+        BuiltinExpressionParser.register("getItemCount") { arguments -> GetItemCountBuiltin(arguments) }
+        BuiltinExpressionParser.register("getItems") { arguments -> GetItemsBuiltin(arguments) }
+        BuiltinExpressionParser.register("item") { arguments -> ItemBuiltin(arguments) }
+        BuiltinExpressionParser.register("placeBlock") { arguments -> PlaceBlockBuiltin(arguments) }
+        BuiltinExpressionParser.register("readItemCount") { arguments -> ReadItemCountBuiltin(arguments) }
+        BuiltinExpressionParser.register("tag") { arguments -> TagBuiltin(arguments) }
+        BuiltinExpressionParser.register("tags") { arguments -> TagsBuiltin(arguments) }
+        BuiltinExpressionParser.register("useItem") { arguments -> UseItemBuiltin(arguments) }
     }
 }
