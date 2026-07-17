@@ -7,18 +7,7 @@ import net.minecraft.core.MappedRegistry
 import net.minecraft.core.Registry
 import net.minecraft.resources.Identifier
 import net.minecraft.resources.ResourceKey
-import program.statement.BreakStatement
-import program.statement.ContinueStatement
-import program.statement.DeleteStatement
-import program.statement.EmptyStatement
-import program.statement.ExpressionStatement
-import program.statement.ForStatement
-import program.statement.FunctionDeclaration
-import program.statement.IfStatement
-import program.statement.ImportStatement
-import program.statement.ReturnStatement
-import program.statement.Statement
-import program.statement.WhileStatement
+import program.statement.*
 import java.util.function.Function
 
 data class StatementType<T : Statement>(val codec: MapCodec<T>) {
@@ -31,7 +20,7 @@ data class StatementType<T : Statement>(val codec: MapCodec<T>) {
                 is EmptyStatement -> StatementTypes.EMPTY_STATEMENT
                 is ExpressionStatement -> StatementTypes.EXPRESSION_STATEMENT
                 is ForStatement -> StatementTypes.FOR_STATEMENT
-                is FunctionDeclaration -> StatementTypes.FUNCTION_DECLARATION
+                is FunctionStatement -> StatementTypes.FUNCTION_DECLARATION
                 is IfStatement -> StatementTypes.IF_STATEMENT
                 is ImportStatement -> StatementTypes.IMPORT_STATEMENT
                 is ReturnStatement -> StatementTypes.RETURN_STATEMENT

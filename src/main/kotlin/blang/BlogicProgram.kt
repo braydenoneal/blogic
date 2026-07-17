@@ -6,12 +6,13 @@ import blang.expression.value.ItemStackValue
 import blang.expression.value.ItemValue
 import blang.expression.value.TagValue
 import parser.Parser
+import parser.statement.ArgumentsParser
 import program.Program
 import program.Scope
 import program.expression.Arguments
 import program.expression.Expression
 import program.expression.value.Value
-import program.statement.FunctionDeclaration
+import program.statement.FunctionStatement
 import program.statement.ImportStatement
 import program.statement.StatementList
 
@@ -22,7 +23,7 @@ data class BlogicProgram(
     override var name: String = "name",
     override val imports: MutableList<ImportStatement> = mutableListOf(),
     override val statements: StatementList = StatementList(),
-    override val functions: MutableMap<String, FunctionDeclaration> = mutableMapOf(),
+    override val functions: MutableMap<String, FunctionStatement> = mutableMapOf(),
     override val scopes: MutableList<Scope> = mutableListOf(),
     var draft: String = source,
     var cursorPosition: Int = 0,
@@ -42,7 +43,7 @@ data class BlogicProgram(
         }
     }
 
-    fun tickMain(main: FunctionDeclaration) {
+    fun tickMain(main: FunctionStatement) {
         wait = false
 
         var result = main.call(this, Arguments.EMPTY)
@@ -62,21 +63,21 @@ data class BlogicProgram(
 
     override fun parseCustomBuiltins(parser: Parser, name: String): Expression? {
         return when (name) {
-            "print" -> PrintBuiltin(Arguments.parse(parser))
-            "block" -> BlockBuiltin(Arguments.parse(parser))
-            "blockItem" -> BlockItemBuiltin(Arguments.parse(parser))
-            "breakBlock" -> BreakBlockBuiltin(Arguments.parse(parser))
-            "deleteItems" -> DeleteItemsBuiltin(Arguments.parse(parser))
-            "exportAllItems" -> ExportAllItemsBuiltin(Arguments.parse(parser))
-            "getBlock" -> GetBlockBuiltin(Arguments.parse(parser))
-            "getItemCount" -> GetItemCountBuiltin(Arguments.parse(parser))
-            "getItems" -> GetItemsBuiltin(Arguments.parse(parser))
-            "item" -> ItemBuiltin(Arguments.parse(parser))
-            "placeBlock" -> PlaceBlockBuiltin(Arguments.parse(parser))
-            "readItemCount" -> ReadItemCountBuiltin(Arguments.parse(parser))
-            "tag" -> TagBuiltin(Arguments.parse(parser))
-            "tags" -> TagsBuiltin(Arguments.parse(parser))
-            "useItem" -> UseItemBuiltin(Arguments.parse(parser))
+            "print" -> PrintBuiltin(ArgumentsParser.parse(parser))
+            "block" -> BlockBuiltin(ArgumentsParser.parse(parser))
+            "blockItem" -> BlockItemBuiltin(ArgumentsParser.parse(parser))
+            "breakBlock" -> BreakBlockBuiltin(ArgumentsParser.parse(parser))
+            "deleteItems" -> DeleteItemsBuiltin(ArgumentsParser.parse(parser))
+            "exportAllItems" -> ExportAllItemsBuiltin(ArgumentsParser.parse(parser))
+            "getBlock" -> GetBlockBuiltin(ArgumentsParser.parse(parser))
+            "getItemCount" -> GetItemCountBuiltin(ArgumentsParser.parse(parser))
+            "getItems" -> GetItemsBuiltin(ArgumentsParser.parse(parser))
+            "item" -> ItemBuiltin(ArgumentsParser.parse(parser))
+            "placeBlock" -> PlaceBlockBuiltin(ArgumentsParser.parse(parser))
+            "readItemCount" -> ReadItemCountBuiltin(ArgumentsParser.parse(parser))
+            "tag" -> TagBuiltin(ArgumentsParser.parse(parser))
+            "tags" -> TagsBuiltin(ArgumentsParser.parse(parser))
+            "useItem" -> UseItemBuiltin(ArgumentsParser.parse(parser))
             else -> null
         }
     }

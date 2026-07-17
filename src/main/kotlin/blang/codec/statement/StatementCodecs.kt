@@ -9,19 +9,9 @@ import com.mojang.serialization.Codec
 import com.mojang.serialization.MapCodec
 import com.mojang.serialization.codecs.RecordCodecBuilder
 import com.mojang.serialization.codecs.RecordCodecBuilder.mapCodec
-import program.statement.BreakStatement
-import program.statement.ContinueStatement
-import program.statement.DeleteStatement
-import program.statement.ElseIfStatement
-import program.statement.ElseStatement
-import program.statement.EmptyStatement
-import program.statement.ExpressionStatement
-import program.statement.ForStatement
-import program.statement.FunctionDeclaration
-import program.statement.IfStatement
-import program.statement.ImportStatement
-import program.statement.ReturnStatement
-import program.statement.WhileStatement
+import program.statement.*
+import program.statement.IfStatement.ElseIfStatement
+import program.statement.IfStatement.ElseStatement
 import java.util.*
 
 object StatementCodecs {
@@ -57,11 +47,11 @@ object StatementCodecs {
             STATEMENT_LIST_CODEC.fieldOf("statements").forGetter(ForStatement::statements),
         ).apply(it, ::ForStatement)
     }
-    val FUNCTION_DECLARATION_CODEC: MapCodec<FunctionDeclaration> = mapCodec {
+    val FUNCTION_DECLARATION_CODEC: MapCodec<FunctionStatement> = mapCodec {
         it.group(
-            Codec.STRING.fieldOf("name").forGetter(FunctionDeclaration::name),
-            FUNCT_CODEC.fieldOf("function").forGetter(FunctionDeclaration::function),
-        ).apply(it, ::FunctionDeclaration)
+            Codec.STRING.fieldOf("name").forGetter(FunctionStatement::name),
+            FUNCT_CODEC.fieldOf("function").forGetter(FunctionStatement::function),
+        ).apply(it, ::FunctionStatement)
     }
     val IF_STATEMENT_CODEC: MapCodec<IfStatement> = mapCodec {
         it.group(
