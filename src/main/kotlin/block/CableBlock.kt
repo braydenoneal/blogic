@@ -41,13 +41,13 @@ class CableBlock(settings: Properties) : Block(settings) {
     private fun getShape(state: BlockState): VoxelShape {
         var shape = box(5.0, 5.0, 5.0, 11.0, 11.0, 11.0)
 
-        val directionShapeMap = mapOf<Direction, VoxelShape>(
-            Pair(Direction.UP, box(5.0, 11.0, 5.0, 11.0, 16.0, 11.0)),
-            Pair(Direction.DOWN, box(5.0, 0.0, 5.0, 11.0, 5.0, 11.0)),
-            Pair(Direction.NORTH, box(5.0, 5.0, 0.0, 11.0, 11.0, 5.0)),
-            Pair(Direction.EAST, box(11.0, 5.0, 5.0, 16.0, 11.0, 11.0)),
-            Pair(Direction.SOUTH, box(5.0, 5.0, 11.0, 11.0, 11.0, 16.0)),
-            Pair(Direction.WEST, box(0.0, 5.0, 5.0, 5.0, 11.0, 11.0)),
+        val directionShapeMap = mapOf(
+            Direction.UP to box(5.0, 11.0, 5.0, 11.0, 16.0, 11.0),
+            Direction.DOWN to box(5.0, 0.0, 5.0, 11.0, 5.0, 11.0),
+            Direction.NORTH to box(5.0, 5.0, 0.0, 11.0, 11.0, 5.0),
+            Direction.EAST to box(11.0, 5.0, 5.0, 16.0, 11.0, 11.0),
+            Direction.SOUTH to box(5.0, 5.0, 11.0, 11.0, 11.0, 16.0),
+            Direction.WEST to box(0.0, 5.0, 5.0, 5.0, 11.0, 11.0),
         )
 
         for (direction in UPDATE_SHAPE_ORDER) {
