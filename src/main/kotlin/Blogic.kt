@@ -8,7 +8,7 @@ import net.fabricmc.api.ModInitializer
 import networking.ModNetworking
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
-import parser.Parsers
+import parser.Parser
 
 object Blogic : ModInitializer {
     const val MOD_ID = "blogic"
@@ -18,7 +18,7 @@ object Blogic : ModInitializer {
         ValueTypes.initialize()
         ExpressionTypes.initialize()
         StatementTypes.initialize()
-        Parsers.initialize()
+        Parser.initialize()
         ModBlocks.initialize()
         ModBlockEntities.initialize()
         ModItems.initialize()

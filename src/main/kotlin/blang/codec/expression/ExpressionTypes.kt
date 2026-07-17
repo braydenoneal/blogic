@@ -5,7 +5,7 @@ import blang.expression.builtin.*
 import blang.expression.builtin.PrintBuiltin
 import net.minecraft.core.Registry
 import net.minecraft.resources.Identifier
-import parser.Parsers
+import parser.expression.BuiltinExpressionParser
 import program.expression.*
 import program.expression.builtin.*
 import program.expression.builtin.list.*
@@ -78,20 +78,20 @@ object ExpressionTypes {
     }
 
     fun initialize() {
-        Parsers.register("print") { arguments: Arguments -> PrintBuiltin(arguments) }
-        Parsers.register("block") { arguments: Arguments -> BlockBuiltin(arguments) }
-        Parsers.register("blockItem") { arguments: Arguments -> BlockItemBuiltin(arguments) }
-        Parsers.register("breakBlock") { arguments: Arguments -> BreakBlockBuiltin(arguments) }
-        Parsers.register("deleteItems") { arguments: Arguments -> DeleteItemsBuiltin(arguments) }
-        Parsers.register("exportAllItems") { arguments: Arguments -> ExportAllItemsBuiltin(arguments) }
-        Parsers.register("getBlock") { arguments: Arguments -> GetBlockBuiltin(arguments) }
-        Parsers.register("getItemCount") { arguments: Arguments -> GetItemCountBuiltin(arguments) }
-        Parsers.register("getItems") { arguments: Arguments -> GetItemsBuiltin(arguments) }
-        Parsers.register("item") { arguments: Arguments -> ItemBuiltin(arguments) }
-        Parsers.register("placeBlock") { arguments: Arguments -> PlaceBlockBuiltin(arguments) }
-        Parsers.register("readItemCount") { arguments: Arguments -> ReadItemCountBuiltin(arguments) }
-        Parsers.register("tag") { arguments: Arguments -> TagBuiltin(arguments) }
-        Parsers.register("tags") { arguments: Arguments -> TagsBuiltin(arguments) }
-        Parsers.register("useItem") { arguments: Arguments -> UseItemBuiltin(arguments) }
+        BuiltinExpressionParser.register("print") { arguments: Arguments -> PrintBuiltin(arguments) }
+        BuiltinExpressionParser.register("block") { arguments: Arguments -> BlockBuiltin(arguments) }
+        BuiltinExpressionParser.register("blockItem") { arguments: Arguments -> BlockItemBuiltin(arguments) }
+        BuiltinExpressionParser.register("breakBlock") { arguments: Arguments -> BreakBlockBuiltin(arguments) }
+        BuiltinExpressionParser.register("deleteItems") { arguments: Arguments -> DeleteItemsBuiltin(arguments) }
+        BuiltinExpressionParser.register("exportAllItems") { arguments: Arguments -> ExportAllItemsBuiltin(arguments) }
+        BuiltinExpressionParser.register("getBlock") { arguments: Arguments -> GetBlockBuiltin(arguments) }
+        BuiltinExpressionParser.register("getItemCount") { arguments: Arguments -> GetItemCountBuiltin(arguments) }
+        BuiltinExpressionParser.register("getItems") { arguments: Arguments -> GetItemsBuiltin(arguments) }
+        BuiltinExpressionParser.register("item") { arguments: Arguments -> ItemBuiltin(arguments) }
+        BuiltinExpressionParser.register("placeBlock") { arguments: Arguments -> PlaceBlockBuiltin(arguments) }
+        BuiltinExpressionParser.register("readItemCount") { arguments: Arguments -> ReadItemCountBuiltin(arguments) }
+        BuiltinExpressionParser.register("tag") { arguments: Arguments -> TagBuiltin(arguments) }
+        BuiltinExpressionParser.register("tags") { arguments: Arguments -> TagsBuiltin(arguments) }
+        BuiltinExpressionParser.register("useItem") { arguments: Arguments -> UseItemBuiltin(arguments) }
     }
 }
