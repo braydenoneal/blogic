@@ -16,10 +16,6 @@ import program.expression.builtin.struct.StructEntriesBuiltin
 import program.expression.builtin.struct.StructKeysBuiltin
 import program.expression.builtin.struct.StructRemoveBuiltin
 import program.expression.builtin.struct.StructValuesBuiltin
-import program.expression.operator.ArithmeticOperator
-import program.expression.operator.BangOperator
-import program.expression.operator.BooleanOperator
-import program.expression.operator.ComparisonOperator
 import program.expression.value.Value
 import java.util.function.Function
 
@@ -36,10 +32,8 @@ data class ExpressionType<T : Expression>(val codec: MapCodec<T>) {
                 is ListAccessExpression -> ExpressionTypes.LIST_ACCESS_EXPRESSION
                 is DotExpression -> ExpressionTypes.DOT_EXPRESSION
                 is IdentifierExpression -> ExpressionTypes.IDENTIFIER_EXPRESSION
-                is ArithmeticOperator -> ExpressionTypes.ARITHMETIC_OPERATOR
-                is BooleanOperator -> ExpressionTypes.BOOLEAN_OPERATOR
-                is ComparisonOperator -> ExpressionTypes.COMPARISON_OPERATOR
-                is BangOperator -> ExpressionTypes.UNARY_OPERATOR
+                is BinaryOperatorExpression -> ExpressionTypes.BINARY_EXPRESSION_OPERATOR
+                is UnaryOperatorExpression -> ExpressionTypes.UNARY_EXPRESSION_OPERATOR
                 is AbsoluteValueBuiltin -> ExpressionTypes.ABSOLUTE_VALUE_BUILTIN
                 is IntegerCastBuiltin -> ExpressionTypes.INTEGER_CAST_BUILTIN
                 is FloatCastBuiltin -> ExpressionTypes.FLOAT_CAST_BUILTIN

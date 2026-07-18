@@ -16,10 +16,6 @@ import program.expression.builtin.struct.StructEntriesBuiltin
 import program.expression.builtin.struct.StructKeysBuiltin
 import program.expression.builtin.struct.StructRemoveBuiltin
 import program.expression.builtin.struct.StructValuesBuiltin
-import program.expression.operator.ArithmeticOperator
-import program.expression.operator.BangOperator
-import program.expression.operator.BooleanOperator
-import program.expression.operator.ComparisonOperator
 
 object ExpressionCodecs {
     val ARGUMENTS_CODEC: Codec<Arguments> = RecordCodecBuilder.create {
@@ -75,31 +71,18 @@ object ExpressionCodecs {
             Codec.STRING.fieldOf("name").forGetter(IdentifierExpression::name),
         ).apply(it, ::IdentifierExpression)
     }
-    val ARITHMETIC_OPERATOR_CODEC: MapCodec<ArithmeticOperator> = mapCodec {
+    val BINARY_OPERATOR_EXPRESSION_CODEC: MapCodec<BinaryOperatorExpression> = mapCodec {
         it.group(
-            Codec.STRING.fieldOf("operator").forGetter(ArithmeticOperator::operator),
-            ExpressionType.CODEC.fieldOf("operand_a").forGetter(ArithmeticOperator::operandA),
-            ExpressionType.CODEC.fieldOf("operand_b").forGetter(ArithmeticOperator::operandB),
-        ).apply(it, ::ArithmeticOperator)
+            Codec.STRING.fieldOf("operator").forGetter(BinaryOperatorExpression::operator),
+            ExpressionType.CODEC.fieldOf("left").forGetter(BinaryOperatorExpression::left),
+            ExpressionType.CODEC.fieldOf("right").forGetter(BinaryOperatorExpression::right),
+        ).apply(it, ::BinaryOperatorExpression)
     }
-    val BOOLEAN_OPERATOR_CODEC: MapCodec<BooleanOperator> = mapCodec {
+    val UNARY_OPERATOR_EXPRESSION_CODEC: MapCodec<UnaryOperatorExpression> = mapCodec {
         it.group(
-            Codec.STRING.fieldOf("operator").forGetter(BooleanOperator::operator),
-            ExpressionType.CODEC.fieldOf("operand_a").forGetter(BooleanOperator::operandA),
-            ExpressionType.CODEC.fieldOf("operand_b").forGetter(BooleanOperator::operandB),
-        ).apply(it, ::BooleanOperator)
-    }
-    val COMPARISON_OPERATOR_CODEC: MapCodec<ComparisonOperator> = mapCodec {
-        it.group(
-            Codec.STRING.fieldOf("operator").forGetter(ComparisonOperator::operator),
-            ExpressionType.CODEC.fieldOf("operand_a").forGetter(ComparisonOperator::operandA),
-            ExpressionType.CODEC.fieldOf("operand_b").forGetter(ComparisonOperator::operandB),
-        ).apply(it, ::ComparisonOperator)
-    }
-    val UNARY_OPERATOR_CODEC: MapCodec<BangOperator> = mapCodec {
-        it.group(
-            ExpressionType.CODEC.fieldOf("operand").forGetter(BangOperator::operand),
-        ).apply(it, ::BangOperator)
+            Codec.STRING.fieldOf("operator").forGetter(UnaryOperatorExpression::operator),
+            ExpressionType.CODEC.fieldOf("operand").forGetter(UnaryOperatorExpression::operand),
+        ).apply(it, ::UnaryOperatorExpression)
     }
     val ABSOLUTE_VALUE_BUILTIN_CODEC: MapCodec<AbsoluteValueBuiltin> = mapCodec {
         it.group(

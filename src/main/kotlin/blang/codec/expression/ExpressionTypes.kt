@@ -13,10 +13,6 @@ import program.expression.builtin.struct.StructEntriesBuiltin
 import program.expression.builtin.struct.StructKeysBuiltin
 import program.expression.builtin.struct.StructRemoveBuiltin
 import program.expression.builtin.struct.StructValuesBuiltin
-import program.expression.operator.ArithmeticOperator
-import program.expression.operator.BangOperator
-import program.expression.operator.BooleanOperator
-import program.expression.operator.ComparisonOperator
 import program.expression.value.Value
 
 object ExpressionTypes {
@@ -29,10 +25,8 @@ object ExpressionTypes {
     val LIST_ACCESS_EXPRESSION: ExpressionType<ListAccessExpression> = register("list_access_expression", ExpressionType(ExpressionCodecs.LIST_ACCESS_EXPRESSION_CODEC))
     val DOT_EXPRESSION: ExpressionType<DotExpression> = register("member_expression", ExpressionType(ExpressionCodecs.DOT_EXPRESSION_CODEC))
     val IDENTIFIER_EXPRESSION: ExpressionType<IdentifierExpression> = register("identifier_expression", ExpressionType(ExpressionCodecs.IDENTIFIER_EXPRESSION_CODEC))
-    val ARITHMETIC_OPERATOR: ExpressionType<ArithmeticOperator> = register("arithmetic_operator", ExpressionType(ExpressionCodecs.ARITHMETIC_OPERATOR_CODEC))
-    val BOOLEAN_OPERATOR: ExpressionType<BooleanOperator> = register("boolean_operator", ExpressionType(ExpressionCodecs.BOOLEAN_OPERATOR_CODEC))
-    val COMPARISON_OPERATOR: ExpressionType<ComparisonOperator> = register("comparison_operator", ExpressionType(ExpressionCodecs.COMPARISON_OPERATOR_CODEC))
-    val UNARY_OPERATOR: ExpressionType<BangOperator> = register("unary_operator", ExpressionType(ExpressionCodecs.UNARY_OPERATOR_CODEC))
+    val BINARY_EXPRESSION_OPERATOR: ExpressionType<BinaryOperatorExpression> = register("binary_operator_expression", ExpressionType(ExpressionCodecs.BINARY_OPERATOR_EXPRESSION_CODEC))
+    val UNARY_EXPRESSION_OPERATOR: ExpressionType<UnaryOperatorExpression> = register("unary_operator_expression", ExpressionType(ExpressionCodecs.UNARY_OPERATOR_EXPRESSION_CODEC))
     val ABSOLUTE_VALUE_BUILTIN: ExpressionType<AbsoluteValueBuiltin> = register("absolute_value_builtin", ExpressionType(ExpressionCodecs.ABSOLUTE_VALUE_BUILTIN_CODEC))
     val INTEGER_CAST_BUILTIN: ExpressionType<IntegerCastBuiltin> = register("integer_cast_builtin", ExpressionType(ExpressionCodecs.INTEGER_CAST_BUILTIN_CODEC))
     val FLOAT_CAST_BUILTIN: ExpressionType<FloatCastBuiltin> = register("float_cast_builtin", ExpressionType(ExpressionCodecs.FLOAT_CAST_BUILTIN_CODEC))
