@@ -12,13 +12,13 @@ import program.expression.value.Null
 import program.expression.value.Value
 
 data class DeleteItemsBuiltin(override val arguments: Arguments) : Builtin(arguments), Expression {
-    override fun evaluate(program: Program): Value<*>? {
+    override fun evaluate(program: Program): Value<*> {
         if (program !is BlogicProgram) {
             throw RunException("Program is not a BlogicProgram")
         }
 
-        val itemPredicate = (arguments.functionValue(program, "itemPredicate", 0) ?: return null)
-        val initialCount = if (arguments.namelessArguments.size > 1 || arguments.namedArguments.containsKey("count")) (arguments.integerValue(program, "count", 1) ?: return null).value else null
+        val itemPredicate = (arguments.functionValue(program, "itemPredicate", 0))
+        val initialCount = if (arguments.namelessArguments.size > 1 || arguments.namedArguments.containsKey("count")) (arguments.integerValue(program, "count", 1)).value else null
         var count = initialCount
 
         val containers = program.context.entity.getConnectedContainers()

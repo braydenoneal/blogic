@@ -10,8 +10,8 @@ import program.expression.value.ListValue
 import program.expression.value.Value
 
 data class TagsBuiltin(override val arguments: Arguments) : Builtin(arguments), Expression {
-    override fun evaluate(program: Program): Value<*>? {
-        val item = (itemValue(arguments, program, "value", 0) ?: return null).value
+    override fun evaluate(program: Program): Value<*> {
+        val item = (itemValue(arguments, program, "value", 0)).value
         val tags = ArrayList<Value<*>>()
 
         item.defaultInstance.tags().forEach { tags.add(TagValue(it)) }

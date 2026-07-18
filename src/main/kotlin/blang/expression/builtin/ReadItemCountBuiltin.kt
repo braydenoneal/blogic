@@ -14,15 +14,15 @@ import program.expression.value.IntegerValue
 import program.expression.value.Value
 
 data class ReadItemCountBuiltin(override val arguments: Arguments) : Builtin(arguments), Expression {
-    override fun evaluate(program: Program): Value<*>? {
+    override fun evaluate(program: Program): Value<*> {
         if (program !is BlogicProgram) {
             throw RunException("Program is not a BlogicProgram")
         }
 
-        val x = (arguments.integerValue(program, "x", 0) ?: return null).value
-        val y = (arguments.integerValue(program, "y", 1) ?: return null).value
-        val z = (arguments.integerValue(program, "z", 2) ?: return null).value
-        val itemPredicate = (arguments.functionValue(program, "itemPredicate", 3) ?: return null)
+        val x = (arguments.integerValue(program, "x", 0)).value
+        val y = (arguments.integerValue(program, "y", 1)).value
+        val z = (arguments.integerValue(program, "z", 2)).value
+        val itemPredicate = (arguments.functionValue(program, "itemPredicate", 3))
         var count = 0
 
         val world = program.context.entity.level ?: throw RunException("World is null")

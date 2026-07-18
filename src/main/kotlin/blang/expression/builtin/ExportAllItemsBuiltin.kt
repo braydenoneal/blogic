@@ -16,18 +16,18 @@ import program.expression.value.Value
 import kotlin.math.min
 
 data class ExportAllItemsBuiltin(override val arguments: Arguments) : Builtin(arguments), Expression {
-    override fun evaluate(program: Program): Value<*>? {
+    override fun evaluate(program: Program): Value<*> {
         if (program !is BlogicProgram) {
             throw RunException("Program is not a BlogicProgram")
         }
 
-        val x = (arguments.integerValue(program, "x", 0) ?: return null).value
-        val y = (arguments.integerValue(program, "y", 1) ?: return null).value
-        val z = (arguments.integerValue(program, "z", 2) ?: return null).value
-        val itemPredicate = (arguments.functionValue(program, "itemPredicate", 3) ?: return null)
-        val initialCount = if (arguments.namelessArguments.size > 4 || arguments.namedArguments.containsKey("count")) (arguments.integerValue(program, "count", 4) ?: return null).value else null
+        val x = (arguments.integerValue(program, "x", 0)).value
+        val y = (arguments.integerValue(program, "y", 1)).value
+        val z = (arguments.integerValue(program, "z", 2)).value
+        val itemPredicate = (arguments.functionValue(program, "itemPredicate", 3))
+        val initialCount = if (arguments.namelessArguments.size > 4 || arguments.namedArguments.containsKey("count")) (arguments.integerValue(program, "count", 4)).value else null
         var count = initialCount
-        val deleteOverflow = (arguments.namelessArguments.size > 5 || arguments.namedArguments.containsKey("deleteOverflow")) && (arguments.booleanValue(program, "deleteOverflow", 5) ?: return null).value
+        val deleteOverflow = (arguments.namelessArguments.size > 5 || arguments.namedArguments.containsKey("deleteOverflow")) && (arguments.booleanValue(program, "deleteOverflow", 5)).value
 
         val world = program.context.entity.level ?: throw RunException("World is null")
 

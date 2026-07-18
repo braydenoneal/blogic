@@ -12,12 +12,12 @@ import program.expression.value.StringValue
 import program.expression.value.Value
 
 data class PrintBuiltin(override val arguments: Arguments) : Builtin(arguments), Expression {
-    override fun evaluate(program: Program): Value<*>? {
+    override fun evaluate(program: Program): Value<*> {
         if (program !is BlogicProgram) {
             throw RunException("Program is not a BlogicProgram")
         }
 
-        val value = if (arguments.namelessArguments.isEmpty()) StringValue("") else (arguments.anyValue(program, "value", 0) ?: return null)
+        val value = if (arguments.namelessArguments.isEmpty()) StringValue("") else (arguments.anyValue(program, "value", 0))
         var string = value.toString()
 
         if (value is StringValue) {

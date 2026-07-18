@@ -26,6 +26,7 @@ import net.minecraft.world.level.storage.ValueOutput
 import networking.ControllerPayload
 import program.Program
 import program.Program.Companion.log
+import program.statement.IncompleteException
 import java.util.*
 import kotlin.jvm.optionals.getOrNull
 
@@ -234,10 +235,10 @@ class ControllerBlockEntity(pos: BlockPos, state: BlockState) : BlockEntity(ModB
 
             if (entity.initializing) {
                 try {
-                    val result = entity.program.tick()
-
-                    if (result != null) {
+                    try {
+                        entity.program.tick()
                         entity.initializing = false
+                    } catch (_: IncompleteException) {
                     }
 
                     entity.setChanged()

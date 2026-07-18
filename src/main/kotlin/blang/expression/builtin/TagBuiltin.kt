@@ -11,7 +11,7 @@ import program.expression.builtin.Builtin
 import program.expression.value.Value
 
 data class TagBuiltin(override val arguments: Arguments) : Builtin(arguments), Expression {
-    override fun evaluate(program: Program): Value<*>? {
-        return TagValue(TagKey.create(Registries.ITEM, Identifier.parse((arguments.stringValue(program, "value", 0) ?: return null).value)))
+    override fun evaluate(program: Program): Value<*> {
+        return TagValue(TagKey.create(Registries.ITEM, Identifier.parse((arguments.stringValue(program, "value", 0)).value)))
     }
 }

@@ -12,12 +12,12 @@ import program.expression.value.IntegerValue
 import program.expression.value.Value
 
 data class GetItemCountBuiltin(override val arguments: Arguments) : Builtin(arguments), Expression {
-    override fun evaluate(program: Program): Value<*>? {
+    override fun evaluate(program: Program): Value<*> {
         if (program !is BlogicProgram) {
             throw RunException("Program is not a BlogicProgram")
         }
 
-        val itemPredicate = (arguments.functionValue(program, "itemPredicate", 0) ?: return null)
+        val itemPredicate = (arguments.functionValue(program, "itemPredicate", 0))
         var count = 0
 
         for (container in program.context.entity.getConnectedContainers()) {

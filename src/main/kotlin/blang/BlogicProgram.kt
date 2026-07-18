@@ -5,6 +5,7 @@ import program.Scope
 import program.expression.Arguments
 import program.statement.FunctionStatement
 import program.statement.ImportStatement
+import program.statement.IncompleteException
 import program.statement.StatementList
 
 data class BlogicProgram(
@@ -22,12 +23,14 @@ data class BlogicProgram(
     private var hasRuntimeError = false
 
     fun runMain() {
-        if (hasRuntimeError) {
+        val main = functions["main"]
+
+        if (main == null || hasRuntimeError) {
             return
         }
 
         try {
-            tickMain(functions["main"]!!)
+            tickMain(main)
         } catch (e: Exception) {
             log.error("Run main error", e)
             hasRuntimeError = true
@@ -37,18 +40,15 @@ data class BlogicProgram(
     fun tickMain(main: FunctionStatement) {
         wait = false
 
-        var result = main.call(this, Arguments.EMPTY)
-
         while (true) {
-            if (result != null) {
+            try {
+                main.call(this, Arguments.EMPTY)
                 return
+            } catch (_: IncompleteException) {
+                if (wait) {
+                    break
+                }
             }
-
-            if (wait) {
-                break
-            }
-
-            result = main.call(this, Arguments.EMPTY)
         }
     }
 
