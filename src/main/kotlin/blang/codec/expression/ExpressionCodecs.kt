@@ -31,8 +31,8 @@ object ExpressionCodecs {
     val ASSIGNMENT_EXPRESSION_CODEC: MapCodec<AssignmentExpression> = mapCodec {
         it.group(
             Codec.STRING.fieldOf("type").forGetter(AssignmentExpression::operator),
-            ExpressionType.CODEC.fieldOf("variable_expression").forGetter(AssignmentExpression::variableExpression),
-            ExpressionType.CODEC.fieldOf("expression").forGetter(AssignmentExpression::variableExpression),
+            ExpressionType.CODEC.fieldOf("left").forGetter(AssignmentExpression::left),
+            ExpressionType.CODEC.fieldOf("right").forGetter(AssignmentExpression::right),
         ).apply(it, ::AssignmentExpression)
     }
     val IF_ELSE_EXPRESSION_CODEC: MapCodec<IfElseExpression> = mapCodec {
@@ -53,34 +53,27 @@ object ExpressionCodecs {
             mutableListCodec(ExpressionType.CODEC).fieldOf("expressions").forGetter(ListExpression::expressions),
         ).apply(it, ::ListExpression)
     }
-    val MEMBER_CALL_EXPRESSION_CODEC: MapCodec<MemberCallExpression> = mapCodec {
-        it.group(
-            ExpressionType.CODEC.fieldOf("member").forGetter(MemberCallExpression::member),
-            Codec.STRING.fieldOf("function_name").forGetter(MemberCallExpression::functionName),
-            ARGUMENTS_CODEC.fieldOf("arguments").forGetter(MemberCallExpression::arguments),
-        ).apply(it, ::MemberCallExpression)
-    }
     val CALL_EXPRESSION_CODEC: MapCodec<CallExpression> = mapCodec {
         it.group(
-            Codec.STRING.fieldOf("name").forGetter(CallExpression::name),
+            ExpressionType.CODEC.fieldOf("left").forGetter(CallExpression::left),
             ARGUMENTS_CODEC.fieldOf("arguments").forGetter(CallExpression::arguments),
         ).apply(it, ::CallExpression)
     }
-    val MEMBER_EXPRESSION_CODEC: MapCodec<MemberExpression> = mapCodec {
+    val DOT_EXPRESSION_CODEC: MapCodec<DotExpression> = mapCodec {
         it.group(
-            ExpressionType.CODEC.fieldOf("member").forGetter(MemberExpression::member),
-            Codec.STRING.fieldOf("property").forGetter(MemberExpression::property),
-        ).apply(it, ::MemberExpression)
+            ExpressionType.CODEC.fieldOf("left").forGetter(DotExpression::left),
+            Codec.STRING.fieldOf("right").forGetter(DotExpression::right),
+        ).apply(it, ::DotExpression)
     }
     val STRUCT_EXPRESSION_CODEC: MapCodec<StructExpression> = mapCodec {
         it.group(
             Codec.list(PairCodec.pair(Codec.STRING, ExpressionType.CODEC)).fieldOf("expressions").forGetter(StructExpression::expressions),
         ).apply(it, ::StructExpression)
     }
-    val VARIABLE_EXPRESSION_CODEC: MapCodec<VariableExpression> = mapCodec {
+    val IDENTIFIER_EXPRESSION_CODEC: MapCodec<IdentifierExpression> = mapCodec {
         it.group(
-            Codec.STRING.fieldOf("name").forGetter(VariableExpression::name),
-        ).apply(it, ::VariableExpression)
+            Codec.STRING.fieldOf("name").forGetter(IdentifierExpression::name),
+        ).apply(it, ::IdentifierExpression)
     }
     val ARITHMETIC_OPERATOR_CODEC: MapCodec<ArithmeticOperator> = mapCodec {
         it.group(

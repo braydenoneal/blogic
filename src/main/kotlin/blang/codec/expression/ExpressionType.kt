@@ -9,44 +9,18 @@ import net.minecraft.core.MappedRegistry
 import net.minecraft.core.Registry
 import net.minecraft.resources.Identifier
 import net.minecraft.resources.ResourceKey
+import program.expression.*
+import program.expression.builtin.*
+import program.expression.builtin.list.*
 import program.expression.builtin.struct.StructEntriesBuiltin
 import program.expression.builtin.struct.StructKeysBuiltin
 import program.expression.builtin.struct.StructRemoveBuiltin
 import program.expression.builtin.struct.StructValuesBuiltin
 import program.expression.operator.ArithmeticOperator
 import program.expression.operator.BangOperator
-import program.expression.AssignmentExpression
 import program.expression.operator.BooleanOperator
 import program.expression.operator.ComparisonOperator
-import program.expression.CallExpression
 import program.expression.value.Value
-import program.expression.Expression
-import program.expression.IfElseExpression
-import program.expression.ListAccessExpression
-import program.expression.ListExpression
-import program.expression.MemberCallExpression
-import program.expression.MemberExpression
-import program.expression.StructExpression
-import program.expression.VariableExpression
-import program.expression.builtin.AbsoluteValueBuiltin
-import program.expression.builtin.CeilBuiltin
-import program.expression.builtin.FloatCastBuiltin
-import program.expression.builtin.FloorBuiltin
-import program.expression.builtin.IntegerCastBuiltin
-import program.expression.builtin.LengthBuiltin
-import program.expression.builtin.MaximumBuiltin
-import program.expression.builtin.MinimumBuiltin
-import program.expression.builtin.RangeBuiltin
-import program.expression.builtin.RoundBuiltin
-import program.expression.builtin.StringCastBuiltin
-import program.expression.builtin.TypeBuiltin
-import program.expression.builtin.WaitBuiltin
-import program.expression.builtin.list.ListAppendBuiltin
-import program.expression.builtin.list.ListContainsAllBuiltin
-import program.expression.builtin.list.ListContainsBuiltin
-import program.expression.builtin.list.ListInsertBuiltin
-import program.expression.builtin.list.ListPopBuiltin
-import program.expression.builtin.list.ListRemoveBuiltin
 import java.util.function.Function
 
 data class ExpressionType<T : Expression>(val codec: MapCodec<T>) {
@@ -60,9 +34,8 @@ data class ExpressionType<T : Expression>(val codec: MapCodec<T>) {
                 is ListExpression -> ExpressionTypes.LIST_EXPRESSION
                 is StructExpression -> ExpressionTypes.STRUCT_EXPRESSION
                 is ListAccessExpression -> ExpressionTypes.LIST_ACCESS_EXPRESSION
-                is MemberExpression -> ExpressionTypes.MEMBER_EXPRESSION
-                is MemberCallExpression -> ExpressionTypes.MEMBER_CALL_EXPRESSION
-                is VariableExpression -> ExpressionTypes.VARIABLE_EXPRESSION
+                is DotExpression -> ExpressionTypes.DOT_EXPRESSION
+                is IdentifierExpression -> ExpressionTypes.IDENTIFIER_EXPRESSION
                 is ArithmeticOperator -> ExpressionTypes.ARITHMETIC_OPERATOR
                 is BooleanOperator -> ExpressionTypes.BOOLEAN_OPERATOR
                 is ComparisonOperator -> ExpressionTypes.COMPARISON_OPERATOR
