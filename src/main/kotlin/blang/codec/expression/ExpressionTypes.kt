@@ -22,7 +22,7 @@ object ExpressionTypes {
     val IF_ELSE_EXPRESSION: ExpressionType<IfElseExpression> = register("if_else_expression", ExpressionType(ExpressionCodecs.IF_ELSE_EXPRESSION_CODEC))
     val LIST_EXPRESSION: ExpressionType<ListExpression> = register("list_expression", ExpressionType(ExpressionCodecs.LIST_EXPRESSION_CODEC))
     val STRUCT_EXPRESSION: ExpressionType<StructExpression> = register("struct_expression", ExpressionType(ExpressionCodecs.STRUCT_EXPRESSION_CODEC))
-    val LIST_ACCESS_EXPRESSION: ExpressionType<ListAccessExpression> = register("list_access_expression", ExpressionType(ExpressionCodecs.LIST_ACCESS_EXPRESSION_CODEC))
+    val ACCESS_EXPRESSION: ExpressionType<AccessExpression> = register("access_expression", ExpressionType(ExpressionCodecs.ACCESS_EXPRESSION_CODEC))
     val DOT_EXPRESSION: ExpressionType<DotExpression> = register("member_expression", ExpressionType(ExpressionCodecs.DOT_EXPRESSION_CODEC))
     val IDENTIFIER_EXPRESSION: ExpressionType<IdentifierExpression> = register("identifier_expression", ExpressionType(ExpressionCodecs.IDENTIFIER_EXPRESSION_CODEC))
     val BINARY_EXPRESSION_OPERATOR: ExpressionType<BinaryOperatorExpression> = register("binary_operator_expression", ExpressionType(ExpressionCodecs.BINARY_OPERATOR_EXPRESSION_CODEC))

@@ -29,7 +29,7 @@ data class ExpressionType<T : Expression>(val codec: MapCodec<T>) {
                 is IfElseExpression -> ExpressionTypes.IF_ELSE_EXPRESSION
                 is ListExpression -> ExpressionTypes.LIST_EXPRESSION
                 is StructExpression -> ExpressionTypes.STRUCT_EXPRESSION
-                is ListAccessExpression -> ExpressionTypes.LIST_ACCESS_EXPRESSION
+                is AccessExpression -> ExpressionTypes.ACCESS_EXPRESSION
                 is DotExpression -> ExpressionTypes.DOT_EXPRESSION
                 is IdentifierExpression -> ExpressionTypes.IDENTIFIER_EXPRESSION
                 is BinaryOperatorExpression -> ExpressionTypes.BINARY_EXPRESSION_OPERATOR

@@ -38,11 +38,11 @@ object ExpressionCodecs {
             ExpressionType.CODEC.fieldOf("expression_b").forGetter(IfElseExpression::expressionB),
         ).apply(it, ::IfElseExpression)
     }
-    val LIST_ACCESS_EXPRESSION_CODEC: MapCodec<ListAccessExpression> = mapCodec {
+    val ACCESS_EXPRESSION_CODEC: MapCodec<AccessExpression> = mapCodec {
         it.group(
-            ExpressionType.CODEC.fieldOf("list_expression").forGetter(ListAccessExpression::listExpression),
-            ExpressionType.CODEC.fieldOf("index_expression").forGetter(ListAccessExpression::indexExpression),
-        ).apply(it, ::ListAccessExpression)
+            ExpressionType.CODEC.fieldOf("left").forGetter(AccessExpression::left),
+            ExpressionType.CODEC.fieldOf("right").forGetter(AccessExpression::right),
+        ).apply(it, ::AccessExpression)
     }
     val LIST_EXPRESSION_CODEC: MapCodec<ListExpression> = mapCodec {
         it.group(
