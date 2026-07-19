@@ -17,7 +17,7 @@ import program.expression.value.Value
 
 object ExpressionTypes {
     val VALUE: ExpressionType<Value<*>> = register("value", ExpressionType(ValueType.MAP_CODEC))
-    val ASSIGNMENT_EXPRESSION: ExpressionType<AssignmentExpression> = register("assignment_expression", ExpressionType(ExpressionCodecs.ASSIGNMENT_EXPRESSION_CODEC))
+    val ASSIGN_EXPRESSION: ExpressionType<AssignExpression> = register("assign_expression", ExpressionType(ExpressionCodecs.ASSIGN_EXPRESSION_CODEC))
     val CALL_EXPRESSION: ExpressionType<CallExpression> = register("call_expression", ExpressionType(ExpressionCodecs.CALL_EXPRESSION_CODEC))
     val IF_ELSE_EXPRESSION: ExpressionType<IfElseExpression> = register("if_else_expression", ExpressionType(ExpressionCodecs.IF_ELSE_EXPRESSION_CODEC))
     val LIST_EXPRESSION: ExpressionType<ListExpression> = register("list_expression", ExpressionType(ExpressionCodecs.LIST_EXPRESSION_CODEC))

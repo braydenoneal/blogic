@@ -24,7 +24,7 @@ data class ExpressionType<T : Expression>(val codec: MapCodec<T>) {
         val type: Function<in Expression, out ExpressionType<*>> = { expression: Expression ->
             when (expression) {
                 is Value<*> -> ExpressionTypes.VALUE
-                is AssignmentExpression -> ExpressionTypes.ASSIGNMENT_EXPRESSION
+                is AssignExpression -> ExpressionTypes.ASSIGN_EXPRESSION
                 is CallExpression -> ExpressionTypes.CALL_EXPRESSION
                 is IfElseExpression -> ExpressionTypes.IF_ELSE_EXPRESSION
                 is ListExpression -> ExpressionTypes.LIST_EXPRESSION

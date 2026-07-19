@@ -24,12 +24,12 @@ object ExpressionCodecs {
             mutableMapCodec(Codec.STRING, ExpressionType.CODEC).fieldOf("named_arguments").forGetter(Arguments::namedArguments),
         ).apply(it, ::Arguments)
     }
-    val ASSIGNMENT_EXPRESSION_CODEC: MapCodec<AssignmentExpression> = mapCodec {
+    val ASSIGN_EXPRESSION_CODEC: MapCodec<AssignExpression> = mapCodec {
         it.group(
-            Codec.STRING.fieldOf("type").forGetter(AssignmentExpression::operator),
-            ExpressionType.CODEC.fieldOf("left").forGetter(AssignmentExpression::left),
-            ExpressionType.CODEC.fieldOf("right").forGetter(AssignmentExpression::right),
-        ).apply(it, ::AssignmentExpression)
+            Codec.STRING.fieldOf("type").forGetter(AssignExpression::operator),
+            ExpressionType.CODEC.fieldOf("left").forGetter(AssignExpression::left),
+            ExpressionType.CODEC.fieldOf("right").forGetter(AssignExpression::right),
+        ).apply(it, ::AssignExpression)
     }
     val IF_ELSE_EXPRESSION_CODEC: MapCodec<IfElseExpression> = mapCodec {
         it.group(
