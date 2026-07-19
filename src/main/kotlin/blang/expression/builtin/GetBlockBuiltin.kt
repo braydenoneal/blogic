@@ -12,10 +12,7 @@ import program.expression.value.Value
 
 data class GetBlockBuiltin(override val arguments: Arguments) : Builtin(arguments), Expression {
     override fun evaluate(program: Program): Value<*> {
-        if (program !is BlogicProgram) {
-            throw RunException("Program is not a BlogicProgram")
-        }
-
+        val program = BlogicProgram.cast(program)
         val x = (arguments.integerValue(program, "x", 0))
         val y = (arguments.integerValue(program, "y", 1))
         val z = (arguments.integerValue(program, "z", 2))

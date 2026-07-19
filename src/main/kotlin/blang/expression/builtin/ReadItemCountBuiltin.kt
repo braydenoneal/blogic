@@ -15,10 +15,7 @@ import program.expression.value.Value
 
 data class ReadItemCountBuiltin(override val arguments: Arguments) : Builtin(arguments), Expression {
     override fun evaluate(program: Program): Value<*> {
-        if (program !is BlogicProgram) {
-            throw RunException("Program is not a BlogicProgram")
-        }
-
+        val program = BlogicProgram.cast(program)
         val x = (arguments.integerValue(program, "x", 0)).value
         val y = (arguments.integerValue(program, "y", 1)).value
         val z = (arguments.integerValue(program, "z", 2)).value
@@ -36,11 +33,7 @@ data class ReadItemCountBuiltin(override val arguments: Arguments) : Builtin(arg
 
         exportEntity.iterator().forEachRemaining { stack ->
             val predicateArguments = Arguments(mutableListOf(ItemValue(stack.item)), mutableMapOf())
-            val predicateResult = itemPredicate.call(program, predicateArguments)
-
-            if (predicateResult !is BooleanValue) {
-                throw RunException("itemPredicate is not a predicate")
-            }
+            val predicateResult = itemPredicate.call(program, predicateArguments).cast<BooleanValue>()
 
             if (predicateResult.value) {
                 count += stack.count

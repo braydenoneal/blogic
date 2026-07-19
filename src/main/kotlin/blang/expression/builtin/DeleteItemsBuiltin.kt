@@ -3,7 +3,6 @@ package blang.expression.builtin
 import blang.BlogicProgram
 import blang.expression.value.ItemValue
 import program.Program
-import program.RunException
 import program.expression.Arguments
 import program.expression.Expression
 import program.expression.builtin.Builtin
@@ -13,10 +12,7 @@ import program.expression.value.Value
 
 data class DeleteItemsBuiltin(override val arguments: Arguments) : Builtin(arguments), Expression {
     override fun evaluate(program: Program): Value<*> {
-        if (program !is BlogicProgram) {
-            throw RunException("Program is not a BlogicProgram")
-        }
-
+        val program = BlogicProgram.cast(program)
         val itemPredicate = (arguments.functionValue(program, "itemPredicate", 0))
         val initialCount = if (arguments.namelessArguments.size > 1 || arguments.namedArguments.containsKey("count")) (arguments.integerValue(program, "count", 1)).value else null
         var count = initialCount
@@ -32,11 +28,7 @@ data class DeleteItemsBuiltin(override val arguments: Arguments) : Builtin(argum
                 val stack = container.getItem(slot)
 
                 val predicateArguments = Arguments(mutableListOf(ItemValue(stack.item)), mutableMapOf())
-                val predicateResult = itemPredicate.call(program, predicateArguments)
-
-                if (predicateResult !is BooleanValue) {
-                    throw RunException("itemPredicate is not a predicate")
-                }
+                val predicateResult = itemPredicate.call(program, predicateArguments).cast<BooleanValue>()
 
                 if (!predicateResult.value) {
                     continue

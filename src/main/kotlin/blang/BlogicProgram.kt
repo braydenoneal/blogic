@@ -1,6 +1,7 @@
 package blang
 
 import program.Program
+import program.RunException
 import program.Scope
 import program.expression.Arguments
 import program.statement.FunctionStatement
@@ -64,5 +65,11 @@ data class BlogicProgram(
         }
 
         return importProgram
+    }
+
+    companion object {
+        fun cast(program: Program): BlogicProgram {
+            return program as? BlogicProgram ?: throw RunException("Program is not a BlogicProgram")
+        }
     }
 }

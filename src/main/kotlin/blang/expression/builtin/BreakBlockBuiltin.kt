@@ -22,10 +22,7 @@ import kotlin.math.min
 
 data class BreakBlockBuiltin(override val arguments: Arguments) : Builtin(arguments), Expression {
     override fun evaluate(program: Program): Value<*> {
-        if (program !is BlogicProgram) {
-            throw RunException("Program is not a BlogicProgram")
-        }
-
+        val program = BlogicProgram.cast(program)
         val x = (arguments.integerValue(program, "x", 0)).value
         val y = (arguments.integerValue(program, "y", 1)).value
         val z = (arguments.integerValue(program, "z", 2)).value
@@ -39,11 +36,7 @@ data class BreakBlockBuiltin(override val arguments: Arguments) : Builtin(argume
         val block = world.getBlockState(pos).block
 
         val predicateArguments = Arguments(mutableListOf(BlockValue(block)), mutableMapOf())
-        val predicateResult = blockPredicate.call(program, predicateArguments)
-
-        if (predicateResult !is BooleanValue) {
-            throw RunException("blockPredicate is not a predicate")
-        }
+        val predicateResult = blockPredicate.call(program, predicateArguments).cast<BooleanValue>()
 
         if (!predicateResult.value) {
             return BooleanValue(false)
