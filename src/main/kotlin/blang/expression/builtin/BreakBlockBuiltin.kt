@@ -17,17 +17,19 @@ import program.expression.Arguments
 import program.expression.Expression
 import program.expression.builtin.Builtin
 import program.expression.value.BooleanValue
+import program.expression.value.FunctionValue
+import program.expression.value.IntegerValue
 import program.expression.value.Value
 import kotlin.math.min
 
 data class BreakBlockBuiltin(override val arguments: Arguments) : Builtin(arguments), Expression {
     override fun evaluate(program: Program): Value<*> {
         val program = BlogicProgram.cast(program)
-        val x = (arguments.integerValue(program, "x", 0)).value
-        val y = (arguments.integerValue(program, "y", 1)).value
-        val z = (arguments.integerValue(program, "z", 2)).value
-        val blockPredicate = (arguments.functionValue(program, "blockPredicate", 3))
-        val silkTouch = (arguments.namelessArguments.size > 4 || arguments.namedArguments.containsKey("silkTouch")) && (arguments.booleanValue(program, "silkTouch", 4)).value
+        val x = arguments.get<IntegerValue>(program, "x").value
+        val y = arguments.get<IntegerValue>(program, "y").value
+        val z = arguments.get<IntegerValue>(program, "z").value
+        val predicate = arguments.get<FunctionValue>(program, "predicate")
+        val silkTouch = arguments.get<BooleanValue>(program, "silkTouch", BooleanValue(false)).value
 
         val entityPos = program.context.pos
         val pos = BlockPos(entityPos.x + x, entityPos.y + y, entityPos.z + z)
@@ -36,7 +38,7 @@ data class BreakBlockBuiltin(override val arguments: Arguments) : Builtin(argume
         val block = world.getBlockState(pos).block
 
         val predicateArguments = Arguments(mutableListOf(BlockValue(block)), mutableMapOf())
-        val predicateResult = blockPredicate.call(program, predicateArguments).cast<BooleanValue>()
+        val predicateResult = predicate.call(program, predicateArguments).cast<BooleanValue>()
 
         if (!predicateResult.value) {
             return BooleanValue(false)

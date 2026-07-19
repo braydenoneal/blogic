@@ -6,16 +6,18 @@ import program.Program
 import program.expression.Arguments
 import program.expression.Expression
 import program.expression.builtin.Builtin
-import program.expression.value.BooleanValue
-import program.expression.value.Null
-import program.expression.value.Value
+import program.expression.value.*
 
 data class DeleteItemsBuiltin(override val arguments: Arguments) : Builtin(arguments), Expression {
     override fun evaluate(program: Program): Value<*> {
         val program = BlogicProgram.cast(program)
-        val itemPredicate = (arguments.functionValue(program, "itemPredicate", 0))
-        val initialCount = if (arguments.namelessArguments.size > 1 || arguments.namedArguments.containsKey("count")) (arguments.integerValue(program, "count", 1)).value else null
-        var count = initialCount
+        val itemPredicate = arguments.get<FunctionValue>(program, "itemPredicate")
+        val initialCount = arguments.getAny(program, "count", Null.VALUE)
+        var count: Int? = null
+
+        if (initialCount is IntegerValue) {
+            count = initialCount.value
+        }
 
         val containers = program.context.entity.getConnectedContainers()
 

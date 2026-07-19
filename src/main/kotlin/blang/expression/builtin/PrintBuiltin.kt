@@ -13,7 +13,7 @@ import program.expression.value.Value
 data class PrintBuiltin(override val arguments: Arguments) : Builtin(arguments), Expression {
     override fun evaluate(program: Program): Value<*> {
         val program = BlogicProgram.cast(program)
-        val value = if (arguments.namelessArguments.isEmpty()) StringValue("") else (arguments.anyValue(program, "value", 0))
+        val value = arguments.getAny(program, "value", StringValue(""))
         var string = value.toString()
 
         if (value is StringValue) {

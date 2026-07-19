@@ -10,21 +10,24 @@ import program.RunException
 import program.expression.Arguments
 import program.expression.Expression
 import program.expression.builtin.Builtin
-import program.expression.value.BooleanValue
-import program.expression.value.Null
-import program.expression.value.Value
+import program.expression.value.*
 import kotlin.math.min
 
 data class ExportAllItemsBuiltin(override val arguments: Arguments) : Builtin(arguments), Expression {
     override fun evaluate(program: Program): Value<*> {
         val program = BlogicProgram.cast(program)
-        val x = (arguments.integerValue(program, "x", 0)).value
-        val y = (arguments.integerValue(program, "y", 1)).value
-        val z = (arguments.integerValue(program, "z", 2)).value
-        val itemPredicate = (arguments.functionValue(program, "itemPredicate", 3))
-        val initialCount = if (arguments.namelessArguments.size > 4 || arguments.namedArguments.containsKey("count")) (arguments.integerValue(program, "count", 4)).value else null
-        var count = initialCount
-        val deleteOverflow = (arguments.namelessArguments.size > 5 || arguments.namedArguments.containsKey("deleteOverflow")) && (arguments.booleanValue(program, "deleteOverflow", 5)).value
+        val x = arguments.get<IntegerValue>(program, "x").value
+        val y = arguments.get<IntegerValue>(program, "y").value
+        val z = arguments.get<IntegerValue>(program, "z").value
+        val predicate = arguments.get<FunctionValue>(program, "predicate")
+        val initialCount = arguments.getAny(program, "count", Null.VALUE)
+        var count: Int? = null
+
+        if (initialCount is IntegerValue) {
+            count = initialCount.value
+        }
+
+        val deleteOverflow = arguments.get<BooleanValue>(program, "deleteOverflow", BooleanValue(false)).value
 
         val world = program.context.entity.level ?: throw RunException("World is null")
 
@@ -42,7 +45,7 @@ data class ExportAllItemsBuiltin(override val arguments: Arguments) : Builtin(ar
                 val stack = container.getItem(slot)
 
                 val predicateArguments = Arguments(mutableListOf(ItemValue(stack.item)), mutableMapOf())
-                val predicateResult = itemPredicate.call(program, predicateArguments).cast<BooleanValue>()
+                val predicateResult = predicate.call(program, predicateArguments).cast<BooleanValue>()
 
                 if (!predicateResult.value) {
                     continue

@@ -22,6 +22,8 @@ object ExpressionCodecs {
         it.group(
             mutableListCodec(ExpressionType.CODEC).fieldOf("nameless_arguments").forGetter(Arguments::namelessArguments),
             mutableMapCodec(Codec.STRING, ExpressionType.CODEC).fieldOf("named_arguments").forGetter(Arguments::namedArguments),
+            Codec.INT.fieldOf("index").forGetter(Arguments::index),
+            mutableListCodec(Codec.STRING).fieldOf("seen").forGetter(Arguments::seen),
         ).apply(it, ::Arguments)
     }
     val ASSIGN_EXPRESSION_CODEC: MapCodec<AssignExpression> = mapCodec {
