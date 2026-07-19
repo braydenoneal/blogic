@@ -1,6 +1,6 @@
 package blang.codec.statement
 
-import blang.codec.Codecs.FUNCT_CODEC
+import blang.codec.Codecs.FUNCTION_CODEC
 import blang.codec.Codecs.STATEMENT_LIST_CODEC
 import blang.codec.Codecs.mutableListCodec
 import blang.codec.expression.ExpressionType
@@ -50,7 +50,7 @@ object StatementCodecs {
     val FUNCTION_DECLARATION_CODEC: MapCodec<FunctionStatement> = mapCodec {
         it.group(
             Codec.STRING.fieldOf("name").forGetter(FunctionStatement::name),
-            FUNCT_CODEC.fieldOf("function").forGetter(FunctionStatement::function),
+            FUNCTION_CODEC.fieldOf("function").forGetter(FunctionStatement::function),
         ).apply(it, ::FunctionStatement)
     }
     val IF_STATEMENT_CODEC: MapCodec<IfStatement> = mapCodec {

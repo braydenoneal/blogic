@@ -11,7 +11,7 @@ import com.mojang.serialization.codecs.RecordCodecBuilder
 import com.mojang.serialization.codecs.RecordCodecBuilder.mapCodec
 import program.Program
 import program.Scope
-import program.expression.value.Funct
+import program.expression.value.Function
 import program.statement.StatementList
 import java.util.*
 
@@ -32,13 +32,13 @@ object Codecs {
             mutableListCodec(StatementType.CODEC).fieldOf("to_run").forGetter(StatementList::toRun),
         ).apply(it, ::StatementList)
     }
-    val FUNCT_CODEC: Codec<Funct> = RecordCodecBuilder.create {
+    val FUNCTION_CODEC: Codec<Function> = RecordCodecBuilder.create {
         it.group(
-            mutableListCodec(Codec.STRING).fieldOf("parameters").forGetter(Funct::parameters),
-            mutableListCodec(pair(Codec.STRING, ExpressionType.CODEC)).fieldOf("default_parameters").forGetter(Funct::defaultParameters),
-            STATEMENT_LIST_CODEC.fieldOf("statements").forGetter(Funct::statements),
-            Codec.BOOL.fieldOf("running").forGetter(Funct::running),
-        ).apply(it, ::Funct)
+            mutableListCodec(Codec.STRING).fieldOf("parameters").forGetter(Function::parameters),
+            mutableListCodec(pair(Codec.STRING, ExpressionType.CODEC)).fieldOf("default_parameters").forGetter(Function::defaultParameters),
+            STATEMENT_LIST_CODEC.fieldOf("statements").forGetter(Function::statements),
+            Codec.BOOL.fieldOf("running").forGetter(Function::running),
+        ).apply(it, ::Function)
     }
     val SCOPE_CODEC: Codec<Scope> = Codec.recursive("scope") { selfCodec ->
         RecordCodecBuilder.create {

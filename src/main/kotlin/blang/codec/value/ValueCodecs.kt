@@ -1,6 +1,6 @@
 package blang.codec.value
 
-import blang.codec.Codecs.FUNCT_CODEC
+import blang.codec.Codecs.FUNCTION_CODEC
 import blang.codec.Codecs.mutableListCodec
 import blang.codec.expression.PairCodec
 import blang.expression.value.BlockValue
@@ -15,17 +15,7 @@ import net.minecraft.core.registries.BuiltInRegistries
 import net.minecraft.core.registries.Registries
 import net.minecraft.tags.TagKey
 import net.minecraft.world.item.ItemStack
-import program.expression.value.BooleanValue
-import program.expression.value.FloatValue
-import program.expression.value.FunctionValue
-import program.expression.value.IntegerValue
-import program.expression.value.ListValue
-import program.expression.value.Null
-import program.expression.value.NullValue
-import program.expression.value.Range
-import program.expression.value.RangeValue
-import program.expression.value.StringValue
-import program.expression.value.StructValue
+import program.expression.value.*
 
 object ValueCodecs {
     val NULL_CODEC: Codec<Null> = MapCodec.unitCodec(Null())
@@ -49,7 +39,7 @@ object ValueCodecs {
     }
     val FUNCTION_VALUE_CODEC: MapCodec<FunctionValue> = mapCodec {
         it.group(
-            FUNCT_CODEC.fieldOf("value").forGetter(FunctionValue::value),
+            FUNCTION_CODEC.fieldOf("value").forGetter(FunctionValue::value),
         ).apply(it, ::FunctionValue)
     }
     val INTEGER_VALUE_CODEC: MapCodec<IntegerValue> = mapCodec {
