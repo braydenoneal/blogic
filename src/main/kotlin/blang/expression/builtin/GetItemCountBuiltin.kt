@@ -12,7 +12,7 @@ import program.expression.value.IntegerValue
 import program.expression.value.Value
 
 data class GetItemCountBuiltin(override val arguments: Arguments) : Builtin(arguments), Expression {
-    override fun evaluate(program: Program): Value<*> {
+    override fun innerEvaluate(program: Program): Value<*> {
         val program = BlogicProgram.cast(program)
         val predicate = arguments.get<FunctionValue>(program, "predicate")
         var count = 0

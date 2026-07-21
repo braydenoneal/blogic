@@ -32,14 +32,6 @@ object Codecs {
             mutableListCodec(StatementType.CODEC).fieldOf("to_run").forGetter(StatementList::toRun),
         ).apply(it, ::StatementList)
     }
-    val FUNCTION_CODEC: Codec<Function> = RecordCodecBuilder.create {
-        it.group(
-            mutableListCodec(Codec.STRING).fieldOf("parameters").forGetter(Function::parameters),
-            mutableListCodec(pair(Codec.STRING, ExpressionType.CODEC)).fieldOf("default_parameters").forGetter(Function::defaultParameters),
-            STATEMENT_LIST_CODEC.fieldOf("statements").forGetter(Function::statements),
-            Codec.BOOL.fieldOf("running").forGetter(Function::running),
-        ).apply(it, ::Function)
-    }
     val SCOPE_CODEC: Codec<Scope> = Codec.recursive("scope") { selfCodec ->
         RecordCodecBuilder.create {
             it.group(
@@ -49,6 +41,14 @@ object Codecs {
                 Scope(parent.orElse(null), variables)
             }
         }
+    }
+    val FUNCTION_CODEC: Codec<Function> = RecordCodecBuilder.create {
+        it.group(
+            mutableListCodec(Codec.STRING).fieldOf("parameters").forGetter(Function::parameters),
+            mutableListCodec(pair(Codec.STRING, ExpressionType.CODEC)).fieldOf("default_parameters").forGetter(Function::defaultParameters),
+            STATEMENT_LIST_CODEC.fieldOf("statements").forGetter(Function::statements),
+            SCOPE_CODEC.fieldOf("scope").forGetter(Function::scope),
+        ).apply(it, ::Function)
     }
     val PROGRAM_CODEC: Codec<Program> = RecordCodecBuilder.create {
         it.group(

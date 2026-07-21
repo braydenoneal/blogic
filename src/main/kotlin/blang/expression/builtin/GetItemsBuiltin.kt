@@ -11,7 +11,7 @@ import program.expression.value.ListValue
 import program.expression.value.Value
 
 data class GetItemsBuiltin(override val arguments: Arguments) : Builtin(arguments), Expression {
-    override fun evaluate(program: Program): Value<*> {
+    override fun innerEvaluate(program: Program): Value<*> {
         val program = BlogicProgram.cast(program)
         val items: MutableList<Value<*>> = mutableListOf()
 

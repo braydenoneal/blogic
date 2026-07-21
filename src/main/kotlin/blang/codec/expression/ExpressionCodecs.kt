@@ -3,6 +3,7 @@ package blang.codec.expression
 import blang.codec.Codecs.mutableListCodec
 import blang.codec.Codecs.mutableMapCodec
 import blang.codec.value.ValueCodecs
+import blang.codec.value.ValueType
 import blang.expression.builtin.*
 import blang.expression.builtin.PrintBuiltin
 import com.mojang.serialization.Codec
@@ -23,7 +24,7 @@ object ExpressionCodecs {
             mutableListCodec(ExpressionType.CODEC).fieldOf("nameless_arguments").forGetter(Arguments::namelessArguments),
             mutableMapCodec(Codec.STRING, ExpressionType.CODEC).fieldOf("named_arguments").forGetter(Arguments::namedArguments),
             Codec.INT.fieldOf("index").forGetter(Arguments::index),
-            mutableListCodec(Codec.STRING).fieldOf("seen").forGetter(Arguments::seen),
+            mutableMapCodec(Codec.STRING, ValueType.CODEC).fieldOf("computed").forGetter(Arguments::computed),
         ).apply(it, ::Arguments)
     }
     val ASSIGN_EXPRESSION_CODEC: MapCodec<AssignExpression> = mapCodec {

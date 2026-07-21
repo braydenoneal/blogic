@@ -9,7 +9,7 @@ import program.expression.builtin.Builtin
 import program.expression.value.Value
 
 data class BlockItemBuiltin(override val arguments: Arguments) : Builtin(arguments), Expression {
-    override fun evaluate(program: Program): Value<*> {
+    override fun innerEvaluate(program: Program): Value<*> {
         return ItemValue(arguments.get<BlockValue>(program, "block").value.asItem())
     }
 }

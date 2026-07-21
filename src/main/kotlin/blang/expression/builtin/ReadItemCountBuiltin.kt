@@ -15,7 +15,7 @@ import program.expression.value.IntegerValue
 import program.expression.value.Value
 
 data class ReadItemCountBuiltin(override val arguments: Arguments) : Builtin(arguments), Expression {
-    override fun evaluate(program: Program): Value<*> {
+    override fun innerEvaluate(program: Program): Value<*> {
         val program = BlogicProgram.cast(program)
         val x = arguments.get<IntegerValue>(program, "x").value
         val y = arguments.get<IntegerValue>(program, "y").value

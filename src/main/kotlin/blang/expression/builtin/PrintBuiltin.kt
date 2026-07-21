@@ -11,7 +11,7 @@ import program.expression.value.StringValue
 import program.expression.value.Value
 
 data class PrintBuiltin(override val arguments: Arguments) : Builtin(arguments), Expression {
-    override fun evaluate(program: Program): Value<*> {
+    override fun innerEvaluate(program: Program): Value<*> {
         val program = BlogicProgram.cast(program)
         val value = arguments.getAny(program, "value", StringValue(""))
         var string = value.toString()

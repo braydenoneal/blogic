@@ -9,7 +9,7 @@ import program.expression.builtin.Builtin
 import program.expression.value.*
 
 data class DeleteItemsBuiltin(override val arguments: Arguments) : Builtin(arguments), Expression {
-    override fun evaluate(program: Program): Value<*> {
+    override fun innerEvaluate(program: Program): Value<*> {
         val program = BlogicProgram.cast(program)
         val itemPredicate = arguments.get<FunctionValue>(program, "itemPredicate")
         val initialCount = arguments.getAny(program, "count", Null.VALUE)

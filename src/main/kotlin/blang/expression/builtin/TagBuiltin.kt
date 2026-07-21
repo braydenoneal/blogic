@@ -12,7 +12,7 @@ import program.expression.value.StringValue
 import program.expression.value.Value
 
 data class TagBuiltin(override val arguments: Arguments) : Builtin(arguments), Expression {
-    override fun evaluate(program: Program): Value<*> {
+    override fun innerEvaluate(program: Program): Value<*> {
         return TagValue(TagKey.create(Registries.ITEM, Identifier.parse(arguments.get<StringValue>(program, "value").value)))
     }
 }
