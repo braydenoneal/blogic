@@ -227,7 +227,13 @@ class ControllerBlockEntity(pos: BlockPos, state: BlockState) : BlockEntity(ModB
     }
 
     companion object {
-        fun tick(world: Level, blockPos: BlockPos, @Suppress("unused") ignoredBlockState: BlockState, entity: ControllerBlockEntity) {
+        fun tick(
+            world: Level,
+            blockPos: BlockPos,
+            @Suppress("unused")
+            ignoredBlockState: BlockState,
+            entity: ControllerBlockEntity,
+        ) {
             if (!entity.program.parsed) {
                 entity.program.parse()
                 entity.setChanged()
@@ -236,8 +242,9 @@ class ControllerBlockEntity(pos: BlockPos, state: BlockState) : BlockEntity(ModB
             if (entity.initializing) {
                 try {
                     try {
-                        entity.program.tick()
-                        entity.initializing = false
+                        if (entity.program.tick()) {
+                            entity.initializing = false
+                        }
                     } catch (_: IncompleteException) {
                     }
 
