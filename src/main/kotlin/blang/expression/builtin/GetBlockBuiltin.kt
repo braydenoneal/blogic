@@ -6,12 +6,11 @@ import net.minecraft.core.BlockPos
 import program.Program
 import program.RunException
 import program.expression.Arguments
-import program.expression.Expression
 import program.expression.builtin.Builtin
 import program.expression.value.IntegerValue
 import program.expression.value.Value
 
-data class GetBlockBuiltin(override val arguments: Arguments) : Builtin(arguments), Expression {
+data class GetBlockBuiltin(override val arguments: Arguments) : Builtin(arguments) {
     override fun innerEvaluate(program: Program): Value<*> {
         val program = BlogicProgram.cast(program)
         val x = arguments.get<IntegerValue>(program, "x").value

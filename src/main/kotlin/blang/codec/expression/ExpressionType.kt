@@ -1,7 +1,9 @@
 package blang.codec.expression
 
+import blang.codec.builtin.BuiltinType
+import blang.codec.value.ValueType
+import blang.codec.valuebuiltin.ValueBuiltinType
 import blang.expression.builtin.*
-import blang.expression.builtin.PrintBuiltin
 import com.mojang.serialization.Codec
 import com.mojang.serialization.Lifecycle
 import com.mojang.serialization.MapCodec
@@ -9,70 +11,23 @@ import net.minecraft.core.MappedRegistry
 import net.minecraft.core.Registry
 import net.minecraft.resources.Identifier
 import net.minecraft.resources.ResourceKey
-import program.expression.*
-import program.expression.builtin.*
-import program.expression.builtin.list.*
-import program.expression.builtin.struct.StructEntriesBuiltin
-import program.expression.builtin.struct.StructKeysBuiltin
-import program.expression.builtin.struct.StructRemoveBuiltin
-import program.expression.builtin.struct.StructValuesBuiltin
+import parser.expression.BuiltinExpressionParser
+import program.expression.Expression
+import program.expression.builtin.Builtin
+import program.expression.builtin.ValueBuiltin
 import program.expression.value.Value
-import java.util.function.Function
+import kotlin.reflect.KClass
 
 data class ExpressionType<T : Expression>(val codec: MapCodec<T>) {
     companion object {
-        val type: Function<in Expression, out ExpressionType<*>> = { expression: Expression ->
-            when (expression) {
-                is Value<*> -> ExpressionTypes.VALUE
-                is AssignExpression -> ExpressionTypes.ASSIGN_EXPRESSION
-                is CallExpression -> ExpressionTypes.CALL_EXPRESSION
-                is IfElseExpression -> ExpressionTypes.IF_ELSE_EXPRESSION
-                is ListExpression -> ExpressionTypes.LIST_EXPRESSION
-                is StructExpression -> ExpressionTypes.STRUCT_EXPRESSION
-                is AccessExpression -> ExpressionTypes.ACCESS_EXPRESSION
-                is DotExpression -> ExpressionTypes.DOT_EXPRESSION
-                is IdentifierExpression -> ExpressionTypes.IDENTIFIER_EXPRESSION
-                is BinaryOperatorExpression -> ExpressionTypes.BINARY_EXPRESSION_OPERATOR
-                is UnaryOperatorExpression -> ExpressionTypes.UNARY_EXPRESSION_OPERATOR
-                is AbsoluteValueBuiltin -> ExpressionTypes.ABSOLUTE_VALUE_BUILTIN
-                is IntegerCastBuiltin -> ExpressionTypes.INTEGER_CAST_BUILTIN
-                is FloatCastBuiltin -> ExpressionTypes.FLOAT_CAST_BUILTIN
-                is StringCastBuiltin -> ExpressionTypes.STRING_CAST_BUILTIN
-                is RoundBuiltin -> ExpressionTypes.ROUND_BUILTIN
-                is LengthBuiltin -> ExpressionTypes.LENGTH_BUILTIN
-                is MinimumBuiltin -> ExpressionTypes.MINIMUM_BUILTIN
-                is MaximumBuiltin -> ExpressionTypes.MAXIMUM_BUILTIN
-                is RangeBuiltin -> ExpressionTypes.RANGE_BUILTIN
-                is ListAppendBuiltin -> ExpressionTypes.LIST_APPEND_BUILTIN
-                is ListInsertBuiltin -> ExpressionTypes.LIST_INSERT_BUILTIN
-                is ListRemoveBuiltin -> ExpressionTypes.LIST_REMOVE_BUILTIN
-                is ListPopBuiltin -> ExpressionTypes.LIST_POP_BUILTIN
-                is ListContainsBuiltin -> ExpressionTypes.LIST_CONTAINS_BUILTIN
-                is ListContainsAllBuiltin -> ExpressionTypes.LIST_CONTAINS_ALL_BUILTIN
-                is StructRemoveBuiltin -> ExpressionTypes.STRUCT_REMOVE_BUILTIN
-                is StructKeysBuiltin -> ExpressionTypes.STRUCT_KEYS_BUILTIN
-                is StructValuesBuiltin -> ExpressionTypes.STRUCT_VALUES_BUILTIN
-                is StructEntriesBuiltin -> ExpressionTypes.STRUCT_ENTRIES_BUILTIN
-                is TypeBuiltin -> ExpressionTypes.TYPE_BUILTIN
-                is WaitBuiltin -> ExpressionTypes.WAIT_BUILTIN
-                is PrintBuiltin -> ExpressionTypes.PRINT_BUILTIN
-                is CeilBuiltin -> ExpressionTypes.CEIL_BUILTIN
-                is FloorBuiltin -> ExpressionTypes.FLOOR_BUILTIN
-                is BlockBuiltin -> ExpressionTypes.BLOCK_BUILTIN
-                is BlockItemBuiltin -> ExpressionTypes.BLOCK_ITEM_BUILTIN
-                is BreakBlockBuiltin -> ExpressionTypes.BREAK_BLOCK_BUILTIN
-                is DeleteItemsBuiltin -> ExpressionTypes.DELETE_ITEMS_BUILTIN
-                is ExportAllItemsBuiltin -> ExpressionTypes.EXPORT_ALL_ITEMS_BUILTIN
-                is GetBlockBuiltin -> ExpressionTypes.GET_BLOCK_BUILTIN
-                is GetItemCountBuiltin -> ExpressionTypes.GET_ITEM_COUNT_BUILTIN
-                is GetItemsBuiltin -> ExpressionTypes.GET_ITEMS_BUILTIN
-                is ItemBuiltin -> ExpressionTypes.ITEM_BUILTIN
-                is PlaceBlockBuiltin -> ExpressionTypes.PLACE_BLOCK_BUILTIN
-                is ReadItemCountBuiltin -> ExpressionTypes.READ_ITEM_COUNT_BUILTIN
-                is TagBuiltin -> ExpressionTypes.TAG_BUILTIN
-                is TagsBuiltin -> ExpressionTypes.TAGS_BUILTIN
-                is UseItemBuiltin -> ExpressionTypes.USE_ITEM_BUILTIN
-                else -> throw Exception("Expression type not found")
+        val types: MutableMap<KClass<*>, ExpressionType<*>> = mutableMapOf()
+
+        fun getType(expression: Expression): ExpressionType<*> {
+            return when (expression) {
+                is Value<*> -> types[Value::class]!!
+                is ValueBuiltin<*> -> types[ValueBuiltin::class]!!
+                is Builtin -> types[Builtin::class]!!
+                else -> types[expression::class] ?: throw Exception("Expression type not found")
             }
         }
 
@@ -80,6 +35,43 @@ data class ExpressionType<T : Expression>(val codec: MapCodec<T>) {
             ResourceKey.createRegistryKey(Identifier.fromNamespaceAndPath("blogic", "expression_types")), Lifecycle.stable(),
         )
 
-        val CODEC: Codec<Expression> = REGISTRY.byNameCodec().dispatch("type", type, ExpressionType<*>::codec)
+        val CODEC: Codec<Expression> = REGISTRY.byNameCodec().dispatch("type", ::getType, ExpressionType<*>::codec)
+
+        inline fun <reified T : Expression> register(id: String, codec: MapCodec<T>) {
+            val type = ExpressionType(codec)
+            types[T::class] = type
+            Registry.register(REGISTRY, Identifier.fromNamespaceAndPath("blogic", id), type)
+        }
+
+        fun initialize() {
+            register("value", ValueType.MAP_CODEC)
+            register("value_builtin", ValueBuiltinType.MAP_CODEC)
+            register("builtin", BuiltinType.MAP_CODEC)
+            register("assign_expression", ExpressionCodecs.ASSIGN_EXPRESSION_CODEC)
+            register("call_expression", ExpressionCodecs.CALL_EXPRESSION_CODEC)
+            register("if_else_expression", ExpressionCodecs.IF_ELSE_EXPRESSION_CODEC)
+            register("list_expression", ExpressionCodecs.LIST_EXPRESSION_CODEC)
+            register("struct_expression", ExpressionCodecs.STRUCT_EXPRESSION_CODEC)
+            register("access_expression", ExpressionCodecs.ACCESS_EXPRESSION_CODEC)
+            register("member_expression", ExpressionCodecs.DOT_EXPRESSION_CODEC)
+            register("identifier_expression", ExpressionCodecs.IDENTIFIER_EXPRESSION_CODEC)
+            register("binary_operator_expression", ExpressionCodecs.BINARY_OPERATOR_EXPRESSION_CODEC)
+            register("unary_operator_expression", ExpressionCodecs.UNARY_OPERATOR_EXPRESSION_CODEC)
+            BuiltinExpressionParser.register("print", ::PrintBuiltin)
+            BuiltinExpressionParser.register("block", ::BlockBuiltin)
+            BuiltinExpressionParser.register("blockItem", ::BlockItemBuiltin)
+            BuiltinExpressionParser.register("breakBlock", ::BreakBlockBuiltin)
+            BuiltinExpressionParser.register("deleteItems", ::DeleteItemsBuiltin)
+            BuiltinExpressionParser.register("exportAllItems", ::ExportAllItemsBuiltin)
+            BuiltinExpressionParser.register("getBlock", ::GetBlockBuiltin)
+            BuiltinExpressionParser.register("getItemCount", ::GetItemCountBuiltin)
+            BuiltinExpressionParser.register("getItems", ::GetItemsBuiltin)
+            BuiltinExpressionParser.register("item", ::ItemBuiltin)
+            BuiltinExpressionParser.register("placeBlock", ::PlaceBlockBuiltin)
+            BuiltinExpressionParser.register("readItemCount", ::ReadItemCountBuiltin)
+            BuiltinExpressionParser.register("tag", ::TagBuiltin)
+            BuiltinExpressionParser.register("tags", ::TagsBuiltin)
+            BuiltinExpressionParser.register("useItem", ::UseItemBuiltin)
+        }
     }
 }

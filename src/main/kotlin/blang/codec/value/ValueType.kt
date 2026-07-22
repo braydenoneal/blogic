@@ -1,9 +1,5 @@
 package blang.codec.value
 
-import blang.expression.value.BlockValue
-import blang.expression.value.ItemStackValue
-import blang.expression.value.ItemValue
-import blang.expression.value.TagValue
 import com.mojang.serialization.Codec
 import com.mojang.serialization.Lifecycle
 import com.mojang.serialization.MapCodec
@@ -11,37 +7,16 @@ import net.minecraft.core.MappedRegistry
 import net.minecraft.core.Registry
 import net.minecraft.resources.Identifier
 import net.minecraft.resources.ResourceKey
-import program.expression.value.BooleanValue
-import program.expression.value.FloatValue
-import program.expression.value.FunctionValue
-import program.expression.value.IntegerValue
-import program.expression.value.ListValue
-import program.expression.value.NullValue
-import program.expression.value.RangeValue
-import program.expression.value.StringValue
-import program.expression.value.StructValue
 import program.expression.value.Value
 import java.util.function.Function
+import kotlin.reflect.KClass
 
 data class ValueType<T : Value<*>>(val codec: MapCodec<T>) {
     companion object {
+        val types: MutableMap<KClass<*>, ValueType<*>> = mutableMapOf()
+
         val type: Function<in Value<*>, out ValueType<*>> = { value: Value<*> ->
-            when (value) {
-                is BooleanValue -> ValueTypes.BOOLEAN
-                is FloatValue -> ValueTypes.FLOAT
-                is FunctionValue -> ValueTypes.FUNCTION
-                is IntegerValue -> ValueTypes.INTEGER
-                is ListValue -> ValueTypes.LIST
-                is NullValue -> ValueTypes.NULL
-                is RangeValue -> ValueTypes.RANGE
-                is StringValue -> ValueTypes.STRING
-                is StructValue -> ValueTypes.STRUCT
-                is BlockValue -> ValueTypes.BLOCK
-                is ItemStackValue -> ValueTypes.ITEM_STACK
-                is ItemValue -> ValueTypes.ITEM
-                is TagValue -> ValueTypes.TAG
-                else -> throw Exception("Statement type not found")
-            }
+            types[value::class] ?: throw Exception("Value type not found")
         }
 
         val REGISTRY: Registry<ValueType<*>> = MappedRegistry(
@@ -50,5 +25,27 @@ data class ValueType<T : Value<*>>(val codec: MapCodec<T>) {
 
         val CODEC: Codec<Value<*>> = REGISTRY.byNameCodec().dispatch("type", type, ValueType<*>::codec)
         val MAP_CODEC: MapCodec<Value<*>> = CODEC.fieldOf("value")
+
+        inline fun <reified T : Value<*>> register(id: String, codec: MapCodec<T>) {
+            val type = ValueType(codec)
+            types[T::class] = type
+            Registry.register(REGISTRY, Identifier.fromNamespaceAndPath("blogic", id), type)
+        }
+
+        fun initialize() {
+            register("boolean", ValueCodecs.BOOLEAN_VALUE_CODEC)
+            register("float", ValueCodecs.FLOAT_VALUE_CODEC)
+            register("function", ValueCodecs.FUNCTION_VALUE_CODEC)
+            register("integer", ValueCodecs.INTEGER_VALUE_CODEC)
+            register("list", ValueCodecs.LIST_VALUE_CODEC)
+            register("null", ValueCodecs.NULL_VALUE_CODEC)
+            register("range", ValueCodecs.RANGE_VALUE_CODEC)
+            register("string", ValueCodecs.STRING_VALUE_CODEC)
+            register("struct", ValueCodecs.STRUCT_VALUE_CODEC)
+            register("block", ValueCodecs.BLOCK_VALUE_CODEC)
+            register("item_stack", ValueCodecs.ITEM_STACK_CODEC)
+            register("item", ValueCodecs.ITEM_CODEC)
+            register("tag", ValueCodecs.TAG_CODEC)
+        }
     }
 }

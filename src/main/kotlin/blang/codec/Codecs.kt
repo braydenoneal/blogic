@@ -37,9 +37,7 @@ object Codecs {
             it.group(
                 selfCodec.optionalFieldOf("parent").forGetter { scope -> Optional.ofNullable(scope.parent) },
                 mutableMapCodec(Codec.STRING, ValueType.CODEC).fieldOf("variables").forGetter(Scope::variables),
-            ).apply(it) { parent, variables ->
-                Scope(parent.orElse(null), variables)
-            }
+            ).apply(it) { parent, variables -> Scope(parent.orElse(null), variables) }
         }
     }
     val FUNCTION_CODEC: Codec<Function> = RecordCodecBuilder.create {
@@ -47,8 +45,8 @@ object Codecs {
             mutableListCodec(Codec.STRING).fieldOf("parameters").forGetter(Function::parameters),
             mutableListCodec(pair(Codec.STRING, ExpressionType.CODEC)).fieldOf("default_parameters").forGetter(Function::defaultParameters),
             STATEMENT_LIST_CODEC.fieldOf("statements").forGetter(Function::statements),
-            SCOPE_CODEC.fieldOf("scope").forGetter(Function::scope),
-        ).apply(it, ::Function)
+            SCOPE_CODEC.optionalFieldOf("scope").forGetter { function -> Optional.ofNullable(function.scope) },
+        ).apply(it) { parameters, defaultParameters, statements, scope -> Function(parameters, defaultParameters, statements, scope.orElse(null)) }
     }
     val PROGRAM_CODEC: Codec<Program> = RecordCodecBuilder.create {
         it.group(

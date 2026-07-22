@@ -26,7 +26,6 @@ object ValueCodecs {
             Codec.INT.fieldOf("step").forGetter(Range::step),
         ).apply(it, ::Range)
     }
-
     val BOOLEAN_VALUE_CODEC: MapCodec<BooleanValue> = mapCodec {
         it.group(
             Codec.BOOL.fieldOf("value").forGetter(BooleanValue::value),

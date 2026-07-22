@@ -5,12 +5,11 @@ import blang.expression.value.ItemValue
 import net.minecraft.world.item.Items
 import program.Program
 import program.expression.Arguments
-import program.expression.Expression
 import program.expression.builtin.Builtin
 import program.expression.value.ListValue
 import program.expression.value.Value
 
-data class GetItemsBuiltin(override val arguments: Arguments) : Builtin(arguments), Expression {
+data class GetItemsBuiltin(override val arguments: Arguments) : Builtin(arguments) {
     override fun innerEvaluate(program: Program): Value<*> {
         val program = BlogicProgram.cast(program)
         val items: MutableList<Value<*>> = mutableListOf()

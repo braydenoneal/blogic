@@ -1,6 +1,6 @@
 package blang.expression.value
 
-import blang.codec.value.ValueTypes
+import blang.codec.value.ValueCodecs
 import net.minecraft.tags.TagKey
 import net.minecraft.world.item.Item
 import program.expression.value.Value
@@ -14,7 +14,7 @@ class TagValue(value: TagKey<Item>) : Value<TagKey<Item>>(value) {
 
     override fun hashCode(): Int {
         var result = super.hashCode()
-        result = 31 * result + ValueTypes.TAG.hashCode()
+        result = 31 * result + ValueCodecs.TAG_CODEC.hashCode()
         return result
     }
 }

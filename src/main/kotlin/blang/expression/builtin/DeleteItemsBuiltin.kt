@@ -4,11 +4,10 @@ import blang.BlogicProgram
 import blang.expression.value.ItemValue
 import program.Program
 import program.expression.Arguments
-import program.expression.Expression
 import program.expression.builtin.Builtin
 import program.expression.value.*
 
-data class DeleteItemsBuiltin(override val arguments: Arguments) : Builtin(arguments), Expression {
+data class DeleteItemsBuiltin(override val arguments: Arguments) : Builtin(arguments) {
     override fun innerEvaluate(program: Program): Value<*> {
         val program = BlogicProgram.cast(program)
         val itemPredicate = arguments.get<FunctionValue>(program, "itemPredicate")
