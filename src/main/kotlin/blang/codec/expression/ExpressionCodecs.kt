@@ -22,7 +22,7 @@ object ExpressionCodecs {
     }
     val ASSIGN_EXPRESSION_CODEC: MapCodec<AssignExpression> = mapCodec {
         it.group(
-            Codec.STRING.fieldOf("type").forGetter(AssignExpression::operator),
+            Codec.STRING.fieldOf("operator").forGetter(AssignExpression::operator),
             ExpressionType.CODEC.fieldOf("left").forGetter(AssignExpression::left),
             ExpressionType.CODEC.fieldOf("right").forGetter(AssignExpression::right),
         ).apply(it, ::AssignExpression)
