@@ -2,7 +2,6 @@ package blang.codec.expression
 
 import blang.codec.builtin.BuiltinType
 import blang.codec.value.ValueType
-import blang.codec.valuebuiltin.ValueBuiltinType
 import blang.expression.builtin.*
 import com.mojang.serialization.Codec
 import com.mojang.serialization.Lifecycle
@@ -13,22 +12,21 @@ import net.minecraft.resources.Identifier
 import net.minecraft.resources.ResourceKey
 import parser.expression.BuiltinExpressionParser
 import program.expression.Expression
-import program.expression.builtin.Builtin
-import program.expression.builtin.ValueBuiltin
-import program.expression.value.Value
 import kotlin.reflect.KClass
+import kotlin.reflect.full.isSuperclassOf
 
 data class ExpressionType<T : Expression>(val codec: MapCodec<T>) {
     companion object {
         val types: MutableMap<KClass<*>, ExpressionType<*>> = mutableMapOf()
 
         fun getType(expression: Expression): ExpressionType<*> {
-            return when (expression) {
-                is Value<*> -> types[Value::class]!!
-                is ValueBuiltin<*> -> types[ValueBuiltin::class]!!
-                is Builtin -> types[Builtin::class]!!
-                else -> types[expression::class] ?: throw Exception("Expression type not found")
+            for ((key, value) in types.entries) {
+                if (key.isSuperclassOf(expression::class)) {
+                    return value
+                }
             }
+
+            throw Exception("Expression type not found")
         }
 
         val REGISTRY: Registry<ExpressionType<*>> = MappedRegistry(
@@ -45,7 +43,6 @@ data class ExpressionType<T : Expression>(val codec: MapCodec<T>) {
 
         fun initialize() {
             register("value", ValueType.MAP_CODEC)
-            register("value_builtin", ValueBuiltinType.MAP_CODEC)
             register("builtin", BuiltinType.MAP_CODEC)
             register("assign_expression", ExpressionCodecs.ASSIGN_EXPRESSION_CODEC)
             register("call_expression", ExpressionCodecs.CALL_EXPRESSION_CODEC)

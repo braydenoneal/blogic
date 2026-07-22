@@ -9,18 +9,21 @@ import net.minecraft.core.Registry
 import net.minecraft.resources.Identifier
 import net.minecraft.resources.ResourceKey
 import program.expression.builtin.Builtin
-import program.expression.builtin.ValueBuiltin
 import kotlin.reflect.KClass
+import kotlin.reflect.full.isSuperclassOf
 
 data class BuiltinType<T : Builtin>(val codec: MapCodec<T>) {
     companion object {
         val types: MutableMap<KClass<*>, BuiltinType<*>> = mutableMapOf()
 
         fun getType(builtin: Builtin): BuiltinType<*> {
-            return when (builtin) {
-                is ValueBuiltin<*> -> types[ValueBuiltin::class]!!
-                else -> types[builtin::class] ?: throw Exception("Builtin type not found")
+            for ((key, value) in types.entries) {
+                if (key.isSuperclassOf(builtin::class)) {
+                    return value
+                }
             }
+
+            throw Exception("Builtin type not found")
         }
 
         val REGISTRY: Registry<BuiltinType<*>> = MappedRegistry(

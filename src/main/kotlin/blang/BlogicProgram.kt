@@ -21,24 +21,10 @@ data class BlogicProgram(
     var draft: String = source,
     var cursorPosition: Int = 0,
 ) : Program(source) {
-    private var hasRuntimeError = false
+    var hasError = false
 
     fun runMain() {
-        val main = functions["main"]
-
-        if (main == null || hasRuntimeError) {
-            return
-        }
-
-        try {
-            tickMain(main)
-        } catch (e: Exception) {
-            log.error("Run main error", e)
-            hasRuntimeError = true
-        }
-    }
-
-    fun tickMain(main: FunctionStatement) {
+        val main = functions["main"] ?: return
         wait = false
 
         while (true) {
