@@ -46,7 +46,8 @@ object Codecs {
             mutableListCodec(pair(Codec.STRING, ExpressionType.CODEC)).fieldOf("default_parameters").forGetter(Function::defaultParameters),
             STATEMENT_LIST_CODEC.fieldOf("statements").forGetter(Function::statements),
             SCOPE_CODEC.optionalFieldOf("scope").forGetter { function -> Optional.ofNullable(function.scope) },
-        ).apply(it) { parameters, defaultParameters, statements, scope -> Function(parameters, defaultParameters, statements, scope.orElse(null)) }
+            Codec.BOOL.fieldOf("running").forGetter(Function::running),
+        ).apply(it) { parameters, defaultParameters, statements, scope, running -> Function(parameters, defaultParameters, statements, scope.orElse(null), running) }
     }
     val PROGRAM_CODEC: Codec<Program> = RecordCodecBuilder.create {
         it.group(
