@@ -25,6 +25,7 @@ object ExpressionCodecs {
             Codec.STRING.fieldOf("operator").forGetter(AssignExpression::operator),
             ExpressionType.CODEC.fieldOf("left").forGetter(AssignExpression::left),
             ExpressionType.CODEC.fieldOf("right").forGetter(AssignExpression::right),
+            Codec.BOOL.fieldOf("local").forGetter(AssignExpression::local),
         ).apply(it, ::AssignExpression)
     }
     val IF_ELSE_EXPRESSION_CODEC: MapCodec<IfElseExpression> = mapCodec {
