@@ -1,5 +1,6 @@
 package blang.codec
 
+import blang.codec.expression.ExpressionCodecs.ARGUMENTS_CODEC
 import blang.codec.expression.ExpressionType
 import blang.codec.expression.PairCodec.Companion.pair
 import blang.codec.statement.StatementCodecs
@@ -47,7 +48,10 @@ object Codecs {
             STATEMENT_LIST_CODEC.fieldOf("statements").forGetter(Function::statements),
             SCOPE_CODEC.optionalFieldOf("scope").forGetter { function -> Optional.ofNullable(function.scope) },
             Codec.BOOL.fieldOf("running").forGetter(Function::running),
-        ).apply(it) { parameters, defaultParameters, statements, scope, running -> Function(parameters, defaultParameters, statements, scope.orElse(null), running) }
+            ARGUMENTS_CODEC.optionalFieldOf("arguments").forGetter { function -> Optional.ofNullable(function.arguments) },
+        ).apply(it) { parameters, defaultParameters, statements, scope, running, arguments ->
+            Function(parameters, defaultParameters, statements, scope.orElse(null), running, arguments.orElse(null))
+        }
     }
     val PROGRAM_CODEC: Codec<Program> = RecordCodecBuilder.create {
         it.group(
