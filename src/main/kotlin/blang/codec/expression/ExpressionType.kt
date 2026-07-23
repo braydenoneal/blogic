@@ -46,6 +46,7 @@ data class ExpressionType<T : Expression>(val codec: MapCodec<T>) {
             register("builtin", BuiltinType.MAP_CODEC)
             register("assign_expression", ExpressionCodecs.ASSIGN_EXPRESSION_CODEC)
             register("call_expression", ExpressionCodecs.CALL_EXPRESSION_CODEC)
+            register("get_expression", ExpressionCodecs.GET_EXPRESSION_CODEC)
             register("if_else_expression", ExpressionCodecs.IF_ELSE_EXPRESSION_CODEC)
             register("list_expression", ExpressionCodecs.LIST_EXPRESSION_CODEC)
             register("struct_expression", ExpressionCodecs.STRUCT_EXPRESSION_CODEC)

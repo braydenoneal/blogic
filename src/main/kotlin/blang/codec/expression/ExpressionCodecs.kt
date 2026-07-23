@@ -1,5 +1,6 @@
 package blang.codec.expression
 
+import blang.codec.Codecs.FUNCTION_CODEC
 import blang.codec.Codecs.mutableListCodec
 import blang.codec.Codecs.mutableMapCodec
 import blang.codec.builtin.BuiltinType
@@ -55,6 +56,11 @@ object ExpressionCodecs {
         ).apply(it) { left, arguments, leftValue, builtin ->
             CallExpression(left, arguments, leftValue.orElse(null), builtin.orElse(null))
         }
+    }
+    val GET_EXPRESSION_CODEC: MapCodec<GetExpression> = mapCodec {
+        it.group(
+            FUNCTION_CODEC.fieldOf("function").forGetter(GetExpression::function),
+        ).apply(it, ::GetExpression)
     }
     val DOT_EXPRESSION_CODEC: MapCodec<DotExpression> = mapCodec {
         it.group(
