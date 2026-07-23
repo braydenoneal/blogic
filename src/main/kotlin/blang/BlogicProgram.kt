@@ -46,6 +46,7 @@ data class BlogicProgram(
             for (controller in importProgram.context.entity.getConnectedControllerBlockEntities()) {
                 if (controller.program.name == importName) {
                     importProgram = controller.program
+                    break
                 }
             }
         }

@@ -65,6 +65,7 @@ object StatementCodecs {
     val IMPORT_STATEMENT_CODEC: MapCodec<ImportStatement> = mapCodec {
         it.group(
             mutableListCodec(Codec.STRING).fieldOf("identifiers").forGetter(ImportStatement::identifiers),
+            Codec.STRING.fieldOf("name").forGetter(ImportStatement::name),
         ).apply(it, ::ImportStatement)
     }
     val RETURN_STATEMENT_CODEC: MapCodec<ReturnStatement> = mapCodec {
