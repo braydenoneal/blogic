@@ -42,10 +42,14 @@ object StatementCodecs {
     }
     val FOR_STATEMENT_CODEC: MapCodec<ForStatement> = mapCodec {
         it.group(
-            Codec.STRING.fieldOf("itemName").forGetter(ForStatement::itemName),
-            ExpressionType.CODEC.fieldOf("list_expression").forGetter(ForStatement::listExpression),
+            Codec.STRING.fieldOf("item_name").forGetter(ForStatement::itemName),
+            ExpressionType.CODEC.fieldOf("expression").forGetter(ForStatement::expression),
             STATEMENT_LIST_CODEC.fieldOf("statements").forGetter(ForStatement::statements),
-        ).apply(it, ::ForStatement)
+            ValueType.CODEC.optionalFieldOf("value").forGetter { forStatement -> Optional.ofNullable(forStatement.value) },
+            Codec.INT.fieldOf("index").forGetter(ForStatement::index),
+        ).apply(it) { itemName, expression, statements, value, index ->
+            ForStatement(itemName, expression, statements, value.orElse(null), index)
+        }
     }
     val FUNCTION_DECLARATION_CODEC: MapCodec<FunctionStatement> = mapCodec {
         it.group(
