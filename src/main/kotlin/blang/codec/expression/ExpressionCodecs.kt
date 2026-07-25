@@ -35,6 +35,14 @@ object ExpressionCodecs {
             ExpressionType.CODEC.fieldOf("expression_b").forGetter(IfElseExpression::expressionB),
         ).apply(it, ::IfElseExpression)
     }
+    val INFIX_FUNCTION_EXPRESSION_CODEC: MapCodec<InfixFunctionExpression> = mapCodec {
+        it.group(
+            Codec.STRING.fieldOf("name").forGetter(InfixFunctionExpression::name),
+            ExpressionType.CODEC.fieldOf("left").forGetter(InfixFunctionExpression::left),
+            ARGUMENTS_CODEC.fieldOf("arguments").forGetter(InfixFunctionExpression::arguments),
+            ValueType.CODEC.optionalFieldOf("left_value").forGetter { infixFunctionExpression -> Optional.ofNullable(infixFunctionExpression.leftValue) },
+        ).apply(it) { name, left, arguments, leftValue -> InfixFunctionExpression(name, left, arguments, leftValue.orElse(null)) }
+    }
     val ACCESS_EXPRESSION_CODEC: MapCodec<AccessExpression> = mapCodec {
         it.group(
             ExpressionType.CODEC.fieldOf("left").forGetter(AccessExpression::left),
