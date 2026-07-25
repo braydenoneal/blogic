@@ -4,11 +4,14 @@ import blang.BlogicProgram
 import blang.expression.value.ItemValue
 import program.Program
 import program.expression.Arguments
-import program.expression.builtin.Builtin
-import program.expression.value.*
+import program.expression.value.BooleanValue
+import program.expression.value.FunctionValue
+import program.expression.value.IntegerValue
+import program.expression.value.Value
+import program.expression.value.util.Null
 
-data class DeleteItemsBuiltin(override val arguments: Arguments) : Builtin(arguments) {
-    override fun innerEvaluate(program: Program): Value<*> {
+object DeleteItemsBuiltin {
+    fun call(program: Program, arguments: Arguments): Value<*> {
         val program = BlogicProgram.cast(program)
         val itemPredicate = arguments.get<FunctionValue>(program, "itemPredicate")
         val initialCount = arguments.getAny(program, "count", Null.VALUE)

@@ -1,8 +1,6 @@
 package blang.codec.expression
 
-import blang.codec.builtin.BuiltinType
 import blang.codec.value.ValueType
-import blang.expression.builtin.*
 import com.mojang.serialization.Codec
 import com.mojang.serialization.Lifecycle
 import com.mojang.serialization.MapCodec
@@ -10,7 +8,6 @@ import net.minecraft.core.MappedRegistry
 import net.minecraft.core.Registry
 import net.minecraft.resources.Identifier
 import net.minecraft.resources.ResourceKey
-import parser.expression.BuiltinExpressionParser
 import program.expression.Expression
 import kotlin.reflect.KClass
 import kotlin.reflect.full.isSuperclassOf
@@ -42,34 +39,18 @@ data class ExpressionType<T : Expression>(val codec: MapCodec<T>) {
         }
 
         fun initialize() {
-            register("value", ValueType.MAP_CODEC)
-            register("builtin", BuiltinType.MAP_CODEC)
+            register("access_expression", ExpressionCodecs.ACCESS_EXPRESSION_CODEC)
             register("assign_expression", ExpressionCodecs.ASSIGN_EXPRESSION_CODEC)
+            register("binary_operator_expression", ExpressionCodecs.BINARY_OPERATOR_EXPRESSION_CODEC)
             register("call_expression", ExpressionCodecs.CALL_EXPRESSION_CODEC)
+            register("dot_expression", ExpressionCodecs.DOT_EXPRESSION_CODEC)
             register("get_expression", ExpressionCodecs.GET_EXPRESSION_CODEC)
+            register("identifier_expression", ExpressionCodecs.IDENTIFIER_EXPRESSION_CODEC)
             register("if_else_expression", ExpressionCodecs.IF_ELSE_EXPRESSION_CODEC)
             register("list_expression", ExpressionCodecs.LIST_EXPRESSION_CODEC)
             register("struct_expression", ExpressionCodecs.STRUCT_EXPRESSION_CODEC)
-            register("access_expression", ExpressionCodecs.ACCESS_EXPRESSION_CODEC)
-            register("member_expression", ExpressionCodecs.DOT_EXPRESSION_CODEC)
-            register("identifier_expression", ExpressionCodecs.IDENTIFIER_EXPRESSION_CODEC)
-            register("binary_operator_expression", ExpressionCodecs.BINARY_OPERATOR_EXPRESSION_CODEC)
             register("unary_operator_expression", ExpressionCodecs.UNARY_OPERATOR_EXPRESSION_CODEC)
-            BuiltinExpressionParser.register("print", ::PrintBuiltin)
-            BuiltinExpressionParser.register("block", ::BlockBuiltin)
-            BuiltinExpressionParser.register("blockItem", ::BlockItemBuiltin)
-            BuiltinExpressionParser.register("breakBlock", ::BreakBlockBuiltin)
-            BuiltinExpressionParser.register("deleteItems", ::DeleteItemsBuiltin)
-            BuiltinExpressionParser.register("exportAllItems", ::ExportAllItemsBuiltin)
-            BuiltinExpressionParser.register("getBlock", ::GetBlockBuiltin)
-            BuiltinExpressionParser.register("getItemCount", ::GetItemCountBuiltin)
-            BuiltinExpressionParser.register("getItems", ::GetItemsBuiltin)
-            BuiltinExpressionParser.register("item", ::ItemBuiltin)
-            BuiltinExpressionParser.register("placeBlock", ::PlaceBlockBuiltin)
-            BuiltinExpressionParser.register("readItemCount", ::ReadItemCountBuiltin)
-            BuiltinExpressionParser.register("tag", ::TagBuiltin)
-            BuiltinExpressionParser.register("tags", ::TagsBuiltin)
-            BuiltinExpressionParser.register("useItem", ::UseItemBuiltin)
+            register("value", ValueType.MAP_CODEC)
         }
     }
 }

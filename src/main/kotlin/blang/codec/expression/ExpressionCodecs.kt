@@ -3,7 +3,6 @@ package blang.codec.expression
 import blang.codec.Codecs.FUNCTION_CODEC
 import blang.codec.Codecs.mutableListCodec
 import blang.codec.Codecs.mutableMapCodec
-import blang.codec.builtin.BuiltinType
 import blang.codec.value.ValueType
 import com.mojang.serialization.Codec
 import com.mojang.serialization.MapCodec
@@ -52,10 +51,7 @@ object ExpressionCodecs {
             ExpressionType.CODEC.fieldOf("left").forGetter(CallExpression::left),
             ARGUMENTS_CODEC.fieldOf("arguments").forGetter(CallExpression::arguments),
             ValueType.CODEC.optionalFieldOf("left_value").forGetter { callExpression -> Optional.ofNullable(callExpression.leftValue) },
-            BuiltinType.CODEC.optionalFieldOf("builtin").forGetter { callExpression -> Optional.ofNullable(callExpression.builtin) },
-        ).apply(it) { left, arguments, leftValue, builtin ->
-            CallExpression(left, arguments, leftValue.orElse(null), builtin.orElse(null))
-        }
+        ).apply(it) { left, arguments, leftValue -> CallExpression(left, arguments, leftValue.orElse(null)) }
     }
     val GET_EXPRESSION_CODEC: MapCodec<GetExpression> = mapCodec {
         it.group(

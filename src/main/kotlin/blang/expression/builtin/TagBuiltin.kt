@@ -6,12 +6,11 @@ import net.minecraft.resources.Identifier
 import net.minecraft.tags.TagKey
 import program.Program
 import program.expression.Arguments
-import program.expression.builtin.Builtin
 import program.expression.value.StringValue
 import program.expression.value.Value
 
-data class TagBuiltin(override val arguments: Arguments) : Builtin(arguments) {
-    override fun innerEvaluate(program: Program): Value<*> {
+object TagBuiltin {
+    fun call(program: Program, arguments: Arguments): Value<*> {
         return TagValue(TagKey.create(Registries.ITEM, Identifier.parse(arguments.get<StringValue>(program, "value").value)))
     }
 }

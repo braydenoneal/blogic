@@ -1,8 +1,7 @@
-import blang.codec.builtin.BuiltinType
 import blang.codec.expression.ExpressionType
 import blang.codec.statement.StatementType
 import blang.codec.value.ValueType
-import blang.codec.valuebuiltin.ValueBuiltinType
+import blang.expression.BuiltinFunctions
 import block.ModBlocks
 import block.entity.ModBlockEntities
 import item.ModItems
@@ -18,9 +17,8 @@ object Blogic : ModInitializer {
 
     override fun onInitialize() {
         Program.initialize()
+        BuiltinFunctions.initialize()
         ValueType.initialize()
-        ValueBuiltinType.initialize()
-        BuiltinType.initialize()
         ExpressionType.initialize()
         StatementType.initialize()
         ModBlocks.initialize()

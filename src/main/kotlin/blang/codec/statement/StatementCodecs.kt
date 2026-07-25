@@ -49,7 +49,6 @@ object StatementCodecs {
     }
     val FUNCTION_DECLARATION_CODEC: MapCodec<FunctionStatement> = mapCodec {
         it.group(
-            Codec.STRING.fieldOf("name").forGetter(FunctionStatement::name),
             FUNCTION_CODEC.fieldOf("function").forGetter(FunctionStatement::function),
         ).apply(it, ::FunctionStatement)
     }

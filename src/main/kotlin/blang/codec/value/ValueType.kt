@@ -1,5 +1,6 @@
 package blang.codec.value
 
+import blang.codec.Codecs.FUNCTION_VALUE_CODEC
 import com.mojang.serialization.Codec
 import com.mojang.serialization.Lifecycle
 import com.mojang.serialization.MapCodec
@@ -35,10 +36,12 @@ data class ValueType<T : Value<*>>(val codec: MapCodec<T>) {
         fun initialize() {
             register("boolean", ValueCodecs.BOOLEAN_VALUE_CODEC)
             register("float", ValueCodecs.FLOAT_VALUE_CODEC)
-            register("function", ValueCodecs.FUNCTION_VALUE_CODEC)
+            register("function_reference", ValueCodecs.FUNCTION_REFERENCE_VALUE_CODEC)
+            register("function", FUNCTION_VALUE_CODEC)
             register("integer", ValueCodecs.INTEGER_VALUE_CODEC)
             register("list", ValueCodecs.LIST_VALUE_CODEC)
             register("null", ValueCodecs.NULL_VALUE_CODEC)
+            register("object", ValueCodecs.OBJECT_VALUE_CODEC)
             register("range", ValueCodecs.RANGE_VALUE_CODEC)
             register("string", ValueCodecs.STRING_VALUE_CODEC)
             register("struct", ValueCodecs.STRUCT_VALUE_CODEC)

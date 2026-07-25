@@ -7,14 +7,13 @@ import net.minecraft.world.level.block.entity.BaseContainerBlockEntity
 import program.Program
 import program.RunException
 import program.expression.Arguments
-import program.expression.builtin.Builtin
 import program.expression.value.BooleanValue
 import program.expression.value.FunctionValue
 import program.expression.value.IntegerValue
 import program.expression.value.Value
 
-data class ReadItemCountBuiltin(override val arguments: Arguments) : Builtin(arguments) {
-    override fun innerEvaluate(program: Program): Value<*> {
+object ReadItemCountBuiltin {
+    fun call(program: Program, arguments: Arguments): Value<*> {
         val program = BlogicProgram.cast(program)
         val x = arguments.get<IntegerValue>(program, "x").value
         val y = arguments.get<IntegerValue>(program, "y").value

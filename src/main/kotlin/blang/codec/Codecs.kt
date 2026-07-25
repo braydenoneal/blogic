@@ -1,6 +1,5 @@
 package blang.codec
 
-import blang.codec.expression.ExpressionCodecs.ARGUMENTS_CODEC
 import blang.codec.expression.ExpressionType
 import blang.codec.expression.PairCodec.Companion.pair
 import blang.codec.statement.StatementCodecs
@@ -12,7 +11,8 @@ import com.mojang.serialization.codecs.RecordCodecBuilder
 import com.mojang.serialization.codecs.RecordCodecBuilder.mapCodec
 import program.Program
 import program.Scope
-import program.expression.value.Function
+import program.expression.value.FunctionValue
+import program.expression.value.util.Function
 import program.statement.StatementList
 import java.util.*
 
@@ -48,10 +48,14 @@ object Codecs {
             STATEMENT_LIST_CODEC.fieldOf("statements").forGetter(Function::statements),
             SCOPE_CODEC.optionalFieldOf("scope").forGetter { function -> Optional.ofNullable(function.scope) },
             Codec.BOOL.fieldOf("running").forGetter(Function::running),
-            ARGUMENTS_CODEC.optionalFieldOf("arguments").forGetter { function -> Optional.ofNullable(function.arguments) },
-        ).apply(it) { parameters, defaultParameters, statements, scope, running, arguments ->
-            Function(parameters, defaultParameters, statements, scope.orElse(null), running, arguments.orElse(null))
+        ).apply(it) { parameters, defaultParameters, statements, scope, running ->
+            Function(parameters, defaultParameters, statements, scope.orElse(null), running)
         }
+    }
+    val FUNCTION_VALUE_CODEC: MapCodec<FunctionValue> = mapCodec {
+        it.group(
+            FUNCTION_CODEC.fieldOf("value").forGetter(FunctionValue::value),
+        ).apply(it, ::FunctionValue)
     }
     val PROGRAM_CODEC: Codec<Program> = RecordCodecBuilder.create {
         it.group(
@@ -60,7 +64,7 @@ object Codecs {
             Codec.STRING.fieldOf("name").forGetter(Program::name),
             mutableListCodec(StatementCodecs.IMPORT_STATEMENT_CODEC.codec()).fieldOf("imports").forGetter(Program::imports),
             STATEMENT_LIST_CODEC.fieldOf("statements").forGetter(Program::statements),
-            mutableMapCodec(Codec.STRING, StatementCodecs.FUNCTION_DECLARATION_CODEC.codec()).fieldOf("functions").forGetter(Program::functions),
+            mutableMapCodec(Codec.STRING, FUNCTION_VALUE_CODEC.codec()).fieldOf("functions").forGetter(Program::functions),
             mutableListCodec(SCOPE_CODEC).fieldOf("scopes").forGetter(Program::scopes),
         ).apply(it, ::Program)
     }

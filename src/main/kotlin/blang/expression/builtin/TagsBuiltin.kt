@@ -4,12 +4,11 @@ import blang.expression.value.ItemValue
 import blang.expression.value.TagValue
 import program.Program
 import program.expression.Arguments
-import program.expression.builtin.Builtin
 import program.expression.value.ListValue
 import program.expression.value.Value
 
-data class TagsBuiltin(override val arguments: Arguments) : Builtin(arguments) {
-    override fun innerEvaluate(program: Program): Value<*> {
+object TagsBuiltin {
+    fun call(program: Program, arguments: Arguments): Value<*> {
         val item = arguments.get<ItemValue>(program, "value").value
         val tags = ArrayList<Value<*>>()
 

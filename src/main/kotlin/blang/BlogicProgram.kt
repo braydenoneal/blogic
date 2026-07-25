@@ -4,7 +4,7 @@ import program.Program
 import program.RunException
 import program.Scope
 import program.expression.Arguments
-import program.statement.FunctionStatement
+import program.expression.value.FunctionValue
 import program.statement.ImportStatement
 import program.statement.IncompleteException
 import program.statement.StatementList
@@ -16,7 +16,7 @@ data class BlogicProgram(
     override var name: String = "name",
     override val imports: MutableList<ImportStatement> = mutableListOf(),
     override val statements: StatementList = StatementList(),
-    override val functions: MutableMap<String, FunctionStatement> = mutableMapOf(),
+    override val functions: MutableMap<String, FunctionValue> = mutableMapOf(),
     override val scopes: MutableList<Scope> = mutableListOf(),
     var draft: String = source,
     var cursorPosition: Int = 0,

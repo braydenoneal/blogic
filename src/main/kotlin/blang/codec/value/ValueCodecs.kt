@@ -2,6 +2,7 @@ package blang.codec.value
 
 import blang.codec.Codecs.FUNCTION_CODEC
 import blang.codec.Codecs.mutableListCodec
+import blang.codec.Codecs.mutableMapCodec
 import blang.codec.expression.PairCodec
 import blang.expression.value.BlockValue
 import blang.expression.value.ItemStackValue
@@ -16,9 +17,26 @@ import net.minecraft.core.registries.Registries
 import net.minecraft.tags.TagKey
 import net.minecraft.world.item.ItemStack
 import program.expression.value.*
+import program.expression.value.util.FunctionReference
+import program.expression.value.util.Null
+import program.expression.value.util.Object
+import program.expression.value.util.Range
+import java.util.*
 
 object ValueCodecs {
+    val FUNCTION_REFERENCE_CODEC: Codec<FunctionReference> = RecordCodecBuilder.create {
+        it.group(
+            ValueType.CODEC.optionalFieldOf("value").forGetter { functionReference -> Optional.ofNullable(functionReference.value) },
+            Codec.STRING.fieldOf("name").forGetter(FunctionReference::name),
+        ).apply(it) { value, name -> FunctionReference(value.orElse(null), name) }
+    }
     val NULL_CODEC: Codec<Null> = MapCodec.unitCodec(Null())
+    val OBJECT_CODEC: Codec<Object> = RecordCodecBuilder.create {
+        it.group(
+            mutableMapCodec(Codec.STRING, ValueType.CODEC).fieldOf("items").forGetter(Object::items),
+            mutableMapCodec(Codec.STRING, FUNCTION_CODEC).fieldOf("functions").forGetter(Object::functions),
+        ).apply(it, ::Object)
+    }
     val RANGE_CODEC: Codec<Range> = RecordCodecBuilder.create {
         it.group(
             Codec.INT.fieldOf("start").forGetter(Range::start),
@@ -36,10 +54,10 @@ object ValueCodecs {
             Codec.FLOAT.fieldOf("value").forGetter(FloatValue::value),
         ).apply(it, ::FloatValue)
     }
-    val FUNCTION_VALUE_CODEC: MapCodec<FunctionValue> = mapCodec {
+    val FUNCTION_REFERENCE_VALUE_CODEC: MapCodec<FunctionReferenceValue> = mapCodec {
         it.group(
-            FUNCTION_CODEC.fieldOf("value").forGetter(FunctionValue::value),
-        ).apply(it, ::FunctionValue)
+            FUNCTION_REFERENCE_CODEC.fieldOf("value").forGetter(FunctionReferenceValue::value),
+        ).apply(it, ::FunctionReferenceValue)
     }
     val INTEGER_VALUE_CODEC: MapCodec<IntegerValue> = mapCodec {
         it.group(
@@ -55,6 +73,11 @@ object ValueCodecs {
         it.group(
             NULL_CODEC.fieldOf("null").forGetter(NullValue::value),
         ).apply(it, ::NullValue)
+    }
+    val OBJECT_VALUE_CODEC: MapCodec<ObjectValue> = mapCodec {
+        it.group(
+            OBJECT_CODEC.fieldOf("null").forGetter(ObjectValue::value),
+        ).apply(it, ::ObjectValue)
     }
     val RANGE_VALUE_CODEC: MapCodec<RangeValue> = mapCodec {
         it.group(
