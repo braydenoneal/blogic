@@ -18,6 +18,8 @@ object ExpressionCodecs {
             mutableMapCodec(Codec.STRING, ExpressionType.CODEC).fieldOf("named_arguments").forGetter(Arguments::namedArguments),
             Codec.INT.fieldOf("index").forGetter(Arguments::index),
             mutableMapCodec(Codec.STRING, ValueType.CODEC).fieldOf("computed").forGetter(Arguments::computed),
+            Codec.INT.fieldOf("counter").forGetter(Arguments::counter),
+            Codec.BOOL.fieldOf("hasSelf").forGetter(Arguments::hasSelf),
         ).apply(it, ::Arguments)
     }
     val ASSIGN_EXPRESSION_CODEC: MapCodec<AssignExpression> = mapCodec {
@@ -71,11 +73,6 @@ object ExpressionCodecs {
             ExpressionType.CODEC.fieldOf("left").forGetter(DotExpression::left),
             Codec.STRING.fieldOf("right").forGetter(DotExpression::right),
         ).apply(it, ::DotExpression)
-    }
-    val STRUCT_EXPRESSION_CODEC: MapCodec<StructExpression> = mapCodec {
-        it.group(
-            Codec.list(PairCodec.pair(Codec.STRING, ExpressionType.CODEC)).fieldOf("expressions").forGetter(StructExpression::expressions),
-        ).apply(it, ::StructExpression)
     }
     val IDENTIFIER_EXPRESSION_CODEC: MapCodec<IdentifierExpression> = mapCodec {
         it.group(

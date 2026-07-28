@@ -1,9 +1,12 @@
 package blang.codec.statement
 
 import blang.codec.Codecs.FUNCTION_CODEC
+import blang.codec.Codecs.FUNCTION_VALUE_CODEC
 import blang.codec.Codecs.STATEMENT_LIST_CODEC
 import blang.codec.Codecs.mutableListCodec
+import blang.codec.Codecs.mutableMapCodec
 import blang.codec.expression.ExpressionType
+import blang.codec.value.ValueCodecs.STRUCT_DEFINITION_CODEC
 import blang.codec.value.ValueType
 import com.mojang.serialization.Codec
 import com.mojang.serialization.MapCodec
@@ -53,6 +56,7 @@ object StatementCodecs {
     }
     val FUNCTION_DECLARATION_CODEC: MapCodec<FunctionStatement> = mapCodec {
         it.group(
+            Codec.STRING.fieldOf("name").forGetter(FunctionStatement::name),
             FUNCTION_CODEC.fieldOf("function").forGetter(FunctionStatement::function),
         ).apply(it, ::FunctionStatement)
     }
@@ -75,6 +79,24 @@ object StatementCodecs {
         it.group(
             ExpressionType.CODEC.fieldOf("expression").forGetter(ReturnStatement::expression),
         ).apply(it, ::ReturnStatement)
+    }
+    val STATIC_STATEMENTS_CODEC: MapCodec<StaticStatements> = mapCodec {
+        it.group(
+            mutableMapCodec(Codec.STRING, FUNCTION_VALUE_CODEC.codec()).fieldOf("functions").forGetter(StaticStatements::functions),
+            mutableMapCodec(Codec.STRING, ExpressionType.CODEC).fieldOf("variables").forGetter(StaticStatements::variables),
+        ).apply(it, ::StaticStatements)
+    }
+    val STATIC_VARIABLE_STATEMENT_CODEC: MapCodec<StaticVariableStatement> = mapCodec {
+        it.group(
+            Codec.STRING.fieldOf("name").forGetter(StaticVariableStatement::name),
+            ExpressionType.CODEC.fieldOf("expression").forGetter(StaticVariableStatement::expression),
+        ).apply(it, ::StaticVariableStatement)
+    }
+    val STRUCT_STATEMENT_CODEC: MapCodec<StructStatement> = mapCodec {
+        it.group(
+            Codec.STRING.fieldOf("name").forGetter(StructStatement::name),
+            STRUCT_DEFINITION_CODEC.fieldOf("struct").forGetter(StructStatement::struct),
+        ).apply(it, ::StructStatement)
     }
     val WHILE_STATEMENT_CODEC: MapCodec<WhileStatement> = mapCodec {
         it.group(
