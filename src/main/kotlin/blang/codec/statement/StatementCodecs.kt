@@ -80,11 +80,11 @@ object StatementCodecs {
             ExpressionType.CODEC.fieldOf("expression").forGetter(ReturnStatement::expression),
         ).apply(it, ::ReturnStatement)
     }
-    val STATIC_STATEMENTS_CODEC: MapCodec<StaticStatements> = mapCodec {
+    val STATIC_STATEMENT_CODEC: MapCodec<StaticStatement> = mapCodec {
         it.group(
-            mutableMapCodec(Codec.STRING, FUNCTION_VALUE_CODEC.codec()).fieldOf("functions").forGetter(StaticStatements::functions),
-            mutableMapCodec(Codec.STRING, ExpressionType.CODEC).fieldOf("variables").forGetter(StaticStatements::variables),
-        ).apply(it, ::StaticStatements)
+            mutableMapCodec(Codec.STRING, FUNCTION_VALUE_CODEC.codec()).fieldOf("functions").forGetter(StaticStatement::functions),
+            mutableMapCodec(Codec.STRING, ExpressionType.CODEC).fieldOf("variables").forGetter(StaticStatement::variables),
+        ).apply(it, ::StaticStatement)
     }
     val STATIC_VARIABLE_STATEMENT_CODEC: MapCodec<StaticVariableStatement> = mapCodec {
         it.group(

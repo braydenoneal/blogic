@@ -41,7 +41,7 @@ data class StatementType<T : Statement>(val codec: MapCodec<T>) {
             register("if_statement", StatementCodecs.IF_STATEMENT_CODEC)
             register("import_statement", StatementCodecs.IMPORT_STATEMENT_CODEC)
             register("return_statement", StatementCodecs.RETURN_STATEMENT_CODEC)
-            register("static_statements_codec", StatementCodecs.STATIC_STATEMENTS_CODEC)
+            register("static_statement_codec", StatementCodecs.STATIC_STATEMENT_CODEC)
             register("static_variable_statement_codec", StatementCodecs.STATIC_VARIABLE_STATEMENT_CODEC)
             register("struct_statement_codec", StatementCodecs.STRUCT_STATEMENT_CODEC)
             register("while_statement", StatementCodecs.WHILE_STATEMENT_CODEC)
