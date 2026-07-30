@@ -12,11 +12,7 @@ object PrintBuiltin {
     fun call(program: Program, arguments: Arguments): Value<*> {
         val program = BlogicProgram.cast(program)
         val value = arguments.getAny(program, "value", StringValue(""))
-        var string = value.toString()
-
-        if (value is StringValue) {
-            string = string.substring(1, string.length - 1)
-        }
+        var string = if (value is StringValue) value.value else value.toString()
 
         val world = program.context.entity.level
 
