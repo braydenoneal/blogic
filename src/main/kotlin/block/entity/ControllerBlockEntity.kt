@@ -247,17 +247,17 @@ class ControllerBlockEntity(pos: BlockPos, state: BlockState) : BlockEntity(ModB
             ignoredBlockState: BlockState,
             entity: ControllerBlockEntity,
         ) {
-            if (!entity.program.parsed) {
-                entity.program.parse()
-                entity.program.hasError = false
-                entity.setChanged()
-            }
-
-            if (entity.program.hasError) {
-                return
-            }
-
             try {
+                if (!entity.program.parsed) {
+                    entity.program.parse()
+                    entity.program.hasError = false
+                    entity.setChanged()
+                }
+
+                if (entity.program.hasError) {
+                    return
+                }
+
                 if (entity.initializing) {
                     try {
                         if (entity.program.tick()) {
