@@ -10,8 +10,8 @@ object ModNetworking {
 
         ServerPlayNetworking.registerGlobalReceiver(ControllerPayload.ID) { controllerPayload: ControllerPayload, context: ServerPlayNetworking.Context ->
             context.server().execute {
-                val entity = context.player().level().getBlockEntity(controllerPayload.pos) as ControllerBlockEntity
-                entity.setSource(controllerPayload)
+                val entity = context.player().level().getBlockEntity(controllerPayload.pos) as? ControllerBlockEntity
+                entity?.setSource(controllerPayload)
             }
         }
     }
