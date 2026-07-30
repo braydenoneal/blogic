@@ -1,11 +1,9 @@
 package blang.codec.value
 
 import blang.codec.Codecs.FUNCTION_CODEC
-import blang.codec.Codecs.FUNCTION_VALUE_CODEC
+import blang.codec.Codecs.STRUCT_DEFINITION_CODEC
 import blang.codec.Codecs.mutableListCodec
 import blang.codec.Codecs.mutableMapCodec
-import blang.codec.expression.ExpressionType
-import blang.codec.expression.PairCodec.Companion.pair
 import blang.expression.value.BlockValue
 import blang.expression.value.ItemStackValue
 import blang.expression.value.ItemValue
@@ -42,15 +40,6 @@ object ValueCodecs {
             Codec.INT.fieldOf("end").forGetter(Range::end),
             Codec.INT.fieldOf("step").forGetter(Range::step),
         ).apply(it, ::Range)
-    }
-    val STRUCT_DEFINITION_CODEC: Codec<StructDefinition> = RecordCodecBuilder.create {
-        it.group(
-            mutableListCodec(Codec.STRING).fieldOf("parameters").forGetter(StructDefinition::parameters),
-            mutableListCodec(pair(Codec.STRING, ExpressionType.CODEC)).fieldOf("default_parameters").forGetter(StructDefinition::defaultParameters),
-            mutableMapCodec(Codec.STRING, FUNCTION_VALUE_CODEC.codec()).fieldOf("functions").forGetter(StructDefinition::functions),
-            mutableMapCodec(Codec.STRING, FUNCTION_VALUE_CODEC.codec()).fieldOf("staticFunctions").forGetter(StructDefinition::staticFunctions),
-            mutableMapCodec(Codec.STRING, ExpressionType.CODEC).fieldOf("staticVariables").forGetter(StructDefinition::staticVariables),
-        ).apply(it, ::StructDefinition)
     }
     val STRUCT_CODEC: Codec<Struct> = RecordCodecBuilder.create {
         it.group(

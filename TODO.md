@@ -1,5 +1,7 @@
 ## Todo
 
+- console output screen (for errors and logging without sending to chat)
+- change print to output to console and add builtin for saying a message in chat
 - separate cursor position for draft
 - indicator for unsaved changes?
 - fix double click selection issue caused by line number gutter

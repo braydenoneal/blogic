@@ -13,6 +13,7 @@ import program.Program
 import program.Scope
 import program.expression.value.FunctionValue
 import program.expression.value.util.Function
+import program.expression.value.util.StructDefinition
 import program.statement.StatementList
 import java.util.*
 
@@ -29,8 +30,8 @@ object Codecs {
 
     val STATEMENT_LIST_CODEC: MapCodec<StatementList> = mapCodec {
         it.group(
-            mutableListCodec(StatementType.CODEC).fieldOf("ran").forGetter(StatementList::ran),
-            mutableListCodec(StatementType.CODEC).fieldOf("to_run").forGetter(StatementList::toRun),
+            mutableListCodec(StatementType.CODEC).fieldOf("statements").forGetter(StatementList::statements),
+            Codec.INT.fieldOf("index").forGetter(StatementList::index),
         ).apply(it, ::StatementList)
     }
     val SCOPE_CODEC: Codec<Scope> = Codec.recursive("scope") { selfCodec ->
@@ -57,6 +58,15 @@ object Codecs {
             FUNCTION_CODEC.fieldOf("value").forGetter(FunctionValue::value),
         ).apply(it, ::FunctionValue)
     }
+    val STRUCT_DEFINITION_CODEC: Codec<StructDefinition> = RecordCodecBuilder.create {
+        it.group(
+            mutableListCodec(Codec.STRING).fieldOf("parameters").forGetter(StructDefinition::parameters),
+            mutableListCodec(pair(Codec.STRING, ExpressionType.CODEC)).fieldOf("default_parameters").forGetter(StructDefinition::defaultParameters),
+            mutableMapCodec(Codec.STRING, FUNCTION_VALUE_CODEC.codec()).fieldOf("functions").forGetter(StructDefinition::functions),
+            mutableMapCodec(Codec.STRING, FUNCTION_VALUE_CODEC.codec()).fieldOf("staticFunctions").forGetter(StructDefinition::staticFunctions),
+            mutableMapCodec(Codec.STRING, ExpressionType.CODEC).fieldOf("staticVariables").forGetter(StructDefinition::staticVariables),
+        ).apply(it, ::StructDefinition)
+    }
     val PROGRAM_CODEC: Codec<Program> = RecordCodecBuilder.create {
         it.group(
             Codec.STRING.fieldOf("source").forGetter(Program::source),
@@ -65,6 +75,7 @@ object Codecs {
             mutableListCodec(StatementCodecs.IMPORT_STATEMENT_CODEC.codec()).fieldOf("imports").forGetter(Program::imports),
             STATEMENT_LIST_CODEC.fieldOf("statements").forGetter(Program::statements),
             mutableMapCodec(Codec.STRING, FUNCTION_VALUE_CODEC.codec()).fieldOf("functions").forGetter(Program::functions),
+            mutableMapCodec(Codec.STRING, STRUCT_DEFINITION_CODEC).fieldOf("structs").forGetter(Program::structs),
             mutableListCodec(SCOPE_CODEC).fieldOf("scopes").forGetter(Program::scopes),
         ).apply(it, ::Program)
     }
