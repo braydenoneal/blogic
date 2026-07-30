@@ -1,6 +1,5 @@
 package blang.codec.value
 
-import blang.codec.Codecs.FUNCTION_CODEC
 import blang.codec.Codecs.STRUCT_DEFINITION_CODEC
 import blang.codec.Codecs.mutableListCodec
 import blang.codec.Codecs.mutableMapCodec
@@ -17,7 +16,10 @@ import net.minecraft.core.registries.Registries
 import net.minecraft.tags.TagKey
 import net.minecraft.world.item.ItemStack
 import program.expression.value.*
-import program.expression.value.util.*
+import program.expression.value.util.FunctionReference
+import program.expression.value.util.Null
+import program.expression.value.util.Range
+import program.expression.value.util.Struct
 import java.util.*
 
 object ValueCodecs {
@@ -28,12 +30,6 @@ object ValueCodecs {
         ).apply(it) { value, name -> FunctionReference(value.orElse(null), name) }
     }
     val NULL_CODEC: Codec<Null> = MapCodec.unitCodec(Null())
-    val OBJECT_CODEC: Codec<Object> = RecordCodecBuilder.create {
-        it.group(
-            mutableMapCodec(Codec.STRING, ValueType.CODEC).fieldOf("items").forGetter(Object::items),
-            mutableMapCodec(Codec.STRING, FUNCTION_CODEC).fieldOf("functions").forGetter(Object::functions),
-        ).apply(it, ::Object)
-    }
     val RANGE_CODEC: Codec<Range> = RecordCodecBuilder.create {
         it.group(
             Codec.INT.fieldOf("start").forGetter(Range::start),
@@ -76,11 +72,6 @@ object ValueCodecs {
         it.group(
             NULL_CODEC.fieldOf("null").forGetter(NullValue::value),
         ).apply(it, ::NullValue)
-    }
-    val OBJECT_VALUE_CODEC: MapCodec<ObjectValue> = mapCodec {
-        it.group(
-            OBJECT_CODEC.fieldOf("null").forGetter(ObjectValue::value),
-        ).apply(it, ::ObjectValue)
     }
     val RANGE_VALUE_CODEC: MapCodec<RangeValue> = mapCodec {
         it.group(

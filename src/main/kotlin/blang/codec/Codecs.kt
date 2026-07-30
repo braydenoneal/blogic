@@ -60,6 +60,7 @@ object Codecs {
     }
     val STRUCT_DEFINITION_CODEC: Codec<StructDefinition> = RecordCodecBuilder.create {
         it.group(
+            Codec.STRING.fieldOf("name").forGetter(StructDefinition::name),
             mutableListCodec(Codec.STRING).fieldOf("parameters").forGetter(StructDefinition::parameters),
             mutableListCodec(pair(Codec.STRING, ExpressionType.CODEC)).fieldOf("default_parameters").forGetter(StructDefinition::defaultParameters),
             mutableMapCodec(Codec.STRING, FUNCTION_VALUE_CODEC.codec()).fieldOf("functions").forGetter(StructDefinition::functions),
