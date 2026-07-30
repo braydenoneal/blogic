@@ -47,7 +47,7 @@ object BreakBlockBuiltin {
 
         if (silkTouch) {
             val registry = world.registryAccess().lookupOrThrow(Registries.ENCHANTMENT)
-            val enchantment = registry.wrapAsHolder(registry.getValue(Enchantments.SILK_TOUCH)!!)
+            val enchantment = registry.getOrThrow(Enchantments.SILK_TOUCH)
             tool.enchant(enchantment, 1)
         }
 
