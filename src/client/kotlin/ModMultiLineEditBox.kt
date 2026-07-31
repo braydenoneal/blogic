@@ -66,7 +66,7 @@ class ModMultiLineEditBox(
             var error = true
 
             for (type in Type.entries) {
-                val matcher = Pattern.compile("^" + type.regex).matcher(text.substring(position) + "\n")
+                val matcher = Pattern.compile("^${type.regex}").matcher(text.substring(position) + "\n")
 
                 if (matcher.find()) {
                     val group = if (type == Type.QUOTE) matcher.group(0) else matcher.group(1)
