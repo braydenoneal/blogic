@@ -65,10 +65,10 @@ class ModMultiLineEditBox(
             var error = true
 
             for (type in Type.entries) {
-                val matcher = type.regex.matcher(text.substring(position) + "\n")
+                val matcher = type.regex.matcher(text.substring(position))
 
                 if (matcher.find()) {
-                    val group = if (type == Type.QUOTE) matcher.group(0) else matcher.group(1)
+                    val group = matcher.group()
 
                     var color = when (type) {
                         Type.COMMENT -> -0x85817b

@@ -3,10 +3,10 @@ package blang.codec.statement
 import blang.codec.Codecs.FUNCTION_CODEC
 import blang.codec.Codecs.FUNCTION_VALUE_CODEC
 import blang.codec.Codecs.STATEMENT_LIST_CODEC
+import blang.codec.Codecs.STRUCT_DEFINITION_CODEC
 import blang.codec.Codecs.mutableListCodec
 import blang.codec.Codecs.mutableMapCodec
 import blang.codec.expression.ExpressionType
-import blang.codec.value.ValueCodecs.STRUCT_DEFINITION_CODEC
 import blang.codec.value.ValueType
 import com.mojang.serialization.Codec
 import com.mojang.serialization.MapCodec

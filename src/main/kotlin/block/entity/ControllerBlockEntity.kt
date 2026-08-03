@@ -97,6 +97,7 @@ class ControllerBlockEntity(pos: BlockPos, state: BlockState) : BlockEntity(ModB
             program.imports,
             program.statements,
             program.functions,
+            program.structs,
             program.scopes,
         )
 

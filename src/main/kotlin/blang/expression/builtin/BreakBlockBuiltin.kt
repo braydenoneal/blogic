@@ -29,6 +29,16 @@ object BreakBlockBuiltin {
         val predicate = arguments.get<FunctionValue>(program, "predicate")
         val silkTouch = arguments.get<BooleanValue>(program, "silkTouch", BooleanValue(false)).value
 
+        /*
+        Block
+            asItem
+            properties?
+            tags?
+
+            static
+                constructor(name: String)
+         */
+
         val entityPos = program.context.pos
         val pos = BlockPos(entityPos.x + x, entityPos.y + y, entityPos.z + z)
         val world = program.context.entity.level ?: throw RunException("World is null")
