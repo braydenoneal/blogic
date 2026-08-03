@@ -3,6 +3,7 @@ package blang.codec.expression
 import blang.codec.Codecs.FUNCTION_CODEC
 import blang.codec.Codecs.mutableListCodec
 import blang.codec.Codecs.mutableMapCodec
+import blang.codec.expression.PairCodec.Companion.pair
 import blang.codec.value.ValueType
 import com.mojang.serialization.Codec
 import com.mojang.serialization.MapCodec
@@ -55,6 +56,13 @@ object ExpressionCodecs {
         it.group(
             mutableListCodec(ExpressionType.CODEC).fieldOf("expressions").forGetter(ListExpression::expressions),
         ).apply(it, ::ListExpression)
+    }
+    val STRING_EXPRESSION_CODEC: MapCodec<StringExpression> = mapCodec {
+        it.group(
+            mutableListCodec(pair(Codec.STRING, ExpressionType.CODEC)).fieldOf("string_expression_pairs").forGetter(StringExpression::stringExpressionPairs),
+            Codec.STRING.fieldOf("final_string").forGetter(StringExpression::finalString),
+            mutableListCodec(Codec.STRING).fieldOf("values").forGetter(StringExpression::values),
+        ).apply(it, ::StringExpression)
     }
     val CALL_EXPRESSION_CODEC: MapCodec<CallExpression> = mapCodec {
         it.group(

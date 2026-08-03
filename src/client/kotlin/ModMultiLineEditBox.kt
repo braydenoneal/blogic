@@ -8,7 +8,6 @@ import net.minecraft.resources.Identifier
 import net.minecraft.util.ARGB
 import net.minecraft.util.Util
 import parser.tokenizer.Type
-import java.util.regex.Pattern
 import kotlin.math.log10
 import kotlin.math.max
 
@@ -66,15 +65,24 @@ class ModMultiLineEditBox(
             var error = true
 
             for (type in Type.entries) {
-                val matcher = Pattern.compile("^${type.regex}").matcher(text.substring(position) + "\n")
+                val matcher = type.regex.matcher(text.substring(position) + "\n")
 
                 if (matcher.find()) {
                     val group = if (type == Type.QUOTE) matcher.group(0) else matcher.group(1)
 
                     var color = when (type) {
-                        Type.QUOTE -> -0x95548d
-                        Type.INTEGER, Type.FLOAT -> -0xd55348
                         Type.COMMENT -> -0x85817b
+
+                        Type.INTEGER,
+                        Type.FLOAT,
+                            -> -0xd55348
+
+                        Type.QUOTE,
+                        Type.QUOTE_START,
+                        Type.QUOTE_MIDDLE,
+                        Type.QUOTE_END,
+                            -> -0x95548d
+
                         Type.IMPORT_KEYWORD,
                         Type.FN_KEYWORD,
                         Type.RETURN_KEYWORD,
