@@ -67,9 +67,9 @@ object ExpressionCodecs {
     val SLICE_EXPRESSION_CODEC: MapCodec<SliceExpression> = mapCodec {
         it.group(
             ExpressionType.CODEC.fieldOf("left").forGetter(SliceExpression::left),
-            ExpressionType.CODEC.fieldOf("from").forGetter(SliceExpression::from),
-            ExpressionType.CODEC.fieldOf("to").forGetter(SliceExpression::to),
-        ).apply(it, ::SliceExpression)
+            ExpressionType.CODEC.optionalFieldOf("from").forGetter { sliceExpression -> Optional.ofNullable(sliceExpression.from) },
+            ExpressionType.CODEC.optionalFieldOf("to").forGetter { sliceExpression -> Optional.ofNullable(sliceExpression.to) },
+        ).apply(it) { left, from, to -> SliceExpression(left, from.orElse(null), to.orElse(null)) }
     }
     val CALL_EXPRESSION_CODEC: MapCodec<CallExpression> = mapCodec {
         it.group(
