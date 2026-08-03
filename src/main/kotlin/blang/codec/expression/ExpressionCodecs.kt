@@ -64,6 +64,13 @@ object ExpressionCodecs {
             mutableListCodec(Codec.STRING).fieldOf("values").forGetter(StringExpression::values),
         ).apply(it, ::StringExpression)
     }
+    val SLICE_EXPRESSION_CODEC: MapCodec<SliceExpression> = mapCodec {
+        it.group(
+            ExpressionType.CODEC.fieldOf("left").forGetter(SliceExpression::left),
+            ExpressionType.CODEC.fieldOf("from").forGetter(SliceExpression::from),
+            ExpressionType.CODEC.fieldOf("to").forGetter(SliceExpression::to),
+        ).apply(it, ::SliceExpression)
+    }
     val CALL_EXPRESSION_CODEC: MapCodec<CallExpression> = mapCodec {
         it.group(
             ExpressionType.CODEC.fieldOf("left").forGetter(CallExpression::left),

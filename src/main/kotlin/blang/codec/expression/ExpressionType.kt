@@ -50,6 +50,7 @@ data class ExpressionType<T : Expression>(val codec: MapCodec<T>) {
             register("infix_function_expression", ExpressionCodecs.INFIX_FUNCTION_EXPRESSION_CODEC)
             register("list_expression", ExpressionCodecs.LIST_EXPRESSION_CODEC)
             register("string_expression", ExpressionCodecs.STRING_EXPRESSION_CODEC)
+            register("slice_expression", ExpressionCodecs.SLICE_EXPRESSION_CODEC)
             register("unary_operator_expression", ExpressionCodecs.UNARY_OPERATOR_EXPRESSION_CODEC)
             register("value", ValueType.MAP_CODEC)
         }
