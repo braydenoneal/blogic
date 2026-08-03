@@ -49,6 +49,7 @@ data class ExpressionType<T : Expression>(val codec: MapCodec<T>) {
             register("if_else_expression", ExpressionCodecs.IF_ELSE_EXPRESSION_CODEC)
             register("infix_function_expression", ExpressionCodecs.INFIX_FUNCTION_EXPRESSION_CODEC)
             register("list_expression", ExpressionCodecs.LIST_EXPRESSION_CODEC)
+            register("map_expression", ExpressionCodecs.MAP_EXPRESSION_CODEC)
             register("string_expression", ExpressionCodecs.STRING_EXPRESSION_CODEC)
             register("slice_expression", ExpressionCodecs.SLICE_EXPRESSION_CODEC)
             register("unary_operator_expression", ExpressionCodecs.UNARY_OPERATOR_EXPRESSION_CODEC)

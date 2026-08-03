@@ -21,7 +21,7 @@ data class PairCodec<A, B>(
     }
 
     companion object {
-        fun <A, B> pair(first: Codec<A>, second: Codec<B>): Codec<Pair<A, B>> {
+        fun <A, B> pairCodec(first: Codec<A>, second: Codec<B>): Codec<Pair<A, B>> {
             return PairCodec(first, second)
         }
     }

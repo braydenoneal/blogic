@@ -1,7 +1,7 @@
 package blang.codec
 
 import blang.codec.expression.ExpressionType
-import blang.codec.expression.PairCodec.Companion.pair
+import blang.codec.expression.PairCodec.Companion.pairCodec
 import blang.codec.statement.StatementCodecs
 import blang.codec.statement.StatementType
 import blang.codec.value.ValueType
@@ -45,7 +45,7 @@ object Codecs {
     val FUNCTION_CODEC: Codec<Function> = RecordCodecBuilder.create {
         it.group(
             mutableListCodec(Codec.STRING).fieldOf("parameters").forGetter(Function::parameters),
-            mutableListCodec(pair(Codec.STRING, ExpressionType.CODEC)).fieldOf("default_parameters").forGetter(Function::defaultParameters),
+            mutableListCodec(pairCodec(Codec.STRING, ExpressionType.CODEC)).fieldOf("default_parameters").forGetter(Function::defaultParameters),
             STATEMENT_LIST_CODEC.fieldOf("statements").forGetter(Function::statements),
             SCOPE_CODEC.optionalFieldOf("scope").forGetter { function -> Optional.ofNullable(function.scope) },
             Codec.BOOL.fieldOf("running").forGetter(Function::running),
@@ -62,7 +62,7 @@ object Codecs {
         it.group(
             Codec.STRING.fieldOf("name").forGetter(StructDefinition::name),
             mutableListCodec(Codec.STRING).fieldOf("parameters").forGetter(StructDefinition::parameters),
-            mutableListCodec(pair(Codec.STRING, ExpressionType.CODEC)).fieldOf("default_parameters").forGetter(StructDefinition::defaultParameters),
+            mutableListCodec(pairCodec(Codec.STRING, ExpressionType.CODEC)).fieldOf("default_parameters").forGetter(StructDefinition::defaultParameters),
             mutableMapCodec(Codec.STRING, FUNCTION_VALUE_CODEC.codec()).fieldOf("functions").forGetter(StructDefinition::functions),
             mutableMapCodec(Codec.STRING, FUNCTION_VALUE_CODEC.codec()).fieldOf("staticFunctions").forGetter(StructDefinition::staticFunctions),
             mutableMapCodec(Codec.STRING, ExpressionType.CODEC).fieldOf("staticVariables").forGetter(StructDefinition::staticVariables),

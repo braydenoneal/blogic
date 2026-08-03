@@ -3,7 +3,7 @@ package blang.codec.expression
 import blang.codec.Codecs.FUNCTION_CODEC
 import blang.codec.Codecs.mutableListCodec
 import blang.codec.Codecs.mutableMapCodec
-import blang.codec.expression.PairCodec.Companion.pair
+import blang.codec.expression.PairCodec.Companion.pairCodec
 import blang.codec.value.ValueType
 import com.mojang.serialization.Codec
 import com.mojang.serialization.MapCodec
@@ -55,11 +55,18 @@ object ExpressionCodecs {
     val LIST_EXPRESSION_CODEC: MapCodec<ListExpression> = mapCodec {
         it.group(
             mutableListCodec(ExpressionType.CODEC).fieldOf("expressions").forGetter(ListExpression::expressions),
+            mutableListCodec(ValueType.CODEC).fieldOf("computed").forGetter(ListExpression::computed),
         ).apply(it, ::ListExpression)
+    }
+    val MAP_EXPRESSION_CODEC: MapCodec<MapExpression> = mapCodec {
+        it.group(
+            mutableListCodec(pairCodec(ExpressionType.CODEC, ExpressionType.CODEC)).fieldOf("expressions").forGetter(MapExpression::expressions),
+            mutableListCodec(pairCodec(ValueType.CODEC, ValueType.CODEC)).fieldOf("computed").forGetter(MapExpression::computed),
+        ).apply(it, ::MapExpression)
     }
     val STRING_EXPRESSION_CODEC: MapCodec<StringExpression> = mapCodec {
         it.group(
-            mutableListCodec(pair(Codec.STRING, ExpressionType.CODEC)).fieldOf("string_expression_pairs").forGetter(StringExpression::stringExpressionPairs),
+            mutableListCodec(pairCodec(Codec.STRING, ExpressionType.CODEC)).fieldOf("string_expression_pairs").forGetter(StringExpression::stringExpressionPairs),
             Codec.STRING.fieldOf("final_string").forGetter(StringExpression::finalString),
             mutableListCodec(Codec.STRING).fieldOf("values").forGetter(StringExpression::values),
         ).apply(it, ::StringExpression)
