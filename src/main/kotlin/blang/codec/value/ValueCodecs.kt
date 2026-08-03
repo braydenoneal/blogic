@@ -68,6 +68,11 @@ object ValueCodecs {
             mutableListCodec(ValueType.CODEC).fieldOf("value").forGetter(ListValue::value),
         ).apply(it, ::ListValue)
     }
+    val MAP_VALUE_CODEC: MapCodec<MapValue> = mapCodec {
+        it.group(
+            mutableMapCodec(ValueType.CODEC, ValueType.CODEC).fieldOf("value").forGetter(MapValue::value),
+        ).apply(it, ::MapValue)
+    }
     val NULL_VALUE_CODEC: MapCodec<NullValue> = mapCodec {
         it.group(
             NULL_CODEC.fieldOf("null").forGetter(NullValue::value),
