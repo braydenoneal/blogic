@@ -1,8 +1,8 @@
 import blang.codec.expression.ExpressionType
 import blang.codec.statement.StatementType
 import blang.codec.value.ValueType
-import blang.expression.BuiltinFunctions
 import blang.expression.Static
+import blang.expression.builtin.BuiltinFunctions
 import block.ModBlocks
 import block.entity.ModBlockEntities
 import item.ModItems

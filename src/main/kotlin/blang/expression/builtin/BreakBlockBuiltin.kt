@@ -14,20 +14,17 @@ import net.minecraft.world.level.block.Blocks
 import program.Program
 import program.RunException
 import program.expression.Arguments
-import program.expression.value.BooleanValue
-import program.expression.value.FunctionValue
-import program.expression.value.IntegerValue
-import program.expression.value.Value
+import program.expression.value.*
 import kotlin.math.min
 
-object BreakBlockBuiltin {
-    fun call(program: Program, arguments: Arguments): Value<*> {
-        context(program) {
-            val program = BlogicProgram.cast(program.actionProgram)
-            val x = arguments.get<IntegerValue>("x").value
-            val y = arguments.get<IntegerValue>("y").value
-            val z = arguments.get<IntegerValue>("z").value
-            val predicate = arguments.get<FunctionValue>("predicate")/*
+object BreakBlockBuiltin : Callable {
+    context(program: Program, arguments: Arguments)
+    override fun innerCall(): Value<*> {
+        val program = BlogicProgram.cast(program.actionProgram)
+        val x = arguments.get<IntegerValue>("x").value
+        val y = arguments.get<IntegerValue>("y").value
+        val z = arguments.get<IntegerValue>("z").value
+        val predicate = arguments.get<FunctionValue>("predicate")/*
             predicate:
                 when not passed in: break all blocks
                 when a string is passed in: block(string)
@@ -36,81 +33,80 @@ object BreakBlockBuiltin {
                 when a function is passed in: predicate
              */
 
-            val silkTouch = arguments.get<BooleanValue>("silkTouch", BooleanValue(false)).value
+        val silkTouch = arguments.get<BooleanValue>("silkTouch", BooleanValue(false)).value
 
-            /*
-            Block
-                asItem
-                properties?
-                tags?
+        /*
+        Block
+            asItem
+            properties?
+            tags?
 
-                static
-                    constructor(name: String)
-             */
+            static
+                constructor(name: String)
+         */
 
-            val entityPos = program.context.pos
-            val pos = BlockPos(entityPos.x + x, entityPos.y + y, entityPos.z + z)
-            val world = program.context.entity.level ?: throw RunException("World is null")
+        val entityPos = program.context.pos
+        val pos = BlockPos(entityPos.x + x, entityPos.y + y, entityPos.z + z)
+        val world = program.context.entity.level ?: throw RunException("World is null")
 
-            val block = world.getBlockState(pos).block
+        val block = world.getBlockState(pos).block
 
-            val predicateArguments = Arguments(mutableListOf(BlockValue(block)), mutableMapOf())
-            val predicateResult = context(predicateArguments) { predicate.call().cast<BooleanValue>() }
+        val predicateArguments = Arguments(mutableListOf(BlockValue(block)), mutableMapOf())
+        val predicateResult = context(predicateArguments) { predicate.call().cast<BooleanValue>() }
 
-            if (!predicateResult.value) {
-                return BooleanValue(false)
-            }
+        if (!predicateResult.value) {
+            return BooleanValue(false)
+        }
 
-            val containers = program.context.entity.getConnectedContainers()
-            val tool = ItemStack(Items.DIAMOND_PICKAXE)
+        val containers = program.context.entity.getConnectedContainers()
+        val tool = ItemStack(Items.DIAMOND_PICKAXE)
 
-            if (silkTouch) {
-                val registry = world.registryAccess().lookupOrThrow(Registries.ENCHANTMENT)
-                val enchantment = registry.wrapAsHolder(registry.getValue(Enchantments.SILK_TOUCH)!!)
-                tool.enchant(enchantment, 1)
-            }
+        if (silkTouch) {
+            val registry = world.registryAccess().lookupOrThrow(Registries.ENCHANTMENT)
+            val enchantment = registry.wrapAsHolder(registry.getValue(Enchantments.SILK_TOUCH)!!)
+            tool.enchant(enchantment, 1)
+        }
 
-            val drops = Block.getDrops(world.getBlockState(pos), world as ServerLevel, pos, world.getBlockEntity(pos), FakePlayer.get(world), tool)
-            world.setBlockAndUpdate(pos, Blocks.AIR.defaultBlockState())
+        val drops = Block.getDrops(world.getBlockState(pos), world as ServerLevel, pos, world.getBlockEntity(pos), FakePlayer.get(world), tool)
+        world.setBlockAndUpdate(pos, Blocks.AIR.defaultBlockState())
 
-            for (drop in drops) {
-                for (container in containers) {
-                    for (slot in 0..<container.containerSize) {
-                        val stack = container.getItem(slot)
+        for (drop in drops) {
+            for (container in containers) {
+                for (slot in 0..<container.containerSize) {
+                    val stack = container.getItem(slot)
 
-                        if (stack.`is`(drop.item) && stack.count < stack.maxStackSize) {
-                            val move = min(drop.count, stack.maxStackSize - stack.count)
+                    if (stack.`is`(drop.item) && stack.count < stack.maxStackSize) {
+                        val move = min(drop.count, stack.maxStackSize - stack.count)
 
-                            drop.shrink(move)
-                            stack.grow(move)
+                        drop.shrink(move)
+                        stack.grow(move)
 
-                            container.setItem(slot, stack)
-                        }
+                        container.setItem(slot, stack)
+                    }
 
-                        if (stack.`is`(Items.AIR)) {
-                            container.setItem(slot, drop.copy())
-                            drop.count = 0
-                        }
-
-                        if (drop.isEmpty) {
-                            break
-                        }
+                    if (stack.`is`(Items.AIR)) {
+                        container.setItem(slot, drop.copy())
+                        drop.count = 0
                     }
 
                     if (drop.isEmpty) {
                         break
                     }
                 }
-            }
 
-            // TODO: Only break if there is enough room for the drops
+                if (drop.isEmpty) {
+                    break
+                }
+            }
+        }
+
+        // TODO: Only break if there is enough room for the drops
 //        for (drop in drops) {
 //            if (!drop.isEmpty) {
 //                Block.dropStack(world, pos, drop)
 //            }
 //        }
 
-            return BooleanValue(true)
-        }
+        return BooleanValue(true)
     }
 }
