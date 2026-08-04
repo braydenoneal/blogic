@@ -20,15 +20,8 @@ import program.expression.value.*
 import program.expression.value.util.Null
 import program.expression.value.util.Range
 import program.expression.value.util.Struct
-import program.expression.value.util.ValueIdentifier
 
 object ValueCodecs {
-    val VALUE_IDENTIFIER_CODEC: Codec<ValueIdentifier> = RecordCodecBuilder.create {
-        it.group(
-            ValueType.CODEC.fieldOf("value").forGetter(ValueIdentifier::value),
-            Codec.STRING.fieldOf("name").forGetter(ValueIdentifier::name),
-        ).apply(it, ::ValueIdentifier)
-    }
     val NULL_CODEC: Codec<Null> = MapCodec.unitCodec(Null())
     val RANGE_CODEC: Codec<Range> = RecordCodecBuilder.create {
         it.group(
@@ -97,11 +90,6 @@ object ValueCodecs {
         it.group(
             STRUCT_CODEC.fieldOf("value").forGetter(StructValue::value),
         ).apply(it, ::StructValue)
-    }
-    val VALUE_IDENTIFIER_VALUE_CODEC: MapCodec<ValueIdentifierValue> = mapCodec {
-        it.group(
-            VALUE_IDENTIFIER_CODEC.fieldOf("value").forGetter(ValueIdentifierValue::value),
-        ).apply(it, ::ValueIdentifierValue)
     }
     val BLOCK_VALUE_CODEC: MapCodec<BlockValue> = mapCodec {
         it.group(

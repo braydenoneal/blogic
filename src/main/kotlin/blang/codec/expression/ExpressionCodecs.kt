@@ -94,6 +94,7 @@ object ExpressionCodecs {
         it.group(
             ExpressionType.CODEC.fieldOf("left").forGetter(DotExpression::left),
             Codec.STRING.fieldOf("right").forGetter(DotExpression::right),
+            Codec.BOOL.fieldOf("local").forGetter(DotExpression::local),
         ).apply(it, ::DotExpression)
     }
     val IDENTIFIER_EXPRESSION_CODEC: MapCodec<IdentifierExpression> = mapCodec {

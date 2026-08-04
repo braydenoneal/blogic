@@ -46,7 +46,6 @@ data class ValueType<T : Value<*>>(val codec: MapCodec<T>) {
             register("range", ValueCodecs.RANGE_VALUE_CODEC)
             register("string", ValueCodecs.STRING_VALUE_CODEC)
             register("struct", ValueCodecs.STRUCT_VALUE_CODEC)
-            register("value_identifier", ValueCodecs.VALUE_IDENTIFIER_VALUE_CODEC)
             register("block", ValueCodecs.BLOCK_VALUE_CODEC)
             register("item_stack", ValueCodecs.ITEM_STACK_CODEC)
             register("item", ValueCodecs.ITEM_CODEC)
