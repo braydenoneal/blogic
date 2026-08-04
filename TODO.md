@@ -1,5 +1,6 @@
 ## Todo
 
+- extract duplicate functionality from builtins (pos, predicate, etc.)
 - relative and absolute positions
 - creative controller block/mode that doesn't require having items in storage
 - console output screen (for errors and logging without sending to chat)
