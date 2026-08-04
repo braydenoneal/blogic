@@ -17,56 +17,58 @@ import program.expression.value.Value
 
 object PlaceBlockBuiltin {
     fun call(program: Program, arguments: Arguments): Value<*> {
-        val program = BlogicProgram.cast(program.actionProgram)
-        val x = arguments.get<IntegerValue>(program, "x").value
-        val y = arguments.get<IntegerValue>(program, "y").value
-        val z = arguments.get<IntegerValue>(program, "z").value
-        val predicate = arguments.get<FunctionValue>(program, "predicate")
+        context(program) {
+            val program = BlogicProgram.cast(program.actionProgram)
+            val x = arguments.get<IntegerValue>("x").value
+            val y = arguments.get<IntegerValue>("y").value
+            val z = arguments.get<IntegerValue>("z").value
+            val predicate = arguments.get<FunctionValue>("predicate")
 
-        val entityPos = program.context.pos
-        val pos = BlockPos(entityPos.x + x, entityPos.y + y, entityPos.z + z)
-        val world = program.context.entity.level ?: throw RunException("World is null")
+            val entityPos = program.context.pos
+            val pos = BlockPos(entityPos.x + x, entityPos.y + y, entityPos.z + z)
+            val world = program.context.entity.level ?: throw RunException("World is null")
 
-        if (world.getBlockState(pos).block !== Blocks.AIR) {
-            return BooleanValue(false)
-        }
+            if (world.getBlockState(pos).block !== Blocks.AIR) {
+                return BooleanValue(false)
+            }
 
-        val containers = program.context.entity.getConnectedContainers()
+            val containers = program.context.entity.getConnectedContainers()
 
-        for (container in containers) {
-            for (slot in 0..<container.containerSize) {
-                val stack = container.getItem(slot)
+            for (container in containers) {
+                for (slot in 0..<container.containerSize) {
+                    val stack = container.getItem(slot)
 
-                if (stack.`is`(Items.AIR)) {
-                    continue
-                }
-
-                val predicateArguments = Arguments(mutableListOf(ItemValue(stack.item)), mutableMapOf())
-                val predicateResult = predicate.call(program, predicateArguments).cast<BooleanValue>()
-
-                if (!predicateResult.value) {
-                    continue
-                }
-
-                for (entry in BlockItem.BY_BLOCK.entries) {
-                    if (!stack.`is`(entry.value)) {
+                    if (stack.`is`(Items.AIR)) {
                         continue
                     }
 
-                    stack.shrink(1)
+                    val predicateArguments = Arguments(mutableListOf(ItemValue(stack.item)), mutableMapOf())
+                    val predicateResult = context(predicateArguments) { predicate.call().cast<BooleanValue>() }
 
-                    if (stack.isEmpty) {
-                        container.setItem(slot, ItemStack.EMPTY)
-                    } else {
-                        container.setItem(slot, stack)
+                    if (!predicateResult.value) {
+                        continue
                     }
 
-                    world.setBlockAndUpdate(pos, entry.key.defaultBlockState())
-                    return BooleanValue(true)
+                    for (entry in BlockItem.BY_BLOCK.entries) {
+                        if (!stack.`is`(entry.value)) {
+                            continue
+                        }
+
+                        stack.shrink(1)
+
+                        if (stack.isEmpty) {
+                            container.setItem(slot, ItemStack.EMPTY)
+                        } else {
+                            container.setItem(slot, stack)
+                        }
+
+                        world.setBlockAndUpdate(pos, entry.key.defaultBlockState())
+                        return BooleanValue(true)
+                    }
                 }
             }
-        }
 
-        return BooleanValue(false)
+            return BooleanValue(false)
+        }
     }
 }

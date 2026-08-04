@@ -11,15 +11,17 @@ import program.expression.value.Value
 
 object GetBlockBuiltin {
     fun call(program: Program, arguments: Arguments): Value<*> {
-        val program = BlogicProgram.cast(program.actionProgram)
-        val x = arguments.get<IntegerValue>(program, "x").value
-        val y = arguments.get<IntegerValue>(program, "y").value
-        val z = arguments.get<IntegerValue>(program, "z").value
+        context(program) {
+            val program = BlogicProgram.cast(program.actionProgram)
+            val x = arguments.get<IntegerValue>("x").value
+            val y = arguments.get<IntegerValue>("y").value
+            val z = arguments.get<IntegerValue>("z").value
 
-        val entityPos = program.context.pos
-        val pos = BlockPos(entityPos.x + x, entityPos.y + y, entityPos.z + z)
-        val world = program.context.entity.level ?: throw RunException("World is null")
+            val entityPos = program.context.pos
+            val pos = BlockPos(entityPos.x + x, entityPos.y + y, entityPos.z + z)
+            val world = program.context.entity.level ?: throw RunException("World is null")
 
-        return BlockValue(world.getBlockState(pos).block)
+            return BlockValue(world.getBlockState(pos).block)
+        }
     }
 }

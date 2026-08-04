@@ -22,10 +22,11 @@ class ItemValue(value: Item) : Value<Item>(value) {
         return 31 * super.hashCode() + ValueCodecs.ITEM_STACK_CODEC.hashCode()
     }
 
-    override fun innerCallFunction(program: Program, arguments: Arguments, name: String, local: Boolean): Value<*> {
+    context(program: Program, arguments: Arguments)
+    override fun innerCallFunction(name: String, local: Boolean): Value<*> {
         return when (name) {
             "tags" -> tags()
-            else -> super.innerCallFunction(program, arguments, name, local)
+            else -> super.innerCallFunction(name, local)
         }
     }
 
@@ -36,8 +37,9 @@ class ItemValue(value: Item) : Value<Item>(value) {
     companion object : Static {
         override val name: String = "Item"
 
-        override fun innerCall(program: Program, arguments: Arguments): Value<*> {
-            val name = arguments.get<StringValue>(program, "name").value
+        context(program: Program, arguments: Arguments)
+        override fun innerCall(): Value<*> {
+            val name = arguments.get<StringValue>("name").value
             return ItemValue(BuiltInRegistries.ITEM.getValue(Identifier.parse(name)))
         }
     }

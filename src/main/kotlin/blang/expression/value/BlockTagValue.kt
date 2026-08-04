@@ -25,8 +25,9 @@ class BlockTagValue(value: TagKey<Block>) : Value<TagKey<Block>>(value) {
     companion object : Static {
         override val name: String = "BlockTag"
 
-        override fun innerCall(program: Program, arguments: Arguments): Value<*> {
-            val name = arguments.get<StringValue>(program, "name").value
+        context(program: Program, arguments: Arguments)
+        override fun innerCall(): Value<*> {
+            val name = arguments.get<StringValue>("name").value
             return BlockTagValue(TagKey.create(Registries.BLOCK, Identifier.parse(name)))
         }
     }

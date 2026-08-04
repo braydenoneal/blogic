@@ -22,11 +22,12 @@ class BlockValue(value: Block) : Value<Block>(value) {
         return 31 * super.hashCode() + ValueCodecs.BLOCK_VALUE_CODEC.hashCode()
     }
 
-    override fun innerCallFunction(program: Program, arguments: Arguments, name: String, local: Boolean): Value<*> {
+    context(program: Program, arguments: Arguments)
+    override fun innerCallFunction(name: String, local: Boolean): Value<*> {
         return when (name) {
             "asItem" -> asItem()
             "tags" -> tags()
-            else -> super.innerCallFunction(program, arguments, name, local)
+            else -> super.innerCallFunction(name, local)
         }
     }
 
@@ -41,8 +42,9 @@ class BlockValue(value: Block) : Value<Block>(value) {
     companion object : Static {
         override val name: String = "Block"
 
-        override fun innerCall(program: Program, arguments: Arguments): Value<*> {
-            val name = arguments.get<StringValue>(program, "name").value
+        context(program: Program, arguments: Arguments)
+        override fun innerCall(): Value<*> {
+            val name = arguments.get<StringValue>("name").value
             return BlockValue(BuiltInRegistries.BLOCK.getValue(Identifier.parse(name)))
         }
     }

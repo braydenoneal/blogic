@@ -22,102 +22,104 @@ import kotlin.math.min
 
 object UseItemBuiltin {
     fun call(program: Program, arguments: Arguments): Value<*> {
-        val program = BlogicProgram.cast(program.actionProgram)
-        val x = arguments.get<IntegerValue>(program, "x").value
-        val y = arguments.get<IntegerValue>(program, "y").value
-        val z = arguments.get<IntegerValue>(program, "z").value
-        val predicate = arguments.get<FunctionValue>(program, "predicate")
+        context(program) {
+            val program = BlogicProgram.cast(program.actionProgram)
+            val x = arguments.get<IntegerValue>("x").value
+            val y = arguments.get<IntegerValue>("y").value
+            val z = arguments.get<IntegerValue>("z").value
+            val predicate = arguments.get<FunctionValue>("predicate")
 
-        val entityPos = program.context.pos
-        val pos = BlockPos(entityPos.x + x, entityPos.y + y, entityPos.z + z)
-        val world = program.context.entity.level ?: throw RunException("World is null")
+            val entityPos = program.context.pos
+            val pos = BlockPos(entityPos.x + x, entityPos.y + y, entityPos.z + z)
+            val world = program.context.entity.level ?: throw RunException("World is null")
 
-        val containers = program.context.entity.getConnectedContainers()
+            val containers = program.context.entity.getConnectedContainers()
 
-        for (container in containers) {
-            for (slot in 0..<container.containerSize) {
-                val stack = container.getItem(slot)
+            for (container in containers) {
+                for (slot in 0..<container.containerSize) {
+                    val stack = container.getItem(slot)
 
-                if (stack.`is`(Items.AIR)) {
-                    continue
-                }
-
-                val predicateArguments = Arguments(mutableListOf(ItemValue(stack.item)), mutableMapOf())
-                val predicateResult = predicate.call(program, predicateArguments).cast<BooleanValue>()
-
-                if (!predicateResult.value) {
-                    continue
-                }
-
-                val facing = program.context.entity.facing
-                val hit = BlockHitResult(Vec3.atCenterOf(pos), facing, pos, false)
-                val player = FakePlayer.get(world as ServerLevel)
-
-                var result = world.getBlockState(pos).useItemOn(stack, world, player, InteractionHand.MAIN_HAND, hit)
-
-                if (result is InteractionResult.TryEmptyHandInteraction) {
-                    if (stack.useOn(UseOnContext(world, player, InteractionHand.MAIN_HAND, stack, hit)) !is InteractionResult.Pass) {
-                        return BooleanValue(true)
+                    if (stack.`is`(Items.AIR)) {
+                        continue
                     }
-                }
 
-                player.setPos(Vec3.atCenterOf(pos).add(0.0, -1.5, 0.0))
-                player.inventory.clearContent()
-                val newStack = stack.split(1)
+                    val predicateArguments = Arguments(mutableListOf(ItemValue(stack.item)), mutableMapOf())
+                    val predicateResult = context(predicateArguments) { predicate.call().cast<BooleanValue>() }
 
-                if (stack.isEmpty) {
-                    container.removeItemNoUpdate(slot)
-                }
+                    if (!predicateResult.value) {
+                        continue
+                    }
 
-                player.addItem(newStack)
-                result = player.mainHandItem.item.use(world, player, InteractionHand.MAIN_HAND)
+                    val facing = program.context.entity.facing
+                    val hit = BlockHitResult(Vec3.atCenterOf(pos), facing, pos, false)
+                    val player = FakePlayer.get(world as ServerLevel)
 
-                if (result is InteractionResult.Success) {
-                    player.addItem(result.heldItemTransformedTo()!!)
+                    var result = world.getBlockState(pos).useItemOn(stack, world, player, InteractionHand.MAIN_HAND, hit)
 
-                    for (playerSlot in 0..<player.inventory.containerSize) {
-                        val playerStack = player.inventory.getItem(playerSlot)
-
-                        if (playerStack.`is`(Items.AIR)) {
-                            continue
+                    if (result is InteractionResult.TryEmptyHandInteraction) {
+                        if (stack.useOn(UseOnContext(world, player, InteractionHand.MAIN_HAND, stack, hit)) !is InteractionResult.Pass) {
+                            return BooleanValue(true)
                         }
+                    }
 
-                        for (container in program.context.entity.getConnectedContainers()) {
-                            for (slot in 0..<container.containerSize) {
-                                val stack = container.getItem(slot)
+                    player.setPos(Vec3.atCenterOf(pos).add(0.0, -1.5, 0.0))
+                    player.inventory.clearContent()
+                    val newStack = stack.split(1)
 
-                                if (stack.`is`(Items.AIR)) {
-                                    container.setItem(slot, playerStack)
-                                    player.inventory.removeItemNoUpdate(playerSlot)
-                                    break
-                                }
+                    if (stack.isEmpty) {
+                        container.removeItemNoUpdate(slot)
+                    }
 
-                                if (!playerStack.`is`(stack.item)) {
-                                    continue
-                                }
+                    player.addItem(newStack)
+                    result = player.mainHandItem.item.use(world, player, InteractionHand.MAIN_HAND)
 
-                                val move = min(playerStack.count, stack.maxStackSize - stack.count)
+                    if (result is InteractionResult.Success) {
+                        player.addItem(result.heldItemTransformedTo()!!)
 
-                                if (move <= 0) {
-                                    continue
-                                }
+                        for (playerSlot in 0..<player.inventory.containerSize) {
+                            val playerStack = player.inventory.getItem(playerSlot)
 
-                                playerStack.shrink(move)
-                                stack.grow(move)
+                            if (playerStack.`is`(Items.AIR)) {
+                                continue
+                            }
 
-                                if (playerStack.isEmpty) {
-                                    player.inventory.removeItemNoUpdate(playerSlot)
-                                    break
+                            for (container in program.context.entity.getConnectedContainers()) {
+                                for (slot in 0..<container.containerSize) {
+                                    val stack = container.getItem(slot)
+
+                                    if (stack.`is`(Items.AIR)) {
+                                        container.setItem(slot, playerStack)
+                                        player.inventory.removeItemNoUpdate(playerSlot)
+                                        break
+                                    }
+
+                                    if (!playerStack.`is`(stack.item)) {
+                                        continue
+                                    }
+
+                                    val move = min(playerStack.count, stack.maxStackSize - stack.count)
+
+                                    if (move <= 0) {
+                                        continue
+                                    }
+
+                                    playerStack.shrink(move)
+                                    stack.grow(move)
+
+                                    if (playerStack.isEmpty) {
+                                        player.inventory.removeItemNoUpdate(playerSlot)
+                                        break
+                                    }
                                 }
                             }
                         }
                     }
+
+                    return BooleanValue(true)
                 }
-
-                return BooleanValue(true)
             }
-        }
 
-        return BooleanValue(false)
+            return BooleanValue(false)
+        }
     }
 }

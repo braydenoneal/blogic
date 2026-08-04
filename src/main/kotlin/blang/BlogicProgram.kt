@@ -29,7 +29,7 @@ data class BlogicProgram(
 
         while (true) {
             try {
-                main.call(this, Arguments(mutableListOf(), mutableMapOf()))
+                context(this, Arguments(mutableListOf(), mutableMapOf())) { main.call() }
                 return
             } catch (_: IncompleteException) {
                 if (wait) {

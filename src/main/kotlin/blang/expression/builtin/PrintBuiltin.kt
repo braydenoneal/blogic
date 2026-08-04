@@ -10,22 +10,24 @@ import program.expression.value.util.Null
 
 object PrintBuiltin {
     fun call(program: Program, arguments: Arguments): Value<*> {
-        val program = BlogicProgram.cast(program.actionProgram)
-        val value = arguments.getAny(program, "value", StringValue(""))
-        var string = value.toString()
+        context(program) {
+            val program = BlogicProgram.cast(program.actionProgram)
+            val value = arguments.getAny("value", StringValue(""))
+            var string = value.toString()
 
-        if (value is StringValue) {
-            string = string.substring(1, string.length - 1)
-        }
-
-        val world = program.context.entity.level
-
-        if (world != null && world.server != null) {
-            for (player in world.server?.playerList?.players!!) {
-                player.sendSystemMessage(Component.nullToEmpty(string))
+            if (value is StringValue) {
+                string = string.substring(1, string.length - 1)
             }
-        }
 
-        return Null.VALUE
+            val world = program.context.entity.level
+
+            if (world != null && world.server != null) {
+                for (player in world.server?.playerList?.players!!) {
+                    player.sendSystemMessage(Component.nullToEmpty(string))
+                }
+            }
+
+            return Null.VALUE
+        }
     }
 }

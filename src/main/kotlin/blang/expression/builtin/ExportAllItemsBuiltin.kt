@@ -17,104 +17,106 @@ import kotlin.math.min
 
 object ExportAllItemsBuiltin {
     fun call(program: Program, arguments: Arguments): Value<*> {
-        val program = BlogicProgram.cast(program.actionProgram)
-        val x = arguments.get<IntegerValue>(program, "x").value
-        val y = arguments.get<IntegerValue>(program, "y").value
-        val z = arguments.get<IntegerValue>(program, "z").value
-        val predicate = arguments.get<FunctionValue>(program, "predicate")
-        val initialCount = arguments.getAny(program, "count", Null.VALUE)
-        var count: Int? = null
+        context(program) {
+            val program = BlogicProgram.cast(program.actionProgram)
+            val x = arguments.get<IntegerValue>("x").value
+            val y = arguments.get<IntegerValue>("y").value
+            val z = arguments.get<IntegerValue>("z").value
+            val predicate = arguments.get<FunctionValue>("predicate")
+            val initialCount = arguments.getAny("count", Null.VALUE)
+            var count: Int? = null
 
-        if (initialCount is IntegerValue) {
-            count = initialCount.value
-        }
+            if (initialCount is IntegerValue) {
+                count = initialCount.value
+            }
 
-        val deleteOverflow = arguments.get<BooleanValue>(program, "deleteOverflow", BooleanValue(false)).value
+            val deleteOverflow = arguments.get<BooleanValue>("deleteOverflow", BooleanValue(false)).value
 
-        val world = program.context.entity.level ?: throw RunException("World is null")
+            val world = program.context.entity.level ?: throw RunException("World is null")
 
-        val entityPos = program.context.pos
-        val exportEntity = world.getBlockEntity(BlockPos(entityPos.x + x, entityPos.y + y, entityPos.z + z))
+            val entityPos = program.context.pos
+            val exportEntity = world.getBlockEntity(BlockPos(entityPos.x + x, entityPos.y + y, entityPos.z + z))
 
-        if (exportEntity !is BaseContainerBlockEntity) {
-            throw RunException("Block at position is not a container")
-        }
+            if (exportEntity !is BaseContainerBlockEntity) {
+                throw RunException("Block at position is not a container")
+            }
 
-        val containers = program.context.entity.getConnectedContainers()
+            val containers = program.context.entity.getConnectedContainers()
 
-        for (container in containers) {
-            for (slot in 0..<container.containerSize) {
-                val stack = container.getItem(slot)
+            for (container in containers) {
+                for (slot in 0..<container.containerSize) {
+                    val stack = container.getItem(slot)
 
-                val predicateArguments = Arguments(mutableListOf(ItemValue(stack.item)), mutableMapOf())
-                val predicateResult = predicate.call(program, predicateArguments).cast<BooleanValue>()
+                    val predicateArguments = Arguments(mutableListOf(ItemValue(stack.item)), mutableMapOf())
+                    val predicateResult = context(predicateArguments) { predicate.call().cast<BooleanValue>() }
 
-                if (!predicateResult.value) {
-                    continue
-                }
-
-                for (exportSlot in 0..<exportEntity.containerSize) {
-                    if (count != null && count <= 0) {
-                        return Null.VALUE
+                    if (!predicateResult.value) {
+                        continue
                     }
 
-                    val exportStack = exportEntity.getItem(exportSlot)
+                    for (exportSlot in 0..<exportEntity.containerSize) {
+                        if (count != null && count <= 0) {
+                            return Null.VALUE
+                        }
 
-                    if (exportStack.`is`(Items.AIR)) {
+                        val exportStack = exportEntity.getItem(exportSlot)
+
+                        if (exportStack.`is`(Items.AIR)) {
+                            if (count != null) {
+                                if (count - stack.count >= 0) {
+                                    count -= stack.count
+                                } else {
+                                    stack.shrink(count)
+
+                                    val newStack = stack.copy()
+                                    newStack.count = count
+                                    exportEntity.setItem(exportSlot, newStack)
+
+                                    return Null.VALUE
+                                }
+                            }
+
+                            container.removeItemNoUpdate(slot)
+                            exportEntity.setItem(exportSlot, stack)
+                            break
+                        }
+
+                        if (!exportStack.`is`(stack.item)) {
+                            continue
+                        }
+
+                        var move = min(stack.count, exportStack.maxStackSize - exportStack.count)
+
+                        if (move <= 0) {
+                            continue
+                        }
+
                         if (count != null) {
-                            if (count - stack.count >= 0) {
-                                count -= stack.count
+                            if (count - move >= 0) {
+                                count -= move
                             } else {
-                                stack.shrink(count)
-
-                                val newStack = stack.copy()
-                                newStack.count = count
-                                exportEntity.setItem(exportSlot, newStack)
-
-                                return Null.VALUE
+                                move = count
+                                count = 0
                             }
                         }
 
-                        container.removeItemNoUpdate(slot)
-                        exportEntity.setItem(exportSlot, stack)
-                        break
-                    }
+                        stack.shrink(move)
+                        exportStack.grow(move)
 
-                    if (!exportStack.`is`(stack.item)) {
-                        continue
-                    }
-
-                    var move = min(stack.count, exportStack.maxStackSize - exportStack.count)
-
-                    if (move <= 0) {
-                        continue
-                    }
-
-                    if (count != null) {
-                        if (count - move >= 0) {
-                            count -= move
-                        } else {
-                            move = count
-                            count = 0
+                        if (stack.isEmpty) {
+                            container.removeItemNoUpdate(slot)
+                            exportEntity.setItem(exportSlot, exportStack)
+                            break
                         }
                     }
 
-                    stack.shrink(move)
-                    exportStack.grow(move)
-
-                    if (stack.isEmpty) {
+                    if (deleteOverflow) {
                         container.removeItemNoUpdate(slot)
-                        exportEntity.setItem(exportSlot, exportStack)
-                        break
                     }
                 }
-
-                if (deleteOverflow) {
-                    container.removeItemNoUpdate(slot)
-                }
             }
-        }
 
-        return Null.VALUE
+            return Null.VALUE
+        }
     }
 }

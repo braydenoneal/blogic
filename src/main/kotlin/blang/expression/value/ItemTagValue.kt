@@ -25,8 +25,9 @@ class ItemTagValue(value: TagKey<Item>) : Value<TagKey<Item>>(value) {
     companion object : Static {
         override val name: String = "ItemTag"
 
-        override fun innerCall(program: Program, arguments: Arguments): Value<*> {
-            val name = arguments.get<StringValue>(program, "name").value
+        context(program: Program, arguments: Arguments)
+        override fun innerCall(): Value<*> {
+            val name = arguments.get<StringValue>("name").value
             return ItemTagValue(TagKey.create(Registries.ITEM, Identifier.parse(name)))
         }
     }

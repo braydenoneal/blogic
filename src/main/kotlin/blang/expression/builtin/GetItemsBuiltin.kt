@@ -10,17 +10,19 @@ import program.expression.value.Value
 
 object GetItemsBuiltin {
     fun call(program: Program, @Suppress("unused") arguments: Arguments): Value<*> {
-        val program = BlogicProgram.cast(program.actionProgram)
-        val items: MutableList<Value<*>> = mutableListOf()
+        context(program) {
+            val program = BlogicProgram.cast(program.actionProgram)
+            val items: MutableList<Value<*>> = mutableListOf()
 
-        for (container in program.context.entity.getConnectedContainers()) {
-            container.iterator().forEachRemaining { stack ->
-                if (!stack.`is`(Items.AIR) && !items.contains(ItemValue(stack.item))) {
-                    items.add(ItemValue(stack.item))
+            for (container in program.context.entity.getConnectedContainers()) {
+                container.iterator().forEachRemaining { stack ->
+                    if (!stack.`is`(Items.AIR) && !items.contains(ItemValue(stack.item))) {
+                        items.add(ItemValue(stack.item))
+                    }
                 }
             }
-        }
 
-        return ListValue(items)
+            return ListValue(items)
+        }
     }
 }
