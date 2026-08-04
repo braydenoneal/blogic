@@ -12,7 +12,7 @@ import program.expression.value.util.Null
 
 object DeleteItemsBuiltin {
     fun call(program: Program, arguments: Arguments): Value<*> {
-        val program = BlogicProgram.cast(program)
+        val program = BlogicProgram.cast(program.actionProgram)
         val itemPredicate = arguments.get<FunctionValue>(program, "itemPredicate")
         val initialCount = arguments.getAny(program, "count", Null.VALUE)
         var count: Int? = null

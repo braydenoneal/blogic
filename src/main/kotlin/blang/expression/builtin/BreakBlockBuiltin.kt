@@ -22,11 +22,19 @@ import kotlin.math.min
 
 object BreakBlockBuiltin {
     fun call(program: Program, arguments: Arguments): Value<*> {
-        val program = BlogicProgram.cast(program)
+        val program = BlogicProgram.cast(program.actionProgram)
         val x = arguments.get<IntegerValue>(program, "x").value
         val y = arguments.get<IntegerValue>(program, "y").value
         val z = arguments.get<IntegerValue>(program, "z").value
-        val predicate = arguments.get<FunctionValue>(program, "predicate")
+        val predicate = arguments.get<FunctionValue>(program, "predicate")/*
+        predicate:
+            when not passed in: break all blocks
+            when a string is passed in: block(string)
+            when a block is passed in: block
+            when an item is passed in: item as block
+            when a function is passed in: predicate
+         */
+
         val silkTouch = arguments.get<BooleanValue>(program, "silkTouch", BooleanValue(false)).value
 
         /*

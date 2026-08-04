@@ -4,10 +4,7 @@ import blang.codec.Codecs.STRUCT_DEFINITION_CODEC
 import blang.codec.Codecs.mutableListCodec
 import blang.codec.Codecs.mutableMapCodec
 import blang.codec.expression.PairCodec.Companion.pairCodec
-import blang.expression.value.BlockValue
-import blang.expression.value.ItemStackValue
-import blang.expression.value.ItemValue
-import blang.expression.value.TagValue
+import blang.expression.value.*
 import com.mojang.serialization.Codec
 import com.mojang.serialization.MapCodec
 import com.mojang.serialization.codecs.RecordCodecBuilder
@@ -106,9 +103,14 @@ object ValueCodecs {
             BuiltInRegistries.ITEM.byNameCodec().fieldOf("value").forGetter(ItemValue::value),
         ).apply(it, ::ItemValue)
     }
-    val TAG_CODEC: MapCodec<TagValue> = mapCodec {
+    val ITEM_TAG_CODEC: MapCodec<ItemTagValue> = mapCodec {
         it.group(
-            TagKey.hashedCodec(Registries.ITEM).fieldOf("value").forGetter(TagValue::value),
-        ).apply(it, ::TagValue)
+            TagKey.hashedCodec(Registries.ITEM).fieldOf("value").forGetter(ItemTagValue::value),
+        ).apply(it, ::ItemTagValue)
+    }
+    val BLOCK_TAG_CODEC: MapCodec<BlockTagValue> = mapCodec {
+        it.group(
+            TagKey.hashedCodec(Registries.BLOCK).fieldOf("value").forGetter(BlockTagValue::value),
+        ).apply(it, ::BlockTagValue)
     }
 }

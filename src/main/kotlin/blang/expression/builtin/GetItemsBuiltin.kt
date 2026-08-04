@@ -9,12 +9,8 @@ import program.expression.value.ListValue
 import program.expression.value.Value
 
 object GetItemsBuiltin {
-    fun call(
-        program: Program,
-        @Suppress("unused")
-        arguments: Arguments,
-    ): Value<*> {
-        val program = BlogicProgram.cast(program)
+    fun call(program: Program, @Suppress("unused") arguments: Arguments): Value<*> {
+        val program = BlogicProgram.cast(program.actionProgram)
         val items: MutableList<Value<*>> = mutableListOf()
 
         for (container in program.context.entity.getConnectedContainers()) {

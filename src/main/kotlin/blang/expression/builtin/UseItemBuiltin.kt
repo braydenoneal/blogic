@@ -22,7 +22,7 @@ import kotlin.math.min
 
 object UseItemBuiltin {
     fun call(program: Program, arguments: Arguments): Value<*> {
-        val program = BlogicProgram.cast(program)
+        val program = BlogicProgram.cast(program.actionProgram)
         val x = arguments.get<IntegerValue>(program, "x").value
         val y = arguments.get<IntegerValue>(program, "y").value
         val z = arguments.get<IntegerValue>(program, "z").value

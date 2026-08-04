@@ -11,7 +11,7 @@ import program.expression.value.Value
 
 object GetItemCountBuiltin {
     fun call(program: Program, arguments: Arguments): Value<*> {
-        val program = BlogicProgram.cast(program)
+        val program = BlogicProgram.cast(program.actionProgram)
         val predicate = arguments.get<FunctionValue>(program, "predicate")
         var count = 0
 

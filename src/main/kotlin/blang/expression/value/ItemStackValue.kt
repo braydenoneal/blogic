@@ -12,8 +12,6 @@ class ItemStackValue(value: ItemStack) : Value<ItemStack>(value) {
     }
 
     override fun hashCode(): Int {
-        var result = super.hashCode()
-        result = 31 * result + ValueCodecs.ITEM_STACK_CODEC.hashCode()
-        return result
+        return 31 * super.hashCode() + ValueCodecs.ITEM_STACK_CODEC.hashCode()
     }
 }

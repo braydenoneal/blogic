@@ -10,7 +10,7 @@ import program.expression.value.util.Null
 
 object PrintBuiltin {
     fun call(program: Program, arguments: Arguments): Value<*> {
-        val program = BlogicProgram.cast(program)
+        val program = BlogicProgram.cast(program.actionProgram)
         val value = arguments.getAny(program, "value", StringValue(""))
         var string = value.toString()
 
