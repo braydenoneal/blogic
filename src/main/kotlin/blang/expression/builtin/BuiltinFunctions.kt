@@ -9,6 +9,7 @@ object BuiltinFunctions {
         BuiltinFunctions.register("deleteItems", DeleteItemsBuiltin)
         BuiltinFunctions.register("exportAllItems", ExportAllItemsBuiltin)
         BuiltinFunctions.register("getBlock", GetBlockBuiltin)
+        BuiltinFunctions.register("getBlockPos", GetBlockPosBuiltin)
         BuiltinFunctions.register("getItemCount", GetItemCountBuiltin)
         BuiltinFunctions.register("getItems", GetItemsBuiltin)
         BuiltinFunctions.register("placeBlock", PlaceBlockBuiltin)
