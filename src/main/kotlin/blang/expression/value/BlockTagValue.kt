@@ -10,6 +10,7 @@ import program.expression.Arguments
 import program.expression.value.Static
 import program.expression.value.StringValue
 import program.expression.value.Value
+import program.expression.value.get
 
 class BlockTagValue(value: TagKey<Block>) : Value<TagKey<Block>>(value) {
     override fun typeString(): String = "blockTag"
@@ -27,7 +28,7 @@ class BlockTagValue(value: TagKey<Block>) : Value<TagKey<Block>>(value) {
 
         context(program: Program, arguments: Arguments)
         override fun innerCall(): Value<*> {
-            val name = arguments.get<StringValue>("name").value
+            val name = get<StringValue>("name").value
             return BlockTagValue(TagKey.create(Registries.BLOCK, Identifier.parse(name)))
         }
     }

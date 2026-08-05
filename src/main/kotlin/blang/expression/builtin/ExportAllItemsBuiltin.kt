@@ -16,18 +16,18 @@ object ExportAllItemsBuiltin : Callable {
     context(program: Program, arguments: Arguments)
     override fun innerCall(): Value<*> {
         val program = BlogicProgram.cast(program.actionProgram)
-        val x = arguments.get<IntegerValue>("x").value
-        val y = arguments.get<IntegerValue>("y").value
-        val z = arguments.get<IntegerValue>("z").value
-        val predicate = arguments.get<FunctionValue>("predicate")
-        val initialCount = arguments.getAny("count", Null.VALUE)
+        val x = get<IntegerValue>("x").value
+        val y = get<IntegerValue>("y").value
+        val z = get<IntegerValue>("z").value
+        val predicate = get<FunctionValue>("predicate")
+        val initialCount = getAny("count", Null.VALUE)
         var count: Int? = null
 
         if (initialCount is IntegerValue) {
             count = initialCount.value
         }
 
-        val deleteOverflow = arguments.get<BooleanValue>("deleteOverflow", BooleanValue(false)).value
+        val deleteOverflow = get<BooleanValue>("deleteOverflow", BooleanValue(false)).value
 
         val world = program.context.entity.level ?: throw RunException("World is null")
 

@@ -1,5 +1,7 @@
 ## Todo
 
+- replace block, item, etc. string constructors with static values (`Blocks.STONE` instead of `Block("stone")`)
+    - but also have `Blocks.fromString("stone")` as an option
 - extract duplicate functionality from builtins (pos, predicate, etc.)
 - relative and absolute positions
 - creative controller block/mode that doesn't require having items in storage

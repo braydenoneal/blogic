@@ -11,8 +11,8 @@ object DeleteItemsBuiltin : Callable {
     context(program: Program, arguments: Arguments)
     override fun innerCall(): Value<*> {
         val program = BlogicProgram.cast(program.actionProgram)
-        val itemPredicate = arguments.get<FunctionValue>("itemPredicate")
-        val initialCount = arguments.getAny("count", Null.VALUE)
+        val itemPredicate = get<FunctionValue>("itemPredicate")
+        val initialCount = getAny("count", Null.VALUE)
         var count: Int? = null
 
         if (initialCount is IntegerValue) {

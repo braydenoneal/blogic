@@ -7,13 +7,14 @@ import program.expression.Arguments
 import program.expression.value.Callable
 import program.expression.value.StringValue
 import program.expression.value.Value
+import program.expression.value.getAny
 import program.expression.value.util.Null
 
 object PrintBuiltin : Callable {
     context(program: Program, arguments: Arguments)
     override fun innerCall(): Value<*> {
         val program = BlogicProgram.cast(program.actionProgram)
-        val value = arguments.getAny("value", StringValue(""))
+        val value = getAny("value", StringValue(""))
         var string = value.toString()
 
         if (value is StringValue) {

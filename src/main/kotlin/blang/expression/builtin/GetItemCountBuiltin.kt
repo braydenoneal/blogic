@@ -10,7 +10,7 @@ object GetItemCountBuiltin : Callable {
     context(program: Program, arguments: Arguments)
     override fun innerCall(): Value<*> {
         val program = BlogicProgram.cast(program.actionProgram)
-        val predicate = arguments.get<FunctionValue>("predicate")
+        val predicate = get<FunctionValue>("predicate")
         var count = 0
 
         for (container in program.context.entity.getConnectedContainers()) {

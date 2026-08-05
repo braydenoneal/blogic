@@ -21,19 +21,21 @@ object BreakBlockBuiltin : Callable {
     context(program: Program, arguments: Arguments)
     override fun innerCall(): Value<*> {
         val program = BlogicProgram.cast(program.actionProgram)
-        val x = arguments.get<IntegerValue>("x").value
-        val y = arguments.get<IntegerValue>("y").value
-        val z = arguments.get<IntegerValue>("z").value
-        val predicate = arguments.get<FunctionValue>("predicate")/*
-            predicate:
-                when not passed in: break all blocks
-                when a string is passed in: block(string)
-                when a block is passed in: block
-                when an item is passed in: item as block
-                when a function is passed in: predicate
-             */
+        val x = get<IntegerValue>("x").value
+        val y = get<IntegerValue>("y").value
+        val z = get<IntegerValue>("z").value
+        val predicate = get<FunctionValue>("predicate")
 
-        val silkTouch = arguments.get<BooleanValue>("silkTouch", BooleanValue(false)).value
+        /*
+        predicate:
+            when not passed in: break all blocks
+            when a string is passed in: block(string)
+            when a block is passed in: block
+            when an item is passed in: item as block
+            when a function is passed in: predicate
+         */
+
+        val silkTouch = get<BooleanValue>("silkTouch", BooleanValue(false)).value
 
         /*
         Block

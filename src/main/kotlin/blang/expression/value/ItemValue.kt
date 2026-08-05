@@ -6,10 +6,8 @@ import net.minecraft.resources.Identifier
 import net.minecraft.world.item.Item
 import program.Program
 import program.expression.Arguments
-import program.expression.value.ListValue
+import program.expression.value.*
 import program.expression.value.Static
-import program.expression.value.StringValue
-import program.expression.value.Value
 
 class ItemValue(value: Item) : Value<Item>(value) {
     override fun typeString(): String = "item"
@@ -39,7 +37,7 @@ class ItemValue(value: Item) : Value<Item>(value) {
 
         context(program: Program, arguments: Arguments)
         override fun innerCall(): Value<*> {
-            val name = arguments.get<StringValue>("name").value
+            val name = get<StringValue>("name").value
             return ItemValue(BuiltInRegistries.ITEM.getValue(Identifier.parse(name)))
         }
     }

@@ -10,6 +10,7 @@ import program.expression.Arguments
 import program.expression.value.Static
 import program.expression.value.StringValue
 import program.expression.value.Value
+import program.expression.value.get
 
 class ItemTagValue(value: TagKey<Item>) : Value<TagKey<Item>>(value) {
     override fun typeString(): String = "itemTag"
@@ -27,7 +28,7 @@ class ItemTagValue(value: TagKey<Item>) : Value<TagKey<Item>>(value) {
 
         context(program: Program, arguments: Arguments)
         override fun innerCall(): Value<*> {
-            val name = arguments.get<StringValue>("name").value
+            val name = get<StringValue>("name").value
             return ItemTagValue(TagKey.create(Registries.ITEM, Identifier.parse(name)))
         }
     }

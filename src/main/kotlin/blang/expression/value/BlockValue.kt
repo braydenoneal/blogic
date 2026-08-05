@@ -6,10 +6,8 @@ import net.minecraft.resources.Identifier
 import net.minecraft.world.level.block.Block
 import program.Program
 import program.expression.Arguments
-import program.expression.value.ListValue
+import program.expression.value.*
 import program.expression.value.Static
-import program.expression.value.StringValue
-import program.expression.value.Value
 
 class BlockValue(value: Block) : Value<Block>(value) {
     override fun typeString(): String = "block"
@@ -44,7 +42,7 @@ class BlockValue(value: Block) : Value<Block>(value) {
 
         context(program: Program, arguments: Arguments)
         override fun innerCall(): Value<*> {
-            val name = arguments.get<StringValue>("name").value
+            val name = get<StringValue>("name").value
             return BlockValue(BuiltInRegistries.BLOCK.getValue(Identifier.parse(name)))
         }
     }
