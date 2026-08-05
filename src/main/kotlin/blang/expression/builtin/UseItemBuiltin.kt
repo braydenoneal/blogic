@@ -1,9 +1,7 @@
 package blang.expression.builtin
 
-import blang.BlogicProgram
-import blang.expression.value.ItemValue
+import blang.Context
 import net.fabricmc.fabric.api.entity.FakePlayer
-import net.minecraft.core.BlockPos
 import net.minecraft.server.level.ServerLevel
 import net.minecraft.world.InteractionHand
 import net.minecraft.world.InteractionResult
@@ -12,25 +10,18 @@ import net.minecraft.world.item.context.UseOnContext
 import net.minecraft.world.phys.BlockHitResult
 import net.minecraft.world.phys.Vec3
 import program.Program
-import program.RunException
 import program.expression.Arguments
-import program.expression.value.*
+import program.expression.value.BooleanValue
+import program.expression.value.Value
 import kotlin.math.min
 
-object UseItemBuiltin : Callable {
-    context(program: Program, arguments: Arguments)
-    override fun innerCall(): Value<*> {
-        val program = BlogicProgram.cast(program.actionProgram)
-        val x = get<IntegerValue>("x").value
-        val y = get<IntegerValue>("y").value
-        val z = get<IntegerValue>("z").value
-        val predicate = get<FunctionValue>("predicate")
-
-        val entityPos = program.context.pos
-        val pos = BlockPos(entityPos.x + x, entityPos.y + y, entityPos.z + z)
-        val world = program.context.entity.level ?: throw RunException("World is null")
-
-        val containers = program.context.entity.getConnectedContainers()
+object UseItemBuiltin : BlogicBuiltin() {
+    context(program: Program, arguments: Arguments, context: Context)
+    override fun blogicCall(): Value<*> {
+        val pos = getBlockPos()
+        val predicate = getPredicate()
+        val level = getLevel()
+        val containers = context.entity.getConnectedContainers()
 
         for (container in containers) {
             for (slot in 0..<container.containerSize) {
@@ -40,21 +31,18 @@ object UseItemBuiltin : Callable {
                     continue
                 }
 
-                val predicateArguments = Arguments(mutableListOf(ItemValue(stack.item)), mutableMapOf())
-                val predicateResult = context(predicateArguments) { predicate.call().cast<BooleanValue>() }
-
-                if (!predicateResult.value) {
+                if (!getPredicateResult(stack.item, predicate)) {
                     continue
                 }
 
-                val facing = program.context.entity.facing
+                val facing = context.entity.facing
                 val hit = BlockHitResult(Vec3.atCenterOf(pos), facing, pos, false)
-                val player = FakePlayer.get(world as ServerLevel)
+                val player = FakePlayer.get(level as ServerLevel)
 
-                var result = world.getBlockState(pos).useItemOn(stack, world, player, InteractionHand.MAIN_HAND, hit)
+                var result = level.getBlockState(pos).useItemOn(stack, level, player, InteractionHand.MAIN_HAND, hit)
 
                 if (result is InteractionResult.TryEmptyHandInteraction) {
-                    if (stack.useOn(UseOnContext(world, player, InteractionHand.MAIN_HAND, stack, hit)) !is InteractionResult.Pass) {
+                    if (stack.useOn(UseOnContext(level, player, InteractionHand.MAIN_HAND, stack, hit)) !is InteractionResult.Pass) {
                         return BooleanValue(true)
                     }
                 }
@@ -68,7 +56,7 @@ object UseItemBuiltin : Callable {
                 }
 
                 player.addItem(newStack)
-                result = player.mainHandItem.item.use(world, player, InteractionHand.MAIN_HAND)
+                result = player.mainHandItem.item.use(level, player, InteractionHand.MAIN_HAND)
 
                 if (result is InteractionResult.Success) {
                     player.addItem(result.heldItemTransformedTo()!!)
@@ -80,7 +68,7 @@ object UseItemBuiltin : Callable {
                             continue
                         }
 
-                        for (container in program.context.entity.getConnectedContainers()) {
+                        for (container in context.entity.getConnectedContainers()) {
                             for (slot in 0..<container.containerSize) {
                                 val stack = container.getItem(slot)
 

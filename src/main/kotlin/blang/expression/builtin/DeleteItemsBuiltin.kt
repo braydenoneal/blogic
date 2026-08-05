@@ -1,25 +1,20 @@
 package blang.expression.builtin
 
-import blang.BlogicProgram
-import blang.expression.value.ItemValue
+import blang.Context
 import program.Program
 import program.expression.Arguments
-import program.expression.value.*
+import program.expression.value.IntegerValue
+import program.expression.value.Value
+import program.expression.value.getNullable
 import program.expression.value.util.Null
 
-object DeleteItemsBuiltin : Callable {
-    context(program: Program, arguments: Arguments)
-    override fun innerCall(): Value<*> {
-        val program = BlogicProgram.cast(program.actionProgram)
-        val itemPredicate = get<FunctionValue>("itemPredicate")
-        val initialCount = getAny("count", Null.VALUE)
-        var count: Int? = null
+object DeleteItemsBuiltin : BlogicBuiltin() {
+    context(program: Program, arguments: Arguments, context: Context)
+    override fun blogicCall(): Value<*> {
+        val predicate = getPredicate()
+        var count = getNullable<IntegerValue>("count")?.value
 
-        if (initialCount is IntegerValue) {
-            count = initialCount.value
-        }
-
-        val containers = program.context.entity.getConnectedContainers()
+        val containers = context.entity.getConnectedContainers()
 
         for (container in containers) {
             for (slot in 0..<container.containerSize) {
@@ -29,10 +24,7 @@ object DeleteItemsBuiltin : Callable {
 
                 val stack = container.getItem(slot)
 
-                val predicateArguments = Arguments(mutableListOf(ItemValue(stack.item)), mutableMapOf())
-                val predicateResult = context(predicateArguments) { itemPredicate.call().cast<BooleanValue>() }
-
-                if (!predicateResult.value) {
+                if (!getPredicateResult(stack.item, predicate)) {
                     continue
                 }
 

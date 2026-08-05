@@ -1,24 +1,20 @@
 package blang.expression.builtin
 
-import blang.BlogicProgram
-import blang.expression.value.ItemValue
+import blang.Context
 import program.Program
 import program.expression.Arguments
-import program.expression.value.*
+import program.expression.value.IntegerValue
+import program.expression.value.Value
 
-object GetItemCountBuiltin : Callable {
-    context(program: Program, arguments: Arguments)
-    override fun innerCall(): Value<*> {
-        val program = BlogicProgram.cast(program.actionProgram)
-        val predicate = get<FunctionValue>("predicate")
+object GetItemCountBuiltin : BlogicBuiltin() {
+    context(program: Program, arguments: Arguments, context: Context)
+    override fun blogicCall(): Value<*> {
+        val predicate = getPredicate()
         var count = 0
 
-        for (container in program.context.entity.getConnectedContainers()) {
+        for (container in context.entity.getConnectedContainers()) {
             container.iterator().forEachRemaining { stack ->
-                val predicateArguments = Arguments(mutableListOf(ItemValue(stack.item)), mutableMapOf())
-                val predicateResult = context(predicateArguments) { predicate.call().cast<BooleanValue>() }
-
-                if (predicateResult.value) {
+                if (getPredicateResult(stack.item, predicate)) {
                     count += stack.count
                 }
             }

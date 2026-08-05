@@ -1,8 +1,6 @@
 package blang.expression.builtin
 
-import blang.BlogicProgram
-import blang.expression.value.ItemValue
-import net.minecraft.core.BlockPos
+import blang.Context
 import net.minecraft.world.item.Items
 import net.minecraft.world.level.block.entity.BaseContainerBlockEntity
 import program.Program
@@ -12,42 +10,28 @@ import program.expression.value.*
 import program.expression.value.util.Null
 import kotlin.math.min
 
-object ExportAllItemsBuiltin : Callable {
-    context(program: Program, arguments: Arguments)
-    override fun innerCall(): Value<*> {
-        val program = BlogicProgram.cast(program.actionProgram)
-        val x = get<IntegerValue>("x").value
-        val y = get<IntegerValue>("y").value
-        val z = get<IntegerValue>("z").value
-        val predicate = get<FunctionValue>("predicate")
-        val initialCount = getAny("count", Null.VALUE)
-        var count: Int? = null
-
-        if (initialCount is IntegerValue) {
-            count = initialCount.value
-        }
-
+object ExportAllItemsBuiltin : BlogicBuiltin() {
+    context(program: Program, arguments: Arguments, context: Context)
+    override fun blogicCall(): Value<*> {
+        val pos = getBlockPos()
+        val predicate = getPredicate()
+        var count = getNullable<IntegerValue>("count")?.value
         val deleteOverflow = get<BooleanValue>("deleteOverflow", BooleanValue(false)).value
 
-        val world = program.context.entity.level ?: throw RunException("World is null")
-
-        val entityPos = program.context.pos
-        val exportEntity = world.getBlockEntity(BlockPos(entityPos.x + x, entityPos.y + y, entityPos.z + z))
+        val level = getLevel()
+        val exportEntity = level.getBlockEntity(pos)
 
         if (exportEntity !is BaseContainerBlockEntity) {
             throw RunException("Block at position is not a container")
         }
 
-        val containers = program.context.entity.getConnectedContainers()
+        val containers = context.entity.getConnectedContainers()
 
         for (container in containers) {
             for (slot in 0..<container.containerSize) {
                 val stack = container.getItem(slot)
 
-                val predicateArguments = Arguments(mutableListOf(ItemValue(stack.item)), mutableMapOf())
-                val predicateResult = context(predicateArguments) { predicate.call().cast<BooleanValue>() }
-
-                if (!predicateResult.value) {
+                if (!getPredicateResult(stack.item, predicate)) {
                     continue
                 }
 

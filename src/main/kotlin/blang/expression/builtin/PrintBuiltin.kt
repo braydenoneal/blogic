@@ -1,19 +1,17 @@
 package blang.expression.builtin
 
-import blang.BlogicProgram
+import blang.Context
 import net.minecraft.network.chat.Component
 import program.Program
 import program.expression.Arguments
-import program.expression.value.Callable
 import program.expression.value.StringValue
 import program.expression.value.Value
 import program.expression.value.getAny
 import program.expression.value.util.Null
 
-object PrintBuiltin : Callable {
-    context(program: Program, arguments: Arguments)
-    override fun innerCall(): Value<*> {
-        val program = BlogicProgram.cast(program.actionProgram)
+object PrintBuiltin : BlogicBuiltin() {
+    context(program: Program, arguments: Arguments, context: Context)
+    override fun blogicCall(): Value<*> {
         val value = getAny("value", StringValue(""))
         var string = value.toString()
 
@@ -21,10 +19,10 @@ object PrintBuiltin : Callable {
             string = string.substring(1, string.length - 1)
         }
 
-        val world = program.context.entity.level
+        val level = getLevel()
 
-        if (world != null && world.server != null) {
-            for (player in world.server?.playerList?.players!!) {
+        if (level.server != null) {
+            for (player in level.server?.playerList?.players!!) {
                 player.sendSystemMessage(Component.nullToEmpty(string))
             }
         }

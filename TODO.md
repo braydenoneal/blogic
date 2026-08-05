@@ -1,9 +1,9 @@
 ## Todo
 
+- remove pos from context and just use entity.blockPos
 - replace block, item, etc. string constructors with static values (`Blocks.STONE` instead of `Block("stone")`)
     - but also have `Blocks.fromString("stone")` as an option
-- extract duplicate functionality from builtins (pos, predicate, etc.)
-- relative and absolute positions
+- relative and absolute positions (or just builtin to get world pos of the controller)
 - creative controller block/mode that doesn't require having items in storage
 - console output screen (for errors and logging without sending to chat)
 - change print to output to console and add builtin for saying a message in chat

@@ -1,9 +1,7 @@
 package blang.expression.builtin
 
-import blang.BlogicProgram
-import blang.expression.value.BlockValue
+import blang.Context
 import net.fabricmc.fabric.api.entity.FakePlayer
-import net.minecraft.core.BlockPos
 import net.minecraft.core.registries.Registries
 import net.minecraft.server.level.ServerLevel
 import net.minecraft.world.item.ItemStack
@@ -12,65 +10,37 @@ import net.minecraft.world.item.enchantment.Enchantments
 import net.minecraft.world.level.block.Block
 import net.minecraft.world.level.block.Blocks
 import program.Program
-import program.RunException
 import program.expression.Arguments
-import program.expression.value.*
+import program.expression.value.BooleanValue
+import program.expression.value.Value
+import program.expression.value.get
 import kotlin.math.min
 
-object BreakBlockBuiltin : Callable {
-    context(program: Program, arguments: Arguments)
-    override fun innerCall(): Value<*> {
-        val program = BlogicProgram.cast(program.actionProgram)
-        val x = get<IntegerValue>("x").value
-        val y = get<IntegerValue>("y").value
-        val z = get<IntegerValue>("z").value
-        val predicate = get<FunctionValue>("predicate")
-
-        /*
-        predicate:
-            when not passed in: break all blocks
-            when a string is passed in: block(string)
-            when a block is passed in: block
-            when an item is passed in: item as block
-            when a function is passed in: predicate
-         */
-
+object BreakBlockBuiltin : BlogicBuiltin() {
+    context(program: Program, arguments: Arguments, context: Context)
+    override fun blogicCall(): Value<*> {
+        val pos = getBlockPos()
+        val predicate = getPredicate()
         val silkTouch = get<BooleanValue>("silkTouch", BooleanValue(false)).value
 
-        /*
-        Block
-            asItem
-            properties?
-            tags?
+        val level = getLevel()
+        val block = level.getBlockState(pos).block
 
-            static
-                constructor(name: String)
-         */
-
-        val entityPos = program.context.pos
-        val pos = BlockPos(entityPos.x + x, entityPos.y + y, entityPos.z + z)
-        val world = program.context.entity.level ?: throw RunException("World is null")
-
-        val block = world.getBlockState(pos).block
-
-        val predicateArguments = Arguments(mutableListOf(BlockValue(block)), mutableMapOf())
-        val predicateResult = context(predicateArguments) { predicate.call().cast<BooleanValue>() }
-
-        if (!predicateResult.value) {
+        if (!getPredicateResult(block, predicate)) {
             return BooleanValue(false)
         }
 
-        val containers = program.context.entity.getConnectedContainers()
+        val containers = context.entity.getConnectedContainers()
         val tool = ItemStack(Items.DIAMOND_PICKAXE)
 
         if (silkTouch) {
-            val registry = world.registryAccess().lookupOrThrow(Registries.ENCHANTMENT)
+            val registry = level.registryAccess().lookupOrThrow(Registries.ENCHANTMENT)
             val enchantment = registry.wrapAsHolder(registry.getValue(Enchantments.SILK_TOUCH)!!)
             tool.enchant(enchantment, 1)
         }
 
-        val drops = Block.getDrops(world.getBlockState(pos), world as ServerLevel, pos, world.getBlockEntity(pos), FakePlayer.get(world), tool)
-        world.setBlockAndUpdate(pos, Blocks.AIR.defaultBlockState())
+        val drops = Block.getDrops(level.getBlockState(pos), level as ServerLevel, pos, level.getBlockEntity(pos), FakePlayer.get(level), tool)
+        level.setBlockAndUpdate(pos, Blocks.AIR.defaultBlockState())
 
         for (drop in drops) {
             for (container in containers) {
@@ -109,6 +79,7 @@ object BreakBlockBuiltin : Callable {
 //            }
 //        }
 
+        // TODO: Return the drops as a list of item stacks
         return BooleanValue(true)
     }
 }
