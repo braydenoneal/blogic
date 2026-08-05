@@ -9,6 +9,7 @@ import com.mojang.serialization.Codec
 import com.mojang.serialization.MapCodec
 import com.mojang.serialization.codecs.RecordCodecBuilder
 import com.mojang.serialization.codecs.RecordCodecBuilder.mapCodec
+import net.minecraft.core.BlockPos
 import net.minecraft.core.registries.BuiltInRegistries
 import net.minecraft.core.registries.Registries
 import net.minecraft.tags.TagKey
@@ -87,6 +88,11 @@ object ValueCodecs {
         it.group(
             STRUCT_CODEC.fieldOf("value").forGetter(StructValue::value),
         ).apply(it, ::StructValue)
+    }
+    val BLOCK_POS_VALUE_CODEC: MapCodec<BlockPosValue> = mapCodec {
+        it.group(
+            BlockPos.CODEC.fieldOf("value").forGetter(BlockPosValue::value),
+        ).apply(it, ::BlockPosValue)
     }
     val BLOCK_VALUE_CODEC: MapCodec<BlockValue> = mapCodec {
         it.group(
