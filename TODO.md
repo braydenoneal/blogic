@@ -1,6 +1,5 @@
 ## Todo
 
-- remove pos from context and just use entity.blockPos
 - replace block, item, etc. string constructors with static values (`Blocks.STONE` instead of `Block("stone")`)
     - but also have `Blocks.fromString("stone")` as an option
 - relative and absolute positions (or just builtin to get world pos of the controller)

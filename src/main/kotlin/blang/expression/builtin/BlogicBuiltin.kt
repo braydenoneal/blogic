@@ -32,7 +32,7 @@ abstract class BlogicBuiltin : Callable {
         val x = get<IntegerValue>("x").value
         val y = get<IntegerValue>("y").value
         val z = get<IntegerValue>("z").value
-        return BlockPos(context.pos.x + x, context.pos.y + y, context.pos.z + z)
+        return context.entity.blockPos.offset(x, y, z)
     }
 
     context(program: Program, arguments: Arguments)
