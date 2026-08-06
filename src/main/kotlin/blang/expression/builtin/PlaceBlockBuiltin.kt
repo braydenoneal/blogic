@@ -7,8 +7,8 @@ import net.minecraft.world.item.Items
 import net.minecraft.world.level.block.Blocks
 import program.Program
 import program.expression.Arguments
-import program.expression.value.BooleanValue
 import program.expression.value.Value
+import program.expression.value.booleanvalue.BooleanValue
 
 object PlaceBlockBuiltin : BlogicBuiltin() {
     context(program: Program, arguments: Arguments, context: Context)

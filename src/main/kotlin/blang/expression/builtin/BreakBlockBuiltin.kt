@@ -11,8 +11,8 @@ import net.minecraft.world.level.block.Block
 import net.minecraft.world.level.block.Blocks
 import program.Program
 import program.expression.Arguments
-import program.expression.value.BooleanValue
 import program.expression.value.Value
+import program.expression.value.booleanvalue.BooleanValue
 import program.expression.value.get
 import kotlin.math.min
 
@@ -42,6 +42,9 @@ object BreakBlockBuiltin : BlogicBuiltin() {
         val drops = Block.getDrops(level.getBlockState(pos), level as ServerLevel, pos, level.getBlockEntity(pos), FakePlayer.get(level), tool)
         level.setBlockAndUpdate(pos, Blocks.AIR.defaultBlockState())
 
+        // TODO: See if the hopper functionality of inserting items can be reused/called here
+        // container.canTakeItem()
+        /** @see net.minecraft.world.level.block.entity.HopperBlockEntity */
         for (drop in drops) {
             for (container in containers) {
                 for (slot in 0..<container.containerSize) {

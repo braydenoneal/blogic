@@ -11,8 +11,8 @@ import net.minecraft.world.phys.BlockHitResult
 import net.minecraft.world.phys.Vec3
 import program.Program
 import program.expression.Arguments
-import program.expression.value.BooleanValue
 import program.expression.value.Value
+import program.expression.value.booleanvalue.BooleanValue
 import kotlin.math.min
 
 object UseItemBuiltin : BlogicBuiltin() {

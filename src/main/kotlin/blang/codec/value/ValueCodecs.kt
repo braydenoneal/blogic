@@ -4,7 +4,12 @@ import blang.codec.Codecs.STRUCT_DEFINITION_CODEC
 import blang.codec.Codecs.mutableListCodec
 import blang.codec.Codecs.mutableMapCodec
 import blang.codec.expression.PairCodec.Companion.pairCodec
-import blang.expression.value.*
+import blang.expression.value.block.BlockValue
+import blang.expression.value.blockpos.BlockPosValue
+import blang.expression.value.blocktag.BlockTagValue
+import blang.expression.value.item.ItemValue
+import blang.expression.value.itemstack.ItemStackValue
+import blang.expression.value.itemtag.ItemTagValue
 import com.mojang.serialization.Codec
 import com.mojang.serialization.MapCodec
 import com.mojang.serialization.codecs.RecordCodecBuilder
@@ -14,10 +19,20 @@ import net.minecraft.core.registries.BuiltInRegistries
 import net.minecraft.core.registries.Registries
 import net.minecraft.tags.TagKey
 import net.minecraft.world.item.ItemStack
-import program.expression.value.*
-import program.expression.value.util.Null
-import program.expression.value.util.Range
-import program.expression.value.util.Struct
+import program.expression.value.booleanvalue.BooleanValue
+import program.expression.value.floatvalue.FloatValue
+import program.expression.value.identifier.IdentifierValue
+import program.expression.value.integer.IntegerValue
+import program.expression.value.list.ListValue
+import program.expression.value.map.MapValue
+import program.expression.value.nullvalue.Null
+import program.expression.value.nullvalue.NullValue
+import program.expression.value.pair.PairValue
+import program.expression.value.range.Range
+import program.expression.value.range.RangeValue
+import program.expression.value.string.StringValue
+import program.expression.value.struct.Struct
+import program.expression.value.struct.StructValue
 
 object ValueCodecs {
     val NULL_CODEC: Codec<Null> = MapCodec.unitCodec(Null())

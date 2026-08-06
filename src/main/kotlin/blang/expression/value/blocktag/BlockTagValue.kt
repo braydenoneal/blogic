@@ -1,4 +1,4 @@
-package blang.expression.value
+package blang.expression.value.blocktag
 
 import blang.codec.value.ValueCodecs
 import net.minecraft.core.registries.Registries
@@ -8,12 +8,11 @@ import net.minecraft.world.level.block.Block
 import program.Program
 import program.expression.Arguments
 import program.expression.value.Static
-import program.expression.value.StringValue
 import program.expression.value.Value
 import program.expression.value.get
+import program.expression.value.string.StringValue
 
 class BlockTagValue(value: TagKey<Block>) : Value<TagKey<Block>>(value) {
-    override fun typeString(): String = "blockTag"
 
     override fun equals(other: Any?): Boolean {
         return other is BlockTagValue && value == other.value
@@ -23,8 +22,20 @@ class BlockTagValue(value: TagKey<Block>) : Value<TagKey<Block>>(value) {
         return 31 * super.hashCode() + ValueCodecs.BLOCK_TAG_CODEC.hashCode()
     }
 
-    companion object : Static {
-        override val name: String = "BlockTag"
+    context(program: Program)
+    override fun getItem(name: String): Value<*> {
+        return static.items[name]?.get() ?: super.getItem(name)
+    }
+
+    context(program: Program, arguments: Arguments)
+    override fun innerCallFunction(name: String, local: Boolean): Value<*> {
+        return static.functions[name]?.call() ?: super.innerCallFunction(name, local)
+    }
+
+    override val static = Companion
+
+    companion object : Static<BlockTagValue>() {
+        override val name = "BlockTag"
 
         context(program: Program, arguments: Arguments)
         override fun innerCall(): Value<*> {

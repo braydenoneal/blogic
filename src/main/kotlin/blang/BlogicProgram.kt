@@ -4,7 +4,7 @@ import program.Program
 import program.RunException
 import program.Scope
 import program.expression.Arguments
-import program.expression.value.FunctionValue
+import program.expression.value.function.FunctionValue
 import program.statement.ImportStatement
 import program.statement.IncompleteException
 import program.statement.StatementList

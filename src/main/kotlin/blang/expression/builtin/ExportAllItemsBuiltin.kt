@@ -6,8 +6,12 @@ import net.minecraft.world.level.block.entity.BaseContainerBlockEntity
 import program.Program
 import program.RunException
 import program.expression.Arguments
-import program.expression.value.*
-import program.expression.value.util.Null
+import program.expression.value.Value
+import program.expression.value.booleanvalue.BooleanValue
+import program.expression.value.get
+import program.expression.value.getNullable
+import program.expression.value.integer.IntegerValue
+import program.expression.value.nullvalue.Null
 import kotlin.math.min
 
 object ExportAllItemsBuiltin : BlogicBuiltin() {

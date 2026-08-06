@@ -2,7 +2,7 @@ import blang.codec.expression.ExpressionType
 import blang.codec.statement.StatementType
 import blang.codec.value.ValueType
 import blang.expression.builtin.BuiltinFunctions
-import blang.expression.value.Static
+import blang.expression.value.BlogicStatic
 import block.ModBlocks
 import block.entity.ModBlockEntities
 import item.ModItems
@@ -18,7 +18,7 @@ object Blogic : ModInitializer {
 
     override fun onInitialize() {
         Program.initialize()
-        Static.initialize()
+        BlogicStatic.initialize()
         BuiltinFunctions.initialize()
         ValueType.initialize()
         ExpressionType.initialize()

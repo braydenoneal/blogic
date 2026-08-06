@@ -1,15 +1,15 @@
-package blang.expression.value
+package blang.expression.value.blockpos
 
 import blang.codec.value.ValueCodecs
 import net.minecraft.core.BlockPos
 import program.Program
 import program.expression.Arguments
-import program.expression.value.*
 import program.expression.value.Static
+import program.expression.value.Value
+import program.expression.value.get
+import program.expression.value.integer.IntegerValue
 
 class BlockPosValue(value: BlockPos) : Value<BlockPos>(value) {
-    override fun typeString(): String = "blockPos"
-
     override fun equals(other: Any?): Boolean {
         return other is BlockPosValue && value == other.value
     }
@@ -20,32 +20,18 @@ class BlockPosValue(value: BlockPos) : Value<BlockPos>(value) {
 
     context(program: Program)
     override fun getItem(name: String): Value<*> {
-        return when (name) {
-            "x" -> IntegerValue(value.x)
-            "y" -> IntegerValue(value.y)
-            "z" -> IntegerValue(value.z)
-            else -> super.getItem(name)
-        }
+        return static.items[name]?.get() ?: super.getItem(name)
     }
 
     context(program: Program, arguments: Arguments)
     override fun innerCallFunction(name: String, local: Boolean): Value<*> {
-        return when (name) {
-            "offset" -> offset()
-            else -> super.innerCallFunction(name, local)
-        }
+        return static.functions[name]?.call() ?: super.innerCallFunction(name, local)
     }
 
-    context(program: Program, arguments: Arguments)
-    fun offset(): Value<*> {
-        val x = get<IntegerValue>("x").value
-        val y = get<IntegerValue>("y").value
-        val z = get<IntegerValue>("z").value
-        return BlockPosValue(value.offset(x, y, z))
-    }
+    override val static = Companion
 
-    companion object : Static {
-        override val name: String = "BlockPos"
+    companion object : Static<BlockPosValue>() {
+        override val name = "BlockPos"
 
         context(program: Program, arguments: Arguments)
         override fun innerCall(): Value<*> {
@@ -53,6 +39,16 @@ class BlockPosValue(value: BlockPos) : Value<BlockPos>(value) {
             val y = get<IntegerValue>("y").value
             val z = get<IntegerValue>("z").value
             return BlockPosValue(BlockPos(x, y, z))
+        }
+
+        override fun initializeItems() {
+            register(XItem)
+            register(YItem)
+            register(ZItem)
+        }
+
+        override fun initializeFunctions() {
+            register(OffsetFunction)
         }
     }
 }

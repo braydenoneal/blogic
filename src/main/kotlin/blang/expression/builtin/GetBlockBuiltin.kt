@@ -1,7 +1,7 @@
 package blang.expression.builtin
 
 import blang.Context
-import blang.expression.value.BlockValue
+import blang.expression.value.block.BlockValue
 import program.Program
 import program.expression.Arguments
 import program.expression.value.Value

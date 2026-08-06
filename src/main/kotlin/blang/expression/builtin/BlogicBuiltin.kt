@@ -2,8 +2,8 @@ package blang.expression.builtin
 
 import blang.BlogicProgram
 import blang.Context
-import blang.expression.value.BlockValue
-import blang.expression.value.ItemValue
+import blang.expression.value.block.BlockValue
+import blang.expression.value.item.ItemValue
 import net.minecraft.core.BlockPos
 import net.minecraft.world.item.Item
 import net.minecraft.world.level.Level
@@ -12,8 +12,13 @@ import program.Program
 import program.expression.Arguments
 import program.expression.BinaryOperatorExpression
 import program.expression.IdentifierExpression
-import program.expression.value.*
-import program.expression.value.util.Function
+import program.expression.value.Callable
+import program.expression.value.Value
+import program.expression.value.booleanvalue.BooleanValue
+import program.expression.value.function.Function
+import program.expression.value.function.FunctionValue
+import program.expression.value.get
+import program.expression.value.integer.IntegerValue
 import program.statement.ReturnStatement
 import program.statement.StatementList
 

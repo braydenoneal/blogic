@@ -11,9 +11,9 @@ import com.mojang.serialization.codecs.RecordCodecBuilder
 import com.mojang.serialization.codecs.RecordCodecBuilder.mapCodec
 import program.Program
 import program.Scope
-import program.expression.value.FunctionValue
-import program.expression.value.util.Function
-import program.expression.value.util.StructDefinition
+import program.expression.value.function.Function
+import program.expression.value.function.FunctionValue
+import program.expression.value.struct.StructDefinition
 import program.statement.StatementList
 import java.util.*
 

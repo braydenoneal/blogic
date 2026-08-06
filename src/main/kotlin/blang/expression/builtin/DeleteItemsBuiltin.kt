@@ -3,10 +3,10 @@ package blang.expression.builtin
 import blang.Context
 import program.Program
 import program.expression.Arguments
-import program.expression.value.IntegerValue
 import program.expression.value.Value
 import program.expression.value.getNullable
-import program.expression.value.util.Null
+import program.expression.value.integer.IntegerValue
+import program.expression.value.nullvalue.Null
 
 object DeleteItemsBuiltin : BlogicBuiltin() {
     context(program: Program, arguments: Arguments, context: Context)

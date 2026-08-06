@@ -5,8 +5,8 @@ import net.minecraft.world.level.block.entity.BaseContainerBlockEntity
 import program.Program
 import program.RunException
 import program.expression.Arguments
-import program.expression.value.IntegerValue
 import program.expression.value.Value
+import program.expression.value.integer.IntegerValue
 
 object ReadItemCountBuiltin : BlogicBuiltin() {
     context(program: Program, arguments: Arguments, context: Context)
