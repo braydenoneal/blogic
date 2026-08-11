@@ -1,13 +1,18 @@
 package blang.expression.builtin
 
+import blang.BlogicProgram
 import blang.Context
-import net.minecraft.network.chat.Component
+import net.fabricmc.fabric.api.networking.v1.PlayerLookup
+import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking
+import net.minecraft.server.level.ServerLevel
+import networking.ControllerPayload
 import program.Program
 import program.expression.Arguments
 import program.expression.value.Value
 import program.expression.value.getAny
 import program.expression.value.nullvalue.Null
 import program.expression.value.string.StringValue
+
 
 object PrintBuiltin : BlogicBuiltin() {
     context(program: Program, arguments: Arguments, context: Context)
@@ -19,12 +24,23 @@ object PrintBuiltin : BlogicBuiltin() {
             string = string.substring(1, string.length - 1)
         }
 
+        val program = BlogicProgram.cast(program.actionProgram)
+        program.console += "$string\n"
+
+        val payload = ControllerPayload(
+            context.entity.blockPos,
+            program.name,
+            program.source,
+            program.draft,
+            program.console,
+            program.cursorPosition,
+            true
+        )
+
         val level = getLevel()
 
-        if (level.server != null) {
-            for (player in level.server?.playerList?.players!!) {
-                player.sendSystemMessage(Component.nullToEmpty(string))
-            }
+        for (player in PlayerLookup.level((level as ServerLevel))) {
+            ServerPlayNetworking.send(player, payload)
         }
 
         return Null.VALUE

@@ -1,17 +1,19 @@
 package block.entity
 
-import Blogic
 import blang.BlogicProgram
 import blang.Context
 import blang.codec.Codecs
 import block.CableBlock
 import com.mojang.serialization.Codec
 import net.fabricmc.fabric.api.menu.v1.ExtendedMenuProvider
+import net.fabricmc.fabric.api.networking.v1.PlayerLookup.level
+import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking
 import net.minecraft.core.BlockPos
 import net.minecraft.core.Direction
 import net.minecraft.core.HolderLookup.Provider
 import net.minecraft.nbt.CompoundTag
 import net.minecraft.network.chat.Component
+import net.minecraft.server.level.ServerLevel
 import net.minecraft.server.level.ServerPlayer
 import net.minecraft.world.entity.player.Inventory
 import net.minecraft.world.entity.player.Player
@@ -30,7 +32,8 @@ import program.statement.IncompleteException
 import java.util.*
 import kotlin.jvm.optionals.getOrNull
 
-class ControllerBlockEntity(pos: BlockPos, state: BlockState) : BlockEntity(ModBlockEntities.CONTROLLER_BLOCK_ENTITY, pos, state), ExtendedMenuProvider<BlockPos> {
+class ControllerBlockEntity(pos: BlockPos, state: BlockState) :
+    BlockEntity(ModBlockEntities.CONTROLLER_BLOCK_ENTITY, pos, state), ExtendedMenuProvider<ControllerPayload> {
     var program: BlogicProgram = BlogicProgram(Context(this))
     var initializing = true
 
@@ -47,13 +50,18 @@ class ControllerBlockEntity(pos: BlockPos, state: BlockState) : BlockEntity(ModB
         program.source = payload.source
         initializing = true
         program.hasError = false
+        program.console = ""
 
         if (!level!!.isClientSide) {
             try {
                 program.parse()
             } catch (exception: Exception) {
-                Blogic.LOGGER.error(exception.message)
+                program.console += "${exception.message}\n"
                 program.hasError = true
+
+                for (player in level((level as ServerLevel))) {
+                    ServerPlayNetworking.send(player, getPayload())
+                }
             }
         }
 
@@ -66,8 +74,10 @@ class ControllerBlockEntity(pos: BlockPos, state: BlockState) : BlockEntity(ModB
         initializing = view.read("initializing", Codec.BOOL).getOrNull() ?: true
 
         val draft = view.read("draft", Codec.STRING).getOrNull() ?: ""
+        val console = view.read("console", Codec.STRING).getOrNull() ?: ""
         val cursorPosition = view.read("cursor_position", Codec.INT).getOrNull() ?: 0
         val rawProgram = view.read("raw_program", Codecs.PROGRAM_CODEC).getOrNull() ?: Program()
+        val hasError = view.read("has_error", Codec.BOOL).getOrNull() ?: false
 
         program = BlogicProgram(
             Context(this),
@@ -80,6 +90,8 @@ class ControllerBlockEntity(pos: BlockPos, state: BlockState) : BlockEntity(ModB
             rawProgram.scopes,
             draft,
             cursorPosition,
+            console,
+            hasError,
         )
     }
 
@@ -88,7 +100,9 @@ class ControllerBlockEntity(pos: BlockPos, state: BlockState) : BlockEntity(ModB
 
         view.store("initializing", Codec.BOOL, initializing)
         view.store("draft", Codec.STRING, program.draft)
+        view.store("console", Codec.STRING, program.console)
         view.store("cursor_position", Codec.INT, program.cursorPosition)
+        view.store("has_error", Codec.BOOL, program.hasError)
 
         val rawProgram = Program(
             program.source,
@@ -114,12 +128,24 @@ class ControllerBlockEntity(pos: BlockPos, state: BlockState) : BlockEntity(ModB
         return Component.translatable(blockState.block.descriptionId)
     }
 
-    override fun createMenu(syncId: Int, playerInventory: Inventory, player: Player): AbstractContainerMenu {
-        return ControllerScreenHandler(syncId, playerInventory, this)
+    fun getPayload(): ControllerPayload {
+        return ControllerPayload(
+            blockPos,
+            program.name,
+            program.source,
+            program.draft,
+            program.console,
+            program.cursorPosition,
+            false,
+        )
     }
 
-    override fun getScreenOpeningData(player: ServerPlayer): BlockPos {
-        return worldPosition
+    override fun createMenu(syncId: Int, playerInventory: Inventory, player: Player): AbstractContainerMenu {
+        return ControllerScreenHandler(syncId, playerInventory, getPayload())
+    }
+
+    override fun getScreenOpeningData(player: ServerPlayer): ControllerPayload {
+        return getPayload()
     }
 
     fun getConnectedControllerBlockEntities(): MutableList<ControllerBlockEntity> {
@@ -241,7 +267,12 @@ class ControllerBlockEntity(pos: BlockPos, state: BlockState) : BlockEntity(ModB
     }
 
     companion object {
-        fun tick(world: Level, blockPos: BlockPos, @Suppress("unused") ignoredBlockState: BlockState, entity: ControllerBlockEntity) {
+        fun tick(
+            world: Level,
+            blockPos: BlockPos,
+            @Suppress("unused") blockState: BlockState,
+            entity: ControllerBlockEntity
+        ) {
             if (!entity.program.parsed) {
                 entity.program.parse()
                 entity.program.hasError = false
@@ -267,8 +298,12 @@ class ControllerBlockEntity(pos: BlockPos, state: BlockState) : BlockEntity(ModB
                     entity.setChanged()
                 }
             } catch (exception: Exception) {
-                Blogic.LOGGER.error(exception.message)
+                entity.program.console += "${exception.message}\n"
                 entity.program.hasError = true
+
+                for (player in level((entity.level as ServerLevel))) {
+                    ServerPlayNetworking.send(player, entity.getPayload())
+                }
             }
         }
     }

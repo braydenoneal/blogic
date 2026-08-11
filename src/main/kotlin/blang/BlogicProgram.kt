@@ -20,8 +20,9 @@ data class BlogicProgram(
     override val scopes: MutableList<Scope> = mutableListOf(),
     var draft: String = source,
     var cursorPosition: Int = 0,
+    var console: String = "",
+    var hasError: Boolean = false,
 ) : Program(source) {
-    var hasError = false
 
     fun runMain() {
         val main = functions["main"] ?: return

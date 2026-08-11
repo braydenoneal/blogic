@@ -5,5 +5,6 @@ import net.minecraft.client.gui.screens.MenuScreens
 object BlogicClient : ClientModInitializer {
     override fun onInitializeClient() {
         MenuScreens.register(CONTROLLER_SCREEN_HANDLER, ::ControllerScreen)
+        ModNetworking.initialize()
     }
 }

@@ -4,6 +4,7 @@ import block.entity.ControllerBlockEntity
 import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking
 
+
 object ModNetworking {
     fun initialize() {
         PayloadTypeRegistry.serverboundPlay().register(ControllerPayload.ID, ControllerPayload.CODEC)

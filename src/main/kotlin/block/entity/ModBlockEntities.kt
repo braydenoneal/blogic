@@ -13,19 +13,29 @@ import net.minecraft.world.level.block.Block
 import net.minecraft.world.level.block.entity.BlockEntity
 import net.minecraft.world.level.block.entity.BlockEntityType
 import net.minecraft.world.level.block.state.BlockState
+import networking.ControllerPayload
 
 class ModBlockEntities {
     companion object {
-        val CONTROLLER_BLOCK_ENTITY = register("controller", FabricBlockEntityTypeBuilder.Factory { pos: BlockPos, state: BlockState -> ControllerBlockEntity(pos, state) }, ModBlocks.CONTROLLER)
+        val CONTROLLER_BLOCK_ENTITY = register(
+            "controller",
+            FabricBlockEntityTypeBuilder.Factory { pos: BlockPos, state: BlockState ->
+                ControllerBlockEntity(
+                    pos,
+                    state
+                )
+            },
+            ModBlocks.CONTROLLER
+        )
 
-        val CONTROLLER_SCREEN_HANDLER: ExtendedMenuType<ControllerScreenHandler, BlockPos> = Registry.register(
+        val CONTROLLER_SCREEN_HANDLER: ExtendedMenuType<ControllerScreenHandler, ControllerPayload> = Registry.register(
             BuiltInRegistries.MENU,
             Identifier.fromNamespaceAndPath("blogic", "controller_block"),
             ExtendedMenuType(
-                { syncId: Int, playerInventory: Inventory, pos: BlockPos ->
-                    ControllerScreenHandler(syncId, playerInventory, pos)
+                { syncId: Int, playerInventory: Inventory, payload: ControllerPayload ->
+                    ControllerScreenHandler(syncId, playerInventory, payload)
                 },
-                BlockPos.STREAM_CODEC,
+                ControllerPayload.CODEC,
             ),
         )
 
