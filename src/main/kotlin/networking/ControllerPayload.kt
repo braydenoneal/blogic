@@ -13,8 +13,9 @@ data class ControllerPayload(
     val source: String,
     val draft: String,
     val console: String,
-    val cursorPosition: Int,
+    val cursor: Int,
     val isDraft: Boolean,
+    val run: Boolean,
 ) : CustomPacketPayload {
     override fun type(): CustomPacketPayload.Type<out CustomPacketPayload> {
         return ID
@@ -29,18 +30,10 @@ data class ControllerPayload(
             ByteBufCodecs.STRING_UTF8, ControllerPayload::source,
             ByteBufCodecs.STRING_UTF8, ControllerPayload::draft,
             ByteBufCodecs.STRING_UTF8, ControllerPayload::console,
-            ByteBufCodecs.INT, ControllerPayload::cursorPosition,
+            ByteBufCodecs.INT, ControllerPayload::cursor,
             ByteBufCodecs.BOOL, ControllerPayload::isDraft,
-        ) { pos, name, source, draft, console, cursorPosition, isDraft ->
-            ControllerPayload(
-                pos,
-                name,
-                source,
-                draft,
-                console,
-                cursorPosition,
-                isDraft
-            )
-        }
+            ByteBufCodecs.BOOL, ControllerPayload::run,
+            ::ControllerPayload
+        )
     }
 }

@@ -11,44 +11,52 @@ import networking.ControllerPayload
 
 class ControllerScreen(handler: ControllerScreenHandler, inventory: Inventory, title: Component) :
     AbstractContainerScreen<ControllerScreenHandler>(handler, inventory, title) {
-    lateinit var nameEditBox: EditBox
-    lateinit var sourceEditBox: ModMultiLineEditBox
+    lateinit var name: EditBox
+    lateinit var draft: ModMultiLineEditBox
     lateinit var console: ConsoleBox
     lateinit var discardButton: Button
+    lateinit var saveButton: Button
+    lateinit var source: String
 
     override fun init() {
         super.init()
 
-        var y = 0
-        val pad = 20
-        y += pad
+        val pad = 10
+        val gap = 10
+        val buttonHeight = 20
+        val consoleHeight = 80
+        val draftHeight = height - pad - buttonHeight - gap - gap - consoleHeight - gap - buttonHeight - gap
+        val fullWidth = width - pad * 2
+        var y = pad
 
-        nameEditBox = EditBox(font, width - 40, 20, Component.nullToEmpty("name"))
-        nameEditBox.x = 20
-        nameEditBox.y = y
-        nameEditBox.value = menu.payload.name
-        addRenderableWidget(nameEditBox)
+        source = menu.payload.source
+
+        name = EditBox(font, fullWidth, buttonHeight, Component.nullToEmpty("name"))
+        name.x = pad
+        name.y = y
+        name.value = menu.payload.name
+        addRenderableWidget(name)
         y += 20
-        y += pad
+        y += gap
 
-        sourceEditBox = ModMultiLineEditBox.builder().setX(20).setY(60).build(
+        draft = ModMultiLineEditBox.builder().setX(pad).setY(y).build(
             font,
-            width - 40,
-            height - 20 - 20 - 20 - 20 - 80 - 20 - 20 - 20,
+            fullWidth,
+            draftHeight,
             Component.nullToEmpty("source"),
         )
-        y += height - 20 - 20 - 20 - 20 - 80 - 20 - 20 - 20
-        y += pad
+        y += draftHeight
+        y += gap
 
-        sourceEditBox.value = menu.payload.draft
-        sourceEditBox.textField.cursor = menu.payload.cursorPosition
-        sourceEditBox.textField.selectCursor = menu.payload.cursorPosition
-        addRenderableWidget(sourceEditBox)
+        draft.value = menu.payload.draft
+        draft.textField.cursor = menu.payload.cursor
+        draft.textField.selectCursor = menu.payload.cursor
+        addRenderableWidget(draft)
 
-        console = ConsoleBox.builder().setX(20).setY(y).build(
+        console = ConsoleBox.builder().setX(pad).setY(y).build(
             font,
-            width - 40,
-            80,
+            fullWidth,
+            consoleHeight,
             Component.nullToEmpty("source"),
         )
         console.value = menu.payload.console
@@ -56,53 +64,67 @@ class ControllerScreen(handler: ControllerScreenHandler, inventory: Inventory, t
         console.textField.selectCursor = console.textField.value.length - 1
         console.setScrollAmount(console.maxScrollAmount().toDouble())
         addRenderableWidget(console)
+        y += consoleHeight
+        y += gap
 
-        val buttonWidth = (width - 80) / 3
+        val buttonWidth = (fullWidth - 3 * gap) / 4
+        var x = pad
 
         addRenderableWidget(
-            Button.builder(Component.literal("Save")) {
-                val payload = ControllerPayload(
-                    menu.payload.pos,
-                    nameEditBox.value,
-                    sourceEditBox.value,
-                    sourceEditBox.value,
-                    console.value,
-                    sourceEditBox.textField.cursor,
-                    false
-                )
-                menu.setSource(payload)
-                ClientPlayNetworking.send(payload)
-                super.onClose()
-            }.bounds(20, height - 40, buttonWidth, 20).build(),
+            Button.builder(Component.literal("Save and Run")) {
+                sendPayload(run = true)
+            }.bounds(x, y, buttonWidth, buttonHeight).build(),
         )
+        x += gap + buttonWidth
+
+        saveButton = Button.builder(Component.literal("Save")) {
+            sendPayload()
+        }.bounds(x, y, buttonWidth, buttonHeight).build()
+        x += gap + buttonWidth
+
+        saveButton.active = isSourceChanged()
+        addRenderableWidget(saveButton)
 
         discardButton = Button.builder(Component.literal("Discard")) {
-            val payload = ControllerPayload(
-                menu.payload.pos,
-                nameEditBox.value,
-                sourceEditBox.value,
-                sourceEditBox.value,
-                console.value,
-                sourceEditBox.textField.cursor,
-                true
-            )
-            menu.setSource(payload)
-            ClientPlayNetworking.send(payload)
-            super.onClose()
-        }.bounds(40 + buttonWidth, height - 40, buttonWidth, 20).build()
+            draft.value = source
+            draft.textField.cursor = menu.payload.cursor
+            draft.textField.selectCursor = menu.payload.cursor
+        }.bounds(x, y, buttonWidth, buttonHeight).build()
+        x += gap + buttonWidth
 
-        discardButton.active = shouldDiscardActive()
+        discardButton.active = isSourceChanged()
         addRenderableWidget(discardButton)
 
         addRenderableWidget(
-            Button.builder(Component.literal("Close")) { onClose() }
-                .bounds(60 + buttonWidth * 2, height - 40, buttonWidth, 20).build(),
+            Button.builder(Component.literal("Close")) {
+                onClose()
+            }.bounds(x, y, buttonWidth, buttonHeight).build(),
         )
 
-        focused = sourceEditBox
+        focused = draft
     }
 
-    private fun shouldDiscardActive(): Boolean = sourceEditBox.value != menu.payload.source
+    fun sendPayload(isDraft: Boolean = false, run: Boolean = false) {
+        val payload = ControllerPayload(
+            menu.payload.pos,
+            name.value,
+            source,
+            draft.value,
+            console.value,
+            draft.textField.cursor,
+            isDraft,
+            run,
+        )
+
+        if (!isDraft) {
+            source = draft.value
+        }
+
+        menu.setSource(payload)
+        ClientPlayNetworking.send(payload)
+    }
+
+    private fun isSourceChanged(): Boolean = draft.value != source
 
     fun updateConsole(value: String) {
         console.value = value
@@ -113,7 +135,8 @@ class ControllerScreen(handler: ControllerScreenHandler, inventory: Inventory, t
 
     override fun containerTick() {
         super.containerTick()
-        discardButton.active = shouldDiscardActive()
+        saveButton.active = isSourceChanged()
+        discardButton.active = isSourceChanged()
     }
 
     override fun extractLabels(graphics: GuiGraphicsExtractor, xm: Int, ym: Int) {}
@@ -132,22 +155,16 @@ class ControllerScreen(handler: ControllerScreenHandler, inventory: Inventory, t
         horizontalAmount: Double,
         verticalAmount: Double
     ): Boolean {
-        return focused?.mouseScrolled(mouseX, mouseY, horizontalAmount, verticalAmount) ?: false
+        return focused?.mouseScrolled(
+            mouseX,
+            mouseY,
+            horizontalAmount,
+            verticalAmount
+        ) ?: false
     }
 
     override fun onClose() {
-        val payload =
-            ControllerPayload(
-                menu.payload.pos,
-                nameEditBox.value,
-                sourceEditBox.value,
-                sourceEditBox.value,
-                console.value,
-                sourceEditBox.textField.cursor,
-                true
-            )
-        menu.setSource(payload)
-        ClientPlayNetworking.send(payload)
+        sendPayload(isDraft = true)
         super.onClose()
     }
 }

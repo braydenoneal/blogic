@@ -39,18 +39,21 @@ class ControllerBlockEntity(pos: BlockPos, state: BlockState) :
 
     fun setSource(payload: ControllerPayload) {
         program.name = payload.name
-        program.cursorPosition = payload.cursorPosition
-        program.draft = payload.source
+        program.cursorPosition = payload.cursor
+        program.draft = payload.draft
 
         if (payload.isDraft) {
             setChanged()
             return
         }
 
-        program.source = payload.source
-        initializing = true
-        program.hasError = false
-        program.console = ""
+        program.source = payload.draft
+
+        if (payload.run) {
+            initializing = true
+            program.hasError = false
+            program.console = ""
+        }
 
         if (!level!!.isClientSide) {
             try {
@@ -136,7 +139,8 @@ class ControllerBlockEntity(pos: BlockPos, state: BlockState) :
             program.draft,
             program.console,
             program.cursorPosition,
-            false,
+            isDraft = false,
+            run = false,
         )
     }
 
