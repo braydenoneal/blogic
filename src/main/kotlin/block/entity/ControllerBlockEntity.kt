@@ -48,11 +48,11 @@ class ControllerBlockEntity(pos: BlockPos, state: BlockState) :
         }
 
         program.source = payload.draft
+        program.hasError = false
+        program.console = ""
 
         if (payload.run) {
             initializing = true
-            program.hasError = false
-            program.console = ""
         }
 
         if (!level!!.isClientSide) {
