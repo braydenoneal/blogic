@@ -8,11 +8,13 @@ import networking.ControllerPayload
 
 class ControllerScreenHandler(
     syncId: Int,
-    val playerInventory: Inventory,
+    playerInventory: Inventory,
     val payload: ControllerPayload,
 ) : AbstractContainerMenu(ModBlockEntities.CONTROLLER_SCREEN_HANDLER, syncId) {
+    val entity: ControllerBlockEntity =
+        playerInventory.player.level().getBlockEntity(payload.pos) as ControllerBlockEntity
+
     fun setSource(payload: ControllerPayload) {
-        val entity = playerInventory.player.level().getBlockEntity(payload.pos) as ControllerBlockEntity
         entity.setSource(payload)
     }
 

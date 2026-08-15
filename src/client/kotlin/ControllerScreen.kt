@@ -39,7 +39,7 @@ class ControllerScreen(handler: ControllerScreenHandler, inventory: Inventory, t
         y += 20
         y += gap
 
-        draft = ModMultiLineEditBox.builder().setX(pad).setY(y).build(
+        draft = ModMultiLineEditBox.builder(menu.entity).setX(pad).setY(y).build(
             font,
             fullWidth,
             draftHeight,

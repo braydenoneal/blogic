@@ -1,6 +1,9 @@
+import block.entity.ControllerBlockEntity
 import net.minecraft.client.gui.Font
 import net.minecraft.client.gui.GuiGraphicsExtractor
 import net.minecraft.client.gui.components.MultiLineEditBox
+import net.minecraft.client.input.CharacterEvent
+import net.minecraft.client.input.KeyEvent
 import net.minecraft.network.chat.CommonComponents
 import net.minecraft.network.chat.Component
 import net.minecraft.network.chat.FontDescription
@@ -8,6 +11,8 @@ import net.minecraft.resources.Identifier
 import net.minecraft.util.ARGB
 import net.minecraft.util.Util
 import parser.tokenizer.Type
+import program.expression.builtin.BuiltinFunctions
+import java.util.regex.Pattern
 import kotlin.math.log10
 import kotlin.math.max
 
@@ -24,13 +29,28 @@ class ModMultiLineEditBox(
     cursorColor: Int,
     showBackground: Boolean,
     showDecorations: Boolean,
-) : MultiLineEditBox(font, x, y, width, height, placeholder, narration, textColor, textShadow, cursorColor, showBackground, showDecorations) {
+    val entity: ControllerBlockEntity,
+) : MultiLineEditBox(
+    font,
+    x,
+    y,
+    width,
+    height,
+    placeholder,
+    narration,
+    textColor,
+    textShadow,
+    cursorColor,
+    showBackground,
+    showDecorations
+) {
     companion object {
         const val LINE_HEIGHT: Int = 11
         const val CURSOR_BLINK_INTERVAL: Int = 500
-        val MONOSPACE_FONT: FontDescription = FontDescription.Resource(Identifier.fromNamespaceAndPath("blogic", "monospace"))
+        val MONOSPACE_FONT: FontDescription =
+            FontDescription.Resource(Identifier.fromNamespaceAndPath("blogic", "monospace"))
 
-        fun builder(): Builder = Builder()
+        fun builder(entity: ControllerBlockEntity): Builder = Builder(entity)
 
         fun monospaceText(string: String): Component {
             val component = Component.literal(string)
@@ -43,6 +63,9 @@ class ModMultiLineEditBox(
         textField = ModMultilineTextField(font, width - totalInnerPadding(), LINE_HEIGHT)
         textField.setCursorListener { scrollToCursor() }
     }
+
+    var matches: List<String> = listOf()
+    var match: String = ""
 
     private val lineDigits get(): Int = (log10(textField.displayLines.size.toDouble()) + 1).toInt()
 
@@ -135,7 +158,13 @@ class ModMultiLineEditBox(
 
     override fun extractContents(graphics: GuiGraphicsExtractor, mouseX: Int, mouseY: Int, a: Float) {
         graphics.fill(x, y, x + getWidth(), y + max(getHeight(), textField.lineCount * LINE_HEIGHT + 6), -0xe1e0de)
-        graphics.fill(innerLeft + gutterWidth - font.width(monospaceText(" ")), y, innerLeft + gutterWidth - font.width(monospaceText(" ")) + 1, y + max(getHeight(), textField.lineCount * LINE_HEIGHT + 6), ARGB.color(49, 52, 56))
+        graphics.fill(
+            innerLeft + gutterWidth - font.width(monospaceText(" ")),
+            y,
+            innerLeft + gutterWidth - font.width(monospaceText(" ")) + 1,
+            y + max(getHeight(), textField.lineCount * LINE_HEIGHT + 6),
+            ARGB.color(49, 52, 56)
+        )
         val text: String = textField.value
 
         val pos = textField.cursor
@@ -161,6 +190,21 @@ class ModMultiLineEditBox(
                 }
             }
 
+            if (matches.isNotEmpty() && pos >= line.beginIndex && pos <= line.endIndex) {
+                val maxLength = matches.maxOf { it.length }
+                val width = font.width(monospaceText(" ".repeat(maxLength)))
+                val height = LINE_HEIGHT * matches.size
+                val lineUntilPos = text.substring(line.beginIndex, pos - match.length)
+                x = textX + font.width(monospaceText(lineUntilPos)) + gutterWidth
+                graphics.fill(x, textY + LINE_HEIGHT, x + width, textY + LINE_HEIGHT + height, ARGB.color(38, 40, 44))
+                var y = textY + LINE_HEIGHT
+
+                for (string in matches) {
+                    drawMonospace(graphics, string, x, y, -0x43413c)
+                    y += LINE_HEIGHT
+                }
+            }
+
             textY += LINE_HEIGHT
             lineNumber++
         }
@@ -177,7 +221,14 @@ class ModMultiLineEditBox(
                     }
 
                     if (withinContentAreaTopBottom(textY, textY + LINE_HEIGHT)) {
-                        val o: Int = font.width(monospaceText(text.substring(substring3.beginIndex, max(substring2.beginIndex, substring3.beginIndex))))
+                        val o: Int = font.width(
+                            monospaceText(
+                                text.substring(
+                                    substring3.beginIndex,
+                                    max(substring2.beginIndex, substring3.beginIndex)
+                                )
+                            )
+                        )
 
                         val p: Int = if (substring2.endIndex > substring3.endIndex) {
                             width - innerPadding()
@@ -185,7 +236,13 @@ class ModMultiLineEditBox(
                             font.width(monospaceText(text.substring(substring3.beginIndex, substring2.endIndex)))
                         }
 
-                        graphics.textHighlight(n + o + gutterWidth, textY, n + p + gutterWidth, textY + LINE_HEIGHT, true)
+                        graphics.textHighlight(
+                            n + o + gutterWidth,
+                            textY,
+                            n + p + gutterWidth,
+                            textY + LINE_HEIGHT,
+                            true
+                        )
                     }
                 }
 
@@ -201,17 +258,53 @@ class ModMultiLineEditBox(
         if (textField.cursor() <= firstFullyVisibleLine.beginIndex()) {
             scrollAmount = (textField.lineAtCursor * LINE_HEIGHT).toDouble()
         } else {
-            val lastFullyVisibleLine = textField.getLineView(((scrollAmount + height.toDouble()) / LINE_HEIGHT).toInt() - 1)
+            val lastFullyVisibleLine =
+                textField.getLineView(((scrollAmount + height.toDouble()) / LINE_HEIGHT).toInt() - 1)
 
             if (textField.cursor() > lastFullyVisibleLine.endIndex()) {
-                scrollAmount = (textField.lineAtCursor * LINE_HEIGHT - height + LINE_HEIGHT + totalInnerPadding()).toDouble()
+                scrollAmount =
+                    (textField.lineAtCursor * LINE_HEIGHT - height + LINE_HEIGHT + totalInnerPadding()).toDouble()
             }
         }
 
         setScrollAmount(scrollAmount)
     }
 
-    class Builder {
+    override fun keyPressed(event: KeyEvent): Boolean {
+        val keyPressed = super.keyPressed(event)
+        getSuggestions()
+        return keyPressed
+    }
+
+    override fun charTyped(event: CharacterEvent): Boolean {
+        val charTyped = super.charTyped(event)
+        getSuggestions()
+        return charTyped
+    }
+
+    fun getSuggestions() {
+        val regex = Pattern.compile("""^([A-Za-z0-9_]*[A-Za-z_])""")
+        val string = textField.value.substring(0, textField.cursor).reversed()
+        val matcher = regex.matcher(string)
+
+        if (!matcher.find()) {
+            matches = listOf()
+            return
+        }
+
+        val group = matcher.group().reversed()
+        match = group
+
+        val variables = entity.program.scope.variables.keys  // TODO: get current scope and all parent scops
+        val functions = entity.program.functions.keys
+        val imports = entity.program.imports.map { it.name }
+        val builtins = BuiltinFunctions.builtins.keys
+
+        val strings = variables + functions + imports + builtins
+        matches = strings.filter { it.startsWith(group) }.sorted()
+    }
+
+    class Builder(val entity: ControllerBlockEntity) {
         private var x = 0
         private var y = 0
         private var placeholder: Component = CommonComponents.EMPTY
@@ -232,7 +325,21 @@ class ModMultiLineEditBox(
         }
 
         fun build(font: Font, width: Int, height: Int, narration: Component): ModMultiLineEditBox {
-            return ModMultiLineEditBox(font, this.x, this.y, width, height, this.placeholder, narration, this.textColor, this.textShadow, this.cursorColor, this.showBackground, this.showDecorations)
+            return ModMultiLineEditBox(
+                font,
+                this.x,
+                this.y,
+                width,
+                height,
+                this.placeholder,
+                narration,
+                this.textColor,
+                this.textShadow,
+                this.cursorColor,
+                this.showBackground,
+                this.showDecorations,
+                this.entity,
+            )
         }
     }
 }
