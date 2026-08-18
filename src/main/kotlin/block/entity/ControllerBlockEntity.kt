@@ -26,14 +26,14 @@ import net.minecraft.world.level.block.state.BlockState
 import net.minecraft.world.level.block.state.properties.BlockStateProperties
 import net.minecraft.world.level.storage.ValueInput
 import net.minecraft.world.level.storage.ValueOutput
+import networking.ControllerClientPayload
 import networking.ControllerPayload
 import program.Program
 import program.statement.IncompleteException
 import java.util.*
 import kotlin.jvm.optionals.getOrNull
 
-class ControllerBlockEntity(pos: BlockPos, state: BlockState) :
-    BlockEntity(ModBlockEntities.CONTROLLER_BLOCK_ENTITY, pos, state), ExtendedMenuProvider<ControllerPayload> {
+class ControllerBlockEntity(pos: BlockPos, state: BlockState) : BlockEntity(ModBlockEntities.CONTROLLER_BLOCK_ENTITY, pos, state), ExtendedMenuProvider<ControllerClientPayload> {
     var program: BlogicProgram = BlogicProgram(Context(this))
     var initializing = true
 
@@ -131,16 +131,14 @@ class ControllerBlockEntity(pos: BlockPos, state: BlockState) :
         return Component.translatable(blockState.block.descriptionId)
     }
 
-    fun getPayload(): ControllerPayload {
-        return ControllerPayload(
+    fun getPayload(): ControllerClientPayload {
+        return ControllerClientPayload(
             blockPos,
             program.name,
             program.source,
             program.draft,
             program.console,
             program.cursorPosition,
-            isDraft = false,
-            run = false,
         )
     }
 
@@ -148,7 +146,7 @@ class ControllerBlockEntity(pos: BlockPos, state: BlockState) :
         return ControllerScreenHandler(syncId, playerInventory, getPayload())
     }
 
-    override fun getScreenOpeningData(player: ServerPlayer): ControllerPayload {
+    override fun getScreenOpeningData(player: ServerPlayer): ControllerClientPayload {
         return getPayload()
     }
 
@@ -275,7 +273,7 @@ class ControllerBlockEntity(pos: BlockPos, state: BlockState) :
             world: Level,
             blockPos: BlockPos,
             @Suppress("unused") blockState: BlockState,
-            entity: ControllerBlockEntity
+            entity: ControllerBlockEntity,
         ) {
             if (!entity.program.parsed) {
                 entity.program.parse()

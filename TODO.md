@@ -1,6 +1,5 @@
 ## Todo
 
-- separate payload for client and server
 - console output colors
 - extract duplicate code from source and console boxes into monospace edit box or whatever
 - console input?

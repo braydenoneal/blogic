@@ -9,8 +9,7 @@ import net.minecraft.network.chat.Component
 import net.minecraft.world.entity.player.Inventory
 import networking.ControllerPayload
 
-class ControllerScreen(handler: ControllerScreenHandler, inventory: Inventory, title: Component) :
-    AbstractContainerScreen<ControllerScreenHandler>(handler, inventory, title) {
+class ControllerScreen(handler: ControllerScreenHandler, inventory: Inventory, title: Component) : AbstractContainerScreen<ControllerScreenHandler>(handler, inventory, title) {
     lateinit var name: EditBox
     lateinit var draft: ModMultiLineEditBox
     lateinit var console: ConsoleBox
@@ -108,9 +107,7 @@ class ControllerScreen(handler: ControllerScreenHandler, inventory: Inventory, t
         val payload = ControllerPayload(
             menu.payload.pos,
             name.value,
-            source,
             draft.value,
-            console.value,
             draft.textField.cursor,
             isDraft,
             run,
@@ -153,13 +150,13 @@ class ControllerScreen(handler: ControllerScreenHandler, inventory: Inventory, t
         mouseX: Double,
         mouseY: Double,
         horizontalAmount: Double,
-        verticalAmount: Double
+        verticalAmount: Double,
     ): Boolean {
         return focused?.mouseScrolled(
             mouseX,
             mouseY,
             horizontalAmount,
-            verticalAmount
+            verticalAmount,
         ) ?: false
     }
 
