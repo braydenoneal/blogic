@@ -3,8 +3,6 @@
 - console output colors
 - extract duplicate code from source and console boxes into monospace edit box or whatever
 - console input?
-- replace block, item, etc. string constructors with static values (`Blocks.STONE` instead of `Block("stone")`)
-    - but also have `Blocks.fromString("stone")` as an option
 - relative and absolute positions (or just builtin to get world pos of the controller)
 - creative controller block/mode that doesn't require having items in storage
 - console output screen (for errors and logging without sending to chat)

@@ -1,3 +1,5 @@
+package controller
+
 import net.minecraft.client.gui.Font
 import net.minecraft.client.gui.GuiGraphicsExtractor
 import net.minecraft.client.gui.components.MultiLineEditBox
@@ -22,25 +24,11 @@ class ConsoleBox(
     cursorColor: Int,
     showBackground: Boolean,
     showDecorations: Boolean,
-) : MultiLineEditBox(
-    font,
-    x,
-    y,
-    width,
-    height,
-    placeholder,
-    narration,
-    textColor,
-    textShadow,
-    cursorColor,
-    showBackground,
-    showDecorations
-) {
+) : MultiLineEditBox(font, x, y, width, height, placeholder, narration, textColor, textShadow, cursorColor, showBackground, showDecorations) {
     companion object {
         const val LINE_HEIGHT: Int = 11
         const val CURSOR_BLINK_INTERVAL: Int = 500
-        val MONOSPACE_FONT: FontDescription =
-            FontDescription.Resource(Identifier.fromNamespaceAndPath("blogic", "monospace"))
+        val MONOSPACE_FONT: FontDescription = FontDescription.Resource(Identifier.fromNamespaceAndPath("blogic", "monospace"))
 
         fun builder(): Builder = Builder()
 
@@ -123,9 +111,9 @@ class ConsoleBox(
                             monospaceText(
                                 text.substring(
                                     substring3.beginIndex,
-                                    max(substring2.beginIndex, substring3.beginIndex)
-                                )
-                            )
+                                    max(substring2.beginIndex, substring3.beginIndex),
+                                ),
+                            ),
                         )
 
                         val p: Int = if (substring2.endIndex > substring3.endIndex) {
@@ -139,7 +127,7 @@ class ConsoleBox(
                             textY,
                             n + p,
                             textY + LINE_HEIGHT,
-                            true
+                            true,
                         )
                     }
                 }
@@ -156,12 +144,10 @@ class ConsoleBox(
         if (textField.cursor() <= firstFullyVisibleLine.beginIndex()) {
             scrollAmount = (textField.lineAtCursor * LINE_HEIGHT).toDouble()
         } else {
-            val lastFullyVisibleLine =
-                textField.getLineView(((scrollAmount + height.toDouble()) / LINE_HEIGHT).toInt() - 1)
+            val lastFullyVisibleLine = textField.getLineView(((scrollAmount + height.toDouble()) / LINE_HEIGHT).toInt() - 1)
 
             if (textField.cursor() > lastFullyVisibleLine.endIndex()) {
-                scrollAmount =
-                    (textField.lineAtCursor * LINE_HEIGHT - height + LINE_HEIGHT + totalInnerPadding()).toDouble()
+                scrollAmount = (textField.lineAtCursor * LINE_HEIGHT - height + LINE_HEIGHT + totalInnerPadding()).toDouble()
             }
         }
 
@@ -191,17 +177,17 @@ class ConsoleBox(
         fun build(font: Font, width: Int, height: Int, narration: Component): ConsoleBox {
             return ConsoleBox(
                 font,
-                this.x,
-                this.y,
+                x,
+                y,
                 width,
                 height,
-                this.placeholder,
+                placeholder,
                 narration,
-                this.textColor,
-                this.textShadow,
-                this.cursorColor,
-                this.showBackground,
-                this.showDecorations
+                textColor,
+                textShadow,
+                cursorColor,
+                showBackground,
+                showDecorations,
             )
         }
     }

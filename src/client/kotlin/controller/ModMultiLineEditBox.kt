@@ -1,3 +1,5 @@
+package controller
+
 import block.entity.ControllerBlockEntity
 import net.minecraft.client.gui.Font
 import net.minecraft.client.gui.GuiGraphicsExtractor
@@ -30,25 +32,11 @@ class ModMultiLineEditBox(
     showBackground: Boolean,
     showDecorations: Boolean,
     val entity: ControllerBlockEntity,
-) : MultiLineEditBox(
-    font,
-    x,
-    y,
-    width,
-    height,
-    placeholder,
-    narration,
-    textColor,
-    textShadow,
-    cursorColor,
-    showBackground,
-    showDecorations
-) {
+) : MultiLineEditBox(font, x, y, width, height, placeholder, narration, textColor, textShadow, cursorColor, showBackground, showDecorations) {
     companion object {
         const val LINE_HEIGHT: Int = 11
         const val CURSOR_BLINK_INTERVAL: Int = 500
-        val MONOSPACE_FONT: FontDescription =
-            FontDescription.Resource(Identifier.fromNamespaceAndPath("blogic", "monospace"))
+        val MONOSPACE_FONT: FontDescription = FontDescription.Resource(Identifier.fromNamespaceAndPath("blogic", "monospace"))
 
         fun builder(entity: ControllerBlockEntity): Builder = Builder(entity)
 
@@ -163,7 +151,7 @@ class ModMultiLineEditBox(
             y,
             innerLeft + gutterWidth - font.width(monospaceText(" ")) + 1,
             y + max(getHeight(), textField.lineCount * LINE_HEIGHT + 6),
-            ARGB.color(49, 52, 56)
+            ARGB.color(49, 52, 56),
         )
         val text: String = textField.value
 
@@ -225,9 +213,9 @@ class ModMultiLineEditBox(
                             monospaceText(
                                 text.substring(
                                     substring3.beginIndex,
-                                    max(substring2.beginIndex, substring3.beginIndex)
-                                )
-                            )
+                                    max(substring2.beginIndex, substring3.beginIndex),
+                                ),
+                            ),
                         )
 
                         val p: Int = if (substring2.endIndex > substring3.endIndex) {
@@ -241,7 +229,7 @@ class ModMultiLineEditBox(
                             textY,
                             n + p + gutterWidth,
                             textY + LINE_HEIGHT,
-                            true
+                            true,
                         )
                     }
                 }
@@ -258,12 +246,10 @@ class ModMultiLineEditBox(
         if (textField.cursor() <= firstFullyVisibleLine.beginIndex()) {
             scrollAmount = (textField.lineAtCursor * LINE_HEIGHT).toDouble()
         } else {
-            val lastFullyVisibleLine =
-                textField.getLineView(((scrollAmount + height.toDouble()) / LINE_HEIGHT).toInt() - 1)
+            val lastFullyVisibleLine = textField.getLineView(((scrollAmount + height.toDouble()) / LINE_HEIGHT).toInt() - 1)
 
             if (textField.cursor() > lastFullyVisibleLine.endIndex()) {
-                scrollAmount =
-                    (textField.lineAtCursor * LINE_HEIGHT - height + LINE_HEIGHT + totalInnerPadding()).toDouble()
+                scrollAmount = (textField.lineAtCursor * LINE_HEIGHT - height + LINE_HEIGHT + totalInnerPadding()).toDouble()
             }
         }
 
@@ -327,18 +313,18 @@ class ModMultiLineEditBox(
         fun build(font: Font, width: Int, height: Int, narration: Component): ModMultiLineEditBox {
             return ModMultiLineEditBox(
                 font,
-                this.x,
-                this.y,
+                x,
+                y,
                 width,
                 height,
-                this.placeholder,
+                placeholder,
                 narration,
-                this.textColor,
-                this.textShadow,
-                this.cursorColor,
-                this.showBackground,
-                this.showDecorations,
-                this.entity,
+                textColor,
+                textShadow,
+                cursorColor,
+                showBackground,
+                showDecorations,
+                entity,
             )
         }
     }

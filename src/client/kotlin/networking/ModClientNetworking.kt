@@ -1,6 +1,6 @@
 package networking
 
-import ControllerScreen
+import controller.ControllerScreen
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking
 import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry
 import net.minecraft.client.Minecraft

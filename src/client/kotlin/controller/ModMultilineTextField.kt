@@ -1,3 +1,5 @@
+package controller
+
 import net.minecraft.client.gui.Font
 import net.minecraft.client.gui.components.MultilineTextField
 import net.minecraft.client.gui.components.Whence

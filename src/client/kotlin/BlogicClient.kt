@@ -1,4 +1,5 @@
 import block.entity.ModBlockEntities.Companion.CONTROLLER_SCREEN_HANDLER
+import controller.ControllerScreen
 import net.fabricmc.api.ClientModInitializer
 import net.minecraft.client.gui.screens.MenuScreens
 import networking.ModClientNetworking
