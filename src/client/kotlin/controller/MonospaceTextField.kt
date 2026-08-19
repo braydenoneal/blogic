@@ -1,5 +1,6 @@
 package controller
 
+import controller.MonospaceEditBox.Companion.monospaceText
 import net.minecraft.client.gui.Font
 import net.minecraft.client.gui.components.MultilineTextField
 import net.minecraft.client.gui.components.Whence
@@ -7,7 +8,7 @@ import net.minecraft.util.Mth
 import kotlin.math.max
 import kotlin.math.min
 
-class ModMultilineTextField(
+open class MonospaceTextField(
     font: Font,
     width: Int,
     val lineHeight: Int,
@@ -24,7 +25,7 @@ class ModMultilineTextField(
     }
 
     override fun seekCursorToPoint(x: Double, y: Double) {
-        val characterWidth = font.width(ModMultiLineEditBox.monospaceText(" "))
+        val characterWidth = font.width(monospaceText(" "))
         val left = Mth.floor(x / characterWidth)
 
         val top = Mth.floor(y / lineHeight)

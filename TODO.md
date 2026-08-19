@@ -1,7 +1,6 @@
 ## Todo
 
 - console output colors
-- extract duplicate code from source and console boxes into monospace edit box or whatever
 - console input?
 - relative and absolute positions (or just builtin to get world pos of the controller)
 - creative controller block/mode that doesn't require having items in storage

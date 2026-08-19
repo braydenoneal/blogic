@@ -13,8 +13,8 @@ import networking.ControllerPayload
 
 class ControllerScreen(handler: ControllerScreenHandler, inventory: Inventory, title: Component) : AbstractContainerScreen<ControllerScreenHandler>(handler, inventory, title) {
     lateinit var name: EditBox
-    lateinit var draft: ModMultiLineEditBox
-    lateinit var console: ConsoleBox
+    lateinit var draft: DraftEditBox
+    lateinit var console: ConsoleEditBox
     lateinit var discardButton: Button
     lateinit var saveButton: Button
     lateinit var source: String
@@ -40,26 +40,15 @@ class ControllerScreen(handler: ControllerScreenHandler, inventory: Inventory, t
         y += 20
         y += gap
 
-        draft = ModMultiLineEditBox.builder(menu.entity).setX(pad).setY(y).build(
-            font,
-            fullWidth,
-            draftHeight,
-            Component.nullToEmpty("source"),
-        )
-        y += draftHeight
-        y += gap
-
+        draft = DraftEditBox(pad, y, fullWidth, draftHeight, menu.entity)
         draft.value = menu.payload.draft
         draft.textField.cursor = menu.payload.cursor
         draft.textField.selectCursor = menu.payload.cursor
         addRenderableWidget(draft)
+        y += draftHeight
+        y += gap
 
-        console = ConsoleBox.builder().setX(pad).setY(y).build(
-            font,
-            fullWidth,
-            consoleHeight,
-            Component.nullToEmpty("source"),
-        )
+        console = ConsoleEditBox(pad, y, fullWidth, consoleHeight)
         console.value = menu.payload.console
         console.textField.cursor = console.textField.value.length - 1
         console.textField.selectCursor = console.textField.value.length - 1
